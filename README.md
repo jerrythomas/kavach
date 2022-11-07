@@ -2,7 +2,7 @@
 
 Drop-in authentication including route protection and redirects for web apps.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jerrythomas/kavach/Release)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jerrythomas/kavach/publish.yml/badge.svg?branch=next)
 [![Maintainability](https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/maintainability)](https://codeclimate.com/github/jerrythomas/kavach/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/test_coverage)](https://codeclimate.com/github/jerrythomas/kavach/test_coverage)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jerrythomas/kavach)

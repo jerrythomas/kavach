@@ -12,3 +12,4 @@ inspire
 !.env.example
 dist
 lcov.info
+*.code-workspace
