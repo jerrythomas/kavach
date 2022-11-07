@@ -1,0 +1,32 @@
+{
+	"$schema": "https://turborepo.org/schema.json",
+	"pipeline": {
+		"prepublishOnly": {},
+		"build": {
+			"dependsOn": ["test:ci"],
+			"outputs": [".svelte-kit/**", "dist/**"]
+		},
+		"test:ci": {
+			"outputs": [],
+			"dependsOn": []
+		},
+		"coverage": {
+			"outputs": ["coverage/**"]
+		},
+		"lint": {
+			"outputs": [],
+			"dependsOn": ["format"]
+		},
+		"format": {
+			"outputs": []
+		},
+		"dev": {
+			"cache": false
+		},
+		"release": {
+			"dependsOn": ["test"]
+		},
+		"upgrade": {}
+	},
+	"globalDependencies": [".prettierignore", ".env.*"]
+}
