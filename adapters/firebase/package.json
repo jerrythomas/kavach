@@ -24,7 +24,6 @@
 		"format": "prettier --write --plugin-search-dir=. .",
 		"test:ui": "vitest --ui",
 		"test": "vitest",
-		"coverage": "vitest run --coverage",
 		"bundle": "release-it",
 		"upgrade": "pnpm upgrade"
 	},

@@ -11,3 +11,4 @@ inspire
 .env.*
 !.env.example
 dist
+lcov.info
