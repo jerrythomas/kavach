@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-
+import { LOG_ATTRIBUTES } from './constants'
 /**
  * @typedef SupabaseConfig
  * @property {string} supabaseUrl
@@ -25,7 +25,12 @@ export function getLogWriter(config, options) {
 	/** @type {import('@kavach/core').LogWriter} */
 	const adapter = {
 		write: async (data) => {
-			await client.from(options.table).insert(data)
+			let flat = {
+				...pick(LOG_ATTRIBUTES, data),
+				...pick(LOG_ATTRIBUTES, data.details ?? {}),
+				details: omit(LOG_ATTRIBUTES, data.details ?? {})
+			}
+			await client.from(options.table).insert(flat)
 		}
 	}
 

@@ -15,6 +15,8 @@ Adding authentication to a web app is one of the most arduous tasks. Building ap
 
 This is an attempt to make adding authentication to Svelte-Kit apps as simple as possible. This framework has been designed for Svelte.
 
+- [logger](packages/core/README.md)
+
 ## Getting started
 
 Get started quickly using [degit](https://github.com/Rich-Harris/degit). Select the library you want to use and run degit to get a sample app.

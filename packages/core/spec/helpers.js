@@ -1,16 +1,8 @@
-export function logged_data(
-	level,
-	date,
-	message,
-	sequence,
-	running_on = 'server'
-) {
+export function logged_data(level, date, detail) {
 	return {
-		running_on,
 		level,
-		message,
+		running_on,
 		logged_at: date.toISOString(),
-		sequence,
-		session: 'anonymous'
+		detail
 	}
 }

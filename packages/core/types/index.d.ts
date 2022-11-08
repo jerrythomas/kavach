@@ -13,11 +13,8 @@ export interface Logger {
 export interface LogData {
 	level: string
 	running_on: string
-	sequence: number
-	session: string
 	logged_at: string // ISO 8601 formatted timestamp
-	origin_ip_address?: string
-	message: Object
+	detail?: object
 }
 
 export interface AuthProvider {

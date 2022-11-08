@@ -9,6 +9,7 @@
     "upgrade": "pnpm upgrade"
   },
   "exports": {
+    ".": "./index.js",
     "./package.json": "./package.json",
     "./svelte-lib.json": "./svelte-lib.json",
     "./jsconfig.json": "./jsconfig.json",
