@@ -4,9 +4,9 @@ import { browser } from '$app/environment'
 export async function load({ url }) {
 	const hash = browser ? url.hash : '?'
 	await logger.debug({
-		file: './auth/layout.svelte',
+		module: './auth/layout.svelte',
 		method: 'onMount',
-		path: url.pathname,
+		url_path: url.pathname,
 		data: { hash }
 	})
 

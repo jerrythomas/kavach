@@ -47,34 +47,27 @@ describe('Logger', () => {
 			message: 'foo'
 		})
 	})
-	it('should extract detail attributes', () => {
+	it('should spread attributes of data', () => {
 		const level = 'info'
-		log(writer, level, { message: 'foo' })
+		log(writer, level, { message: 'foo', path: 'bar' })
 		expect(writer.write).toHaveBeenCalledWith({
 			level,
 			logged_at,
 			running_on,
-			message: 'foo'
-		})
-		log(writer, level, { path: '/', detail: 'foo' })
-		expect(writer.write).toHaveBeenCalledWith({
-			level,
-			logged_at,
-			running_on,
-			path: '/',
-			detail: { message: 'foo' }
+			message: 'foo',
+			path: 'bar'
 		})
 	})
 
-	it('should convert "detail" attribute as object', () => {
+	it('should allow nested json objects', () => {
 		const level = 'warn'
-		log(writer, level, { path: '/', detail: 'foo' })
+		log(writer, level, { path: '/', data: { something: 'bar' } })
 		expect(writer.write).toHaveBeenCalledWith({
 			level,
 			logged_at,
 			running_on,
 			path: '/',
-			detail: { message: 'foo' }
+			data: { something: 'bar' }
 		})
 	})
 
@@ -140,17 +133,23 @@ describe('Logger', () => {
 		const data = { message: 'foo' }
 		const logger = getLogger(writer, { level })
 
-		Object.entries(LOGGING_LEVELS).map(([name, value]) => {
-			expect(logger[name](data)).toBeTruthy()
-			if (value <= level) {
-				expect(writer.write).toHaveBeenCalledWith({
-					level: name,
-					logged_at,
-					running_on,
-					message: 'foo'
-				})
+		it.each(Object.entries(LOGGING_LEVELS))(
+			'should only log at level ="%s"',
+			(name, value) => {
+				expect(logger[name](data)).toBeTruthy()
+				if (value <= level) {
+					expect(writer.write).toHaveBeenCalledWith({
+						level: name,
+						logged_at,
+						running_on,
+						message: 'foo'
+					})
+					expect(writer.write).toHaveBeenCalledOnce()
+				} else {
+					expect(writer.write).not.toHaveBeenCalled()
+				}
 			}
-		})
-		expect(writer.write).toHaveBeenCalledTimes(count)
+		)
+		// expect(writer.write).toHaveBeenCalledTimes(count)
 	})
 })

@@ -3,9 +3,9 @@ import { logger } from '$lib'
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
 	await logger.info({
-		file: 'hooks.server.js',
+		module: 'hooks.server.js',
 		method: 'handle',
-		path: event.url.pathname
+		url_path: event.url.pathname
 	})
 	// const response = await resolve(event)
 	return resolve(event)
@@ -14,10 +14,10 @@ export async function handle({ event, resolve }) {
 /** @type {import('@sveltejs/kit').HandleServerError} */
 export async function handleError({ error, event }) {
 	await logger.error({
-		file: 'hooks.server.js',
+		module: 'hooks.server.js',
 		method: 'handle',
-		path: event.url.pathname,
-		hash: event.url.hash,
+		url_path: event.url.pathname,
+		url_hash: event.url.hash,
 		error
 	})
 

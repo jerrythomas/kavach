@@ -11,12 +11,13 @@
 
 	onMount(async () => {
 		await logger.debug({
-			file: './auth/page.svelte',
+			module: './auth/page.svelte',
 			method: 'onMount',
-			path: $page.url.pathname,
-			data
+			url_path: $page.url.pathname,
+			data,
+			message: 'before calling kavach.onAuthChange'
 		})
-		kavach.onAuthChange()
+		await kavach.onAuthChange()
 	})
 </script>
 

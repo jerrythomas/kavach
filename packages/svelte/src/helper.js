@@ -1,18 +1,27 @@
 /**
- * Checks if the url begins with # after the page path.
+ * Checks if the url contains non empty 'access_token' in the url hash
  *
  * @param {String} url
  * @returns {boolean}
  */
 export function hasAuthParams(url) {
-	const params = url.href.slice(`${url.origin}${url.pathname}`.length)
+	const params = urlHashToParams(url)
+	return 'access_token' in params && params.access_token.length > 0
+}
 
-	if (params.startsWith('#') && params.length > 1) {
-		const tokens = Object.fromEntries(
-			params.split('&').map((kv) => kv.replace(/^#/, '').split('='))
-		)
-
-		return 'access_token' in tokens
+/**
+ * Extracts key value pairs from the url hash.
+ *
+ * @param {String} url
+ * @returns {Object} key value pair of all parameters in the hash
+ */
+export function urlHashToParams(url) {
+	const [, hash] = url.split('#')
+	if (hash && hash.length) {
+		return hash
+			.split('&')
+			.map((kv) => kv.split('='))
+			.reduce((acc, kv) => ({ ...acc, [kv[0]]: kv[1] }), {})
 	}
-	return false
+	return {}
 }

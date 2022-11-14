@@ -6,8 +6,8 @@ import { kavach, logger } from '$lib/session'
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load(event) {
 	await logger.debug({
-		path: event.url.pathname,
-		file: './layout.js',
+		url_path: event.url.pathname,
+		module: './layout.js',
 		method: 'load',
 		message: 'auth changed',
 		data: { locals: event.locals }

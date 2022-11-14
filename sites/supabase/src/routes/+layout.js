@@ -8,8 +8,8 @@ export async function load(event) {
 	const params = Object.fromEntries(event.url.searchParams.entries())
 
 	await logger.debug({
-		path: event.url.pathname,
-		file: './layout.js',
+		url_path: event.url.pathname,
+		module: './layout.js',
 		method: 'load',
 		message: 'auth changed',
 		data: { params }

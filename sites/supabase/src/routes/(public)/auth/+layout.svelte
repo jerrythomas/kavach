@@ -6,11 +6,12 @@
 
 	onMount(async () => {
 		await logger.debug({
-			file: './auth/layout.svelte',
+			module: './auth/layout.svelte',
 			method: 'onMount',
-			path: $page.url.pathname
+			url_path: $page.url.pathname,
+			message: 'before calling kavach.onAuthChange'
 		})
-		kavach.onAuthChange()
+		await kavach.onAuthChange()
 	})
 </script>
 

@@ -6,34 +6,43 @@ import {
 	RUNNING_ON
 } from './constants'
 
+/**
+ * Converts a value into an object using provided key
+ *
+ * @param {*} value
+ * @param {string} key
+ * @returns {object}
+ */
 export function asObject(value, key) {
 	return value ? (typeof value === 'object' ? value : { [key]: value }) : {}
 }
 
 /**
+ * Generic logger function
+ *
+ * - adds log level, runtime environment and logging timestamp to the log data
+ * - offloads writng to a LogWriter instance
+ *
  * @param {import('./types').LogWriter} writer
  * @param {String} level
- * @param {Object} detail
+ * @param {Object} data
  */
-export async function log(writer, level, detail) {
+export async function log(writer, level, data) {
 	const currentDate = new Date()
-	const logged_at = currentDate.toISOString()
-
-	let data = asObject(detail, 'message')
-	if ('detail' in data) {
-		data.detail = asObject(data.detail, 'message')
-	}
 
 	await writer.write({
 		level,
 		running_on: RUNNING_ON,
-		logged_at,
-		...data
+		logged_at: currentDate.toISOString(),
+		...asObject(data, 'message')
 	})
 }
 
 /**
- * Get a logger object using a writer an dlog level
+ * Get a logger object using a writer and log level
+ *
+ * - Log level defaults to 'error'
+ * - Logger instance defaults to a zero logger when an invalid writer is provided
  *
  * @param {*} writer  Any writer object with a write method
  * @param {import('./types').LoggerOptions} options
@@ -42,6 +51,7 @@ export async function log(writer, level, detail) {
 export function getLogger(writer, options = {}) {
 	const level = options?.level ?? DEFAULT_LOG_LEVEL
 
+	/* replace with check for instance of LogWriter */
 	if (!writer || typeof writer.write !== 'function') {
 		return ZERO_LOGGER
 	}

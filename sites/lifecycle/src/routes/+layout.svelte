@@ -1,17 +1,12 @@
 <script>
-	import { logger } from '$lib';
-	import { page } from '$app/stores';
-
+	import { kavach } from '$lib'
+	import { page } from '$app/stores'
+	import { onMount } from 'svelte'
 	/** @type {import('./$types').LayoutData} */
-	export let data;
-
-	logger.info({
-		file: '/layout.svelte',
-		method: 'script',
-		path: $page.url.pathname,
-		hash: $page.url.hash,
-		data
-	});
+	export let data
+	onMount(async () => {
+		kavach.onAuthChange('layout.svelte')
+	})
 </script>
 
 <main>

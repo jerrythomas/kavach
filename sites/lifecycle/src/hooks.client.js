@@ -4,10 +4,10 @@ import { logger } from '$lib'
 /** @type {import('@sveltejs/kit').HandleClientError} */
 export async function handleError({ error, event }) {
 	await logger.error({
-		file: 'hooks.client.js',
+		module: 'hooks.client.js',
 		method: 'handleError',
-		path: event.url.pathname,
-		hash: event.url.hash,
+		url_path: event.url.pathname,
+		url_hash: event.url.hash,
 		error
 	})
 

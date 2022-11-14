@@ -201,6 +201,7 @@ importers:
       '@sveltejs/kit': next
       date-fns: ^2.29.3
       eslint: ^8.16.0
+      ramda: ^0.28.0
       shared-config: workspace:^1.0.0
       svelte: ^3.44.0
       svelte-check: ^2.7.1
@@ -211,12 +212,13 @@ importers:
       '@kavach/core': link:../../packages/core
       '@supabase/supabase-js': 2.0.5
       date-fns: 2.29.3
+      ramda: 0.28.0
     devDependencies:
       '@jerrythomas/eslint-config-svelte': 1.0.0_svelte@3.52.0
       '@jerrythomas/prettier-config': 1.0.0
       '@playwright/test': 1.25.0
       '@sveltejs/adapter-auto': 1.0.0-next.87
-      '@sveltejs/kit': 1.0.0-next.535_svelte@3.52.0+vite@3.2.2
+      '@sveltejs/kit': 1.0.0-next.539_svelte@3.52.0+vite@3.2.2
       eslint: 8.27.0
       shared-config: link:../../shared/config
       svelte: 3.52.0
@@ -237,7 +239,6 @@ importers:
       '@kavach/adapter-supabase': workspace:1.0.0-next.0
       '@kavach/core': workspace:1.0.0-next.0
       '@kavach/svelte': workspace:1.0.0-next.0
-      '@playwright/test': ^1.27.1
       '@supabase/supabase-js': 2.0.0
       '@svelte-spice/core': next
       '@svelte-spice/form': next
@@ -246,6 +247,7 @@ importers:
       '@sveltejs/adapter-auto': next
       '@sveltejs/kit': next
       '@unocss/core': ^0.44.7
+      '@unocss/preset-icons': ^0.46.4
       '@unocss/preset-uno': ^0.44.7
       '@unocss/reset': ^0.44.7
       '@unocss/transformer-directives': ^0.44.7
@@ -271,6 +273,7 @@ importers:
       '@svelte-spice/input': 1.0.0-next.0
       '@svelte-spice/themes': 1.0.0-next.0
       '@unocss/core': 0.44.7
+      '@unocss/preset-icons': 0.46.4
       '@unocss/preset-uno': 0.44.7
       '@unocss/reset': 0.44.7
       '@unocss/transformer-directives': 0.44.7
@@ -279,9 +282,8 @@ importers:
     devDependencies:
       '@jerrythomas/eslint-config-svelte': 1.0.0_svelte@3.52.0
       '@jerrythomas/prettier-config': 1.0.0
-      '@playwright/test': 1.27.1
       '@sveltejs/adapter-auto': 1.0.0-next.87
-      '@sveltejs/kit': 1.0.0-next.535_svelte@3.52.0+vite@3.2.2
+      '@sveltejs/kit': 1.0.0-next.539_svelte@3.52.0+vite@3.2.2
       svelte: 3.52.0
       svelte-check: 2.9.2_sass@1.56.0+svelte@3.52.0
       typescript: 4.8.4
@@ -1168,6 +1170,19 @@ packages:
       - supports-color
     dev: false
 
+  /@iconify/utils/2.0.1:
+    resolution: {integrity: sha512-t8IyICk25wgZL4YKn/2kYfjG5MGA6EWZlaUJZ1OEIku4V+kX9V900T5E4HIqS3hLyD6/RJET0zY4vxO9pHLHHw==}
+    dependencies:
+      '@antfu/install-pkg': 0.1.1
+      '@antfu/utils': 0.5.2
+      '@iconify/types': 2.0.0
+      debug: 4.3.4
+      kolorist: 1.6.0
+      local-pkg: 0.4.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@istanbuljs/schema/0.1.3:
     resolution: {integrity: sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==}
     engines: {node: '>=8'}
@@ -1420,15 +1435,6 @@ packages:
       playwright-core: 1.25.0
     dev: true
 
-  /@playwright/test/1.27.1:
-    resolution: {integrity: sha512-mrL2q0an/7tVqniQQF6RBL2saskjljXzqNcCOVMUjRIgE6Y38nCNaP+Dc2FBW06bcpD3tqIws/HT9qiMHbNU0A==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dependencies:
-      '@types/node': 18.11.9
-      playwright-core: 1.27.1
-    dev: true
-
   /@pnpm/network.ca-file/1.0.1:
     resolution: {integrity: sha512-gkINruT2KUhZLTaiHxwCOh1O4NVnFT0wLjWFBHmTz9vpKag/C/noIMJXBxFe4F0mYpUVX2puLwAieLYFg2NvoA==}
     engines: {node: '>=12.22.0'}
@@ -1662,6 +1668,34 @@ packages:
       - supports-color
     dev: true
 
+  /@sveltejs/kit/1.0.0-next.539_svelte@3.52.0+vite@3.2.2:
+    resolution: {integrity: sha512-BCD9lMiNoz1S5k1R+4s0pkyMwiqtut5kAXgC7qo3WaJnzXxBJziJfkyJZT0fM6mrEHlcdJ/o5hBkswyVHsxqtA==}
+    engines: {node: '>=16.14'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      svelte: ^3.44.0
+      vite: ^3.2.0
+    dependencies:
+      '@sveltejs/vite-plugin-svelte': 1.1.0_svelte@3.52.0+vite@3.2.2
+      '@types/cookie': 0.5.1
+      cookie: 0.5.0
+      devalue: 4.2.0
+      kleur: 4.1.5
+      magic-string: 0.26.7
+      mime: 3.0.0
+      sade: 1.8.1
+      set-cookie-parser: 2.5.1
+      sirv: 2.0.2
+      svelte: 3.52.0
+      tiny-glob: 0.2.9
+      undici: 5.12.0
+      vite: 3.2.2_sass@1.56.0
+    transitivePeerDependencies:
+      - diff-match-patch
+      - supports-color
+    dev: true
+
   /@sveltejs/vite-plugin-svelte/1.1.0_svelte@3.52.0+vite@3.2.2:
     resolution: {integrity: sha512-cFRfEdztubtj1c/rYh7ArK7XCfFJn6wG6+J8/e9amFsKtEJILovoBrK0/mxt1AjPQg0vaX+fHPKvhx+q8mTPaQ==}
     engines: {node: ^14.18.0 || >= 16}
@@ -1679,7 +1713,7 @@ packages:
       magic-string: 0.26.7
       svelte: 3.52.0
       svelte-hmr: 0.15.0_svelte@3.52.0
-      vite: 3.2.2
+      vite: 3.2.2_sass@1.56.0
     transitivePeerDependencies:
       - supports-color
 
@@ -1828,6 +1862,10 @@ packages:
     resolution: {integrity: sha512-EPs3IxvPdzxEkEynAyCqyJX25IPp5RtFK3mFdgmXGvigwpgq9sxJBzQRXmYNtDeZriSyiwjYmc9yclLEJH3IiA==}
     dev: false
 
+  /@unocss/core/0.46.4:
+    resolution: {integrity: sha512-pLWJ/QgRW1DT1m0Y/7IyX7tURi/1fJ0T17jygH+iMGfwOJVFigkqxstTbWknuVFqc1rCH+pO20bI5k0r3xvIPA==}
+    dev: false
+
   /@unocss/inspector/0.44.7:
     resolution: {integrity: sha512-uH0dla42tiKEfCpgCcDLC0FwKzrNRLqsN7R3az0B/eHSkeOuXrg7jdA9RWaNNmjnl6/ZOqevtyE5+g7JZf7E6A==}
     dependencies:
@@ -1846,6 +1884,16 @@ packages:
     dependencies:
       '@iconify/utils': 1.0.33
       '@unocss/core': 0.44.7
+      ohmyfetch: 0.4.21
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@unocss/preset-icons/0.46.4:
+    resolution: {integrity: sha512-5Ojnv7VYwGk1sjiEbjreifHNuAObQxvKAT8MjR9keTC5IkDWgEu+h7FLFtPRLyG1Yb89hmbs2MFAKnNPCUdPeQ==}
+    dependencies:
+      '@iconify/utils': 2.0.1
+      '@unocss/core': 0.46.4
       ohmyfetch: 0.4.21
     transitivePeerDependencies:
       - supports-color
@@ -5485,12 +5533,6 @@ packages:
 
   /playwright-core/1.25.0:
     resolution: {integrity: sha512-kZ3Jwaf3wlu0GgU0nB8UMQ+mXFTqBIFz9h1svTlNduNKjnbPXFxw7mJanLVjqxHJRn62uBfmgBj93YHidk2N5Q==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: true
-
-  /playwright-core/1.27.1:
-    resolution: {integrity: sha512-9EmeXDncC2Pmp/z+teoVYlvmPWUC6ejSSYZUln7YaP89Z6lpAaiaAnqroUt/BoLo8tn7WYShcfaCh+xofZa44Q==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true

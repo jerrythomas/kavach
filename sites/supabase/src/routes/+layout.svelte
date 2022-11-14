@@ -9,12 +9,13 @@
 	export let data
 	onMount(async () => {
 		await logger.debug({
-			file: './layout.svelte',
+			module: './layout.svelte',
 			method: 'onMount',
-			path: $page.url.pathname,
-			data
+			url_path: $page.url.pathname,
+			data,
+			message: 'before calling kavach.onAuthChange'
 		})
-		kavach.onAuthChange()
+		await kavach.onAuthChange()
 	})
 </script>
 
