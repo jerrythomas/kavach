@@ -1,3 +1,5 @@
+import { vi } from 'vitest'
+import { createMockHeaders } from './headers'
 /**
  * @typedef RequestOptions
  * @property {string} [method]
@@ -29,22 +31,22 @@
  * @param {RequestOptions} options
  * @returns
  */
-export function createRequest(options) {
+export function createMockRequest(options) {
 	const method = options.method ?? 'GET'
 
 	const formData = () => {
 		if (options.form) {
-			return { entries: () => Object.entries(options.form) }
+			return {
+				entries: vi.fn().mockImplementation(() => Object.entries(options.form))
+			}
 		} else {
 			throw new Error('No Form data')
 		}
 	}
-	const json = () => {
+	const json = vi.fn().mockImplementation(() => {
 		return options.json ?? {}
-	}
-	const headers = {
-		get: (key) => options.headers[key]
-	}
+	})
+	const headers = createMockHeaders(options.headers)
 
 	return { formData, json, method, headers }
 }
@@ -55,7 +57,7 @@ export function createRequest(options) {
  * @param {URLOptions} options
  * @returns
  */
-export function createURLParams(options) {
+export function createMockUrl(options) {
 	const searchParams = { entries: () => Object.entries(options.params ?? {}) }
 	return { searchParams, origin: options.origin, ...options.url }
 }
@@ -66,9 +68,9 @@ export function createURLParams(options) {
  * @param {EventOptions} options
  * @returns
  */
-export function createEvent(options) {
-	const request = createRequest(options)
-	const url = createURLParams(options)
+export function createMockEvent(options) {
+	const request = createMockRequest(options)
+	const url = createMockUrl(options)
 
 	return { request, url, locals: options.locals ?? {} }
 }

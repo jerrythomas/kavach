@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createEvent } from './mock/event'
+import { createMockEvent, createMockAdapter } from './mock'
 import { sessionEndpoint, signInEndpoint } from '../src/endpoints'
 
 describe('Endpoint functions', () => {
-	const adapter = { setSession: vi.fn(), signIn: vi.fn() }
+	// const adapter = { setSession: vi.fn(), signIn: vi.fn() }
 	const deflector = { page: { login: '/auth', home: '/home' } }
+	const adapter = createMockAdapter()
 
 	beforeEach(() => {
 		global.Response = vi.fn()
@@ -15,12 +16,12 @@ describe('Endpoint functions', () => {
 		vi.restoreAllMocks()
 	})
 	it('should call adapter.setSession', async () => {
-		let event = createEvent({ json: {} })
+		let event = createMockEvent({ json: {} })
 		await sessionEndpoint(event, adapter)
 		expect(adapter.setSession).toHaveBeenCalledWith(undefined)
 		expect(global.Response).toHaveBeenCalledWith(200)
 
-		event = createEvent({ json: { session: 'foo' } })
+		event = createMockEvent({ json: { session: 'foo' } })
 		await sessionEndpoint(event, adapter)
 		expect(adapter.setSession).toHaveBeenCalledWith('foo')
 		expect(global.Response).toHaveBeenCalledWith(200)
@@ -30,7 +31,7 @@ describe('Endpoint functions', () => {
 			setSession: vi.fn(),
 			signIn: vi.fn().mockImplementation(() => ({ data: 'ok' }))
 		}
-		let event = createEvent({
+		let event = createMockEvent({
 			json: { email: 'foo@bar.com', mode: 'otp' },
 			origin: 'http://localhost:5173',
 			headers: { accept: 'application/json' }
@@ -40,7 +41,7 @@ describe('Endpoint functions', () => {
 			'http://localhost:5173/auth?mode=otp&email=foo@bar.com&data=ok',
 			301
 		)
-		event = createEvent({
+		event = createMockEvent({
 			json: { email: 'foo@bar.com', mode: 'otp' },
 			origin: 'http://localhost:5173',
 			headers: { accept: 'formdata' },
@@ -58,7 +59,7 @@ describe('Endpoint functions', () => {
 			setSession: vi.fn(),
 			signIn: vi.fn().mockImplementation(() => ({ error: 'foo' }))
 		}
-		let event = createEvent({
+		let event = createMockEvent({
 			json: { email: 'foo@bar.com', mode: 'otp' },
 			origin: 'http://localhost:5173',
 			headers: { accept: 'application/json' }
@@ -68,7 +69,7 @@ describe('Endpoint functions', () => {
 			'http://localhost:5173/auth?mode=otp&email=foo@bar.com&error=foo',
 			301
 		)
-		event = createEvent({
+		event = createMockEvent({
 			json: { email: 'foo@bar.com', mode: 'otp' },
 			origin: 'http://localhost:5173',
 			headers: { accept: 'formdata' },

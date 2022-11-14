@@ -5,7 +5,7 @@ import {
 	splitAuthData,
 	asURLWithParams
 } from '../src/request'
-import { createEvent } from './mock/event'
+import { createMockEvent } from './mock'
 
 describe('Request functions', () => {
 	const events = [
@@ -80,7 +80,7 @@ describe('Request functions', () => {
 		const data = {
 			form: { foo: 'bar', bar: 'baz' }
 		}
-		const event = createEvent(data)
+		const event = createMockEvent(data)
 		const result = await getRequestBody(event.request)
 		expect(result).toEqual(data.form)
 	})
@@ -88,7 +88,7 @@ describe('Request functions', () => {
 		const data = {
 			json: { foo: 'bar', bar: 'baz' }
 		}
-		const event = createEvent(data)
+		const event = createMockEvent(data)
 		const result = await getRequestBody(event.request)
 		expect(result).toEqual(data.json)
 	})
@@ -96,7 +96,7 @@ describe('Request functions', () => {
 		const data = {
 			params: { name: 'bar', email: 'foo@bar.com' }
 		}
-		const event = createEvent(data)
+		const event = createMockEvent(data)
 		const result = await getRequestData(event)
 		expect(result).toEqual(data.params)
 	})
@@ -104,7 +104,7 @@ describe('Request functions', () => {
 	it.each(events)(
 		'should combine data from request form/body and url params',
 		async ({ input, expected }) => {
-			const event = createEvent(input)
+			const event = createMockEvent(input)
 			const result = await getRequestData(event)
 			expect(result).toEqual(expected)
 		}
@@ -113,7 +113,7 @@ describe('Request functions', () => {
 	it.each(params)(
 		'Should split auth params $msg',
 		async ({ input, expected }) => {
-			const event = createEvent(input)
+			const event = createMockEvent(input)
 			const result = await splitAuthData(event)
 			expect(result).toEqual(expected)
 		}
