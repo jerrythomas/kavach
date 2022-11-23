@@ -12,7 +12,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jerrythomas/kavach",
-		"directory": "packages/kavach"
+		"directory": "packages/core"
 	},
 	"prettier": "@jerrythomas/prettier-config",
 	"publishConfig": {
@@ -49,6 +49,7 @@
 	},
 	"exports": {
 		"./package.json": "./package.json",
+		"./provider.css": "./src/provider.css",
 		".": {
 			"types": "./types/index.d.ts",
 			"import": "./src/index.js"

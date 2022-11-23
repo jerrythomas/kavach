@@ -1,0 +1,40 @@
+{
+	"name": "play",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"test": "playwright test",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write ."
+	},
+	"prettier": "@jerrythomas/prettier-config",
+	"devDependencies": {
+		"@jerrythomas/eslint-config-svelte": "latest",
+		"@playwright/test": "1.25.0",
+		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/kit": "next",
+		"eslint": "^8.28.0",
+		"svelte": "^3.53.1",
+		"svelte-check": "^2.9.2",
+		"typescript": "^4.9.3",
+		"vite": "^3.2.4"
+	},
+	"dependencies": {
+		"@kavach/adapter-supabase": "workspace:*",
+		"@kavach/core": "workspace:*",
+		"@kavach/svelte": "workspace:*",
+		"@svelte-spice/themes": "latest",
+		"@svelte-spice/form": "latest",
+		"@unocss/core": "^0.44.7",
+		"@unocss/preset-uno": "^0.44.7",
+		"@unocss/reset": "^0.44.7",
+		"@unocss/transformer-directives": "^0.44.7",
+		"unocss": "^0.44.7"
+	},
+	"type": "module"
+}

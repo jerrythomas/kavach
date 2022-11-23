@@ -1,0 +1,25 @@
+# Features
+
+- [x] Configuration driven
+- [x] Secrets using environment variables
+- [x] Unit tests
+- [x] Route protection
+  - [x] Public pages
+  - [x] Protected routes
+  - [x] Role-based protection for route
+- [ ] Different auth libraries
+  - [x] Supabase
+  - [ ] Firebase
+  - [ ] Auth0
+  - [ ] Cognito
+- [ ] Multiple providers
+  - [x] Magic Link
+  - [x] Google
+  - [x] Microsoft
+  - [ ] Github
+  - [ ] Twitter
+  - [ ] Facebook
+- [ ] Examples with protected routes and data operations
+  - [x] Supabase
+  - [ ] Firebase
+- [ ] Emulator tests where available

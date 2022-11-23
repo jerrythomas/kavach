@@ -12,7 +12,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jerrythomas/kavach",
-		"directory": "packages/adapter-supabase"
+		"directory": "adapters/supabase"
 	},
 	"prettier": "@jerrythomas/prettier-config",
 	"publishConfig": {

@@ -8,5 +8,5 @@ error {
 
 body,
 body > div {
-	@apply h-screen w-screen flex;
+	@apply h-screen w-screen flex flex-row;
 }

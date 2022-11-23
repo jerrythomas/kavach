@@ -43,12 +43,12 @@ describe('Request functions', () => {
 	const params = [
 		{
 			input: {
-				form: { email: 'foo@bar.com', mode: 'otp' },
-				origin: 'http://localhost:5173'
+				form: { email: 'foo@bar.com', mode: 'otp' }
+				// origin: 'http://localhost:5173'
 			},
 			expected: {
 				credentials: { email: 'foo@bar.com' },
-				options: { redirect: 'http://localhost:5173' },
+				options: {},
 				mode: 'otp'
 			},
 			msg: 'otp'
@@ -60,13 +60,12 @@ describe('Request functions', () => {
 					mode: 'oauth',
 					scopes: ['foo'],
 					params: ['bar']
-				},
-				origin: 'http://localhost:5173'
+				}
+				// origin: 'http://localhost:5173'
 			},
 			expected: {
 				credentials: { provider: 'google' },
 				options: {
-					redirect: 'http://localhost:5173',
 					scopes: ['foo'],
 					params: ['bar']
 				},

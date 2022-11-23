@@ -32,6 +32,7 @@
 		"@kavach/core": "workspace:*",
 		"@supabase/supabase-js": "2",
 		"date-fns": "^2.29.3",
+		"js-levenshtein": "^1.1.6",
 		"ramda": "^0.28.0"
 	}
 }

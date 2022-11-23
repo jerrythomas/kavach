@@ -18,7 +18,7 @@ export async function getRequestData({ request, url }) {
 		...Object.fromEntries(url.searchParams.entries()),
 		...body
 	}
-
+	// console.log('request data', request.method, data)
 	return data
 }
 
@@ -26,10 +26,7 @@ export async function splitAuthData(event) {
 	const data = await getRequestData(event)
 	const { mode } = data
 	const credentials = pick(['email', 'password', 'token', 'provider'], data)
-	const options = {
-		...pick(['scopes', 'params', 'redirect'], data),
-		redirect: event.url.origin
-	}
+	const options = pick(['scopes', 'params', 'redirect'], data)
 	// console.log(data, mode, credentials, options)
 
 	return { mode, credentials, options }

@@ -1,9 +1,9 @@
 import {
-	DEFAULT_LOG_LEVEL,
-	ZERO_LOGGER,
-	LOGGING_LEVELS,
-	DO_NOTHING,
-	RUNNING_ON
+	defaultLogLevel,
+	ZeroLogger,
+	loggingLevels,
+	pass,
+	runningOn
 } from './constants'
 
 /**
@@ -32,7 +32,7 @@ export async function log(writer, level, data) {
 
 	await writer.write({
 		level,
-		running_on: RUNNING_ON,
+		running_on: runningOn,
 		logged_at: currentDate.toISOString(),
 		...asObject(data, 'message')
 	})
@@ -49,25 +49,25 @@ export async function log(writer, level, data) {
  * @returns {import('./types').Logger}
  */
 export function getLogger(writer, options = {}) {
-	const level = options?.level ?? DEFAULT_LOG_LEVEL
+	const level = options?.level ?? defaultLogLevel
 
 	/* replace with check for instance of LogWriter */
 	if (!writer || typeof writer.write !== 'function') {
-		return ZERO_LOGGER
+		return ZeroLogger
 	}
 
 	const levelValue =
-		level in LOGGING_LEVELS
-			? LOGGING_LEVELS[level]
-			: LOGGING_LEVELS[DEFAULT_LOG_LEVEL]
+		level in loggingLevels
+			? loggingLevels[level]
+			: loggingLevels[defaultLogLevel]
 
-	const logger = Object.entries(LOGGING_LEVELS)
+	const logger = Object.entries(loggingLevels)
 		.map(([logLevel, value]) => ({
 			[logLevel]:
 				value <= levelValue
 					? async (/** @type {Object} */ message) =>
 							await log(writer, logLevel, message)
-					: DO_NOTHING
+					: pass
 		}))
 		.reduce((acc, orig) => ({ ...acc, ...orig }), {})
 

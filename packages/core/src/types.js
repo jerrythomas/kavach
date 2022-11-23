@@ -37,4 +37,30 @@
  *
  */
 
+/**
+ * @typedef PageRoutes
+ * @property {string} [home]
+ * @property {string} [login]
+ */
+
+/**
+ * @typedef EndpointRoutes
+ * @property {string} [login]
+ * @property {string} [logout]
+ * @property {string} [session]
+ */
+
+/**
+ * @typedef DeflectorOptions
+ * @property {PageRoutes} [page]
+ * @property {EndpointRoutes} [endpoint]
+ */
+
+/**
+ * @typedef Deflector
+ * @property {PageRoutes} page
+ * @property {EndpointRoutes} endpoint
+ * @method setSession
+ * @method redirect
+ */
 export default {}

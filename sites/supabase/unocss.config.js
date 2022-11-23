@@ -4,23 +4,8 @@ import presetUno from '@unocss/preset-uno'
 import presetIcons from '@unocss/preset-icons'
 import transformer from '@unocss/transformer-directives'
 // import { iconShortcuts } from '@svelte-spice/core/themes'
+import { hslFromVariable } from '@svelte-spice/core'
 
-/**
- *
- * @param {string} name
- * @returns
- */
-function hslFromVariable(name) {
-	const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900]
-
-	return shades.reduce(
-		(result, shade) => ({
-			...result,
-			[shade]: `hsl(var(--${name}-${shade}))`
-		}),
-		{ DEFAULT: `hsl(var(--${name}-500))` }
-	)
-}
 export default defineConfig({
 	safelist: [
 		// ...Object.keys(iconShortcuts),

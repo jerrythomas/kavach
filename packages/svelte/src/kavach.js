@@ -1,9 +1,8 @@
-import { createDeflector, ZERO_LOGGER } from '@kavach/core'
+import { createDeflector } from '@kavach/core'
 import { signInEndpoint, sessionEndpoint } from './endpoints'
 import { APP_AUTH_CONTEXT, RUNNING_ON } from './constants'
 
 export function createKavach(adapter, options = {}) {
-	// const logger = options?.logger ?? ZERO_LOGGER
 	const invalidate = options?.invalidate ?? (() => {})
 	const deflector = createDeflector(options)
 	const { endpoint, page } = deflector
@@ -49,11 +48,15 @@ export function createKavach(adapter, options = {}) {
 	}
 
 	async function handleUnauthorizedAccess({ event, resolve }) {
-		const pathname = deflector.redirect(event.url.pathname)
+		const pathname = deflectedPath(event.url)
 		if (pathname !== event.url.pathname) {
 			return Response.redirect(event.url.origin + pathname, 301)
 		}
 		return resolve(event)
+	}
+
+	function deflectedPath(url) {
+		return deflector.redirect(url.pathname)
 	}
 
 	const handlers = [
@@ -66,6 +69,7 @@ export function createKavach(adapter, options = {}) {
 	return {
 		session,
 		handlers,
+		deflectedPath,
 		onAuthChange
 	}
 }

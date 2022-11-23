@@ -18,7 +18,12 @@ describe('Endpoint functions', () => {
 
 	it('should create kavach using an adapter', () => {
 		const kavach = createKavach(adapter)
-		expect(Object.keys(kavach)).toEqual(['session', 'handlers', 'onAuthChange'])
+		expect(Object.keys(kavach)).toEqual([
+			'session',
+			'handlers',
+			'deflectedPath',
+			'onAuthChange'
+		])
 		expect(kavach.handlers.length).toEqual(4)
 		expect(kavach.session).toBeFalsy()
 	})

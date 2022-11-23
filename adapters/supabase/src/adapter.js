@@ -44,20 +44,16 @@ async function handleAuthChange(handler, callback) {
 }
 
 async function handleSignIn(handler, mode, credentials, options) {
-	console.log('data sent to sign in', credentials, options)
-	options = {
-		...omit(['redirect'], options),
-		emailRedirectTo: options.redirect
-	}
-	let result
+	console.log('data sent to sign in', mode, credentials, options)
+	const creds = addOptionsToCredentials(credentials, options)
+
 	if (mode === 'otp') {
-		result = await handler.auth.signInWithOtp(credentials)
+		return handler.auth.signInWithOtp(creds)
 	} else if (mode === 'oauth') {
-		result = await handler.auth.signInWithOAuth(credentials)
+		return handler.auth.signInWithOAuth(creds)
 	} else {
-		result = await handler.auth.signInWithPassword(credentials)
+		return handler.auth.signInWithPassword(creds)
 	}
-	return result
 }
 
 /** @type {import('@kavach/core').GetAdapter}  */
@@ -71,7 +67,7 @@ export function getAdapter(config) {
 
 	const signOut = async () => await handler.auth.signOut()
 	const signIn = async (mode, credentials, options) => {
-		await handleSignIn(handler, mode, credentials, options)
+		return handleSignIn(handler, mode, credentials, options)
 	}
 	const onAuthChange = async (callback) => {
 		await handleAuthChange(handler, callback)
@@ -85,4 +81,20 @@ export function getAdapter(config) {
 		onAuthChange,
 		setSession
 	}
+}
+
+function addOptionsToCredentials(mode, credentials, options) {
+	let creds = {
+		...credentials,
+		options: {}
+	}
+	if (mode === 'otp') {
+		creds.options = { emailRedirectTo: options.redirectTo }
+	} else if (mode === 'oauth') {
+		creds.options = {
+			...pick(['params', 'redirect'], options),
+			scopes: options.scopes.join(' ')
+		}
+	}
+	return creds
 }

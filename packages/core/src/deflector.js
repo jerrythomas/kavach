@@ -1,18 +1,7 @@
 /**
- * @typedef PageRoutes
- * @property {string} home
- * @property {string} login
- */
-/**
- * @typedef EndpointRoutes
- * @property {string} login
- * @property {string} logout
- * @property {string} session
- */
-
-/**
+ * Create a deflector using provided options
  *
- * @param {*} options
+ * @param {import('./types').DeflectorOptions} options
  * @returns
  */
 export function createDeflector(options = {}) {
@@ -58,6 +47,12 @@ export function createDeflector(options = {}) {
 	return { page, endpoint, setSession, redirect }
 }
 
+/**
+ * Use provided routes or use defaults for endpoints
+ *
+ * @param {import('./types').DeflectorOptions} options
+ * @returns {import('./types').EndpointRoutes}
+ */
 export function getEndpointRoutes(options) {
 	return {
 		login: options?.endpoint?.login ?? '/auth/signin',
@@ -66,6 +61,12 @@ export function getEndpointRoutes(options) {
 	}
 }
 
+/**
+ * Use provided routes or use defaults for pages
+ *
+ * @param {import('./types').DeflectorOptions} options
+ * @returns {import('./types').PageRoutes}
+ */
 export function getPageRoutes(options) {
 	return {
 		home: options?.page?.home ?? '/',
@@ -73,10 +74,17 @@ export function getPageRoutes(options) {
 	}
 }
 
+/**
+ * Using input array of routes combine with defaultRoutes and
+ * remove duplicates and child routes if parent is already in the list
+ *
+ * @param {Array<string>} routes
+ * @param {Array<string>} defaultRoutes
+ * @returns {Array<string>}
+ */
 export function cleanupRoles(routes, defaultRoutes) {
 	let roleRoutes = [...new Set([...routes, ...defaultRoutes])].sort()
 
-	// Remove child routes if parent is already in the list
 	for (let i = 0; i < roleRoutes.length; i++) {
 		const current = roleRoutes[i]
 		for (let j = i + 1; j < roleRoutes.length; j++) {
@@ -88,6 +96,13 @@ export function cleanupRoles(routes, defaultRoutes) {
 	return roleRoutes
 }
 
+/**
+ * Configure routes by role
+ *
+ * @param {object<string, Array<string>>} options
+ * @param {import('./types').PageRoutes} page
+ * @returns {object<string, Array<string>>}
+ */
 export function getRoutesByRole(options, page) {
 	let routesByRole = {
 		public: [],
@@ -104,9 +119,11 @@ export function getRoutesByRole(options, page) {
 }
 
 /**
+ * Identifies if a route matches one of the allowed routes
  *
  * @param {string} route
- * @returns {string}
+ * @param {Array<string>} allowedRoutes
+ * @returns {boolean}
  */
 export function isRouteAllowed(route, allowedRoutes) {
 	let isAllowed = false
