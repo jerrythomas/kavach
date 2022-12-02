@@ -10,11 +10,13 @@ import { omit, pick } from 'ramda'
  */
 async function setServerSession(handler, session, margin = 60) {
 	let authSession
-	if (session?.expires_at && session.expires_at + margin <= Date.now() / 1000) {
-		authSession = await handler.auth.setSession(session)
+	if (session?.expires_at && session.expires_at + margin >= Date.now() / 1000) {
+		const { data } = await handler.auth.setSession(session)
+		authSession = data.session
 	} else {
 		authSession = null
 	}
+
 	return authSession
 }
 
@@ -44,9 +46,8 @@ async function handleAuthChange(handler, callback) {
 }
 
 async function handleSignIn(handler, mode, credentials, options) {
-	console.log('data sent to sign in', mode, credentials, options)
-	const creds = addOptionsToCredentials(credentials, options)
-
+	const creds = addOptionsToCredentials(mode, credentials, options)
+	// console.log('creds', creds)
 	if (mode === 'otp') {
 		return handler.auth.signInWithOtp(creds)
 	} else if (mode === 'oauth') {
@@ -58,7 +59,7 @@ async function handleSignIn(handler, mode, credentials, options) {
 
 /** @type {import('@kavach/core').GetAdapter}  */
 export function getAdapter(config) {
-	const handler = createClient(config.supabaseUrl, config.supabaseAnonKey)
+	const handler = createClient(config.url, config.anonKey)
 
 	async function verifyOtp(credentials) {
 		const { data, error } = await handler.auth.verifyOtp(credentials)
@@ -72,7 +73,9 @@ export function getAdapter(config) {
 	const onAuthChange = async (callback) => {
 		await handleAuthChange(handler, callback)
 	}
-	const setSession = async (session) => await setServerSession(handler, session)
+	const setSession = async (client_session) => {
+		return setServerSession(handler, client_session)
+	}
 
 	return {
 		signIn,

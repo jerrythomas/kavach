@@ -1,10 +1,10 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { log, getLogger } from '../src/logger'
-import { LOGGING_LEVELS } from '../src/constants'
+import { loggingLevels } from '../src/constants'
 
 describe('Logger', () => {
 	const running_on = 'browser'
-	const levels = Object.entries(LOGGING_LEVELS)
+	const levels = Object.entries(loggingLevels)
 	const writer = {
 		write: vi.fn()
 	}
@@ -74,19 +74,19 @@ describe('Logger', () => {
 	it('should create a zero logger when a valid LogWriter is not provided', () => {
 		let logger = getLogger()
 
-		Object.keys(LOGGING_LEVELS).map((level) => {
+		Object.keys(loggingLevels).map((level) => {
 			logger[level]({})
 			expect(writer.write).not.toHaveBeenCalled()
 		})
 		logger = getLogger({})
 
-		Object.keys(LOGGING_LEVELS).map((level) => {
+		Object.keys(loggingLevels).map((level) => {
 			logger[level]({})
 			expect(writer.write).not.toHaveBeenCalled()
 		})
 		logger = getLogger({ write: 'x' })
 
-		Object.keys(LOGGING_LEVELS).map((level) => {
+		Object.keys(loggingLevels).map((level) => {
 			logger[level]({})
 			expect(writer.write).not.toHaveBeenCalled()
 		})
@@ -96,7 +96,7 @@ describe('Logger', () => {
 		const data = { message: 'foo' }
 		const logger = getLogger(writer)
 
-		expect(Object.keys(logger)).toEqual(Object.keys(LOGGING_LEVELS))
+		expect(Object.keys(logger)).toEqual(Object.keys(loggingLevels))
 		expect(logger.error(data)).toBeTruthy()
 		expect(writer.write).toHaveBeenCalledWith({
 			level: 'error',
@@ -133,7 +133,7 @@ describe('Logger', () => {
 		const data = { message: 'foo' }
 		const logger = getLogger(writer, { level })
 
-		it.each(Object.entries(LOGGING_LEVELS))(
+		it.each(Object.entries(loggingLevels))(
 			'should only log at level ="%s"',
 			(name, value) => {
 				expect(logger[name](data)).toBeTruthy()

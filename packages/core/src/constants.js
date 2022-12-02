@@ -13,7 +13,7 @@ export const loggingLevels = {
 	trace: 5
 }
 
-export const ZeroLogger = {
+export const zeroLogger = {
 	info: pass,
 	warn: pass,
 	debug: pass,

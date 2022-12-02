@@ -1,6 +1,6 @@
 import {
 	defaultLogLevel,
-	ZeroLogger,
+	zeroLogger,
 	loggingLevels,
 	pass,
 	runningOn
@@ -53,7 +53,7 @@ export function getLogger(writer, options = {}) {
 
 	/* replace with check for instance of LogWriter */
 	if (!writer || typeof writer.write !== 'function') {
-		return ZeroLogger
+		return zeroLogger
 	}
 
 	const levelValue =

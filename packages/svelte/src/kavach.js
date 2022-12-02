@@ -1,5 +1,6 @@
 import { createDeflector } from '@kavach/core'
-import { signInEndpoint, sessionEndpoint } from './endpoints'
+import { getRequestData } from './request'
+import { signInEndpoint } from './endpoints'
 import { APP_AUTH_CONTEXT, RUNNING_ON } from './constants'
 
 export function createKavach(adapter, options = {}) {
@@ -35,6 +36,7 @@ export function createKavach(adapter, options = {}) {
 		if (event.url.pathname.startsWith(endpoint.logout)) {
 			await adapter.signOut()
 			event.locals.session = null
+			deflector.setSession(null)
 			return Response.redirect(event.url.origin + page.login, 301)
 		}
 		return resolve(event)
@@ -42,7 +44,12 @@ export function createKavach(adapter, options = {}) {
 
 	async function handleSession({ event, resolve }) {
 		if (event.url.pathname.startsWith(endpoint.session)) {
-			return await sessionEndpoint(event, adapter)
+			const data = await getRequestData(event)
+			session = await adapter.setSession(data.session)
+			console.log('session: ', session)
+			event.locals.session = session
+			deflector.setSession(session)
+			return new Response({ session })
 		}
 		return resolve(event)
 	}
@@ -62,13 +69,14 @@ export function createKavach(adapter, options = {}) {
 	const handlers = [
 		handleSignIn,
 		handleSignOut,
-		handleSession,
-		handleUnauthorizedAccess
+		handleSession
+		// handleUnauthorizedAccess
 	]
 
 	return {
 		session,
 		handlers,
+		endpoint,
 		deflectedPath,
 		onAuthChange
 	}

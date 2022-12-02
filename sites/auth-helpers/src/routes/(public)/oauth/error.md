@@ -1,0 +1,9 @@
+http://localhost:5173/?error=invalid_request
+&error_description=
+AADSTS50194%3A+Application+%273547a2ad-c17e-4e55-a399-9996809017e6%27%28
+Vikalp-dev%29+is+not+configured+as+a+multi-tenant+application.
++Usage+of+the+%2Fcommon+endpoint+is+not+supported+for+such+applications+created+after+%2710%2F15%2F2018%27.
++Use+a+tenant-specific+endpoint+or+configure+the+application+to+be+multi-tenant.
+%0D%0ATrace+ID%3A+b2daeb6d-18b1-41b8-84c9-3ed490140a02%0D%0A
+Correlation+ID%3A+f6c21d65-ce34-4625-afca-75f39062c58b%0D%0A
+Timestamp%3A+2022-12-01+07%3A56%3A07Z

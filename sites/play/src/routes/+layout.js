@@ -8,6 +8,7 @@ import { redirect } from '@sveltejs/kit'
 export async function load(event) {
 	const params = Object.fromEntries(event.url.searchParams.entries())
 	const session = kavach.session
+	console.log('client side session', session)
 	const pathname = kavach.deflectedPath(event.url)
 
 	if (pathname != event.url.pathname) {

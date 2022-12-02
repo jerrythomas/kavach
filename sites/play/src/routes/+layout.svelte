@@ -3,12 +3,10 @@
 	import '@unocss/reset/tailwind.css'
 	import '../app.scss'
 	import { onMount } from 'svelte'
-	import { page } from '$app/stores'
 	import { kavach } from '$lib/config'
 	import About from './About.svelte'
 
 	onMount(async () => {
-		console.log('layout', $page.url.hash)
 		await kavach.onAuthChange()
 	})
 </script>

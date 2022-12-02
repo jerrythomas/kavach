@@ -1,11 +1,11 @@
 import { pick } from 'ramda'
 import { getRequestData, asURLWithParams, splitAuthData } from './request'
 
-export async function sessionEndpoint(event, adapter) {
-	const data = await getRequestData(event)
-	event.locals.session = await adapter.setSession(data.session)
-	return new Response(200)
-}
+// export async function sessionEndpoint(event, adapter) {
+// 	const data = await getRequestData(event)
+// 	event.locals.session = await adapter.setSession(data.session)
+// 	return event.locals.session
+// }
 
 export async function signInEndpoint(event, adapter, deflector) {
 	const redirectTo = event.url.origin + deflector.page.login
@@ -16,7 +16,7 @@ export async function signInEndpoint(event, adapter, deflector) {
 		redirectTo
 	})
 	// console.log('result from signIn', result)
-	const message = result.error ? { error: result.error } : { data: result.data }
+	const message = result.error ? { error: result.error } : {}
 	const params = {
 		mode,
 		...pick(['email', 'provider'], credentials),

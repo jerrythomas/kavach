@@ -1,0 +1,42 @@
+@import './palette.css';
+
+error {
+	@apply bg-error bg-red-100;
+}
+
+body,
+body > div {
+	@apply h-screen w-screen flex flex-col;
+}
+
+.input {
+	@apply border border-gray-600 rounded-sm px-3 py-1 leading-loose w-full outline-primary-600;
+}
+.notification {
+	@apply bg-emerald-400 text-white px-4 py-2 rounded mb-4 min-h-16  flex flex-col items-center justify-center;
+}
+.columns {
+	@apply flex flex-col flex-grow items-center justify-center w-full;
+}
+.is-half {
+	@apply w-1/3 ;
+	form {
+	@apply flex flex-col gap-2;
+}}
+
+.button, button {
+	@apply flex justify-center bg-primary-600 text-white w-full px-4 py-1 leading-loose rounded;
+}
+
+.tab {
+	@apply cursor-pointer underline underline-offset-4;
+	@apply hover:text-secondary-600;
+}
+.tab.active {
+	@apply text-secondary-700;
+}
+
+
+header {
+	@apply bg-primary-100 border-b border-primary-500;
+}
