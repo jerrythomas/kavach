@@ -63,4 +63,25 @@
  * @method setSession
  * @method redirect
  */
+
+/**
+ * @typedef AuthUser
+ * @property {string} email
+ * @property {string} role
+ * @property {string} id
+ */
+
+/**
+ * @typedef AuthSession
+ * @property {User} [user]
+ */
+
+/**
+ * @typedef CookieOptions
+ * @property {string} path
+ * @property {boolean} httpOnly
+ * @property {boolean} secure
+ * @property {'none'|'stric'|'lax'} sameSite
+ * @property {number} maxAge
+ */
 export default {}

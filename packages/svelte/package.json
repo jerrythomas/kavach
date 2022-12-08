@@ -53,7 +53,6 @@
 	},
 	"dependencies": {
 		"@kavach/core": "workspace:*",
-		"@kavach/svelte": "workspace:*",
 		"@svelte-spice/form": "next",
 		"ramda": "^0.28.0"
 	}

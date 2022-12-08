@@ -7,12 +7,13 @@ import { sequence } from '@sveltejs/kit/hooks'
 // export const handle = sequence(...kavach.handlers)
 export async function handle({ event, resolve }) {
 	// 	const session = await kavach.getServerSession(event)
-	// if (event.url.pathname.startsWith('/logout')) {
-	// 	console.log('hooks- signout')
-	// 	await kavach.signOut(event)
-	// 	console.log('hooks- signedout')
-	// 	return Response.redirect(event.url.origin + '/', 303)
-	// }
+	if (event.url.pathname.startsWith('/auth/signout')) {
+		console.log('hooks- signout')
+		await kavach.signOut(event)
+		// return new Response('')
+		console.log('hooks- signedout')
+		return Response.redirect(event.url.origin + '/', 303)
+	}
 	const response = await resolve(event)
 	return response
 }

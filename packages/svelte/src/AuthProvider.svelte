@@ -7,29 +7,31 @@
 	/** @type {string} */
 	export let name
 	/** @type {string} */
-	export let label = 'Continue with ' + name
+	export let label
 	/** @type {Array<string>} */
 	export let scopes = []
 	/** @type {Array<string>} */
 	export let params = []
 
 	/** @type {string} */
-	export let authUrl
+	export let action = null
 </script>
 
-<form method="post" action={authUrl} class="flex flex-col w-full auth {name}">
-	<input type="hidden" name="mode" value={mode} />
-	{#if mode === 'oauth'}
-		<AuthButton provider={name} {label} {scopes} {params} />
-	{:else if mode === 'password'}
-		<InputField type={name} {name} icon="logo-{name}" />
-		<InputField type="password" name="password" />
-	{:else}
-		<InputField
-			type="email"
-			name="email"
-			icon="logo-{name}"
-			placeholder={label}
-		/>
-	{/if}
-</form>
+{#if mode === 'oauth'}
+	<AuthButton provider={name} {label} {scopes} {params} />
+{:else}
+	<form method="post" {action} class="flex flex-col w-full auth {name}">
+		<input type="hidden" name="mode" value={mode} />
+		{#if mode === 'password'}
+			<InputField type={name} {name} icon="logo-{name}" />
+			<InputField type="password" name="password" />
+		{:else}
+			<InputField
+				type="email"
+				name="email"
+				icon="logo-{name}"
+				placeholder={label}
+			/>
+		{/if}
+	</form>
+{/if}

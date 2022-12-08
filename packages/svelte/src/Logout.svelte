@@ -9,7 +9,7 @@
 	const logout = async () => {
 		return async ({ result }) => {
 			await invalidateAll()
-			applyAction(result)
+			// applyAction(result)
 		}
 	}
 </script>

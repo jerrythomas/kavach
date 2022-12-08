@@ -25,9 +25,11 @@ export async function getRequestData({ request, url }) {
 export async function splitAuthData(event) {
 	const data = await getRequestData(event)
 	const { mode } = data
+
 	const credentials = pick(['email', 'password', 'token', 'provider'], data)
-	const options = pick(['scopes', 'params', 'redirect'], data)
-	// console.log(data, mode, credentials, options)
+	const options = {
+		...pick(['scopes', 'params', 'redirect'], data)
+	}
 
 	return { mode, credentials, options }
 }

@@ -30,6 +30,16 @@
 		<button
 			on:click={() => {
 				supabaseClient.auth.signInWithOAuth({
+					provider: 'azure',
+					options: { scopes: '' }
+				})
+			}}
+		>
+			Azure
+		</button>
+		<button
+			on:click={() => {
+				supabaseClient.auth.signInWithOAuth({
 					provider: 'google',
 					options: { scopes: 'https://www.googleapis.com/auth/userinfo.email' }
 				})
