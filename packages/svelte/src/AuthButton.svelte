@@ -1,6 +1,7 @@
 <script>
 	import { IconButton } from '@svelte-spice/form'
 	import { getContext } from 'svelte'
+	// import { invalidateAll } from '$app/navigation'
 
 	const kavach = getContext('kavach')
 	// export let kavach
@@ -11,14 +12,23 @@
 	/** @type {Array<string>} */
 	export let scopes = []
 	/** @type {Array<string>} */
-	export let params = []
+	// export let params = []
 
 	function signIn() {
-		// console.log('kavach', kavach)
-		kavach.adapter.auth.signInWithOAuth({
-			provider,
-			options: { scopes, params, redirectTo: kavach.page.auth }
-		})
+		const result = kavach.signIn({ provider, scopes })
+		// const result = kavach.adapter.auth.signInWithOAuth({
+		// 	provider,
+		// 	options: {
+		// 		// scopes, params, redirectTo: kavach.page.auth
+		// 	}
+		// })
+		// logger.debug({
+		// 	message: 'auth result',
+		// 	method: 'signIn',
+		// 	module: '/layout.svelte',
+		// 	data: { provider, result }
+		// })
+		// invalidateAll()
 	}
 </script>
 

@@ -6,7 +6,7 @@ import {
 } from '@kavach/core'
 import { getRequestData, asURLWithParams, splitAuthData } from '@kavach/svelte'
 import { pick } from 'ramda'
-import { goto } from '$app/navigation'
+import { goto, invalidateAll } from '$app/navigation'
 
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
@@ -18,9 +18,12 @@ export function createKavach(adapter, options) {
 			data: { subscription }
 		} = adapter.auth.onAuthStateChange(async (event, session) => {
 			// invalidate('supabase:auth')
-
 			// session = authSession
-			deflector.setSession(session)
+			logger.debug({
+				method: 'handleAuthChange',
+				module: '$lib/kavach',
+				data: { session, event, url: window.location.href }
+			})
 			await fetch(endpoint.session, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -28,6 +31,8 @@ export function createKavach(adapter, options) {
 					session
 				})
 			})
+			deflector.setSession(session)
+			invalidateAll()
 			// invalidate('supabase:auth')
 		})
 
@@ -38,14 +43,19 @@ export function createKavach(adapter, options) {
 
 	async function signOut() {
 		await adapter.auth.signOut()
+		await fetch(endpoint.session, { method: 'POST', body: '{}' })
 		deflector.setSession(null)
-		await fetch(endpoint.session, { method: 'POST', body: null })
+		invalidateAll()
 		goto(page.login)
 	}
 
 	async function handle({ event, resolve }) {
 		const cookieSession = event.cookies.get('session')
-		logger.debug(event.url.pathname, cookieSession)
+		logger.debug({
+			method: 'handle',
+			module: '$lib/kavach',
+			data: { path: event.url.pathname, session: cookieSession }
+		})
 		event.locals['session'] =
 			cookieSession && cookieSession !== 'undefined'
 				? JSON.parse(cookieSession)
@@ -64,8 +74,6 @@ export function createKavach(adapter, options) {
 
 		if (event.url.pathname.startsWith(deflector.endpoint.session)) {
 			const data = await getRequestData(event)
-			logger.debug('Synchronize ', data)
-
 			const headers = setHeaderCookies(
 				data.session
 					? {
@@ -76,11 +84,22 @@ export function createKavach(adapter, options) {
 					  }
 					: { session: null }
 			)
-			logger.debug(headers)
+			await logger.debug({
+				method: 'handle',
+				module: '$lib/kavach',
+				message: 'synchronize ',
+				data: { data, headers }
+			})
+
 			if (data.session) {
-				let s = adapter.auth.setSession(data.session)
-				logger.debug('client session', data.session)
-				logger.debug('server session', s)
+				let result = await adapter.auth.setSession(data.session)
+
+				await logger.debug({
+					method: 'handle',
+					module: '$lib/kavach',
+					message: 'server session ',
+					data: { session: result.data.session }
+				})
 			} else {
 				adapter.auth.signOut()
 			}

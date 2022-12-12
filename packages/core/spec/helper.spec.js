@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
-import { hasAuthParams, urlHashToParams, redirect } from '../src/helper.js'
+import {
+	hasAuthParams,
+	urlHashToParams,
+	redirect,
+	createResponse
+} from '../src/helper.js'
 
 describe('Helper functions', () => {
 	beforeEach(() => {
@@ -34,6 +39,27 @@ describe('Helper functions', () => {
 			status: 303,
 			headers: {
 				location: '/auth',
+				'Set-Cookie': [
+					'data=%7B%22something%22%3A%22bar%22%7D; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict',
+					'foo=bar; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict'
+				]
+			}
+		})
+	})
+	it('Should create response with cookies', () => {
+		const [body, headers] = createResponse(
+			200,
+			{},
+			{
+				data: { something: 'bar' },
+				foo: 'bar'
+			}
+		)
+		expect(body).toEqual({})
+		expect(headers).toEqual({
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
 				'Set-Cookie': [
 					'data=%7B%22something%22%3A%22bar%22%7D; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict',
 					'foo=bar; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict'

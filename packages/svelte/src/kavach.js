@@ -1,63 +1,70 @@
-import { createDeflector } from '@kavach/core'
+import { pick } from 'ramda'
+import { createDeflector, setHeaderCookies, zeroLogger } from '@kavach/core'
 import { getRequestData } from './request'
-import { signInEndpoint } from './endpoints'
 import { APP_AUTH_CONTEXT, RUNNING_ON } from './constants'
 
-export function createKavach(adapter, options = {}) {
-	const invalidate = options?.invalidate ?? (() => {})
+export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
-	const { endpoint, page } = deflector
-	let session
+	const logger = options?.logger ?? zeroLogger
+	const invalidate = options?.invalidate ?? (() => {})
+	const invalidateAll = options?.invalidateAll ?? (() => {})
+	const goto = options?.goto ?? (() => {})
+	const redirect = options?.redirect ?? (() => {})
 
-	const onAuthChange = async () => {
-		if (RUNNING_ON === 'browser') {
-			adapter.onAuthChange(async (event, session) => {
-				invalidate(APP_AUTH_CONTEXT)
-				deflector.setSession(session)
-				await fetch(endpoint.session, {
-					method: 'POST',
-					body: JSON.stringify({
-						event,
-						session
-					})
+	const signIn = async (credentials) => {
+		const result = await adapter.signIn(credentials)
+		invalidate(APP_AUTH_CONTEXT)
+		return result
+	}
+	const signUp = async (credentials) => {
+		const result = await adapter.signUp(credentials)
+		invalidate(APP_AUTH_CONTEXT)
+		return result
+	}
+	const signOut = async () => {
+		await adapter.signOut()
+		await fetch(deflector.endpoint.session, {
+			method: 'POST',
+			body: JSON.stringify({ event: 'SIGNED_OUT' })
+		})
+		deflector.setSession(null)
+		invalidateAll()
+		invalidate(APP_AUTH_CONTEXT)
+	}
+
+	const onAuthChange = () => {
+		if (RUNNING_ON !== 'browser') {
+			logger.error('OnAuthChange should only be called from browser')
+			return
+		}
+		adapter.onAuthChange(async (event, session) => {
+			// console.log('auth changed')
+			const result = await fetch(deflector.endpoint.session, {
+				method: 'POST',
+				body: JSON.stringify({
+					event,
+					session
 				})
 			})
-		}
-	}
 
-	async function handleSignIn({ event, resolve }) {
-		if (event.url.pathname.startsWith(endpoint.login)) {
-			return signInEndpoint(event, adapter, deflector)
-		}
-		return resolve(event)
+			if (result.status == 200) {
+				invalidateAll()
+				invalidate(APP_AUTH_CONTEXT)
+				deflector.setSession(session)
+				const location =
+					event === 'SIGNED_IN' ? deflector.page.home : deflector.page.login
+				goto(location)
+			}
+			return result
+		})
 	}
-
-	async function handleSignOut({ event, resolve }) {
-		if (event.url.pathname.startsWith(endpoint.logout)) {
-			await adapter.signOut()
-			event.locals.session = null
-			deflector.setSession(null)
-			return Response.redirect(event.url.origin + page.login, 301)
-		}
-		return resolve(event)
-	}
-
-	async function handleSession({ event, resolve }) {
-		if (event.url.pathname.startsWith(endpoint.session)) {
-			const data = await getRequestData(event)
-			session = await adapter.setSession(data.session)
-			console.log('session: ', session)
-			event.locals.session = session
-			deflector.setSession(session)
-			return new Response({ session })
-		}
-		return resolve(event)
-	}
-
 	async function handleUnauthorizedAccess({ event, resolve }) {
 		const pathname = deflectedPath(event.url)
+		// console.log(pathname, event.url.pathname)
 		if (pathname !== event.url.pathname) {
-			return Response.redirect(event.url.origin + pathname, 301)
+			return new Response(301, {
+				headers: { location: event.url.origin + pathname }
+			})
 		}
 		return resolve(event)
 	}
@@ -66,18 +73,70 @@ export function createKavach(adapter, options = {}) {
 		return deflector.redirect(url.pathname)
 	}
 
-	const handlers = [
-		handleSignIn,
-		handleSignOut,
-		handleSession
-		// handleUnauthorizedAccess
-	]
+	const handle = async ({ event, resolve }) => {
+		const cookieSession = event.cookies.get('session')
 
-	return {
-		session,
-		handlers,
-		endpoint,
-		deflectedPath,
-		onAuthChange
+		event.locals['session'] =
+			cookieSession && cookieSession !== 'undefined'
+				? JSON.parse(cookieSession)
+				: null
+		if (event.url.pathname.startsWith(deflector.endpoint.session)) {
+			return handleSessionSync(event, adapter, deflector)
+		}
+		// console.log(deflector.redirect(event.url.pathname))
+		// handleUnauthorizedAccess
+		return handleUnauthorizedAccess({ event, resolve })
 	}
+	return {
+		signIn,
+		signUp,
+		signOut,
+		onAuthChange,
+		handle,
+		deflectedPath,
+		client: adapter.client
+	}
+}
+
+/**
+ * Returns a cookie header using provided object and options
+ *
+ * @param {*} session
+ * @returns {object} cookie header
+ */
+export function setCookieFromSession(session) {
+	if (session) {
+		const maxAge = session.expires_in ?? 3600 //* 1000
+
+		return setHeaderCookies(
+			{ session: pick(['refresh_token', 'access_token', 'user'], session) },
+			{ maxAge }
+		)
+	}
+	return setHeaderCookies({ session })
+}
+
+async function handleSessionSync(event, adapter, deflector) {
+	const data = await getRequestData(event)
+	let session = null
+	let status = 200
+	let error = null
+	// console.log(deflector.endpoint.session, data.event, data.session)
+	if (data.session) {
+		const result = await adapter.synchronize(data.session)
+		// console.log('synchronize result', result)
+		if (!result.error) {
+			session = result.data.session
+		} else {
+			status = 500
+			error = result.error
+		}
+	} else {
+		await adapter.signOut()
+	}
+	// console.log('after synchronize', session, status, error)
+	deflector.setSession(session)
+	const headers = setCookieFromSession(session)
+	// console.log(headers)
+	return new Response({ session, error }, { status, headers })
 }

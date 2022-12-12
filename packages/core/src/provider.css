@@ -1,5 +1,5 @@
 .auth {
-	@apply leading-loose h-10;
+	@apply leading-loose;
 }
 
 .auth > input-field > label > field {
@@ -9,7 +9,7 @@
 	@apply flex flex-col items-center justify-center h-10 aspect-square border-none;
 }
 .auth > input-field > label > field > input {
-	@apply rounded-none;
+	@apply rounded-none h-10;
 }
 
 .auth > button {

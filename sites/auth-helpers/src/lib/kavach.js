@@ -1,8 +1,10 @@
 import { zeroLogger, createDeflector } from '@kavach/core'
 import { getSupabase, getServerSession } from '@supabase/auth-helpers-sveltekit'
+// import { invalidateAll } from '$app/navigation'
 // import { getLoadSupabaseClient } from './supabase-load.js';
 // import { getRequestSupabaseClient } from './supabase-request.js';
 export const runningOn = typeof window === 'undefined' ? 'server' : 'browser'
+
 export function createKavach(adapter, options) {
 	const logger = options.logger ?? zeroLogger
 	const invalidate = options?.invalidate ?? (() => {})
@@ -59,6 +61,7 @@ export function createKavach(adapter, options) {
 			}
 		})
 		await supabaseClient.auth.signOut()
+		// invalidateAll()
 		throw options.redirect(303, page.home)
 	}
 

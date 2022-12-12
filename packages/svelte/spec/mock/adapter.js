@@ -4,11 +4,20 @@ function mockSignIn(mode, credentials, options) {
 	return mode === 'otp' ? { data: 'success' } : { error: 'invalid data' }
 }
 
-export function createMockAdapter() {
+export function createMockAdapter(options) {
 	return {
 		signIn: vi.fn().mockImplementation(mockSignIn),
 		signOut: vi.fn(),
-		setSession: vi.fn().mockImplementation((session) => session),
+		synchronize: vi.fn().mockImplementation((session) => {
+			if (options?.invalidSession) return { error: 'invalid session' }
+			else
+				return {
+					data: {
+						session
+					},
+					error: null
+				}
+		}),
 		verifyOtp: vi.fn(),
 		onAuthChange: vi.fn()
 	}
