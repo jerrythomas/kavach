@@ -1,7 +1,5 @@
 import { getLogger } from '@kavach/core'
 import { getLogWriter, getAdapter } from '@kavach/adapter-supabase'
-// import { createAdapter } from './adapter'
-// import { createKavach } from './adapter'
 import { createKavach } from '@kavach/svelte'
 import { appConfig } from './config'
 import { createClient } from '@supabase/supabase-js'

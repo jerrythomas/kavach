@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
 	getPageRoutes,
-	getEndpointRoutes,
+	// getEndpointRoutes,
 	cleanupRoles,
 	getRoutesByRole,
 	isRouteAllowed,
@@ -12,12 +12,17 @@ import { pick } from 'ramda'
 
 describe('Router functions', () => {
 	const defaultRoutes = {
-		page: { home: '/', login: '/auth' },
-		endpoint: {
-			login: '/auth/signin',
-			logout: '/auth/signout',
-			session: '/auth/session'
+		page: {
+			home: '/',
+			login: '/auth',
+			session: '/auth/session',
+			logout: '/logout'
 		}
+		// endpoint: {
+		// 	login: '/auth/signin',
+		// 	logout: '/auth/signout',
+		// 	session: '/auth/session'
+		// }
 	}
 
 	const routes = [
@@ -26,7 +31,7 @@ describe('Router functions', () => {
 	]
 	it('should return default routes', () => {
 		expect(getPageRoutes()).toEqual(defaultRoutes.page)
-		expect(getEndpointRoutes()).toEqual(defaultRoutes.endpoint)
+		// expect(getEndpointRoutes()).toEqual(defaultRoutes.endpoint)
 		// const res = deflector()
 		// expect(res.page).toEqual(defaultRoutes.page)
 		// expect(res.endpoint).toEqual(defaultRoutes.endpoint)
@@ -35,15 +40,15 @@ describe('Router functions', () => {
 	it.each(options)('should %s', (msg, input) => {
 		const expectedPageRoutes = {
 			...defaultRoutes.page,
-			...pick(['home', 'login'], input.page ?? {})
+			...pick(['home', 'login', 'session', 'logout'], input.page ?? {})
 		}
 		expect(getPageRoutes(input)).toEqual(expectedPageRoutes)
 
-		const expectedEndpointRoutes = {
-			...defaultRoutes.endpoint,
-			...pick(['login', 'logout', 'session'], input.endpoint ?? {})
-		}
-		expect(getEndpointRoutes(input)).toEqual(expectedEndpointRoutes)
+		// const expectedEndpointRoutes = {
+		// 	...defaultRoutes.endpoint,
+		// 	...pick(['login', 'logout', 'session'], input.endpoint ?? {})
+		// }
+		// expect(getEndpointRoutes(input)).toEqual(expectedEndpointRoutes)
 	})
 
 	it('should sort and exclude child routes', () => {
@@ -56,36 +61,36 @@ describe('Router functions', () => {
 	})
 
 	it('should set routes by role', () => {
-		const page = { home: '/' }
+		const page = { home: '/', logout: '/logout' }
 		let options = {}
 		let routes
 
 		routes = getRoutesByRole(options, page)
 		expect(routes).toEqual({
 			public: [],
-			authenticated: [page.home]
+			authenticated: [page.home, page.logout]
 		})
 
 		options = { routes: { public: ['/blog'] } }
 		routes = getRoutesByRole(options, page)
 		expect(routes).toEqual({
 			public: [...options.routes.public],
-			authenticated: [page.home]
+			authenticated: [page.home, page.logout]
 		})
 
 		options = { routes: { authenticated: ['/blog'] } }
 		routes = getRoutesByRole(options, page)
 		expect(routes).toEqual({
 			public: [],
-			authenticated: [page.home, ...options.routes.authenticated]
+			authenticated: [page.home, ...options.routes.authenticated, page.logout]
 		})
 
 		options = { routes: { other: ['/blog'] } }
 		routes = getRoutesByRole(options, page)
 		expect(routes).toEqual({
 			public: [],
-			authenticated: [page.home],
-			other: [page.home, ...options.routes.other]
+			authenticated: [page.home, page.logout],
+			other: [page.home, ...options.routes.other, page.logout]
 		})
 	})
 
@@ -111,18 +116,18 @@ describe('Router functions', () => {
 
 		expect(res.redirect(page.home)).toEqual(page.login)
 		expect(res.redirect(page.login)).toEqual(page.login)
-		expect(res.redirect(endpoint.login)).toEqual(endpoint.login)
-		expect(res.redirect(endpoint.session)).toEqual(endpoint.session)
-		expect(res.redirect(endpoint.logout)).toEqual(page.login)
+		// expect(res.redirect(endpoint.login)).toEqual(endpoint.login)
+		// expect(res.redirect(page.session)).toEqual(page.session)
+		expect(res.redirect(page.logout)).toEqual(page.login)
 		expect(res.redirect('/blog')).toEqual('/blog')
 		expect(res.redirect('/user')).toEqual(page.login)
 
 		res.setSession({ user: { role: 'authenticated' } })
 		expect(res.redirect(page.home)).toEqual(page.home)
 		expect(res.redirect(page.login)).toEqual(page.home)
-		expect(res.redirect(endpoint.login)).toEqual(page.home)
-		expect(res.redirect(endpoint.session)).toEqual(endpoint.session)
-		expect(res.redirect(endpoint.logout)).toEqual(endpoint.logout)
+		// expect(res.redirect(endpoint.login)).toEqual(page.home)
+		// expect(res.redirect(page.session)).toEqual(page.session)
+		expect(res.redirect(page.logout)).toEqual(page.logout)
 		expect(res.redirect('/blog')).toEqual('/blog')
 		expect(res.redirect('/user')).toEqual('/user')
 		expect(res.redirect('/other')).toEqual(page.home)
@@ -130,9 +135,9 @@ describe('Router functions', () => {
 		res.setSession({ user: { role: 'other' } })
 		expect(res.redirect(page.home)).toEqual(page.home)
 		expect(res.redirect(page.login)).toEqual(page.home)
-		expect(res.redirect(endpoint.login)).toEqual(page.home)
-		expect(res.redirect(endpoint.session)).toEqual(endpoint.session)
-		expect(res.redirect(endpoint.logout)).toEqual(endpoint.logout)
+		// expect(res.redirect(endpoint.login)).toEqual(page.home)
+		// expect(res.redirect(endpoint.session)).toEqual(endpoint.session)
+		expect(res.redirect(page.logout)).toEqual(page.logout)
 		expect(res.redirect('/blog')).toEqual('/blog')
 		expect(res.redirect('/user')).toEqual(page.home)
 		expect(res.redirect('/other')).toEqual('/other')

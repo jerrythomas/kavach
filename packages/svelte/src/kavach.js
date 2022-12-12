@@ -9,7 +9,6 @@ export function createKavach(adapter, options) {
 	const invalidate = options?.invalidate ?? (() => {})
 	const invalidateAll = options?.invalidateAll ?? (() => {})
 	const goto = options?.goto ?? (() => {})
-	const redirect = options?.redirect ?? (() => {})
 
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
@@ -23,13 +22,13 @@ export function createKavach(adapter, options) {
 	}
 	const signOut = async () => {
 		await adapter.signOut()
-		await fetch(deflector.endpoint.session, {
+		await fetch(deflector.page.session, {
 			method: 'POST',
 			body: JSON.stringify({ event: 'SIGNED_OUT' })
 		})
-		deflector.setSession(null)
+		// deflector.setSession(null)
 		invalidateAll()
-		invalidate(APP_AUTH_CONTEXT)
+		// invalidate(APP_AUTH_CONTEXT)
 	}
 
 	const onAuthChange = () => {
@@ -39,7 +38,7 @@ export function createKavach(adapter, options) {
 		}
 		adapter.onAuthChange(async (event, session) => {
 			// console.log('auth changed')
-			const result = await fetch(deflector.endpoint.session, {
+			const result = await fetch(deflector.page.session, {
 				method: 'POST',
 				body: JSON.stringify({
 					event,
@@ -49,27 +48,36 @@ export function createKavach(adapter, options) {
 
 			if (result.status == 200) {
 				invalidateAll()
-				invalidate(APP_AUTH_CONTEXT)
-				deflector.setSession(session)
-				const location =
-					event === 'SIGNED_IN' ? deflector.page.home : deflector.page.login
-				goto(location)
+				// invalidate(APP_AUTH_CONTEXT)
+				// deflector.setSession(session)
+				// const location =
+				// 	event === 'SIGNED_IN' ? deflector.page.home : deflector.page.login
+				// goto(location)
 			}
 			return result
 		})
 	}
 	async function handleUnauthorizedAccess({ event, resolve }) {
 		const pathname = deflectedPath(event.url)
-		// console.log(pathname, event.url.pathname)
+
+		// console.log(
+		// 	pathname,
+		// 	event.locals.session,
+		// 	event.url.pathname,
+		// 	deflector.isAuthenticated,
+		// 	deflector.authorizedRoutes
+		// )
 		if (pathname !== event.url.pathname) {
-			return new Response(301, {
-				headers: { location: event.url.origin + pathname }
-			})
+			return new Response(
+				{},
+				{ status: 303, headers: { location: event.url.origin + pathname } }
+			)
 		}
 		return resolve(event)
 	}
 
 	function deflectedPath(url) {
+		// console.log(deflector)
 		return deflector.redirect(url.pathname)
 	}
 
@@ -80,12 +88,20 @@ export function createKavach(adapter, options) {
 			cookieSession && cookieSession !== 'undefined'
 				? JSON.parse(cookieSession)
 				: null
-		if (event.url.pathname.startsWith(deflector.endpoint.session)) {
+
+		deflector.setSession(event.locals['session'])
+		// console.log(
+		// 	event.url.pathname,
+		// 	deflector.isAuthenticated,
+		// 	deflector.authorizedRoutes
+		// )
+		if (event.url.pathname.startsWith(deflector.page.session)) {
 			return handleSessionSync(event, adapter, deflector)
 		}
-		// console.log(deflector.redirect(event.url.pathname))
+
 		// handleUnauthorizedAccess
 		return handleUnauthorizedAccess({ event, resolve })
+		// return resolve(event)
 	}
 	return {
 		signIn,
@@ -121,7 +137,7 @@ async function handleSessionSync(event, adapter, deflector) {
 	let session = null
 	let status = 200
 	let error = null
-	// console.log(deflector.endpoint.session, data.event, data.session)
+	// console.log(deflector.page.session, data.event, data.session)
 	if (data.session) {
 		const result = await adapter.synchronize(data.session)
 		// console.log('synchronize result', result)
