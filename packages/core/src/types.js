@@ -2,16 +2,16 @@
 
 /**
  * @typedef Logger
- * @property {(message?) => Promise<void>} info
- * @property {(message?) => Promise<void>} warn
- * @property {(message?) => Promise<void>} error
- * @property {(message?) => Promise<void>} debug
- * @property {(message?) => Promise<void>} trace
+ * @property {(message:Object) => Promise<void>} info
+ * @property {(message:Object) => Promise<void>} warn
+ * @property {(message:Object) => Promise<void>} error
+ * @property {(message:Object) => Promise<void>} debug
+ * @property {(message:Object) => Promise<void>} trace
  */
 
 /**
  * @typedef LogWriter
- * @property {(message) => Promise<void>} write
+ * @property {(message:Object) => Promise<void>} write
  */
 
 /**
@@ -23,65 +23,135 @@
  * @typedef LogData
  * @property {string} level
  * @property {string} running_on
- * @property {number} sequence
  * @property {string} logged_at
+ * @property {string} [message]
+ * @property {Object} [data]
+ */
+
+/**
+ * @typedef AppRoute
+ * @property {string} home
+ * @property {string} login
+ * @property {string} logout
  * @property {string} session
- * @property {string} [origin_ip_address]
- * @property {*} message
  */
 
 /**
- * @method LogMethod
- * @param {LogData} message
- * @returns {Promise<void>}
- *
- */
-
-/**
- * @typedef PageRoutes
+ * @typedef RoleRoute
  * @property {string} [home]
- * @property {string} [login]
- */
-
-/**
- * @typedef EndpointRoutes
- * @property {string} [login]
- * @property {string} [logout]
- * @property {string} [session]
+ * @property {Array<string>} routes
  */
 
 /**
  * @typedef DeflectorOptions
- * @property {PageRoutes} [page]
- * @property {EndpointRoutes} [endpoint]
+ * @property {AppRoute} [app]
+ * @property {Object<string, RoleRoute>} [roles]
  */
 
 /**
  * @typedef Deflector
- * @property {PageRoutes} page
- * @property {EndpointRoutes} endpoint
- * @method setSession
- * @method redirect
+ * @property {(session?: any) => void} setSession
+ * @property {(path: string) => string} redirect
+ * @property {AppRoute} page
+ * @property {boolean} isAuthenticated,
+	 @property {Array<string>}	authorizedRoutes
  */
 
 /**
  * @typedef AuthUser
- * @property {string} email
- * @property {string} role
  * @property {string} id
+ * @property {string} role
+ * @property {string} [email]
+ * @property {string} [name]
  */
 
 /**
  * @typedef AuthSession
- * @property {User} [user]
+ * @property {AuthUser} [user]
+ * @property {string} access_token
+ * @property {string} refresh_token
+ * @property {number} [expires_in]
+ */
+
+/**
+ * @typedef AuthOptions
+ * @property {Array<string>} scopes
+ * @property {Array<string>} params
+ */
+
+/**
+ * @typedef AuthProvider
+ * @property {'otp' | 'oauth' | 'password'} mode
+ * @property {string}	provider
+ * @property {string} [label]
+ * @property {Array<string>} scopes
+ * @property {Array<string>} params
  */
 
 /**
  * @typedef CookieOptions
- * @property {string} path
- * @property {boolean} httpOnly
- * @property {boolean} secure
- * @property {'none'|'stric'|'lax'} sameSite
- * @property {number} maxAge
+ * @property {string} [path]
+ * @property {boolean} [httpOnly]
+ * @property {boolean} [secure]
+ * @property {'none'|'stric'|'lax'} [sameSite]
+ * @property {number} [maxAge]
  */
+
+/**
+ * @typedef OAuthCredentials
+ * @property {string} provider
+ * @property {AuthOptions} [options]
+ */
+
+/**
+ * @typedef OtpCredentials
+ * @property {'magic'} provider
+ * @property {string} email
+ */
+
+/**
+ * @typedef EmailAuthCredentials
+ * @property {string} email
+ * @property {string} password
+ * @property {string} [redirectTo]
+ */
+
+/**
+ * @typedef PhoneAuthCredentials
+ * @property {string} phone
+ * @property {string} password
+ * @property {string} [redirectTo]
+ */
+
+/**
+ * @typedef {OAuthCredentials| OtpCredentials| EmailAuthCredentials| PhoneAuthCredentials} AuthCredentials
+ */
+/**
+ * @typedef {(event: string, session: any) => Promise<void>} AuthCallback
+ */
+
+/**
+ * @typedef AuthResponse
+ * @property {*} [data]
+ * @property {*} [error]
+ */
+
+/**
+ * @typedef AuthAdapter
+ * @property {(credentials: AuthCredentials) => Promise<AuthResponse>}	signIn
+ * @property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<AuthResponse>}	signUp
+ * @property {() => Promise<*>} signOut
+ * @property {(session: AuthSession) => Promise<AuthResponse>}	synchronize
+ * @property {(callback: AuthCallback) => void} onAuthChange
+// property {(credentials: OtpCredentials) => Promise<void>}	verifyOtp
+// property {() => Promise<void>}	resetPassword
+// property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<void>} updatePassword
+ * @property {*} client
+}
+
+
+/**
+ * @typedef {(config:Object) => AuthAdapter} GetAdapter
+ */
+
 export default {}

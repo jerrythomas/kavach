@@ -8,7 +8,7 @@ export function createKavach(adapter, options) {
 	const logger = options?.logger ?? zeroLogger
 	const invalidate = options?.invalidate ?? (() => {})
 	const invalidateAll = options?.invalidateAll ?? (() => {})
-	const goto = options?.goto ?? (() => {})
+	// const goto = options?.goto ?? (() => {})
 
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
@@ -33,7 +33,7 @@ export function createKavach(adapter, options) {
 
 	const onAuthChange = () => {
 		if (RUNNING_ON !== 'browser') {
-			logger.error('OnAuthChange should only be called from browser')
+			logger.error('onAuthChange should only be called from browser')
 			return
 		}
 		adapter.onAuthChange(async (event, session) => {

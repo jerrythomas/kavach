@@ -34,8 +34,8 @@ export function urlHashToParams(url) {
  *
  * @param {301|303|404|500} status
  * @param {string} location
- * @param {object} cookies
- * @param {CookieOptions} options
+ * @param {Object} cookies
+ * @param {import('./types').CookieOptions} options
  * @returns {Response} response
  */
 export function redirect(status, location, cookies, options = {}) {
@@ -43,22 +43,19 @@ export function redirect(status, location, cookies, options = {}) {
 		location,
 		...setHeaderCookies(cookies, options)
 	}
-	return new Response(
-		{},
-		{
-			status,
-			headers
-		}
-	)
+	return new Response(null, {
+		status,
+		headers
+	})
 }
 
 /**
  * Generates a response object using provided inputs
  *
  * @param {200} status
- * @param {object} body
- * @param {object} cookies
- * @param {CookieOptions} options
+ * @param {Object} body
+ * @param {Object} cookies
+ * @param {import('./types').CookieOptions} options
  * @returns {Response} response
  */
 export function createResponse(status, body, cookies, options = {}) {
@@ -75,7 +72,7 @@ export function createResponse(status, body, cookies, options = {}) {
  * Returns a cookie header using provided object and options
  *
  * @param {object} cookies
- * @param {CookieOptions} options
+ * @param {import('./types').CookieOptions} options
  * @returns {object} cookie header
  */
 export function setHeaderCookies(cookies, options = {}) {

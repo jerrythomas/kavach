@@ -34,7 +34,7 @@ describe('Helper functions', () => {
 			data: { something: 'bar' },
 			foo: 'bar'
 		})
-		expect(body).toEqual({})
+		expect(body).toBeFalsy()
 		expect(headers).toEqual({
 			status: 303,
 			headers: {

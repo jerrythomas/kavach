@@ -1,7 +1,7 @@
 export const routes = {
-	routes: {
-		public: [],
-		authenticated: ['/todos'],
-		associate: ['/todos']
+	roles: {
+		public: { routes: [] },
+		authenticated: { routes: ['/todos'] },
+		associate: { routes: ['/todos'] }
 	}
 }
