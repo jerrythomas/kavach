@@ -1,3 +1,5 @@
+import { zeroLogger } from './constants'
+
 /**
  * Create a deflector using provided options
  *
@@ -7,6 +9,7 @@
 export function createDeflector(options = {}) {
 	const appRoutes = getAppRoutes(options)
 	const routesByRole = getRoutesByRole(options, appRoutes)
+	const logger = options.logger ?? zeroLogger
 
 	let isAuthenticated = false
 	let authorizedRoutes = []
@@ -29,21 +32,26 @@ export function createDeflector(options = {}) {
 		let isAllowed = false
 
 		isAllowed = isRouteAllowed(route, authorizedRoutes)
-		console.log(
-			'role:',
-			role,
-			'route:',
-			route,
-			isAuthenticated,
-			isAllowed,
-			authorizedRoutes
-		)
-
-		return isAllowed
+		const redirectedTo = isAllowed
 			? route
 			: isAuthenticated
 			? routesByRole[role].home //appRoutes.home
 			: appRoutes.login
+
+		logger.debug({
+			module: 'deflector',
+			method: 'redirect',
+			data: {
+				role,
+				route,
+				isAuthenticated,
+				isAllowed,
+				authorizedRoutes,
+				redirectedTo
+			}
+		})
+
+		return redirectedTo
 	}
 
 	setSession()

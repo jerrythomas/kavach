@@ -1,4 +1,3 @@
-import { AuthAdapter } from '@kavach/core'
 /**
  * @typedef SupabaseConfig
  * @property {string} url
@@ -12,7 +11,7 @@ import { AuthAdapter } from '@kavach/core'
  */
 
 /**
- * @typedef {(config:SupabaseConfig) => AuthAdapter} GetSupabaseAdapter
+ * @typedef {(config:SupabaseConfig) => import('@kavach/core').AuthAdapter} GetSupabaseAdapter
  */
 
 export default {}

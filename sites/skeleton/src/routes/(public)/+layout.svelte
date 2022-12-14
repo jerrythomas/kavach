@@ -8,7 +8,7 @@
 	<article
 		class="text-base prose prose-skin bg-skin-100 px-8 py-4 rounded-l-md border-r border-skin-300"
 	>
-		<Header />
+		<Header>Kavach Demo</Header>
 		<p class="justify">
 			This demo extends the standard svelte-kit todo app by adding
 			authentication and role based access using

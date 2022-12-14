@@ -46,6 +46,7 @@
  * @typedef DeflectorOptions
  * @property {AppRoute} [app]
  * @property {Object<string, RoleRoute>} [roles]
+ * @property {Logger} [logger]
  */
 
 /**
