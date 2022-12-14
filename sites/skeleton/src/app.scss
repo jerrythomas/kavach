@@ -1,0 +1,12 @@
+@import './palette.css';
+@import '@svelte-spice/themes/minimal.scss';
+@import '@kavach/core/provider.css';
+
+error {
+	@apply bg-error bg-red-100;
+}
+
+body,
+body > div {
+	@apply h-screen w-screen flex flex-row;
+}

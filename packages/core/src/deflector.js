@@ -1,63 +1,66 @@
+import { zeroLogger } from './constants'
+
 /**
  * Create a deflector using provided options
  *
  * @param {import('./types').DeflectorOptions} options
- * @returns
+ * @returns {import('./types').Deflector}
  */
 export function createDeflector(options = {}) {
-	const page = getPageRoutes(options)
-	const endpoint = getEndpointRoutes(options)
-	const routesByRole = getRoutesByRole(options, page, endpoint)
+	const appRoutes = getAppRoutes(options)
+	const routesByRole = getRoutesByRole(options, appRoutes)
+	const logger = options.logger ?? zeroLogger
 
 	let isAuthenticated = false
 	let authorizedRoutes = []
+	let role = 'public'
 
-	const setSession = (session) => {
-		const role = session?.user?.role ?? 'public'
+	const setSession = (/** @type {import('./types').AuthSession} */ session) => {
+		role = session?.user?.role ?? 'public'
+
 		isAuthenticated = role !== 'public'
-		authorizedRoutes = [...routesByRole['public']]
+		authorizedRoutes = [...routesByRole['public'].routes]
 
-		if (isAuthenticated) {
-			authorizedRoutes = [
-				...authorizedRoutes,
-				...routesByRole[role],
-				endpoint.logout,
-				endpoint.session
-			]
+		if (isAuthenticated && role in routesByRole) {
+			authorizedRoutes = [...authorizedRoutes, ...routesByRole[role].routes]
 		} else {
-			authorizedRoutes = [
-				...authorizedRoutes,
-				page.login,
-				endpoint.login,
-				endpoint.session
-			]
+			authorizedRoutes = [...authorizedRoutes]
 		}
 	}
 
 	const redirect = (route) => {
 		let isAllowed = false
 
-		if (route !== endpoint.logout || isAuthenticated) {
-			isAllowed = isRouteAllowed(route, authorizedRoutes)
-		}
-		return isAllowed ? route : isAuthenticated ? page.home : page.login
+		isAllowed = isRouteAllowed(route, authorizedRoutes)
+		const redirectedTo = isAllowed
+			? route
+			: isAuthenticated
+			? routesByRole[role].home //appRoutes.home
+			: appRoutes.login
+
+		logger.debug({
+			module: 'deflector',
+			method: 'redirect',
+			data: {
+				role,
+				route,
+				isAuthenticated,
+				isAllowed,
+				authorizedRoutes,
+				redirectedTo
+			}
+		})
+
+		return redirectedTo
 	}
 
 	setSession()
-	return { page, endpoint, setSession, redirect }
-}
-
-/**
- * Use provided routes or use defaults for endpoints
- *
- * @param {import('./types').DeflectorOptions} options
- * @returns {import('./types').EndpointRoutes}
- */
-export function getEndpointRoutes(options) {
 	return {
-		login: options?.endpoint?.login ?? '/auth/signin',
-		logout: options?.endpoint?.logout ?? '/auth/signout',
-		session: options?.endpoint?.session ?? '/auth/session'
+		page: appRoutes,
+		setSession,
+		redirect,
+		isAuthenticated,
+		authorizedRoutes
 	}
 }
 
@@ -65,12 +68,14 @@ export function getEndpointRoutes(options) {
  * Use provided routes or use defaults for pages
  *
  * @param {import('./types').DeflectorOptions} options
- * @returns {import('./types').PageRoutes}
+ * @returns {import('./types').AppRoute}
  */
-export function getPageRoutes(options) {
+export function getAppRoutes(options) {
 	return {
-		home: options?.page?.home ?? '/',
-		login: options?.page?.login ?? '/auth'
+		home: options?.app?.home ?? '/',
+		login: options?.app?.login ?? '/auth',
+		logout: options?.app?.logout ?? '/logout',
+		session: options?.app?.session ?? '/auth/session'
 	}
 }
 
@@ -87,6 +92,7 @@ export function cleanupRoles(routes, defaultRoutes) {
 
 	for (let i = 0; i < roleRoutes.length; i++) {
 		const current = roleRoutes[i]
+
 		for (let j = i + 1; j < roleRoutes.length; j++) {
 			while (j < roleRoutes.length && roleRoutes[j].startsWith(current + '/')) {
 				roleRoutes.splice(j, 1)
@@ -99,20 +105,29 @@ export function cleanupRoles(routes, defaultRoutes) {
 /**
  * Configure routes by role
  *
- * @param {object<string, Array<string>>} options
- * @param {import('./types').PageRoutes} page
- * @returns {object<string, Array<string>>}
+ * @param {import('./types').DeflectorOptions} options
+ * @param {import('./types').AppRoute} appRoutes
+ * @returns {Record<string, import('./types').RoleRoute>}
  */
-export function getRoutesByRole(options, page) {
+export function getRoutesByRole(options, appRoutes) {
 	let routesByRole = {
-		public: [],
-		authenticated: []
+		public: { home: appRoutes.home, routes: [] },
+		authenticated: { home: appRoutes.home, routes: [] }
 	}
-	options.routes = { ...routesByRole, ...options.routes }
 
-	Object.entries(options.routes).map(([role, routes]) => {
-		const defaultRoutes = role === 'public' ? [] : [page.home]
-		routesByRole[role] = cleanupRoles(routes, defaultRoutes)
+	options.roles = { ...routesByRole, ...options.roles }
+
+	Object.entries(options.roles).map(([role, roleRoutes]) => {
+		const defaultRoutes =
+			role === 'public' ? [] : [appRoutes.home, appRoutes.logout]
+
+		routesByRole[role] = {
+			home: roleRoutes.home ?? appRoutes.home,
+			routes: cleanupRoles(
+				removeAppRoutes(roleRoutes.routes, appRoutes),
+				defaultRoutes
+			)
+		}
 	})
 
 	return routesByRole
@@ -133,4 +148,21 @@ export function isRouteAllowed(route, allowedRoutes) {
 			route === allowedRoutes[i] || route.startsWith(allowedRoutes[i] + '/')
 	}
 	return isAllowed
+}
+
+/**
+ *
+ * @param {Array<string>} routes
+ * @param {import('./types').AppRoute} appRoutes
+ * @returns
+ */
+export function removeAppRoutes(routes, appRoutes) {
+	Object.entries(appRoutes).map(([_, route]) => {
+		let index = 0
+		do {
+			index = routes.findIndex((path) => path === route)
+			if (index !== -1) routes.splice(index, 1)
+		} while (index > -1)
+	})
+	return routes
 }

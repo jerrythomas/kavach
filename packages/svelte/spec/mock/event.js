@@ -1,5 +1,7 @@
 import { vi } from 'vitest'
 import { createMockHeaders } from './headers'
+import { createMockCookies } from './cookies'
+
 /**
  * @typedef RequestOptions
  * @property {string} [method]
@@ -71,6 +73,7 @@ export function createMockUrl(options) {
 export function createMockEvent(options) {
 	const request = createMockRequest(options)
 	const url = createMockUrl(options)
+	const cookies = createMockCookies(options.cookies)
 
-	return { request, url, locals: options.locals ?? {} }
+	return { request, url, locals: options.locals ?? {}, cookies }
 }
