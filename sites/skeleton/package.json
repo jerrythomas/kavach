@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && ls .vercel && mv .vercel/output public",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
@@ -40,6 +40,7 @@
 		"@kavach/svelte": "workspace:*",
 		"@supabase/supabase-js": "^2.1.1",
 		"@svelte-spice/themes": "1.0.0-next.2",
+		"node-fetch": "^3.3.0",
 		"ramda": "^0.28.0"
 	},
 	"type": "module",
