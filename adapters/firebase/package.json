@@ -44,8 +44,7 @@
 		"vitest": "~0.19.1"
 	},
 	"dependencies": {
-		"@kavach/core": "workspace:1.0.0-next.0",
-		"firebase": "^9.15.0"
+		"@kavach/core": "workspace:1.0.0-next.0"
 	},
 	"exports": {
 		"./package.json": "./package.json",

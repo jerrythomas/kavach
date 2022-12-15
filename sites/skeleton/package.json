@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build && ls .vercel && mv .vercel/output public",
+		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
@@ -25,6 +25,7 @@
 		"@unocss/preset-uno": "^0.44.7",
 		"@unocss/reset": "^0.44.7",
 		"@unocss/transformer-directives": "^0.44.7",
+		"encoding": "^0.1.13",
 		"eslint": "^8.28.0",
 		"sass": "^1.56.2",
 		"svelte": "^3.55.0",
@@ -40,7 +41,6 @@
 		"@kavach/svelte": "workspace:*",
 		"@supabase/supabase-js": "^2.1.1",
 		"@svelte-spice/themes": "1.0.0-next.2",
-		"node-fetch": "^3.3.0",
 		"ramda": "^0.28.0"
 	},
 	"type": "module",
