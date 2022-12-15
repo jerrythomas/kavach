@@ -4,7 +4,6 @@
 
 	let menu = [
 		{ icon: 'home', href: '/', label: 'Home' },
-		{ icon: 'todo', href: '/todo', label: 'To do' },
 		{ icon: 'lock', href: '/protected', label: 'Protected' },
 		{ icon: 'unlock', href: '/public', label: 'Public' },
 		{ icon: 'logout', href: '/logout', label: 'Logout' }

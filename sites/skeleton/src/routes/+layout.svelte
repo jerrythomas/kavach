@@ -7,10 +7,7 @@
 	import { setContext } from 'svelte'
 
 	setContext('kavach', kavach)
-
-	onMount(async () => {
-		kavach.onAuthChange()
-	})
+	onMount(() => kavach.onAuthChange())
 </script>
 
 <main

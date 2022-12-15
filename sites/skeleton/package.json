@@ -17,6 +17,7 @@
 		"@jerrythomas/eslint-config-svelte": "latest",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-vercel": "^1.0.0",
 		"@sveltejs/kit": "next",
 		"@unocss/core": "^0.44.7",
 		"@unocss/preset-icons": "^0.47.6",

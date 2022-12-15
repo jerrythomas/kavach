@@ -9,15 +9,12 @@ import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 
 const authIcons = [
 	'google',
-	'microsoft',
+	'azure',
 	'email',
 	'github',
 	'magic',
 	'github'
-].reduce(
-	(acc, type) => ({ ...acc, [`logo-${type}`]: 'i-logos:' + type + '-icon' }),
-	{}
-)
+].reduce((acc, type) => ({ ...acc, [`logo-${type}`]: 'i-kavach:' + type }), {})
 
 export default defineConfig({
 	safelist: ['prose', ...Object.keys(iconShortcuts), ...Object.keys(authIcons)],
