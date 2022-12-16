@@ -1,4 +1,4 @@
-import { md5 } from './md5'
+import { md5 } from './hashing'
 
 /**
  * Convert a buffer into a base 64 encoded string dataURL

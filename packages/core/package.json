@@ -54,10 +54,5 @@
 			"types": "./types/index.d.ts",
 			"import": "./src/index.js"
 		}
-	},
-	"dependencies": {
-		"charenc": "^0.0.2",
-		"crypt": "^0.0.2",
-		"is-buffer": "^2.0.5"
 	}
 }
