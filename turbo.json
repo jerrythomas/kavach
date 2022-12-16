@@ -3,6 +3,7 @@
   "pipeline": {
     "prepublishOnly": {},
     "build": {
+      "cache": false,
       "dependsOn": ["test:ci"],
       "outputs": [".svelte-kit/**", "dist/**"]
     },
