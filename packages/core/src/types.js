@@ -132,22 +132,25 @@
  */
 
 /**
- * @typedef AuthResponse
+ * @typedef AuthResult
+ * @property {boolean} isError
+ * @property {number} [status]
+ * @property {string} [name]
+ * @property {string} [message]
  * @property {*} [data]
- * @property {*} [error]
  */
-
 /**
  * @typedef AuthAdapter
- * @property {(credentials: AuthCredentials) => Promise<AuthResponse>}	signIn
- * @property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<AuthResponse>}	signUp
+ * @property {(credentials: AuthCredentials) => Promise<AuthResult>}	signIn
+ * @property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<AuthResult>}	signUp
  * @property {() => Promise<*>} signOut
- * @property {(session: AuthSession) => Promise<AuthResponse>}	synchronize
+ * @property {(session: AuthSession) => Promise<AuthResult>}	synchronize
  * @property {(callback: AuthCallback) => void} onAuthChange
 // property {(credentials: OtpCredentials) => Promise<void>}	verifyOtp
 // property {() => Promise<void>}	resetPassword
 // property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<void>} updatePassword
  * @property {*} client
+ * @property {(url: Object) => AuthResult} parseUrlError
 }
 
 

@@ -1,5 +1,5 @@
 import { defaultCookieOptions } from './constants'
-import { serialize } from './cookie'
+import { serialize } from '@kavach/cookie'
 
 /**
  * Checks if the url contains non empty 'access_token' in the url hash

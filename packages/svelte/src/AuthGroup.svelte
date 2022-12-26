@@ -1,6 +1,7 @@
 <script>
+	import { urlHashToParams } from '@kavach/core'
 	import AuthProvider from './AuthProvider.svelte'
-
+	import { page } from '$app/stores'
 	export let providers
 	export let authUrl
 </script>

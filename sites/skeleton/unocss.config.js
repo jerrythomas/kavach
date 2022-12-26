@@ -20,6 +20,9 @@ export default defineConfig({
 	safelist: ['prose', ...Object.keys(iconShortcuts), ...Object.keys(authIcons)],
 	shortcuts: {
 		...authIcons,
+		'checkbox-checked': 'i-kavach:checkbox-checked',
+		'checkbox-unchecked': 'i-kavach:checkbox-unchecked',
+		delete: 'i-kavach:trash',
 		'bg-error': 'bg-red-100',
 		'text-error': 'text-red-800',
 		'border-error': 'border-red-700',
@@ -42,8 +45,8 @@ export default defineConfig({
 	theme: {
 		fontFamily: {
 			mono: ['Victor-Mono', 'monospace'],
-			serif: ['Montserrat Alternates', 'ui-serif', 'sans-serif'],
-			body: ['Montserrat Alternates', 'ui-serif', 'sans-serif']
+			serif: ['Montserrat', 'ui-serif', 'AppleSystemUIFont', 'serif'],
+			body: ['Montserrat', 'ui-serif', 'sans-serif']
 		},
 		colors: themeColors()
 	},

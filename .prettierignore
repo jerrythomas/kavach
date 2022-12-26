@@ -1,6 +1,7 @@
-.svelte-kit/**
+.svelte-kit/**/*
 static/**
 build/**
 node_modules/**
 coverage/**
 .turbo/**
+.vercel/**

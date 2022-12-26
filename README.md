@@ -2,9 +2,9 @@
 
 Drop-in authentication including route protection and redirects for web apps.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jerrythomas/kavach/publish.yml/badge.svg?branch=next)
-[![Maintainability](https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/maintainability)](https://codeclimate.com/github/jerrythomas/kavach/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/test_coverage)](https://codeclimate.com/github/jerrythomas/kavach/test_coverage)
+![GitHub Workflow Status]([workflow_status_url])
+[![Maintainability]([maintainability_badge])]([maintainability_url])
+[![Test Coverage]([coverage_badge])]([coverage_url])
 ![GitHub last commit](https://img.shields.io/github/last-commit/jerrythomas/kavach)
 
 ![kavach](kavach.svg)
@@ -36,3 +36,9 @@ Routes are configurable as shown in the example `config/routes.js` file. Sentry 
 ## License
 
 MIT © [Jerry Thomas](https://jerrythomas.name)
+
+[workflow_status_url]: https://img.shields.io/github/workflow/status/jerrythomas/kavach/publish.yml/badge.svg?branch=next
+[maintainability_badge]: https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/maintainability
+[maintainability_url]: https://codeclimate.com/github/jerrythomas/kavach/maintainability
+[coverage_badge]: https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/test_coverage
+[coverage_url]: https://codeclimate.com/github/jerrythomas/kavach/test_coverage

@@ -1,0 +1,60 @@
+{
+	"name": "@kavach/cookie",
+	"version": "1.0.0-next.1",
+	"description": "Cookie serialize/deserialize forked from jshttp/cookie",
+	"author": "Jerry Thomas <me@jerrythomas.name>",
+	"license": "MIT",
+	"keywords": [
+		"cookie",
+		"cookies"
+	],
+	"main": "index.js",
+	"module": "src/index.js",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jerrythomas/kavach",
+		"directory": "packages/cookie"
+	},
+	"prettier": "@jerrythomas/prettier-config",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"bench": "node benchmark/index.js",
+		"prepublishOnly": "tsc",
+		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
+		"format": "prettier --write --plugin-search-dir=. .",
+		"test:ci": "vitest run",
+		"test:ui": "vitest --ui",
+		"test": "vitest",
+		"coverage": "vitest run --coverage",
+		"upgrade": "pnpm upgrade"
+	},
+	"devDependencies": {
+		"@jerrythomas/prettier-config": "^1.0.0",
+		"@types/benchmark": "^2.1.2",
+		"@types/node": "^18.11.17",
+		"@vitest/coverage-c8": "^0.24.5",
+		"@vitest/ui": "~0.12.10",
+		"beautify-benchmark": "0.2.4",
+		"benchmark": "2.1.4",
+		"c8": "^7.12.0",
+		"eslint": "^8.30.0",
+		"linter": "workspace:^1.0.0",
+		"safe-buffer": "5.2.1",
+		"top-sites": "1.1.97",
+		"typescript": "^4.9.4",
+		"vite": "^4.0.3",
+		"vitest": "0.24.5"
+	},
+	"exports": {
+		"./package.json": "./package.json",
+		"./provider.css": "./src/provider.css",
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./src/index.js"
+		}
+	}
+}

@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
-import { md5 } from '../src/hashing'
+import { describe, expect, it } from 'vitest'
+import { md5 } from '../src/md5'
 
 describe('hashing', () => {
 	const md5Values = [

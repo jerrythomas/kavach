@@ -1,4 +1,5 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
+import { urlHashToParams } from '@kavach/core'
 
 /**
  * Handles sign in based on the credentials provided
@@ -13,6 +14,7 @@ async function handleSignIn(client, credentials) {
 	let result
 	if (provider === 'magic') {
 		result = await client.auth.signInWithOtp({ email })
+		result = { ...result, credentials: { provider, email } }
 	} else if (password) {
 		const creds = email
 			? { email, password, options: { emailRedirectTo: redirectTo } }
@@ -25,30 +27,23 @@ async function handleSignIn(client, credentials) {
 			options: { scopes: scopes.join(' ') }
 		})
 	}
-	if (result.error) {
-		result.error = transformError(result.error)
-	}
-	return result
+	return transformResult(result)
 }
 
 /** @type {import('./types').GetSupabaseAdapter}  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
-
 	const signIn = async (credentials) => {
 		return handleSignIn(client, credentials)
 	}
 
 	const signUp = async ({ email, password, redirectTo }) => {
-		const result = await client.auth.signUp({
+		let result = await client.auth.signUp({
 			email,
 			password,
 			options: { emailRedirectTo: redirectTo }
 		})
-		if (result.error) {
-			result.error = transformError(result.error)
-		}
-		return { data: result.data, error: result.error }
+		return transformResult(result)
 	}
 
 	const signOut = () => {
@@ -68,28 +63,55 @@ export function getAdapter(options) {
 	const synchronize = async (session) => {
 		return client.auth.setSession(session)
 	}
-
-	return { signIn, signUp, signOut, synchronize, onAuthChange, client }
-}
-
-/**
- * Transforms supabase error into a structure that can be used by kavach
- * @param {*} error
- * @param {*} values
- * @returns
- */
-export function transformError(error, values) {
-	if (error instanceof AuthApiError && error.status === 400) {
-		return {
-			...error,
-			error: 'Invalid credentials.',
-			values
+	const parseUrlError = (url) => {
+		let error = { isError: false }
+		let result = urlHashToParams(url.hash)
+		if (result.error) {
+			error = {
+				isError: true,
+				status: result.error_code,
+				name: result.error,
+				message: result.error_description.replaceAll('+', '')
+			}
 		}
+		return error
 	}
 
 	return {
+		signIn,
+		signUp,
+		signOut,
+		synchronize,
+		onAuthChange,
+		parseUrlError,
+		client
+	}
+}
+
+/**
+ * Transforms supabase result into a structure that can be used by kavach
+ * @param {*} result
+ * @returns
+ */
+export function transformResult({ data, error, credentials }) {
+	let isError = false
+	let message = ''
+	if (!error) {
+		message =
+			credentials.provider == 'magic'
+				? `Magic link has been sent to "${credentials.email}".`
+				: ''
+		return { isError, data, message }
+	}
+	message =
+		error instanceof AuthApiError && error.status === 400
+			? 'Invalid credentials.'
+			: 'Server error. Try again later.'
+
+	return {
+		isError,
 		...error,
-		error: 'Server error. Try again later.',
-		values
+		message,
+		data
 	}
 }

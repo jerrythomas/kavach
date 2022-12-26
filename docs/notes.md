@@ -12,4 +12,5 @@ This library consists of the following components.
 
 ## References
 
-Cookie parsing and serializing required to support server-side auth guard. The original npm library [jshttp/cookie](https://github.com/jshttp/cookie) ran into problems on SvelteKit v1.0.0-next.218. The code has been converted from CJS to ESM.
+- Cookie parsing and serializing is required to support server-side auth guard. I had problems with the original npm library [jshttp/cookie](https://github.com/jshttp/cookie) on SvelteKit v1.0.0-next.218. Converting the original code from from CJS to ESM solved the issue and it has been included here.
+-

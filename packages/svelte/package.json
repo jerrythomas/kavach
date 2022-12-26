@@ -1,6 +1,6 @@
 {
 	"name": "@kavach/svelte",
-	"version": "1.0.0-next.0",
+	"version": "1.0.0-next.1",
 	"description": "Drop in security for web apps.",
 	"author": "Jerry Thomas <me@jerrythomas.name>",
 	"license": "MIT",
@@ -29,7 +29,7 @@
 		"upgrade": "pnpm upgrade"
 	},
 	"devDependencies": {
-		"@jerrythomas/eslint-config-svelte": "^1.0.1",
+		"@jerrythomas/eslint-config-svelte": "^1.0.2",
 		"@jerrythomas/prettier-config": "^1.0.0",
 		"@sveltejs/vite-plugin-svelte": "^2.0.2",
 		"@testing-library/svelte": "^3.2.2",
@@ -41,7 +41,7 @@
 		"shared-config": "workspace:^1.0.0",
 		"svelte": "^3.55.0",
 		"typescript": "^4.9.4",
-		"vite": "^4.0.1",
+		"vite": "^4.0.3",
 		"vitest": "~0.19.1"
 	},
 	"exports": {
@@ -53,7 +53,8 @@
 	},
 	"dependencies": {
 		"@kavach/core": "workspace:*",
-		"@svelte-spice/form": "1.0.0-next.0",
+		"@svelte-spice/form": "1.0.0-next.3",
+		"@svelte-spice/input": "1.0.0-next.3",
 		"ramda": "^0.28.0"
 	}
 }

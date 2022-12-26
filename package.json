@@ -15,14 +15,17 @@
     "upgrade": "pnpm upgrade",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "version:next": "turbo run build && changeset pre enter next && changeset version",
-    "release:next": "changeset publish",
+    "version:next": "turbo run build && changeset pre enter next && changeset",
+    "release:next-1": "changeset publish && changeset pre exit",
+    "release:next": "bumpp --preid=next packages/*/package.json adapters/*/package.json",
     "upgrade:all": "turbo run upgrade",
     "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
   },
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",
   "workspaces": [
+    "packages/cookie",
+    "packages/hashing",
     "packages/core",
     "packages/svelte",
     "adapters/supabase",
@@ -30,12 +33,13 @@
   ],
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
-    "eslint": "^7.32.0",
+    "@jerrythomas/eslint-config-svelte": "^1.0.2",
+    "@jerrythomas/prettier-config": "^1.0.0",
+    "bumpp": "^8.2.1",
+    "eslint": "^8.30.0",
     "husky": "^7.0.4",
     "lint-staged": "^11.2.6",
-    "turbo": "^1.5.5",
-    "@jerrythomas/prettier-config": "latest",
-    "@jerrythomas/eslint-config-svelte": "latest"
+    "turbo": "^1.6.3"
   },
   "lint-staged": {
     "*.{js,svelte}": "eslint --cache --fix",

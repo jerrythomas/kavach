@@ -16,9 +16,9 @@
   - [x] Magic Link
   - [x] Google
   - [x] Microsoft
-  - [ ] Github
-  - [ ] Twitter
-  - [ ] Facebook
+  - [x] Github
+  - [x] Twitter
+  - [x] Facebook
 - [ ] Examples with protected routes and data operations
   - [x] Supabase
   - [ ] Firebase

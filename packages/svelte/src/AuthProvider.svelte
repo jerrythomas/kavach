@@ -1,6 +1,10 @@
 <script>
-	import { InputField } from '@svelte-spice/form'
-	import AuthButton from './AuthButton.svelte'
+	import { IconButton, InputField } from '@svelte-spice/form'
+	import { getContext } from 'svelte'
+	import { createEventDispatcher } from 'svelte'
+
+	const dispatch = createEventDispatcher()
+	const kavach = getContext('kavach')
 
 	/** @type {'otp'|'oauth'|'password'} */
 	export let mode = 'oauth'
@@ -10,34 +14,58 @@
 	export let label
 	/** @type {Array<string>} */
 	export let scopes = []
-	/** @type {Array<string>} */
-	export let params = []
 
-	/** @type {string} */
-	export let action = null
+	let result
+	let value
+	let password
+	async function signIn() {
+		if (mode === 'password') {
+			result = await kavach.signIn({ [name]: value, password })
+		} else if (mode === 'otp') {
+			result = await kavach.signIn({ provider: name, email: value })
+		} else {
+			await kavach.signIn({ provider: name, scopes })
+		}
+		if (result) {
+			if (result.error) {
+				dispatch('error', result.error)
+			} else {
+				dispatch('success', result.data)
+			}
+		}
+	}
 </script>
 
 {#if mode === 'oauth'}
-	<AuthButton provider={name} {label} {scopes} {params} />
+	<IconButton on:click={signIn} {label} leftIcon="logo-{name}" />
+	<!-- <AuthButton provider={name} {label} {scopes} {params} on:click={signIn} /> -->
+{:else if mode === 'password'}
+	<InputField type={name} icon="logo-{name}" label={name} bind:value />
+	<InputField
+		type="password"
+		icon="logo-password"
+		label="Password"
+		bind:password
+	/>
+	<button
+		on:click={signIn}
+		class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+	>
+		Sign in
+	</button>
+	<!-- <AuthPassword {label} {} on:click={signIn} /> -->
 {:else}
-	<form method="post" {action} class="flex flex-col w-full auth {name}">
-		<input type="hidden" name="mode" value={mode} />
-		{#if mode === 'password'}
-			<InputField type={name} {name} icon="logo-{name}" {label} />
-			<InputField type="password" name="password" label="Password" />
-			<button
-				on:click
-				class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
-			>
-				Sign in
-			</button>
-		{:else}
-			<InputField
-				type="email"
-				name="email"
-				icon="logo-{name}"
-				placeholder={label}
-			/>
-		{/if}
+	<!-- <pre>
+		provider:{name}
+		{JSON.stringify(result, null, 2)}
+	</pre> -->
+	<form on:submit={signIn}>
+		<InputField
+			type="email"
+			name="email"
+			icon="logo-{name}"
+			placeholder={label}
+			bind:value
+		/>
 	</form>
 {/if}

@@ -2,22 +2,27 @@ import { pick } from 'ramda'
 import { createDeflector, setHeaderCookies, zeroLogger } from '@kavach/core'
 import { getRequestData } from './request'
 import { APP_AUTH_CONTEXT, RUNNING_ON } from './constants'
+import { writable } from 'svelte/store'
 
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
 	const logger = options?.logger ?? zeroLogger
-	const invalidate = options?.invalidate ?? (() => {})
+	// const invalidate = options?.invalidate ?? (() => {})
 	const invalidateAll = options?.invalidateAll ?? (() => {})
-	// const goto = options?.goto ?? (() => {})
+	const status = writable({})
 
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
-		invalidate(APP_AUTH_CONTEXT)
+		status.set(result)
+		invalidateAll()
+		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
 	const signUp = async (credentials) => {
 		const result = await adapter.signUp(credentials)
-		invalidate(APP_AUTH_CONTEXT)
+		status.set(result)
+		invalidateAll()
+		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
 	const signOut = async () => {
@@ -31,13 +36,14 @@ export function createKavach(adapter, options) {
 		// invalidate(APP_AUTH_CONTEXT)
 	}
 
-	const onAuthChange = () => {
+	const onAuthChange = (url) => {
 		if (RUNNING_ON !== 'browser') {
 			logger.error('onAuthChange should only be called from browser')
 			return
 		}
 		adapter.onAuthChange(async (event, session) => {
-			// console.log('auth changed')
+			status.set(adapter.parseUrlError(url))
+
 			const result = await fetch(deflector.page.session, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -60,13 +66,6 @@ export function createKavach(adapter, options) {
 	async function handleUnauthorizedAccess({ event, resolve }) {
 		const pathname = deflectedPath(event.url)
 
-		// console.log(
-		// 	pathname,
-		// 	event.locals.session,
-		// 	event.url.pathname,
-		// 	deflector.isAuthenticated,
-		// 	deflector.authorizedRoutes
-		// )
 		if (pathname !== event.url.pathname) {
 			return new Response(
 				{},
@@ -110,6 +109,7 @@ export function createKavach(adapter, options) {
 		onAuthChange,
 		handle,
 		deflectedPath,
+		status,
 		client: adapter.client
 	}
 }

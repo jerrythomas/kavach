@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import cookie from '../src/cookie.js'
+import cookie from '../src/index.js'
 
 describe('Cookie Serialize', () => {
 	it('basic', () => {

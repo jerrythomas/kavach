@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parse } from '../src/cookie.js'
+import { parse } from '../src/index.js'
 
 describe('Cookie Parser', () => {
 	it('argument validation', () => {

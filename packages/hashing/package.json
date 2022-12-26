@@ -1,0 +1,51 @@
+{
+	"name": "@kavach/hashing",
+	"version": "1.0.0-next.1",
+	"description": "Hashing functions.",
+	"author": "Jerry Thomas <me@jerrythomas.name>",
+	"license": "MIT",
+	"main": "index.js",
+	"svelte": "src/index.js",
+	"module": "src/index.js",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jerrythomas/kavach",
+		"directory": "packages/hashing"
+	},
+	"prettier": "@jerrythomas/prettier-config",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"prepublishOnly": "tsc",
+		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
+		"format": "prettier --write --plugin-search-dir=. .",
+		"test:ci": "vitest run",
+		"test:ui": "vitest --ui",
+		"test": "vitest",
+		"coverage": "vitest run --coverage",
+		"upgrade": "pnpm upgrade"
+	},
+	"devDependencies": {
+		"@jerrythomas/prettier-config": "^1.0.0",
+		"@types/node": "^18.11.17",
+		"@vitest/coverage-c8": "^0.24.5",
+		"@vitest/ui": "~0.12.10",
+		"c8": "^7.12.0",
+		"eslint": "^7.32.0",
+		"linter": "workspace:^1.0.0",
+		"typescript": "^4.9.4",
+		"vite": "^4.0.3",
+		"vitest": "0.24.5"
+	},
+	"exports": {
+		"./package.json": "./package.json",
+		"./provider.css": "./src/provider.css",
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./src/index.js"
+		}
+	}
+}

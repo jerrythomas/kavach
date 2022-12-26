@@ -1,6 +1,63 @@
-<p>
-	This is the home page of the application. It is protected and should not be
-	accessible when user is not logged in. You should be redirected to the login
-	page if you type the url on the browser.
-</p>
-<p>The default role is 'Authenticated'.</p>
+<script>
+	import { CheckBox } from '@svelte-spice/input'
+	import { List } from '@svelte-spice/core'
+	import User from '$lib/User.svelte'
+
+	export let todos = [
+		{ completed: true, task: 'a completed task' },
+		{ completed: false, task: 'a pending task' }
+	]
+	let history = [
+		{
+			name: 'Jerry Thomas',
+			email: 'jerry.thomas@senecaglobal.com',
+			scopes: [],
+			provider: 'azure'
+		}
+	]
+	export let value
+
+	function add() {
+		todos = [...todos, { completed: false, task: value }]
+		value = ''
+	}
+
+	function handleSelect(event) {
+		alert(JSON.stringify(event.detail))
+	}
+</script>
+
+<form class="flex flex-row w-full" on:submit={add}>
+	<input type="text" name="todo" bind:value class="flex flex-grow" />
+</form>
+
+{#each todos as todo}
+	<div class="flex flex-row w-full items-center gap-2 task">
+		<CheckBox bind:value={todo.completed} />
+		<!-- <Input type="checkbox" name="completed" bind:checked={todo.completed} /> -->
+		<input
+			type="text"
+			bind:value={todo.task}
+			class="flex flex-grow"
+			readOnly={todo.completed}
+		/>
+		<icon class="delete" />
+	</div>
+{/each}
+
+<List items={history} using={{ default: User }} on:select={handleSelect} />
+
+<style>
+	.task {
+		@apply border-b py-2 border-skin-200;
+	}
+	.task input {
+		@apply border-none bg-transparent;
+	}
+	.task input[readOnly] {
+		@apply line-through italic;
+	}
+	.task input:not([readOnly]):focus {
+		@apply border;
+	}
+</style>
