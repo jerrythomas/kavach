@@ -1,6 +1,5 @@
 export * from './kavach'
 export * from './request'
-export * from './endpoints'
 
 export { default as AuthButton } from './AuthButton.svelte'
 export { default as AuthProvider } from './AuthProvider.svelte'

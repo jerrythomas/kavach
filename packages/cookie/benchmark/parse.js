@@ -54,7 +54,7 @@ suite.add({
 	fn: 'let val = cookie.parse(' + JSON.stringify(gencookies(100)) + ')'
 })
 
-suite.on('start', function onCycle(event) {
+suite.on('start', function onCycle() {
 	process.stdout.write('  cookie.parse - generic\n\n')
 })
 

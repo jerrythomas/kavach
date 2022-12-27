@@ -4,7 +4,7 @@ import { loggingLevels } from '../src/constants'
 
 describe('Logger', () => {
 	const running_on = 'browser'
-	const levels = Object.entries(loggingLevels)
+	const levels = Object.keys(loggingLevels)
 	const writer = {
 		write: vi.fn()
 	}
@@ -129,7 +129,7 @@ describe('Logger', () => {
 		expect(writer.write).toHaveBeenCalledOnce()
 	})
 
-	it.each(levels)('should create a logger at level ="%s"', (level, count) => {
+	it.each(levels)('should create a logger at level ="%s"', (level) => {
 		const data = { message: 'foo' }
 		const logger = getLogger(writer, { level })
 

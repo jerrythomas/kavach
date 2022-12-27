@@ -1,7 +1,9 @@
 import { vi } from 'vitest'
 
-function mockSignIn(mode, credentials, options) {
-	return mode === 'otp' ? { data: 'success' } : { error: 'invalid data' }
+function mockSignIn(credentials) {
+	return credentials.provider === 'magic'
+		? { data: 'success' }
+		: { error: 'invalid data' }
 }
 
 export function createMockAdapter(options) {
@@ -19,6 +21,7 @@ export function createMockAdapter(options) {
 				}
 		}),
 		verifyOtp: vi.fn(),
-		onAuthChange: vi.fn()
+		onAuthChange: vi.fn(),
+		parseUrlError: vi.fn()
 	}
 }

@@ -1,8 +1,14 @@
 import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { testConfig } from 'shared-config'
 
 export default defineConfig({
-	plugins: [svelte({ hot: !process.env.VITEST })],
-	test: testConfig
+	plugins: [],
+	test: {
+		globals: true,
+		environment: 'jsdom',
+		coverage: {
+			reporter: ['html', 'lcov', 'text'],
+			all: false,
+			include: ['src']
+		}
+	}
 })

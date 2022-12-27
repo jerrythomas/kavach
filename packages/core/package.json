@@ -29,23 +29,18 @@
 		"upgrade": "pnpm upgrade"
 	},
 	"dependencies": {
-		"@kavach/cookie": "workspace:1.0.0-next.1",
-		"@kavach/hashing": "workspace:1.0.0-next.1"
+		"@kavach/cookie": "workspace:*",
+		"@kavach/hashing": "workspace:*",
+		"ramda": "^0.28.0"
 	},
 	"devDependencies": {
 		"@jerrythomas/prettier-config": "^1.0.0",
-		"@sveltejs/vite-plugin-svelte": "^2.0.2",
-		"@testing-library/svelte": "^3.2.2",
 		"@types/node": "^18.11.17",
 		"@vitest/coverage-c8": "^0.24.5",
 		"@vitest/ui": "~0.12.10",
 		"c8": "^7.12.0",
-		"eslint": "^7.32.0",
-		"js-yaml": "^4.1.0",
+		"eslint-config-library": "workspace:*",
 		"jsdom": "^19.0.0",
-		"ramda": "^0.28.0",
-		"shared-config": "workspace:^1.0.0",
-		"svelte": "^3.55.0",
 		"typescript": "^4.9.4",
 		"vite": "^4.0.3",
 		"vitest": "0.24.5"
@@ -54,7 +49,7 @@
 		"./package.json": "./package.json",
 		"./provider.css": "./src/provider.css",
 		".": {
-			"types": "./types/index.d.ts",
+			"types": "./dist/index.d.ts",
 			"import": "./src/index.js"
 		}
 	}

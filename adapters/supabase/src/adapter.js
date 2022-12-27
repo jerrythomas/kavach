@@ -13,6 +13,7 @@ async function handleSignIn(client, credentials) {
 
 	let result
 	if (provider === 'magic') {
+		const { email } = credentials
 		result = await client.auth.signInWithOtp({ email })
 		result = { ...result, credentials: { provider, email } }
 	} else if (password) {

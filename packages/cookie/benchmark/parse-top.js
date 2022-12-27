@@ -24,7 +24,7 @@ Object.keys(topSites).forEach(function (domain) {
 	})
 })
 
-suite.on('start', function onCycle(event) {
+suite.on('start', function onCycle() {
 	process.stdout.write('  cookie.parse - top sites\n\n')
 })
 

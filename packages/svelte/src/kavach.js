@@ -1,7 +1,7 @@
 import { pick } from 'ramda'
 import { createDeflector, setHeaderCookies, zeroLogger } from '@kavach/core'
 import { getRequestData } from './request'
-import { APP_AUTH_CONTEXT, RUNNING_ON } from './constants'
+import { RUNNING_ON } from './constants'
 import { writable } from 'svelte/store'
 
 export function createKavach(adapter, options) {

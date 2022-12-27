@@ -157,7 +157,7 @@ export function isRouteAllowed(route, allowedRoutes) {
  * @returns
  */
 export function removeAppRoutes(routes, appRoutes) {
-	Object.entries(appRoutes).map(([_, route]) => {
+	Object.values(appRoutes).map((route) => {
 		let index = 0
 		do {
 			index = routes.findIndex((path) => path === route)

@@ -125,7 +125,13 @@
  */
 
 /**
- * @typedef {OAuthCredentials| OtpCredentials| EmailAuthCredentials| PhoneAuthCredentials} AuthCredentials
+ * @typedef AuthCredentials
+ * @property {string} provider
+ * @property {string} [email]
+ * @property {string} [password]
+ * @property {string} [phone]
+ * @property {string} [redirectTo]
+ * @property {Array<string>} [scopes]
  */
 /**
  * @typedef {(event: string, session: any) => Promise<void>} AuthCallback

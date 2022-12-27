@@ -28,23 +28,18 @@
 		"upgrade": "pnpm upgrade"
 	},
 	"devDependencies": {
-		"@jerrythomas/eslint-config-svelte": "^1.0.2",
 		"@jerrythomas/prettier-config": "^1.0.0",
-		"@sveltejs/vite-plugin-svelte": "^2.0.2",
-		"@testing-library/svelte": "^3.2.2",
 		"@vitest/ui": "~0.12.10",
 		"c8": "^7.12.0",
-		"eslint": "^7.32.0",
+		"eslint-config-library": "workspace:*",
 		"jsdom": "^19.0.0",
-		"release-it": "^15.5.1",
-		"shared-config": "workspace:^1.0.0",
-		"svelte": "^3.55.0",
+		"shared-config": "workspace:*",
 		"typescript": "^4.9.4",
 		"vite": "^4.0.3",
 		"vitest": "~0.19.1"
 	},
 	"dependencies": {
-		"@kavach/core": "workspace:1.0.0-next.1"
+		"@kavach/core": "workspace:*"
 	},
 	"exports": {
 		"./package.json": "./package.json",

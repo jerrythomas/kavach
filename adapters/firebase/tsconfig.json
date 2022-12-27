@@ -1,6 +1,6 @@
 {
-	"extends": "shared-config/svelte-lib.json",
-	"include": ["src/**/*.js", "src/**/*.svelte"],
+	"extends": "shared-config/jsconfig.json",
+	"include": ["src/**/*.js"],
 	"compilerOptions": {
 		"outDir": "dist"
 	}

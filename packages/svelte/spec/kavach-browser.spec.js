@@ -1,13 +1,13 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
 import { createKavach } from '../src/kavach'
 import { APP_AUTH_CONTEXT } from '../src/constants'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
-	const invalidate = vi.fn()
+	// const invalidate = vi.fn()
 	const invalidateAll = vi.fn()
-	const goto = vi.fn()
+	// const goto = vi.fn()
 
 	const sessions = [
 		{
@@ -44,6 +44,7 @@ describe('kavach', () => {
 			'onAuthChange',
 			'handle',
 			'deflectedPath',
+			'status',
 			'client'
 		])
 	})
@@ -112,7 +113,7 @@ describe('kavach', () => {
 			},
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
 		})
-		adapter.synchronize = vi.fn().mockImplementationOnce((session) => ({
+		adapter.synchronize = vi.fn().mockImplementationOnce(() => ({
 			error
 		}))
 
@@ -176,29 +177,31 @@ describe('kavach', () => {
 	it('should sign in using adapter', async () => {
 		adapter.signIn = vi.fn().mockImplementation((input) => ({ input }))
 
-		const kavach = createKavach(adapter, { invalidate })
+		const kavach = createKavach(adapter, { invalidateAll })
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
 		const result = await kavach.signIn(credentials)
 
 		expect(adapter.signIn).toHaveBeenCalledWith(credentials)
-		expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
+		expect(invalidateAll).toHaveBeenCalled()
+		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 		expect(result).toEqual({ input: credentials })
 	})
 
 	it('should sign up using adapter', async () => {
 		adapter.signUp = vi.fn().mockImplementation((input) => ({ input }))
 
-		const kavach = createKavach(adapter, { invalidate })
+		const kavach = createKavach(adapter, { invalidateAll })
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
 		const result = await kavach.signUp(credentials)
 
 		expect(adapter.signUp).toHaveBeenCalledWith(credentials)
-		expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
+		expect(invalidateAll).toHaveBeenCalled()
+		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 		expect(result).toEqual({ input: credentials })
 	})
 
 	it('should sign out using adapter', async () => {
-		const kavach = createKavach(adapter, { invalidate, invalidateAll })
+		const kavach = createKavach(adapter, { invalidateAll })
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
 		await kavach.signOut(credentials)
 
@@ -267,9 +270,10 @@ describe('kavach', () => {
 			// expect(goto).toHaveBeenCalledWith('/')
 			expect(result).toEqual({ status: 200 })
 		})
-		const kavach = createKavach(adapter, { invalidate, invalidateAll, goto })
+		const kavach = createKavach(adapter, { invalidateAll })
 
 		kavach.onAuthChange()
+		expect(adapter.parseUrlError).toHaveBeenCalled()
 		expect(adapter.onAuthChange).toHaveBeenCalled()
 	})
 	it('should handle auth change to SIGNED_OUT', async () => {
@@ -287,9 +291,10 @@ describe('kavach', () => {
 			// expect(goto).toHaveBeenCalledWith('/auth')
 			expect(result).toEqual({ status: 200 })
 		})
-		const kavach = createKavach(adapter, { invalidate, invalidateAll, goto })
+		const kavach = createKavach(adapter, { invalidateAll })
 
 		kavach.onAuthChange()
+		expect(adapter.parseUrlError).toHaveBeenCalled()
 		expect(adapter.onAuthChange).toHaveBeenCalled()
 	})
 })
