@@ -19,6 +19,7 @@
     "version:next": "turbo run build && changeset pre enter next && changeset",
     "release:next-1": "changeset publish && changeset pre exit",
     "release:next": "bumpp --preid=next packages/*/package.json adapters/*/package.json",
+    "publish": "pnpm -r publish",
     "upgrade:all": "turbo run upgrade",
     "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
   },
