@@ -1,9 +1,10 @@
 {
   "name": "kavach",
-  "version": "1.0.0-next.0",
+  "version": "1.0.0-next.4",
   "description": "Drop in authentication including route protection and redirects.",
   "main": "index.js",
   "packageManager": "pnpm@7.20.0",
+  "private": true,
   "scripts": {
     "clean": "rm -rf sites/skeleton/.vercel",
     "prepublishOnly": "turbo run prepublishOnly",
@@ -18,8 +19,8 @@
     "version-packages": "changeset version",
     "version:next": "turbo run build && changeset pre enter next && changeset",
     "release:next-1": "changeset publish && changeset pre exit",
-    "release:next": "bumpp --preid=next packages/*/package.json adapters/*/package.json",
-    "publish": "pnpm -r publish",
+    "release:next": "bumpp --preid=next package.json packages/*/package.json adapters/*/package.json",
+    "publish": "pnpm packages/* adapters/* publish",
     "upgrade:all": "turbo run upgrade",
     "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
   },
