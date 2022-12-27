@@ -17,10 +17,8 @@
     "upgrade": "pnpm upgrade",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "version:next": "turbo run build && changeset pre enter next && changeset",
-    "release:next-1": "changeset publish && changeset pre exit",
-    "release:next": "bumpp --preid=next package.json packages/*/package.json adapters/*/package.json",
-    "publish": "pnpm packages/* adapters/* publish",
+    "version:next": "pnpm clean && turbo run build && changeset pre enter next && changeset",
+    "release:next": "changeset publish && changeset pre exit",
     "upgrade:all": "turbo run upgrade",
     "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
   },
