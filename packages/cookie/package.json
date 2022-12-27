@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@jerrythomas/prettier-config": "^1.0.0",
 		"@types/benchmark": "^2.1.2",
-		"@types/node": "^18.11.17",
+		"@types/node": "^18.11.18",
 		"@vitest/coverage-c8": "^0.24.5",
 		"@vitest/ui": "~0.12.10",
 		"beautify-benchmark": "0.2.4",
@@ -43,7 +43,7 @@
 		"c8": "^7.12.0",
 		"eslint-config-library": "workspace:*",
 		"safe-buffer": "5.2.1",
-		"shared-config": "workspace:^1.0.0",
+		"shared-config": "workspace:*",
 		"top-sites": "1.1.97",
 		"typescript": "^4.9.4",
 		"vite": "^4.0.3",

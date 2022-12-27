@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "format": "prettier --write --plugin-search-dir=. .",
     "upgrade": "pnpm upgrade"

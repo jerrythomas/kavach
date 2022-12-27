@@ -37,7 +37,7 @@
 		"eslint-config-svelte": "workspace:*",
 		"js-yaml": "^4.1.0",
 		"jsdom": "^19.0.0",
-		"shared-config": "workspace:^1.0.0",
+		"shared-config": "workspace:*",
 		"svelte": "^3.55.0",
 		"typescript": "^4.9.4",
 		"vite": "^4.0.3",
@@ -51,10 +51,10 @@
 		}
 	},
 	"dependencies": {
-		"@kavach/cookie": "workspace:1.0.0-next.2",
+		"@kavach/cookie": "workspace:*",
 		"@kavach/core": "workspace:*",
-		"@svelte-spice/form": "1.0.0-next.3",
-		"@svelte-spice/input": "1.0.0-next.3",
+		"@svelte-spice/form": "latest",
+		"@svelte-spice/input": "latest",
 		"ramda": "^0.28.0"
 	}
 }

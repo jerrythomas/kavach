@@ -4,8 +4,8 @@ import { md5 } from '@kavach/hashing'
  * Convert a buffer into a base 64 encoded string dataURL
  *
  * @param {Buffer} buffer
- * @param {String} contentType
- * @returns {DataURL}
+ * @param {string} contentType
+ * @returns {string}
  */
 export function toDataURL(buffer, contentType = 'image/jpeg') {
 	return `data:${contentType};base64,${buffer.toString('base64')}`
@@ -16,7 +16,7 @@ export function toDataURL(buffer, contentType = 'image/jpeg') {
  *
  * @param {String} email
  * @param {String} token
- * @returns {Object} containing status and the photo in a Buffer
+ * @returns {Promise<any>} containing status and the photo in a Buffer
  */
 export async function getUserPhotoFromMicrosoft(email, token) {
 	const url = `https://graph.microsoft.com/v1.0/users/${email}/photo/$value`
