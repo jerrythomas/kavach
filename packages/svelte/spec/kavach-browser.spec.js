@@ -1,13 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
 import { createKavach } from '../src/kavach'
-import { APP_AUTH_CONTEXT } from '../src/constants'
+// import { APP_AUTH_CONTEXT } from '../src/constants'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
-	// const invalidate = vi.fn()
 	const invalidateAll = vi.fn()
-	// const goto = vi.fn()
 
 	const sessions = [
 		{
@@ -86,7 +84,7 @@ describe('kavach', () => {
 		expect(event.locals.session).toBeFalsy()
 		expect(adapter.synchronize).not.toHaveBeenCalled()
 		expect(adapter.signOut).toHaveBeenCalled()
-		// expect(Response).
+
 		expect(Response).toHaveBeenCalledWith(
 			{ error: null, session: null },
 			{
@@ -158,8 +156,7 @@ describe('kavach', () => {
 			expect(event.locals.session).toBeFalsy()
 			expect(adapter.synchronize).toHaveBeenCalledWith(session)
 			expect(adapter.signOut).not.toHaveBeenCalled()
-			// expect(Response).
-			console.log()
+
 			expect(Response).toHaveBeenCalledWith(
 				{ error: null, session },
 				{
@@ -177,12 +174,13 @@ describe('kavach', () => {
 	it('should sign in using adapter', async () => {
 		adapter.signIn = vi.fn().mockImplementation((input) => ({ input }))
 
-		const kavach = createKavach(adapter, { invalidateAll })
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
+
+		const kavach = createKavach(adapter, { invalidateAll })
 		const result = await kavach.signIn(credentials)
 
 		expect(adapter.signIn).toHaveBeenCalledWith(credentials)
-		expect(invalidateAll).toHaveBeenCalled()
+		// expect(invalidateAll).toHaveBeenCalled()
 		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 		expect(result).toEqual({ input: credentials })
 	})
@@ -195,24 +193,28 @@ describe('kavach', () => {
 		const result = await kavach.signUp(credentials)
 
 		expect(adapter.signUp).toHaveBeenCalledWith(credentials)
-		expect(invalidateAll).toHaveBeenCalled()
+		// expect(invalidateAll).toHaveBeenCalled()
 		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 		expect(result).toEqual({ input: credentials })
 	})
 
-	it('should sign out using adapter', async () => {
-		const kavach = createKavach(adapter, { invalidateAll })
-		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
-		await kavach.signOut(credentials)
+	it.each([{ invalidateAll }, {}])(
+		'should sign out using adapter',
+		async (options) => {
+			let kavach = createKavach(adapter, options)
+			await kavach.signOut()
 
-		expect(adapter.signOut).toHaveBeenCalledWith()
-		expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-			body: JSON.stringify({ event: 'SIGNED_OUT' }),
-			method: 'POST'
-		})
-		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-		expect(invalidateAll).toHaveBeenCalled()
-	})
+			expect(adapter.signOut).toHaveBeenCalledWith()
+			expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
+				body: JSON.stringify({ event: 'SIGNED_OUT' }),
+				method: 'POST'
+			})
+			// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
+			if (options.invalidateAll) {
+				expect(invalidateAll).toHaveBeenCalled()
+			}
+		}
+	)
 
 	it('should set event.locals', async () => {
 		let event = createMockEvent({
@@ -272,7 +274,7 @@ describe('kavach', () => {
 		})
 		const kavach = createKavach(adapter, { invalidateAll })
 
-		kavach.onAuthChange()
+		kavach.onAuthChange({ hash: '' })
 		expect(adapter.parseUrlError).toHaveBeenCalled()
 		expect(adapter.onAuthChange).toHaveBeenCalled()
 	})
@@ -293,7 +295,7 @@ describe('kavach', () => {
 		})
 		const kavach = createKavach(adapter, { invalidateAll })
 
-		kavach.onAuthChange()
+		kavach.onAuthChange({ hash: '' })
 		expect(adapter.parseUrlError).toHaveBeenCalled()
 		expect(adapter.onAuthChange).toHaveBeenCalled()
 	})

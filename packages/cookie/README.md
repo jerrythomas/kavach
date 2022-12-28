@@ -205,68 +205,9 @@ http.createServer(onRequest).listen(3000)
 pnpm test
 ```
 
-## Benchmark
-
-```text
-$ pnpm bench
-
-> @kavach/cookie@1.0.0-next.0 bench cookie
-> node benchmark/index.js
-
-
-  node@16.15.0
-  v8@9.4.146.24-node.20
-  uv@1.43.0
-  zlib@1.2.11
-  brotli@1.0.9
-  ares@1.18.1
-  modules@93
-  nghttp2@1.47.0
-  napi@8
-  llhttp@6.0.4
-  openssl@1.1.1n+quic
-  cldr@40.0
-  icu@70.1
-  tz@2021a3
-  unicode@14.0
-  ngtcp2@0.1.0-DEV
-  nghttp3@0.1.0-DEV
-  cookie.parse - generic
-
-  6 tests completed.
-
-  simple      x 2,285,991 ops/sec ±1.46% (191 runs sampled)
-  decode      x 1,720,499 ops/sec ±1.25% (189 runs sampled)
-  unquote     x 1,883,221 ops/sec ±1.30% (186 runs sampled)
-  duplicates  x   765,346 ops/sec ±1.46% (185 runs sampled)
-  10 cookies  x   225,063 ops/sec ±1.04% (185 runs sampled)
-  100 cookies x    20,354 ops/sec ±1.17% (185 runs sampled)
-
-  cookie.parse - top sites
-
-  16 tests completed.
-
-  parse accounts.google.com x 1,096,402 ops/sec ±0.76% (193 runs sampled)
-  parse apple.com           x 2,229,368 ops/sec ±1.14% (184 runs sampled)
-  parse cloudflare.com      x   665,688 ops/sec ±0.91% (183 runs sampled)
-  parse docs.google.com     x   974,477 ops/sec ±1.07% (181 runs sampled)
-  parse drive.google.com    x 1,044,377 ops/sec ±0.95% (188 runs sampled)
-  parse en.wikipedia.org    x   444,311 ops/sec ±1.14% (184 runs sampled)
-  parse linkedin.com        x   287,581 ops/sec ±0.84% (186 runs sampled)
-  parse maps.google.com     x   481,702 ops/sec ±0.88% (185 runs sampled)
-  parse microsoft.com       x   249,242 ops/sec ±0.92% (183 runs sampled)
-  parse play.google.com     x   686,403 ops/sec ±0.92% (187 runs sampled)
-  parse plus.google.com     x   989,099 ops/sec ±0.86% (184 runs sampled)
-  parse sites.google.com    x   975,948 ops/sec ±1.71% (182 runs sampled)
-  parse support.google.com  x   552,380 ops/sec ±1.03% (189 runs sampled)
-  parse www.google.com      x   507,071 ops/sec ±0.96% (181 runs sampled)
-  parse youtu.be            x   941,225 ops/sec ±0.97% (194 runs sampled)
-  parse youtube.com         x   976,920 ops/sec ±0.61% (192 runs sampled)
-```
-
 ## References
 
-This library is an ES module version of [jshttp/cookie](https://github.com/jshttp/cookie), for working with cookies in kavach.
+This library is an ES module version of [jshttp/cookie](https://github.com/jshttp/cookie), for working with cookies.
 
 - [RFC 6265: HTTP State Management Mechanism][rfc-6265]
 - [Same-site Cookies][rfc-6265bis-09-5.4.7]

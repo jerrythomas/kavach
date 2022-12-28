@@ -1,5 +1,7 @@
 import { pick } from 'ramda'
-import { createDeflector, setHeaderCookies, zeroLogger } from '@kavach/core'
+import { zeroLogger } from '@kavach/logger'
+import { createDeflector } from '@kavach/deflector'
+import { setHeaderCookies } from '@kavach/core'
 import { getRequestData } from './request'
 import { RUNNING_ON } from './constants'
 import { writable } from 'svelte/store'
@@ -14,14 +16,14 @@ export function createKavach(adapter, options) {
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
 		status.set(result)
-		invalidateAll()
+		// invalidateAll()
 		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
 	const signUp = async (credentials) => {
 		const result = await adapter.signUp(credentials)
 		status.set(result)
-		invalidateAll()
+		// invalidateAll()
 		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
@@ -42,7 +44,9 @@ export function createKavach(adapter, options) {
 			return
 		}
 		adapter.onAuthChange(async (event, session) => {
-			status.set(adapter.parseUrlError(url))
+			if (url) {
+				status.set(adapter.parseUrlError(url))
+			}
 
 			const result = await fetch(deflector.page.session, {
 				method: 'POST',
