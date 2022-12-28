@@ -1,7 +1,4 @@
 export * from './types'
 export * from './provider'
 export * from './helper'
-export { zeroLogger } from './constants'
-export { getLogger } from './logger'
-export { createDeflector } from './deflector'
 export { gravatar, deriveName } from './avatar'

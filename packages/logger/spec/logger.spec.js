@@ -1,9 +1,9 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { log, getLogger } from '../src/logger'
-import { loggingLevels } from '../src/constants'
+import { loggingLevels, runningOn } from '../src/constants'
 
 describe('Logger', () => {
-	const running_on = 'browser'
+	const running_on = runningOn
 	const levels = Object.keys(loggingLevels)
 	const writer = {
 		write: vi.fn()

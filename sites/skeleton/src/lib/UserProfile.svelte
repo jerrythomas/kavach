@@ -7,7 +7,7 @@
 	export let app_metadata
 
 	$: avatar = gravatar(email)
-	$: name = user_metadata ?? deriveName(email)
+	$: name = user_metadata?.full_name ?? deriveName(email)
 </script>
 
 <card

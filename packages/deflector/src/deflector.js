@@ -1,4 +1,4 @@
-import { zeroLogger } from './constants'
+import { zeroLogger } from '@kavach/logger'
 
 /**
  * Create a deflector using provided options
