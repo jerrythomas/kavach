@@ -17,7 +17,7 @@
     "upgrade": "pnpm upgrade",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "version:next": "pnpm clean && turbo run build && changeset pre enter next && changeset",
+    "version:next": "pnpm clean && turbo run build && changeset pre enter next && changeset version",
     "release:next": "changeset publish && changeset pre exit",
     "upgrade:all": "turbo run upgrade",
     "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
@@ -27,6 +27,8 @@
   "workspaces": [
     "packages/cookie",
     "packages/hashing",
+    "packages/logger",
+    "packages/deflector",
     "packages/core",
     "packages/svelte",
     "adapters/supabase",

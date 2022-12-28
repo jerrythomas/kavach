@@ -6,8 +6,15 @@
     "@kavach/adapter-supabase": "1.0.0-next.4",
     "@kavach/cookie": "1.0.0-next.4",
     "@kavach/core": "1.0.0-next.4",
+    "@kavach/deflector": "1.0.0-next.4",
     "@kavach/hashing": "1.0.0-next.4",
+    "@kavach/logger": "1.0.0-next.4",
     "@kavach/svelte": "1.0.0-next.4"
   },
-  "changesets": []
+  "changesets": [
+    "forty-trees-notice",
+    "popular-countries-shake",
+    "quick-parents-decide",
+    "slimy-ligers-float"
+  ]
 }
