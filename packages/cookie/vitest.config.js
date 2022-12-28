@@ -1,13 +1,6 @@
 import { defineConfig } from 'vite'
+import { testConfig } from 'shared-config'
 
 export default defineConfig({
-	plugins: [],
-	test: {
-		globals: true,
-		coverage: {
-			reporter: ['html', 'lcov', 'text'],
-			all: false,
-			include: ['src']
-		}
-	}
+	test: testConfig
 })

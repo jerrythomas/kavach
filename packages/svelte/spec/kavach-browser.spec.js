@@ -42,7 +42,7 @@ describe('kavach', () => {
 			'onAuthChange',
 			'handle',
 			'deflectedPath',
-			'status',
+			// 'status',
 			'client'
 		])
 	})

@@ -31,6 +31,19 @@ async function handleSignIn(client, credentials) {
 	return transformResult(result)
 }
 
+function parseUrlError(url) {
+	let error = { isError: false }
+	let result = urlHashToParams(url.hash)
+	if (result.error) {
+		error = {
+			isError: true,
+			status: result.error_code,
+			name: result.error,
+			message: result.error_description.replaceAll('+', '')
+		}
+	}
+	return error
+}
 /** @type {import('./types').GetSupabaseAdapter}  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
@@ -64,19 +77,6 @@ export function getAdapter(options) {
 	const synchronize = async (session) => {
 		return client.auth.setSession(session)
 	}
-	const parseUrlError = (url) => {
-		let error = { isError: false }
-		let result = urlHashToParams(url.hash)
-		if (result.error) {
-			error = {
-				isError: true,
-				status: result.error_code,
-				name: result.error,
-				message: result.error_description.replaceAll('+', '')
-			}
-		}
-		return error
-	}
 
 	return {
 		signIn,
@@ -95,14 +95,13 @@ export function getAdapter(options) {
  * @returns
  */
 export function transformResult({ data, error, credentials }) {
-	let isError = false
 	let message = ''
 	if (!error) {
 		message =
 			credentials.provider == 'magic'
 				? `Magic link has been sent to "${credentials.email}".`
 				: ''
-		return { isError, data, message }
+		return { type: 'info', data, message }
 	}
 	message =
 		error instanceof AuthApiError && error.status === 400
@@ -110,7 +109,7 @@ export function transformResult({ data, error, credentials }) {
 			: 'Server error. Try again later.'
 
 	return {
-		isError,
+		type: 'error',
 		...error,
 		message,
 		data

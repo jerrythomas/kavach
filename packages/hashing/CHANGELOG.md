@@ -1,5 +1,11 @@
 # @kavach/hashing
 
+## 1.0.0-next.6
+
+### Patch Changes
+
+- Added store for auth status and used alerts to display status on demo page.
+
 ## 1.0.0-next.5
 
 ### Patch Changes

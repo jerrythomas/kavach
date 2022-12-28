@@ -15,10 +15,8 @@
     "format": "pnpm clean && turbo run format",
     "prepare": "husky install",
     "upgrade": "pnpm upgrade",
-    "changeset": "changeset",
-    "version-packages": "changeset version",
-    "version:next": "pnpm clean && turbo run build && changeset pre enter next && changeset version",
-    "release:next": "changeset publish && changeset pre exit",
+    "version:next": "pnpm build && changeset pre enter next && changeset",
+    "release:next": "changeset version && changeset publish && changeset pre exit",
     "upgrade:all": "turbo run upgrade",
     "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
   },

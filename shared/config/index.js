@@ -2,7 +2,7 @@ export const testConfig = {
   globals: true,
   environment: 'jsdom',
   coverage: {
-    reporter: ['text', 'lcov'],
+    reporter: ['html', 'lcov', 'text'],
     all: false,
     include: ['src'],
   },

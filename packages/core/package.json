@@ -1,6 +1,6 @@
 {
 	"name": "@kavach/core",
-	"version": "1.0.0-next.5",
+	"version": "1.0.0-next.6",
 	"description": "Core utility functions for Kavach.",
 	"author": "Jerry Thomas <me@jerrythomas.name>",
 	"license": "MIT",

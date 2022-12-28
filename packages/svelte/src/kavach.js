@@ -6,23 +6,24 @@ import { getRequestData } from './request'
 import { RUNNING_ON } from './constants'
 import { writable } from 'svelte/store'
 
+export const authStatus = writable()
+
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
 	const logger = options?.logger ?? zeroLogger
 	// const invalidate = options?.invalidate ?? (() => {})
 	const invalidateAll = options?.invalidateAll ?? (() => {})
-	const status = writable({})
 
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
-		status.set(result)
+		authStatus.set(result)
 		// invalidateAll()
 		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
 	const signUp = async (credentials) => {
 		const result = await adapter.signUp(credentials)
-		status.set(result)
+		authStatus.set(result)
 		// invalidateAll()
 		// invalidate(APP_AUTH_CONTEXT)
 		return result
@@ -45,7 +46,7 @@ export function createKavach(adapter, options) {
 		}
 		adapter.onAuthChange(async (event, session) => {
 			if (url) {
-				status.set(adapter.parseUrlError(url))
+				authStatus.set(adapter.parseUrlError(url))
 			}
 
 			const result = await fetch(deflector.page.session, {
@@ -113,7 +114,6 @@ export function createKavach(adapter, options) {
 		onAuthChange,
 		handle,
 		deflectedPath,
-		status,
 		client: adapter.client
 	}
 }
