@@ -18,3 +18,7 @@ body,
 body > div {
 	@apply h-screen w-screen flex flex-row font-body;
 }
+
+alert-list {
+	@apply top-4 right-4 w-80;
+}

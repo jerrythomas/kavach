@@ -4,17 +4,19 @@
 	import '../app.scss'
 	import { onMount } from 'svelte'
 	import { kavach } from '$lib/auth'
+	import { authStatus } from '@kavach/svelte'
 	import { setContext } from 'svelte'
 	import { page } from '$app/stores'
+	import { Alerts } from '@svelte-spice/core'
+	import { alerts } from '@svelte-spice/core/stores'
 
-	const status = kavach.status
 	setContext('kavach', kavach)
 	onMount(() => kavach.onAuthChange($page.url))
+
+	$: if ($authStatus) alerts.set([...$alerts, $authStatus])
 </script>
 
-<pre>
-	status:{JSON.stringify($status, null, 2)}
-</pre>
+<Alerts />
 <main
 	class="flex flex-col items-center justify-center w-full h-full lg:max-w-screen-lg m-auto py-14 "
 >
