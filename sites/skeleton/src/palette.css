@@ -1,7 +1,7 @@
 @layer base {
 	:root {
-		--primary-hue: 25;
-		--primary-saturation: 95%;
+		--primary-hue: 15;
+		--primary-saturation: 100%;
 		--secondary-hue: 329;
 		--secondary-saturation: 80%;
 		--accent-hue: 329;
@@ -17,11 +17,11 @@
 		--primary-200: var(--primary-hue), var(--primary-saturation), 85%;
 		--primary-300: var(--primary-hue), var(--primary-saturation), 80%;
 		--primary-400: var(--primary-hue), var(--primary-saturation), 70%;
-		--primary-500: var(--primary-hue), var(--primary-saturation), 60%;
-		--primary-600: var(--primary-hue), var(--primary-saturation), 50%;
-		--primary-700: var(--primary-hue), var(--primary-saturation), 40%;
-		--primary-800: var(--primary-hue), var(--primary-saturation), 30%;
-		--primary-900: var(--primary-hue), var(--primary-saturation), 20%;
+		--primary-500: var(--primary-hue), var(--primary-saturation), 65%;
+		--primary-600: var(--primary-hue), var(--primary-saturation), 60%;
+		--primary-700: var(--primary-hue), var(--primary-saturation), 55%;
+		--primary-800: var(--primary-hue), var(--primary-saturation), 45%;
+		--primary-900: var(--primary-hue), var(--primary-saturation), 30%;
 
 		--secondary-50: var(--secondary-hue), var(--secondary-saturation), 95%;
 		--secondary-100: var(--secondary-hue), var(--secondary-saturation), 90%;

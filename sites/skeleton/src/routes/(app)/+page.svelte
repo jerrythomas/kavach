@@ -1,6 +1,6 @@
 <script>
-	import { CheckBox } from '@svelte-spice/input'
-	import { List } from '@svelte-spice/core'
+	import { CheckBox } from '@rokkit/input'
+	import { List } from '@rokkit/core'
 	import User from '$lib/User.svelte'
 
 	export let todos = [

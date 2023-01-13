@@ -4,7 +4,7 @@ import presetIcons from '@unocss/preset-icons'
 import presetTypography from '@unocss/preset-typography'
 import transformer from '@unocss/transformer-directives'
 import { extractorSvelte } from '@unocss/core'
-import { iconShortcuts, themeColors } from '@svelte-spice/themes'
+import { iconShortcuts, themeColors } from '@rokkit/themes'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 
 const authIcons = [
@@ -17,9 +17,11 @@ const authIcons = [
 ].reduce((acc, type) => ({ ...acc, [`logo-${type}`]: 'i-kavach:' + type }), {})
 
 export default defineConfig({
-	safelist: ['prose', ...Object.keys(iconShortcuts), ...Object.keys(authIcons)],
+	safelist: ['prose', ...Object.keys(iconShortcuts), ...Object.keys(authIcons), 'dropdown-closed', 'dropdown-opened'],
 	shortcuts: {
 		...authIcons,
+		'dropdown-closed': 'i-kavach:accordion-closed',
+		'dropdown-opened': 'i-kavach:accordion-opened',
 		'checkbox-checked': 'i-kavach:checkbox-checked',
 		'checkbox-unchecked': 'i-kavach:checkbox-unchecked',
 		delete: 'i-kavach:trash',
@@ -45,8 +47,8 @@ export default defineConfig({
 	theme: {
 		fontFamily: {
 			mono: ['Victor-Mono', 'monospace'],
-			serif: ['Montserrat', 'ui-serif', 'AppleSystemUIFont', 'serif'],
-			body: ['Montserrat', 'ui-serif', 'sans-serif']
+			serif: ['Poppins', 'ui-serif', 'AppleSystemUIFont', 'serif'],
+			body: ['Poppins', 'ui-serif', 'sans-serif']
 		},
 		colors: themeColors()
 	},
