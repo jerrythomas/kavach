@@ -55,8 +55,8 @@
 		"@kavach/core": "workspace:*",
 		"@kavach/deflector": "workspace:*",
 		"@kavach/logger": "workspace:*",
-		"@svelte-spice/form": "latest",
-		"@svelte-spice/input": "latest",
+		"@rokkit/form": "latest",
+		"@rokkit/input": "latest",
 		"ramda": "^0.28.0"
 	}
 }

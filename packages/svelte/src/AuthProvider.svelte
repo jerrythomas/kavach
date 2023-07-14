@@ -1,5 +1,5 @@
 <script>
-	import { IconButton, InputField } from '@svelte-spice/form'
+	import { IconButton, InputField } from '@rokkit/form'
 	import { getContext } from 'svelte'
 	import { createEventDispatcher } from 'svelte'
 

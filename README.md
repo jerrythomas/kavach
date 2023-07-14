@@ -1,28 +1,40 @@
 # Kavach
 
-Drop-in authentication including route protection and redirects for web apps.
+> Authentication made simple with Kavach
 
-![GitHub Workflow Status]([workflow_status_url])
-[![Maintainability]([maintainability_badge])]([maintainability_url])
-[![Test Coverage]([coverage_badge])]([coverage_url])
+Kavach is a powerful Svelte library that helps simplify the process of implementing authentication in your Svelte-Kit app. With support for social authentication, email/password authentication, and magic link authentication, Kavach has you covered no matter how you want to authenticate your users.
+
+In addition to its robust authentication features, Kavach also provides a customizable set of components to help you build a wide variety of responsive UI for your authentication flow. This makes it easy to create a seamless and intuitive experience for your users, no matter what devices they are using.
+
+Furthermore, Kavach is fully themeable and supports a variety of design styles, so it can fit seamlessly into any application's design system and theme. Whether you want a sleek and modern look or a more traditional and classic feel, Kavach has the tools and customization options you need.
+
+Kavach also provides support for role-based route protection. This allows you to ensure that only users with the appropriate permissions can access certain routes or pages in your application.
+
+Kavach currently supports using Supabase for authentication, and also includes support for row-level security. This allows you to implement fine-grained controls over which users have access to which data within your application. Support for Firebase, Auth0, and AWS Cognito is coming soon, so you'll have even more options for secure and reliable authentication in your app.
+
+[![Maintainability][maintainability_badge]][maintainability_url]
+[![Test Coverage][coverage_badge]][coverage_url]
+![GitHub Workflow Status][workflow_status_url]
 ![GitHub last commit](https://img.shields.io/github/last-commit/jerrythomas/kavach)
 
 ![kavach](kavach.svg)
 
-## Why?
+## Try It out
 
-Adding authentication to a web app is one of the most arduous tasks. Building apps in Svelte is great but there is no standard way to implement authentication. There are a lot of choices to add authentication for multiple providers. However, switching from one to another is not easy. The UI components for all the providers also need to meet the guidelines for the final app to be approved.
+If you're interested in trying out Kavach for yourself, you can visit the official website at [Kavach](https://kavach.vercel.app). There, you'll find detailed documentation and guides to help you get started with the library, as well as a live demo that you can play around with to see how Kavach works in action. Whether you're a seasoned developer or just getting started with Svelte-Kit, Kavach is a powerful and easy-to-use library that can help you add secure and reliable authentication to your app in no time. So, give it a try and see how it can simplify the process of adding authentication to your Svelte-Kit app.
 
-This is an attempt to make adding authentication to Svelte-Kit apps as simple as possible. This framework has been designed for Svelte.
+## Libraries
 
-- [logger](packages/core/README.md)
+- [@kavach/logger](packages/logger/README.md)
+- [@kavach/svelte](packages/svelte/README.md)
+- [@kavach/adapter-supabase](adapters/supabase/README.md)
 
 ## Getting started
 
 Get started quickly using [degit](https://github.com/Rich-Harris/degit). Select the library you want to use and run degit to get a sample app.
 
 ```bash
-degit jerrythomas/kavach/sites/supabase my-app
+npx degit jerrythomas/kavach/sites/skeleton my-app
 ```
 
 ### UnoCSS

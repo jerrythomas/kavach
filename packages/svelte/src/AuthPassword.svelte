@@ -1,5 +1,5 @@
 <script>
-	import { InputField } from '@svelte-spice/form'
+	import { InputField } from '@rokkit/form'
 	import { createEventDispatcher } from '@svelte'
 
 	const dispatch = createEventDispatcher()

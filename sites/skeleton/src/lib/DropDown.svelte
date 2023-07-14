@@ -1,6 +1,6 @@
 <script>
 	import Icon from './Icon.svelte'
-	import { ListItems, defaultFields, Text } from '@rokkit/core'
+	import { List, defaultFields, Text } from '@rokkit/core'
 	import { dismissable } from '@rokkit/core/actions'
 	import { createEventDispatcher } from 'svelte'
 
@@ -47,7 +47,7 @@
 			class="flex flex-col absolute z-10 h-fit w-full menu"
 			style:top="{offsetTop}px"
 		>
-			<ListItems
+			<List
 				{items}
 				{fields}
 				{using}

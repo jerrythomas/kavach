@@ -1,5 +1,5 @@
 <script>
-	import { IconButton } from '@svelte-spice/form'
+	import { IconButton } from '@rokkit/form'
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()

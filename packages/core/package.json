@@ -1,5 +1,5 @@
 {
-	"name": "@kavach/core",
+	"name": "kavach",
 	"version": "1.0.0-next.6",
 	"description": "Core utility functions for Kavach.",
 	"author": "Jerry Thomas <me@jerrythomas.name>",

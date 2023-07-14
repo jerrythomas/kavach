@@ -1,4 +1,4 @@
-# @kavach/core
+# kavach
 
 Includes core components and type definitions used by the framework.
 
