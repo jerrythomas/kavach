@@ -1,6 +1,6 @@
 {
   "name": "kavach",
-  "version": "1.0.0-next.4",
+  "version": "1.0.0-next.6",
   "description": "Drop in authentication including route protection and redirects.",
   "main": "index.js",
   "packageManager": "pnpm@7.20.0",
@@ -14,11 +14,13 @@
     "lint": "pnpm clean && turbo run lint",
     "format": "pnpm clean && turbo run format",
     "prepare": "husky install",
-    "upgrade": "pnpm upgrade",
-    "version:next": "pnpm build && changeset pre enter next && changeset",
-    "release:next": "changeset version && changeset publish && changeset pre exit",
-    "upgrade:all": "turbo run upgrade",
-    "coverage:lcov": "pnpm coverage && ./merge-lcov.sh"
+    "latest": "pnpm clean && pnpm upgrade --latest && turbo run latest",
+    "check-git": "if [ -n \"$(git status --porcelain)\" ]; then echo 'You have uncommitted changes or untracked files.' && exit 1; fi",
+    "release": "pnpm check-git && bumpp && turbo run release",
+    "release:next": "pnpm check-git && bumpp --preid=next && turbo run release",
+    "release:cs": "pnpm build && changeset pre enter next && changeset && changeset version && changeset publish && changeset pre exit && pnpm bump:next",
+    "upgrade:all": "./scripts/upgrade.sh && pnpm upgrade --latest",
+    "coverage:lcov": "pnpm coverage && ./scripts/merge-lcov.sh"
   },
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",
@@ -33,13 +35,12 @@
     "adapters/firebase"
   ],
   "devDependencies": {
-    "@changesets/cli": "^2.26.0",
     "@jerrythomas/prettier-config": "^1.0.0",
-    "bumpp": "^8.2.1",
-    "eslint": "^8.31.0",
-    "husky": "^7.0.4",
-    "lint-staged": "^11.2.6",
-    "turbo": "^1.7.0"
+    "bumpp": "^9.2.0",
+    "eslint": "^8.50.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "turbo": "^1.10.14"
   },
   "lint-staged": {
     "*.{js,svelte}": "eslint --cache --fix",

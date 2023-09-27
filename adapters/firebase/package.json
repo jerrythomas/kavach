@@ -25,7 +25,7 @@
 		"test:ui": "vitest --ui",
 		"test": "vitest",
 		"bundle": "release-it",
-		"upgrade": "pnpm upgrade"
+		"upgrade": "pnpm upgrade --latest && pnpm test:ci"
 	},
 	"devDependencies": {
 		"@jerrythomas/prettier-config": "^1.0.0",
