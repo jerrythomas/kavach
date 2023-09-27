@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-library",
-  "version": "1.0.0-next.6",
+  "version": "1.0.0-next.8",
   "main": "index.js",
   "license": "MIT",
   "private": true,

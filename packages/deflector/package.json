@@ -1,6 +1,6 @@
 {
 	"name": "@kavach/deflector",
-	"version": "1.0.0-next.6",
+	"version": "1.0.0-next.8",
 	"description": "A deflector for role based route handling",
 	"author": "Jerry Thomas <me@jerrythomas.name>",
 	"license": "MIT",
