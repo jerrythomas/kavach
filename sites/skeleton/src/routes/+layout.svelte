@@ -6,8 +6,8 @@
 	import { authStatus } from '@kavach/svelte'
 	import { setContext } from 'svelte'
 	import { page } from '$app/stores'
-	import { Alerts } from '@rokkit/core'
-	import { alerts } from '@rokkit/core/stores'
+	import { Alerts } from '@rokkit/molecules'
+	import { alerts } from '@rokkit/stores'
 
 	import { dataTheme } from '$lib/theme'
 

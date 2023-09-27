@@ -1,6 +1,4 @@
 <script>
-	// import { Switch } from '@rokkit/input'
-	// import { DropDown } from '@rokkit/core'
 	import Switch from '$lib/Switch.svelte'
 	import DropDown from '$lib/DropDown.svelte'
 	import { theme } from '$lib/theme'

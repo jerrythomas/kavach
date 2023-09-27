@@ -1,9 +1,9 @@
 import { defineConfig } from 'unocss'
+import extractorSvelte from '@unocss/extractor-svelte'
 import presetUno from '@unocss/preset-uno'
 import presetIcons from '@unocss/preset-icons'
 import presetTypography from '@unocss/preset-typography'
 import transformer from '@unocss/transformer-directives'
-import { extractorSvelte } from '@unocss/core'
 import { iconShortcuts, themeColors } from '@rokkit/themes'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 
@@ -17,7 +17,14 @@ const authIcons = [
 ].reduce((acc, type) => ({ ...acc, [`logo-${type}`]: 'i-kavach:' + type }), {})
 
 export default defineConfig({
-	safelist: ['prose', ...Object.keys(iconShortcuts), ...Object.keys(authIcons), 'dropdown-closed', 'dropdown-opened'],
+	extractors: [extractorSvelte()],
+	safelist: [
+		'prose',
+		...Object.keys(iconShortcuts),
+		...Object.keys(authIcons),
+		'dropdown-closed',
+		'dropdown-opened'
+	],
 	shortcuts: {
 		...authIcons,
 		'dropdown-closed': 'i-kavach:accordion-closed',
@@ -63,6 +70,5 @@ export default defineConfig({
 		}),
 		presetTypography()
 	],
-	extractors: [extractorSvelte],
 	transformers: [transformer()]
 })

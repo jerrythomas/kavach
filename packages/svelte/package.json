@@ -56,8 +56,8 @@
 		"@kavach/core": "workspace:*",
 		"@kavach/deflector": "workspace:*",
 		"@kavach/logger": "workspace:*",
-		"@rokkit/form": "1.0.0-next.36",
-		"@rokkit/input": "1.0.0-next.35",
+		"@rokkit/molecules": "1.0.0-next.50",
+		"@rokkit/organisms": "1.0.0-next.50",
 		"ramda": "^0.29.0"
 	}
 }

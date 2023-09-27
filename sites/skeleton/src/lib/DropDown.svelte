@@ -1,7 +1,9 @@
 <script>
 	import Icon from './Icon.svelte'
-	import { List, defaultFields, Text } from '@rokkit/core'
-	import { dismissable } from '@rokkit/core/actions'
+	import {  defaultFields } from '@rokkit/core'
+	import { Item as Text } from '@rokkit/molecules'
+	import { List } from '@rokkit/organisms'
+	import { dismissable } from '@rokkit/actions'
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()

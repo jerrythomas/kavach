@@ -1,5 +1,5 @@
 <script>
-	import { IconButton } from '@rokkit/form'
+	import { Button } from '@rokkit/molecules'
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()
@@ -16,4 +16,4 @@
 	}
 </script>
 
-<IconButton on:click={handle} {label} leftIcon="logo-{provider}" />
+<Button on:click={handle} {label} leftIcon="logo-{provider}" />

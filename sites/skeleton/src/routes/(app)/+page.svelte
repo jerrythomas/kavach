@@ -1,6 +1,6 @@
 <script>
-	import { CheckBox } from '@rokkit/input'
-	import { List } from '@rokkit/core'
+	import { InputCheckbox } from '@rokkit/atoms/input'
+	import { List } from '@rokkit/organisms'
 	import User from '$lib/User.svelte'
 
 	export let todos = [
@@ -33,7 +33,7 @@
 
 {#each todos as todo}
 	<div class="flex flex-row w-full items-center gap-2 task">
-		<CheckBox bind:value={todo.completed} />
+		<InputCheckbox bind:value={todo.completed} />
 		<!-- <Input type="checkbox" name="completed" bind:checked={todo.completed} /> -->
 		<input
 			type="text"

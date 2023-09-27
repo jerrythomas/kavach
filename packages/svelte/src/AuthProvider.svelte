@@ -1,5 +1,6 @@
 <script>
-	import { IconButton, InputField } from '@rokkit/form'
+	import { Button } from '@rokkit/molecules'
+	import { InputField } from '@rokkit/organisms'
 	import { getContext } from 'svelte'
 	import { createEventDispatcher } from 'svelte'
 
@@ -37,7 +38,7 @@
 </script>
 
 {#if mode === 'oauth'}
-	<IconButton on:click={signIn} {label} leftIcon="logo-{name}" />
+	<Button on:click={signIn} {label} leftIcon="logo-{name}" />
 	<!-- <AuthButton provider={name} {label} {scopes} {params} on:click={signIn} /> -->
 {:else if mode === 'password'}
 	<InputField type={name} icon="logo-{name}" label={name} bind:value />

@@ -1,6 +1,6 @@
 <script>
 	import { pick, omit } from 'ramda'
-	import { Input } from '@rokkit/input'
+	import { Input } from '@rokkit/organisms/input'
 
 	let className = ''
 	export { className as class }

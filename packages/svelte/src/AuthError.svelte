@@ -1,5 +1,5 @@
 <script>
-	export let isError = false
+	// export let isError = false
 	export let message
 	export let name
 	export let status
