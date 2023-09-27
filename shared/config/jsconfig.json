@@ -4,7 +4,7 @@
     "allowJs": true,
     "lib": ["es2022", "dom"],
     "declaration": true,
-    "preserveValueImports": true,
+    // "preserveValueImports": true,
     "isolatedModules": true,
     "emitDeclarationOnly": true,
     "noEmit": false,
