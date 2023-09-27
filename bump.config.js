@@ -7,7 +7,7 @@ export default defineConfig({
     'packages/*/package.json',
     'adapters/*/package.json',
     'shared/*/package.json',
-    'sites/*/package.json',
+    // 'sites/*/package.json',
   ],
   recursive: true,
 })
