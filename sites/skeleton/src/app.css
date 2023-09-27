@@ -1,27 +1,44 @@
 @import '@unocss/reset/tailwind.css';
 @import '@fontsource/victor-mono';
-/* @import '@fontsource/poppins'; */
+@import '@fontsource/victor-mono/latin.css';
 @import '@fontsource/poppins';
 @import '@fontsource/poppins/100.css';
 @import '@fontsource/poppins/200.css';
 @import '@fontsource/poppins/300.css';
-@import '@fontsource/poppins/400.css';
-@import '@fontsource/poppins/500.css';
-@import '@fontsource/poppins/700.css';
-@import './palette.css';
-/* @import '@rokkit/themes/minimal.scss'; */
-@import '@kavach/core/provider.css';
+
+@import '@rokkit/themes/markdown.css';
+@import '@rokkit/themes/palette.css';
+@import '@rokkit/themes/prism.css';
+@import '@rokkit/themes/minimal.css';
+@import '@rokkit/themes/material.css';
+@import '@rokkit/themes/rokkit.css';
+
+body {
+  @apply font-body font-extralight bg-skin-base;
+}
+body,
+body > div {
+	@apply flex flex-col min-h-full min-w-full h-full w-full relative overflow-hidden;
+}
+/* body > app {
+  @apply flex flex-col min-h-full min-w-full h-full w-full relative overflow-hidden;
+} */
+
+input.embedded {
+  @apply w-full h-full bg-transparent border-none focus:outline-none border-box;
+}
+
+markdown-body {
+  @apply font-sans;
+}
 
 error {
 	@apply bg-error bg-red-100;
 }
 
-body,
-body > div {
-	@apply h-screen w-screen flex flex-col font-body;
-}
 
-alert-list {
+
+/* alert-list {
 	@apply top-4 right-4 w-80;
 }
 
@@ -53,7 +70,7 @@ button[role=switch] mark {
 }
 .dark .dropdown .menu .item {
 	@apply hover:bg-secondary-700;
-}
+} */
 /* .dropdown > button:hover {
   @apply bg-primary-800;
 } */

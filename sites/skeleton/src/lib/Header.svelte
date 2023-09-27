@@ -14,7 +14,7 @@
 >
 	<span class="flex flex-row gap-4 items-center">
 		<img src="kavach.svg" alt="kavach logo" class="h-11" />
-		<p class=" text-white text-lg">Kavach</p>
+		<p class="bg-primary-100 text-lg">Kavach</p>
 	</span>
 	<span class="flex flex-row items-center gap-2 ">
 		<DropDown {items} bind:value />

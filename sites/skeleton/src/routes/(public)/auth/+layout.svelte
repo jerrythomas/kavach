@@ -3,13 +3,13 @@
 	import Waves from '$lib/waves.svelte'
 </script>
 
-<section
-	class="flex flex-col text-white w-full relative overflow-visible h-1/2 bg-gradient-to-br from-primary-500 to-secondary-400"
+<!-- <section
+	class="flex flex-col w-full relative overflow-visible h-1/2"
 >
 	<Header />
 	<Waves />
-	<div class="flex flex-row px-12 gap-4 ">
-		<div class="flex flex-col min-w-80 prose mt-5">
+	<div class="flex flex-row px-12 gap-4 text-primary">
+		<div class="flex flex-col min-w-80 mt-5">
 			<h1 class="text-2xl">Sign in to Kavach</h1>
 			<p>
 				This demo extends the standard svelte-kit todo app by adding
@@ -30,7 +30,7 @@
 			</card>
 		</div>
 	</div>
-</section>
+</section> -->
 
 <section />
 <!-- <content
