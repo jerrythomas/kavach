@@ -35,7 +35,6 @@
 		"@testing-library/svelte": "^4.0.3",
 		"@vitest/coverage-v8": "^0.34.6",
 		"@vitest/ui": "~0.34.6",
-		"c8": "^8.0.1",
 		"eslint-config-svelte": "workspace:*",
 		"js-yaml": "^4.1.0",
 		"jsdom": "^22.1.0",
