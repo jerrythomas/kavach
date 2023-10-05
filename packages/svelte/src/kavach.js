@@ -1,7 +1,7 @@
 import { pick } from 'ramda'
 import { zeroLogger } from '@kavach/logger'
 import { createDeflector } from '@kavach/deflector'
-import { setHeaderCookies } from '@kavach/core'
+import { getUserInfo, setHeaderCookies } from '@kavach/core'
 import { getRequestData } from './request'
 import { RUNNING_ON } from './constants'
 import { writable } from 'svelte/store'
@@ -129,7 +129,12 @@ export function setCookieFromSession(session) {
 		const maxAge = session.expires_in ?? 3600 //* 1000
 
 		return setHeaderCookies(
-			{ session: pick(['refresh_token', 'access_token', 'user'], session) },
+			{
+				session: {
+					...pick(['refresh_token', 'access_token'], session),
+					user: getUserInfo(session.user)
+				}
+			},
 			{ maxAge }
 		)
 	}

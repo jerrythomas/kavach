@@ -1,19 +1,15 @@
+import { readFileSync } from 'fs'
 import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig } from 'vitest/config'
 import unocss from 'unocss/vite'
 
-/** @type {import('vite').UserConfig} */
-const config = {
+const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+export default defineConfig({
 	plugins: [unocss(), sveltekit()],
+	define: {
+		__APP_VERSION__: JSON.stringify(pkg.version)
+	},
 	test: {
-		include: ['spec/**/*.spec.js'],
-		globals: true,
-		environment: 'jsdom',
-		coverage: {
-			reporter: ['html', 'lcov'],
-			all: false,
-			include: ['src']
-		}
+		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
-}
-
-export default config
+})

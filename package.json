@@ -3,7 +3,7 @@
   "version": "1.0.0-next.9",
   "description": "Drop in authentication including route protection and redirects.",
   "main": "index.js",
-  "packageManager": "pnpm@7.20.0",
+  "packageManager": "pnpm@8.8.0",
   "private": true,
   "scripts": {
     "clean": "rm -rf sites/skeleton/.vercel",
@@ -25,14 +25,9 @@
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",
   "workspaces": [
-    "packages/cookie",
-    "packages/hashing",
-    "packages/logger",
-    "packages/deflector",
-    "packages/core",
-    "packages/svelte",
-    "adapters/supabase",
-    "adapters/firebase"
+    "packages/*",
+    "adapters/*",
+    "shared/*"
   ],
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.0",

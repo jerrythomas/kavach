@@ -4,22 +4,22 @@
 	/**
 	 * @type {{ email: string; name: string; provider: string; }}
 	 */
-	export let content
+	export let value
 </script>
 
 <card class="flex gap-4 w-full p-2">
 	<img
-		src={gravatar(content.email)}
-		alt="Gravatar for {content.email}"
+		src={gravatar(value.email)}
+		alt="Gravatar for {value.email}"
 		class="h-12 rounded-full"
 	/>
 	<div class="flex flex-col relative flex-grow">
-		<h1>{content.name}</h1>
-		<h2>{content.email}</h2>
+		<h1>{value.name}</h1>
+		<h2>{value.email}</h2>
 		<span
 			class="absolute top-0 right-0 rounded-full bg-skin-300 uppercase text-xs px-2"
 		>
-			{content.provider}
+			{value.provider}
 		</span>
 	</div>
 </card>

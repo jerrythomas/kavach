@@ -1,4 +1,5 @@
 import { watchMedia } from '@rokkit/stores'
+
 const mediaqueries = {
 	small: '(max-width: 767px)',
 	medium: '(min-width: 768px) and (max-width: 1023px)',
@@ -10,4 +11,8 @@ const mediaqueries = {
 	dark: '(prefers-color-scheme: dark)',
 	noanimations: '(prefers-reduced-motion: reduce)'
 }
+
 export const media = watchMedia(mediaqueries)
+// place files you want to import through the `$lib` alias in this folder.
+
+export { logger, kavach } from './auth'

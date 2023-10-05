@@ -151,6 +151,7 @@ export function isRouteAllowed(route, allowedRoutes) {
 }
 
 /**
+ * Remove duplicate routes from a dictionary of routes
  *
  * @param {Array<string>} routes
  * @param {import('./types').AppRoute} appRoutes

@@ -1,4 +1,5 @@
 export * from './types'
 export * from './provider'
 export * from './helper'
+export * from './constants'
 export { gravatar, deriveName } from './avatar'

@@ -49,3 +49,16 @@ export function getParamsForProvider(name) {
 
 	return params
 }
+
+export function getUserInfo(data) {
+	const { id, role, email } = data
+	const { avatar_url, full_name, app_metadata } = data.user_metadata
+	return {
+		id,
+		role,
+		email,
+		avatar_url,
+		full_name,
+		app_metadata
+	}
+}

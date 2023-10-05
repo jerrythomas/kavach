@@ -38,13 +38,12 @@
 </script>
 
 {#if mode === 'oauth'}
-	<Button on:click={signIn} {label} leftIcon="logo-{name}" />
-	<!-- <AuthButton provider={name} {label} {scopes} {params} on:click={signIn} /> -->
+  <Button on:click={signIn} {label} leftIcon="i-auth-{name}" />
 {:else if mode === 'password'}
-	<InputField type={name} icon="logo-{name}" label={name} bind:value />
+	<InputField type={name} icon="i-auth-{name}" label={name} bind:value />
 	<InputField
 		type="password"
-		icon="logo-password"
+		icon="i-auth-password"
 		label="Password"
 		bind:password
 	/>
@@ -56,15 +55,11 @@
 	</button>
 	<!-- <AuthPassword {label} {} on:click={signIn} /> -->
 {:else}
-	<!-- <pre>
-		provider:{name}
-		{JSON.stringify(result, null, 2)}
-	</pre> -->
-	<form on:submit={signIn}>
+	<form on:submit={signIn} class="flex w-full p-0">
 		<InputField
 			type="email"
 			name="email"
-			icon="logo-{name}"
+			icon="i-auth-{name}"
 			placeholder={label}
 			bind:value
 		/>

@@ -8,7 +8,7 @@ import { createClient } from '@supabase/supabase-js'
  * @returns {import('@kavach/core').LogWriter}
  */
 export function getLogWriter(config, options) {
-	const client = createClient(config.url, config.anonKey)
+	const client = config.client ?? createClient(config.url, config.anonKey)
 
 	/** @type {import('@kavach/core').LogWriter} */
 	const adapter = {
