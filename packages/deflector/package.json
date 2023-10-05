@@ -36,7 +36,7 @@
 	},
 	"dependencies": {
 		"@kavach/logger": "workspace:*",
-		"ramda": "^0.29.0"
+		"ramda": "^0.29.1"
 	},
 	"devDependencies": {
 		"@jerrythomas/prettier-config": "^1.0.0",

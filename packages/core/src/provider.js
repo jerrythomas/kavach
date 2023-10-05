@@ -6,6 +6,7 @@
  * @property {Array<string>} scopes - array of scopes for access
  * @property {Array<string|Object>} params - array of parameters for access
  */
+
 /**
  * Converts an array of names into array of providers
  *
@@ -50,9 +51,15 @@ export function getParamsForProvider(name) {
 	return params
 }
 
+/**
+ * Extracts the user info from the supabase user object
+ *
+ * @param {*} data
+ * @returns
+ */
 export function getUserInfo(data) {
 	const { id, role, email } = data
-	const { avatar_url, full_name, app_metadata } = data.user_metadata
+	const { avatar_url, full_name, app_metadata } = data.user_metadata ?? {}
 	return {
 		id,
 		role,
