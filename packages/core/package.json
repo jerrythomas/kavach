@@ -26,7 +26,8 @@
 		"test:ui": "vitest --ui",
 		"test": "vitest",
 		"coverage": "vitest run --coverage",
-		"upgrade": "pnpm upgrade --latest && pnpm test:ci"
+		"upgrade": "pnpm upgrade --latest && pnpm test:ci",
+		"release": "pnpm publish --access public"
 	},
 	"dependencies": {
 		"@kavach/cookie": "workspace:*",

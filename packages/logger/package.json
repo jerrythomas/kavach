@@ -30,7 +30,8 @@
 		"test:ui": "vitest --ui",
 		"test": "vitest",
 		"coverage": "vitest run --coverage",
-		"upgrade": "pnpm upgrade --latest && pnpm test:ci"
+		"upgrade": "pnpm upgrade --latest && pnpm test:ci",
+		"release": "pnpm publish --access public"
 	},
 	"devDependencies": {
 		"@jerrythomas/prettier-config": "^1.0.0",
