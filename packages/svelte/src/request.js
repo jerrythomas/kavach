@@ -18,7 +18,6 @@ export async function getRequestData({ request, url }) {
 		...Object.fromEntries(url.searchParams.entries()),
 		...body
 	}
-	// console.log('request data', request.method, data)
 	return data
 }
 

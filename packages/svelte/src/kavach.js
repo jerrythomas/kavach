@@ -81,7 +81,6 @@ export function createKavach(adapter, options) {
 	}
 
 	function deflectedPath(url) {
-		// console.log(deflector)
 		return deflector.redirect(url.pathname)
 	}
 
