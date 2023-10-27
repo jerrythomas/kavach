@@ -1,4 +1,4 @@
 {
 	"root": true,
-	"extends": "svelte"
+	"extends": "shared"
 }

@@ -60,6 +60,7 @@ export function redirect(status, location, cookies, options = {}) {
  * @returns {Response} response
  */
 export function createResponse(status, body, cookies, options = {}) {
+	// @ts-ignore
 	return new Response(body, {
 		status,
 		headers: {
