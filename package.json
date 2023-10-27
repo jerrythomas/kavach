@@ -32,10 +32,10 @@
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.0",
     "bumpp": "^9.2.0",
-    "eslint": "^8.50.0",
+    "eslint": "^8.52.0",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
-    "turbo": "^1.10.14"
+    "lint-staged": "^15.0.2",
+    "turbo": "^1.10.16"
   },
   "lint-staged": {
     "*.{js,svelte}": "eslint --cache --fix",
