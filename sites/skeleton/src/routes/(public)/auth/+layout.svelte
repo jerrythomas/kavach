@@ -7,10 +7,11 @@
 <!-- <div class="h-20 w-full relative">
 	<Clouds {layers} />
 </div> -->
-<content class="flex flex-row w-full border border-skin-200 rounded-md shadow-lg">
+<content class="flex flex-row w-full border border-skin-200 rounded-md shadow-lg max-w-250 mx-auto mt-10">
 	<article
 		class="text-base prose prose-skin bg-skin-100 px-8 py-4 rounded-l-md border-r border-skin-300"
 	>
+	  <h1 class="flex items-center"><img src="/kavach.svg" alt="Kavach Logo" />Kavach Demo</h1>
 		<!-- <Header>Kavach Demo</Header> -->
 		<p class="justify">
 			This demo extends the standard svelte-kit todo app by adding authentication and role based

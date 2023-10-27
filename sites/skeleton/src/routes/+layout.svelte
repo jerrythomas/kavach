@@ -12,6 +12,7 @@
 
 	import { authStatus } from '@kavach/svelte'
 	import { kavach, media } from '$lib'
+	import Header from '$lib/Header.svelte'
 
 	setContext('kavach', kavach)
 	setContext('media', media)
@@ -24,6 +25,7 @@
 </script>
 
 <svelte:body use:themable />
+<Header />
 <Alerts />
 
 <slot />

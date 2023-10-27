@@ -1,19 +1,21 @@
 <script>
-	export let width = 320
+	let className = ''
+
+	export { className as class}
+	export let width = '100%'
 	export let height = 72
 	export let layers = []
 	export let seconds = 10
 	export let animation = true
 	export let direction = 'y'
-
-  $: kfName = `bob-${direction}`
 </script>
 
 <svg
 	{width}
 	{height}
-	viewBox="0 0 {width} {height}"
+	viewBox="0 0 320 72"
 	style:--seconds="{seconds}s"
+	class={className}
 >
 	{#each layers as layer}
 		<g class={layer.class} fill={layer.fill}>
