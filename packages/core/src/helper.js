@@ -9,6 +9,7 @@ import { serialize } from '@kavach/cookie'
  */
 export function hasAuthParams(url) {
 	const params = urlHashToParams(url)
+	// @ts-ignore
 	return 'access_token' in params && params.access_token.length > 0
 }
 

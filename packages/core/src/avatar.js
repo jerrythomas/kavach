@@ -67,6 +67,11 @@ export function gravatar(email, size = 256, d = 'identicon', rating = 'G') {
 	return `//www.gravatar.com/avatar/${hash}?d=${d}&r=${rating}&s=${size}`
 }
 
+/**
+ *
+ * @param {string} email
+ * @returns
+ */
 export function deriveName(email) {
 	let parts = (email || '')
 		.split('@')[0]
