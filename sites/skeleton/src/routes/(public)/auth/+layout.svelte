@@ -1,7 +1,7 @@
 <script>
 	// import Header from '$lib/Header.svelte'
-	import { layers } from '$lib/layers'
-	import Clouds from '$lib/LayeredClouds.svelte'
+	// import { layers } from '$lib/layers'
+	// import Clouds from '$lib/LayeredClouds.svelte'
 </script>
 
 <!-- <div class="h-20 w-full relative">

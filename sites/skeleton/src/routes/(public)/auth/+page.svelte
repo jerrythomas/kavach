@@ -1,7 +1,7 @@
 <script>
 	import { AuthProvider } from '@kavach/svelte'
-	import { getContext } from 'svelte'
-	import Divide from '$lib/Divide.svelte'
+	// import { getContext } from 'svelte'
+	// import Divide from '$lib/Divide.svelte'
 	import { urlHashToParams } from '@kavach/core'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'

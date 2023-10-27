@@ -17,6 +17,9 @@ importers:
       eslint:
         specifier: ^8.52.0
         version: 8.52.0
+      eslint-config-shared:
+        specifier: workspace:*
+        version: link:shared/linter
       husky:
         specifier: ^8.0.3
         version: 8.0.3
@@ -39,9 +42,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/library
+        version: link:../../shared/linter
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
@@ -76,9 +79,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/library
+        version: link:../../shared/linter
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
@@ -109,9 +112,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/library
+        version: link:../../shared/linter
       shared-config:
         specifier: workspace:*
         version: link:../../shared/config
@@ -152,9 +155,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/library
+        version: link:../../shared/linter
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
@@ -192,9 +195,6 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
-        specifier: workspace:*
-        version: link:../../shared/library
       shared-config:
         specifier: workspace:*
         version: link:../../shared/config
@@ -222,9 +222,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/library
+        version: link:../../shared/linter
       shared-config:
         specifier: workspace:*
         version: link:../../shared/config
@@ -252,9 +252,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-library:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/library
+        version: link:../../shared/linter
       shared-config:
         specifier: workspace:*
         version: link:../../shared/config
@@ -310,9 +310,9 @@ importers:
       '@vitest/ui':
         specifier: ~0.34.6
         version: 0.34.6(vitest@0.34.6)
-      eslint-config-svelte:
+      eslint-config-shared:
         specifier: workspace:*
-        version: link:../../shared/config-svelte
+        version: link:../../shared/linter
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
@@ -359,40 +359,30 @@ importers:
         specifier: ^0.34.6
         version: 0.34.6(@vitest/ui@0.34.6)(jsdom@22.1.0)
 
-  shared/config-svelte:
+  shared/linter:
     dependencies:
-      eslint:
-        specifier: ^8.52.0
-        version: 8.52.0
-      eslint-config-library:
-        specifier: workspace:*
-        version: link:../library
-      eslint-plugin-svelte:
-        specifier: ^2.34.0
-        version: 2.34.0(eslint@8.52.0)(svelte@4.2.2)
-      svelte:
-        specifier: ^4.2.2
-        version: 4.2.2
-    devDependencies:
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
-
-  shared/library:
-    dependencies:
+      '@alexanderniebuhr/prettier-plugin-unocss':
+        specifier: ^0.0.4
+        version: 0.0.4
       eslint:
         specifier: ^8.52.0
         version: 8.52.0
       eslint-config-prettier:
         specifier: ^9.0.0
         version: 9.0.0(eslint@8.52.0)
-      eslint-config-turbo:
-        specifier: ^1.10.16
-        version: 1.10.16(eslint@8.52.0)
+      prettier:
+        specifier: 3.0.3
+        version: 3.0.3
+      prettier-plugin-svelte:
+        specifier: ^3.0.3
+        version: 3.0.3(prettier@3.0.3)(svelte@4.2.2)
     devDependencies:
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
+      eslint-plugin-svelte:
+        specifier: ^2.34.0
+        version: 2.34.0(eslint@8.52.0)(svelte@4.2.2)
+      svelte:
+        specifier: ^4.2.2
+        version: 4.2.2
 
   sites/skeleton:
     dependencies:
@@ -517,6 +507,14 @@ packages:
   /@aashutoshrathi/word-wrap@1.2.6:
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
     engines: {node: '>=0.10.0'}
+
+  /@alexanderniebuhr/prettier-plugin-unocss@0.0.4:
+    resolution: {integrity: sha512-uuuNFjp+WNGsP7V5C7F7uot4a8imccsRf9DYXuQquzXzxLEfzWfqYy/cZUNUk4+fOpLbXGlPUxrJvPAcPau0Ow==}
+    dependencies:
+      '@unocss/preset-uno': 0.25.1
+      import-fresh: 3.3.0
+      prettier: 2.5.1
+    dev: false
 
   /@ampproject/remapping@2.2.1:
     resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}
@@ -1246,6 +1244,10 @@ packages:
       unconfig: 0.3.11
     dev: true
 
+  /@unocss/core@0.25.1:
+    resolution: {integrity: sha512-YYX40KA2rhsm6aTKTGpE0bi9E7RoAcuqMo/L+f6DmBSwtTXdflckoa903rxgOa6HOLH9fXgOJP9jHt3O/5ysPA==}
+    dev: false
+
   /@unocss/core@0.56.5:
     resolution: {integrity: sha512-fx5VhOjSHn0HdV2D34pEwFMAHJcJQRTCp1xEE4GzxY1irXzaa+m2aYf5PZjmDxehiOC16IH7TO9FOWANXk1E0w==}
     dev: true
@@ -1299,6 +1301,12 @@ packages:
       - supports-color
     dev: true
 
+  /@unocss/preset-mini@0.25.1:
+    resolution: {integrity: sha512-NBfa2/t0TIAT//L8OVskDDQJ3OREjLwDzWMBNO86rvM0VPCIBvCmkKuFR3zxQcWK+aegISeScJA9Zcdk3qJjHA==}
+    dependencies:
+      '@unocss/core': 0.25.1
+    dev: false
+
   /@unocss/preset-mini@0.56.5:
     resolution: {integrity: sha512-/KhlThhs1ilauM7MwRSpahLbIPZ5VGeGvaUsU8+ZlNT3sis4yoVYkPtR14tL2IT6jhOU05N/uu3aBj+1bP8GjQ==}
     dependencies:
@@ -1320,6 +1328,14 @@ packages:
       '@unocss/preset-mini': 0.56.5
     dev: true
 
+  /@unocss/preset-uno@0.25.1:
+    resolution: {integrity: sha512-e5lvCF5GD52nD/7l/k4TJedw5AgsVGTs/6rKxE9DP0G5oGszKjx+oHLzoYvCP2aQAcallnZ/CxXTbOvqCQCVxQ==}
+    dependencies:
+      '@unocss/core': 0.25.1
+      '@unocss/preset-mini': 0.25.1
+      '@unocss/preset-wind': 0.25.1
+    dev: false
+
   /@unocss/preset-uno@0.56.5:
     resolution: {integrity: sha512-3hzE0X1oxMbHLvWyTj/4BrJQ7OAL428BpzEJos0RsxifM04vOJX4GC4khIbmTl8KIMECMtATK3ren3JqzD2bFw==}
     dependencies:
@@ -1335,6 +1351,13 @@ packages:
       '@unocss/core': 0.56.5
       ofetch: 1.3.3
     dev: true
+
+  /@unocss/preset-wind@0.25.1:
+    resolution: {integrity: sha512-y5gkCCNiGsonqI8OOmtMVXgEMjPDtr+ihxnS3oDptYR4CcBE1cREhLgZocChHHQNEMN9Qx2GsoMN9l6RsoExiA==}
+    dependencies:
+      '@unocss/core': 0.25.1
+      '@unocss/preset-mini': 0.25.1
+    dev: false
 
   /@unocss/preset-wind@0.56.5:
     resolution: {integrity: sha512-iyMPvCEZkrGLHFXXlcqxDo/UcSK7KWw4x7/QUz7irrvc78cxYVuPm98QZgpCRcCwKerKVyFLjGOtwQ0kmVSVsQ==}
@@ -1843,6 +1866,7 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+    dev: true
 
   /cssstyle@3.0.0:
     resolution: {integrity: sha512-N4u2ABATi3Qplzf0hWbVCdjenim8F3ojEXpBDF5hBpjzW182MjNGLqfmQ0SkSPeQ+V86ZXgeH8aXj6kayd4jgg==}
@@ -2045,11 +2069,6 @@ packages:
     dependencies:
       webidl-conversions: 7.0.0
 
-  /dotenv@16.0.3:
-    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
-    engines: {node: '>=12'}
-    dev: false
-
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
@@ -2160,15 +2179,6 @@ packages:
     dependencies:
       eslint: 8.52.0
 
-  /eslint-config-turbo@1.10.16(eslint@8.52.0):
-    resolution: {integrity: sha512-O3NQI72bQHV7FvSC6lWj66EGx8drJJjuT1kuInn6nbMLOHdMBhSUX/8uhTAlHRQdlxZk2j9HtgFCIzSc93w42g==}
-    peerDependencies:
-      eslint: '>6.6.0'
-    dependencies:
-      eslint: 8.52.0
-      eslint-plugin-turbo: 1.10.16(eslint@8.52.0)
-    dev: false
-
   /eslint-plugin-svelte@2.34.0(eslint@8.52.0)(svelte@4.2.2):
     resolution: {integrity: sha512-4RYUgNai7wr0v+T/kljMiYSjC/oqwgq5i+cPppawryAayj4C7WK1ixFlWCGmNmBppnoKCl4iA4ZPzPtlHcb4CA==}
     engines: {node: ^14.17.0 || >=16.0.0}
@@ -2195,15 +2205,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - ts-node
-
-  /eslint-plugin-turbo@1.10.16(eslint@8.52.0):
-    resolution: {integrity: sha512-ZjrR88MTN64PNGufSEcM0tf+V1xFYVbeiMeuIqr0aiABGomxFLo4DBkQ7WI4WzkZtWQSIA2sP+yxqSboEfL9MQ==}
-    peerDependencies:
-      eslint: '>6.6.0'
-    dependencies:
-      dotenv: 16.0.3
-      eslint: 8.52.0
-    dev: false
+    dev: true
 
   /eslint-scope@7.2.2:
     resolution: {integrity: sha512-dOt21O7lTMhDM+X9mB4GX+DZrZtCUJPL/wlcTqxyrx5IvO0IYtILdtrQGQp+8n5S0gwSVmOf9NQrjMOgfQZlIg==}
@@ -2975,6 +2977,7 @@ packages:
 
   /known-css-properties@0.28.0:
     resolution: {integrity: sha512-9pSL5XB4J+ifHP0e0jmmC98OGC1nL8/JjS+fi6mnTlIf//yt/MfVLtKg7S6nCtj/8KTcWX7nRlY0XywoYY1ISQ==}
+    dev: true
 
   /kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
@@ -2990,6 +2993,7 @@ packages:
   /lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
     engines: {node: '>=10'}
+    dev: true
 
   /lint-staged@15.0.2:
     resolution: {integrity: sha512-vnEy7pFTHyVuDmCAIFKR5QDO8XLVlPFQQyujQ/STOxe40ICWqJ6knS2wSJ/ffX/Lw0rz83luRDh+ET7toN+rOw==}
@@ -3059,6 +3063,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+    dev: true
 
   /lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -3447,6 +3452,7 @@ packages:
       lilconfig: 2.1.0
       postcss: 8.4.31
       yaml: 1.10.2
+    dev: true
 
   /postcss-safe-parser@6.0.0(postcss@8.4.31):
     resolution: {integrity: sha512-FARHN8pwH+WiS2OPCxJI8FuRJpTVnn6ZNFiqAM2aeW2LwTHWWmWgIyKC6cUo0L8aeKiF/14MNvnpls6R2PBeMQ==}
@@ -3455,6 +3461,7 @@ packages:
       postcss: ^8.3.3
     dependencies:
       postcss: 8.4.31
+    dev: true
 
   /postcss-scss@4.0.9(postcss@8.4.31):
     resolution: {integrity: sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==}
@@ -3463,6 +3470,7 @@ packages:
       postcss: ^8.4.29
     dependencies:
       postcss: 8.4.31
+    dev: true
 
   /postcss-selector-parser@6.0.13:
     resolution: {integrity: sha512-EaV1Gl4mUEV4ddhDnv/xtj7sxwrwxdetHdWUGnT4VJQf+4d05v6lHYZr8N573k5Z0BViss7BDhfWtKS3+sfAqQ==}
@@ -3470,6 +3478,7 @@ packages:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
+    dev: true
 
   /postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
@@ -3491,13 +3500,17 @@ packages:
     dependencies:
       prettier: 3.0.3
       svelte: 4.2.2
-    dev: true
+
+  /prettier@2.5.1:
+    resolution: {integrity: sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: false
 
   /prettier@3.0.3:
     resolution: {integrity: sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: true
 
   /pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
@@ -3673,6 +3686,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: true
 
   /set-cookie-parser@2.6.0:
     resolution: {integrity: sha512-RVnVQxTXuerk653XfuliOxBP81Sf0+qfQE73LIYKcyMYHG94AuH0kgrQpRDuTZnSmjpysHmzxJXKNfa6PjFhyQ==}
@@ -3887,6 +3901,7 @@ packages:
       postcss: 8.4.31
       postcss-scss: 4.0.9(postcss@8.4.31)
       svelte: 4.2.2
+    dev: true
 
   /svelte-hmr@0.15.3(svelte@4.2.2):
     resolution: {integrity: sha512-41snaPswvSf8TJUhlkoJBekRrABDXDMdpNpT2tfHIv4JuhgvHqLMhEPGtaQn0BmbNSTkuz2Ed20DF2eHw0SmBQ==}
@@ -4220,6 +4235,7 @@ packages:
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+    dev: true
 
   /v8-to-istanbul@9.1.3:
     resolution: {integrity: sha512-9lDD+EVI2fjFsMWXc6dy5JJzBsVTcQ2fVkfBvncZ6xJWG9wtBhOldG+mHkSL0+V1K/xgZz0JDO5UT5hFwHUghg==}
@@ -4497,10 +4513,12 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+    dev: true
 
   /yaml@1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
+    dev: true
 
   /yaml@2.3.3:
     resolution: {integrity: sha512-zw0VAJxgeZ6+++/su5AFoqBbZbrEakwu+X0M5HmcwUiBL7AzcuPKjj5we4xfQLp78LkEMpD0cOnUhmgOVy3KdQ==}

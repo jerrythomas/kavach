@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@jerrythomas/prettier-config": "^1.0.0",
 		"@vitest/ui": "~0.34.6",
-		"eslint-config-library": "workspace:*",
+		"eslint-config-shared": "workspace:*",
 		"jsdom": "^22.1.0",
 		"shared-config": "workspace:*",
 		"typescript": "^5.2.2",

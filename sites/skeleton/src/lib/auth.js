@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+// import { createClient } from '@supabase/supabase-js'
 import { createKavach } from '@kavach/svelte'
 import { getLogger } from '@kavach/logger'
 import { getLogWriter, getAdapter } from '@kavach/adapter-supabase'
