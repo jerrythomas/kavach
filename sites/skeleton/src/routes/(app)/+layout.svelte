@@ -17,10 +17,10 @@
 </script>
 
 <content
-	class="grid grid-cols-3 w-full my-auto border border-skin-200 rounded-md shadow-lg max-h-screen overflow-scroll"
+	class="grid grid-cols-3 w-full my-auto border border-neutral-200 rounded-md shadow-lg max-h-screen overflow-scroll"
 >
 	<section
-		class="flex flex-col bg-skin-zebra p-6 pt-10 gap-2 rounded-l-md border-r border-skin-200 col-span-2"
+		class="flex flex-col bg-neutral-zebra p-6 pt-10 gap-2 rounded-l-md border-r border-neutral-200 col-span-2"
 	>
 		<slot />
 	</section>
@@ -41,9 +41,9 @@
 
 <style>
 	nav a {
-		@apply px-4 py-2 bg-skin-100;
+		@apply px-4 py-2 bg-neutral-100;
 	}
 	.active {
-		@apply bg-gradient-to-r from-primary-500 to-secondary-500 text-skin-50;
+		@apply bg-gradient-to-r from-primary-500 to-secondary-500 text-neutral-50;
 	}
 </style>

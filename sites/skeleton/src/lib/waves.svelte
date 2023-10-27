@@ -3,7 +3,7 @@
 </script>
 
 <svg
-	class="absolute bottom-0 left-0 right-0 w-full h-1/5  text-skin-50"
+	class="absolute bottom-0 left-0 right-0 w-full h-1/5 text-neutral-50"
 	xmlns="http://www.w3.org/2000/svg"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	viewBox="0 24 150 28"
@@ -17,30 +17,10 @@
 		/>
 	</defs>
 	<g class:parallax>
-		<use
-			xlink:href="#gentle-wave"
-			x={parallax ? 48 : 10}
-			y="0"
-			class="fill-current opacity-30"
-		/>
-		<use
-			xlink:href="#gentle-wave"
-			x={parallax ? 48 : 20}
-			y="3"
-			class="fill-current opacity-30"
-		/>
-		<use
-			xlink:href="#gentle-wave"
-			x={parallax ? 48 : 30}
-			y="5"
-			class="fill-current opacity-30"
-		/>
-		<use
-			xlink:href="#gentle-wave"
-			x={parallax ? 48 : 40}
-			y="7"
-			class="fill-current"
-		/>
+		<use xlink:href="#gentle-wave" x={parallax ? 48 : 10} y="0" class="fill-current opacity-30" />
+		<use xlink:href="#gentle-wave" x={parallax ? 48 : 20} y="3" class="fill-current opacity-30" />
+		<use xlink:href="#gentle-wave" x={parallax ? 48 : 30} y="5" class="fill-current opacity-30" />
+		<use xlink:href="#gentle-wave" x={parallax ? 48 : 40} y="7" class="fill-current" />
 	</g>
 </svg>
 

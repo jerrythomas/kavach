@@ -12,7 +12,7 @@
 @import '@rokkit/themes/rokkit.css';
 
 body {
-  @apply font-body bg-skin-base text-skin-800 font-extralight;
+  @apply font-body bg-neutral-base text-neutral-800 font-extralight;
 }
 body > app {
   @apply flex flex-col min-h-full min-w-full h-full w-full relative overflow-hidden;
@@ -21,12 +21,7 @@ body > app {
 button {
   @apply gap-3;
 }
-input-field field {
-  @apply gap-1px;
-}
-input-field field icon {
-  @apply w-10 h-10 bg-skin-subtle;
-}
+
 input.embedded {
   @apply w-full h-full bg-transparent border-none focus:outline-none border-box;
 }
@@ -40,12 +35,12 @@ form {
 }
 
 /* button.flat {
-  @apply bg-gradient-to-r from-primary to-secondary text-skin-200 rounded-none;
+  @apply bg-gradient-to-r from-primary to-secondary text-neutral-200 rounded-none;
   @apply flex items-center justify-center min-h-12;
 }
 
 button.flat.disabled {
-  @apply from-skin-muted to-skin-muted text-skin-500;
+  @apply from-neutral-muted to-neutral-muted text-neutral-500;
 } */
 /* input-field field input-select {
   @apply px-0 h-full border-transparent;

@@ -6,11 +6,11 @@
 
 	const modeIcons = defaultStateIcons.mode
 
-	export let palettes = [
-		{ title: 'Vibrant Day', name: 'vibrant-day' },
-		{ title: 'Calm Seas', name: 'calm-seas' },
-		{ title: 'Purple-Dream', name: 'purple-dream' }
-	]
+	// export let palettes = [
+	// 	{ title: 'Vibrant Day', name: 'vibrant-day' },
+	// 	{ title: 'Calm Seas', name: 'calm-seas' },
+	// 	{ title: 'Purple-Dream', name: 'purple-dream' }
+	// ]
 	export let themes = [
 		{ title: 'Rokkit', name: 'rokkit' },
 		{ title: 'Minimal', name: 'minimal' },
@@ -21,7 +21,7 @@
 
 	$: current = $theme
 	$: currentTheme = themes.find((theme) => theme.name === current.name)
-	$: currentPalette = palettes.find((palette) => palette.name === current.palette)
+	// $: currentPalette = palettes.find((palette) => palette.name === current.palette)
 
 	function toggleMode() {
 		const mode = current.mode === 'dark' ? 'light' : 'dark'
@@ -31,17 +31,19 @@
 	function handleThemeChange(event) {
 		theme.set({ ...current, name: event.detail.name })
 	}
-	function handlePaletteChange(event) {
-		theme.set({ ...current, palette: event.detail.name })
-	}
+	// function handlePaletteChange(event) {
+	// 	theme.set({ ...current, palette: event.detail.name })
+	// }
+
+	$: console.log(current)
 </script>
 
-<Select
+<!-- <Select
 	options={palettes}
 	value={currentPalette}
 	fields={{ text: 'title', value: 'name' }}
 	on:select={handlePaletteChange}
-/>
+/> -->
 <Select
 	options={themes}
 	value={currentTheme}

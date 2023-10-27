@@ -15,7 +15,9 @@
 	afterNavigate(() => (loading = false))
 </script>
 
-<header class="flex min-h-14 w-full bg-skin-base items-center justify-between relative {className}">
+<header
+	class="flex min-h-14 w-full bg-neutral-base items-center justify-between relative {className}"
+>
 	{#if loading}
 		<ProgressBar class="absolute top-0 z-5" />
 	{/if}
@@ -32,7 +34,7 @@
 		{/if}
 	</div>
 	<settings class="flex items-center justify-end gap-3 pr-4">
-		<nav class="flex gap-3 pr-3 uppercase text-skin-900">
+		<nav class="flex gap-3 pr-3 uppercase text-neutral-900">
 			{#each menu as item}
 				<a
 					href="/{item.slug}"

@@ -14,6 +14,7 @@
 	import { kavach, media } from '$lib'
 	import Header from '$lib/Header.svelte'
 
+	export let data
 	setContext('kavach', kavach)
 	setContext('media', media)
 
@@ -21,11 +22,11 @@
 
 	$: adjustViewport(browser, $media.small)
 	// $: if ($authStatus) alerts.info($authStatus)
-	$: console.log($authStatus)
+	// $: console.log($authStatus)
 </script>
 
 <svelte:body use:themable />
-<Header />
+<Header version={data.version} />
 <Alerts />
 
 <slot />

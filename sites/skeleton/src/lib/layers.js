@@ -1,6 +1,6 @@
 export const layers = [
 	{
-		// class: 'text-skin-500 fill-current',
+		// class: 'text-neutral-500 fill-current',
 		fill: 'rgba(255, 255, 255, 1)',
 		items: [
 			{ cx: 30, cy: 61, r: 50 },
@@ -15,7 +15,7 @@ export const layers = [
 		]
 	},
 	{
-		class: 'text-skin-300',
+		class: 'text-neutral-300',
 		fill: 'currentColor',
 		items: [
 			{ cx: 28.5, cy: 44, r: 30 },
@@ -28,7 +28,7 @@ export const layers = [
 		]
 	},
 	{
-		class: 'text-skin-200',
+		class: 'text-neutral-200',
 		fill: 'currentColor',
 		items: [
 			{ cx: -5, cy: 54.5, rx: 50, ry: 35.5 },

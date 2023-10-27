@@ -35,12 +35,7 @@
 	<div class="flex flex-row w-full items-center gap-2 task">
 		<InputCheckbox bind:value={todo.completed} />
 		<!-- <Input type="checkbox" name="completed" bind:checked={todo.completed} /> -->
-		<input
-			type="text"
-			bind:value={todo.task}
-			class="flex flex-grow"
-			readOnly={todo.completed}
-		/>
+		<input type="text" bind:value={todo.task} class="flex flex-grow" readOnly={todo.completed} />
 		<icon class="delete" />
 	</div>
 {/each}
@@ -49,7 +44,7 @@
 
 <style>
 	.task {
-		@apply border-b py-2 border-skin-200;
+		@apply border-b py-2 border-neutral-200;
 	}
 	.task input {
 		@apply border-none bg-transparent;

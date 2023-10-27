@@ -40,8 +40,9 @@
 {#if mode === 'oauth'}
   <Button on:click={signIn} {label} leftIcon="i-auth-{name}" />
 {:else if mode === 'password'}
-	<InputField type={name} icon="i-auth-{name}" label={name} bind:value />
+	<InputField name="email" type={name} icon="i-auth-{name}" label={name} autocomplete="on" bind:value />
 	<InputField
+	  name="password"
 		type="password"
 		icon="i-auth-password"
 		label="Password"
@@ -58,7 +59,7 @@
 	<form on:submit={signIn} class="flex w-full p-0">
 		<InputField
 			type="email"
-			name="email"
+			name="magic"
 			icon="i-auth-{name}"
 			placeholder={label}
 			bind:value
