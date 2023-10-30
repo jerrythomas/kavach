@@ -14,4 +14,3 @@ dist
 lcov.info
 *.code-workspace
 .vercel
-public
