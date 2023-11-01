@@ -1,6 +1,6 @@
 {
 	"name": "@kavach/logger",
-	"version": "1.0.0-next.13",
+	"version": "1.0.0-next.14",
 	"description": "A logger for use on UI and backend.",
 	"author": "Jerry Thomas <me@jerrythomas.name>",
 	"license": "MIT",
