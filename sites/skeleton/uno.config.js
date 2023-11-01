@@ -1,14 +1,18 @@
-import { defineConfig } from 'unocss'
 import extractorSvelte from '@unocss/extractor-svelte'
-import presetUno from '@unocss/preset-uno'
-import presetIcons from '@unocss/preset-icons'
-import transformer from '@unocss/transformer-directives'
-import presetTypography from '@unocss/preset-typography'
-import { iconShortcuts, defaultIcons, themeColors } from '@rokkit/themes'
+import {
+	defineConfig,
+	presetIcons,
+	presetTypography,
+	presetUno,
+	transformerDirectives,
+	transformerVariantGroup
+} from 'unocss'
+import { iconShortcuts, defaultIcons, themeColors, themeRules } from '@rokkit/themes'
 import { defaultAuthIcons } from '@kavach/core'
 
 export default defineConfig({
 	extractors: [extractorSvelte()],
+	rules: [...themeRules()],
 	safelist: [...defaultIcons, ...defaultAuthIcons, '-translate-x-full'],
 	shortcuts: {
 		...iconShortcuts(defaultIcons, 'i-rokkit')
@@ -20,7 +24,7 @@ export default defineConfig({
 			sans: ['Lato', 'ui-serif', 'sans-serif'],
 			body: ['Lato', '-apple-system', 'system-ui', 'Segoe-UI', 'ui-serif', 'sans-serif']
 		},
-		colors: themeColors('hsl')
+		colors: themeColors()
 	},
 	presets: [
 		presetUno(),
@@ -32,5 +36,5 @@ export default defineConfig({
 			}
 		})
 	],
-	transformers: [transformer()]
+	transformers: [transformerDirectives(), transformerVariantGroup()]
 })

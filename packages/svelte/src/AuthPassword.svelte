@@ -1,6 +1,6 @@
 <script>
 	import { InputField } from '@rokkit/organisms'
-	import { createEventDispatcher } from '@svelte'
+	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()
 
@@ -13,11 +13,17 @@
 	}
 </script>
 
-<InputField {type} icon="logo-{type}" label={type} bind:value />
-<InputField type="password" icon="logo-{type}" label="Password" bind:password />
-<button
-	on:click={handle}
-	class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
->
-	Sign in
-</button>
+<InputField name="email" type={type} icon="i-auth-{type}" label={type} autocomplete="on" bind:value />
+	<InputField
+	  name="password"
+		type="password"
+		icon="i-auth-password"
+		label="Password"
+		bind:password
+	/>
+	<button
+		on:click={handle}
+		class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+	>
+		Sign in
+	</button>
