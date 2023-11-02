@@ -42,27 +42,13 @@
 {#if mode === 'oauth'}
   <Button on:click={signIn} {label} leftIcon="i-auth-{name}" />
 {:else if mode === 'password'}
-
-	<!-- <InputField name="email" type={name} icon="i-auth-{name}" label={name} autocomplete="on" bind:value />
-	<InputField
-	  name="password"
-		type="password"
-		icon="i-auth-password"
-		label="Password"
-		bind:password
-	/>
-	<button
-		on:click={signIn}
-		class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
-	>
-		Sign in
-	</button> -->
 	<AuthPassword bind:value bind:password on:click={signIn} />
 {:else}
 	<form on:submit={signIn} class="flex w-full p-0">
 		<InputField
 			type="email"
 			name="magic"
+			label="magic link"
 			icon="i-auth-{name}"
 			placeholder={label}
 			bind:value

@@ -34,8 +34,6 @@
 	// function handlePaletteChange(event) {
 	// 	theme.set({ ...current, palette: event.detail.name })
 	// }
-
-	$: console.log(current)
 </script>
 
 <!-- <Select
@@ -51,5 +49,10 @@
 	on:select={handleThemeChange}
 />
 <theme-mode role="switch" aria-checked={current.mode === 'dark'} class="flex p-0">
-	<Icon name={modeIcons[current.mode]} role="button" on:click={toggleMode} />
+	<Icon
+		name={modeIcons[current.mode]}
+		role="button"
+		on:click={toggleMode}
+		class="border-1 border-neutral-muted rounded"
+	/>
 </theme-mode>

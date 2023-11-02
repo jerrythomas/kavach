@@ -23,11 +23,7 @@
 	{/if}
 	<div class="flex items-center gap-2 px-4">
 		<a href="/" class="flex items-center">
-			<!-- {#if $media.small} -->
 			<img src="/kavach.svg" alt="Kavach Logo" class="h-12" />
-			<!-- {:else} -->
-			<!-- <img src="/rokkit-light.svg" alt="Rokkit Logo" class="h-10" /> -->
-			<!-- {/if} -->
 		</a>
 		{#if !$media.small}
 			<small class="px-2 font-small">{version}</small>
@@ -45,11 +41,18 @@
 		</nav>
 
 		<ThemeSwitcher />
-		<Icon
-			name="i-auth:github"
-			label="Kavach on Github"
-			role="button"
-			on:click={() => goto('https://github.com/jerrythomas/kavach')}
-		/>
+		<a
+			href="https://github.com/jerrythomas/kavach"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="outline-none border-none"
+		>
+			<Icon
+				name="i-auth:github"
+				label="Kavach on Github"
+				role="button"
+				class="border-1 border-neutral-muted rounded"
+			/></a
+		>
 	</settings>
 </header>
