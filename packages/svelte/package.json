@@ -1,6 +1,6 @@
 {
 	"name": "@kavach/svelte",
-	"version": "1.0.0-next.15",
+	"version": "1.0.0-next.16",
 	"description": "Drop in security for web apps.",
 	"author": "Jerry Thomas <me@jerrythomas.name>",
 	"license": "MIT",
