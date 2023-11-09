@@ -99,20 +99,20 @@ export function transformResult({ data, error, credentials }) {
 	let message = ''
 	if (!error) {
 		message =
-			credentials.provider == 'magic'
+			data.provider == 'magic'
 				? `Magic link has been sent to "${credentials.email}".`
 				: ''
 		return { type: 'info', data, message }
-	}
-	message =
-		error instanceof AuthApiError && error.status === 400
-			? 'Invalid credentials.'
-			: 'Server error. Try again later.'
-
-	return {
-		type: 'error',
-		...error,
-		message,
-		data
+	} else {
+		message =
+			error instanceof AuthApiError && error.status === 400
+				? 'Invalid credentials.'
+				: 'Server error. Try again later.'
+		return {
+			type: 'error',
+			...error,
+			message,
+			data
+		}
 	}
 }

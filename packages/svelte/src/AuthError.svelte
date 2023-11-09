@@ -3,6 +3,7 @@
 	export let message
 	export let name
 	export let status
+	export let error_code
 
 	$: status = status ?? error_code
 </script>

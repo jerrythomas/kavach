@@ -64,7 +64,7 @@
  * @property {string} [path]
  * @property {boolean} [httpOnly]
  * @property {boolean} [secure]
- * @property {'none'|'stric'|'lax'} [sameSite]
+ * @property {'none'|'strict'|'lax'} [sameSite]
  * @property {number} [maxAge]
  */
 

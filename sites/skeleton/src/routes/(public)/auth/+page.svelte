@@ -6,8 +6,8 @@
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 
-	let error = {}
-	let response = null
+	export let error = {}
+	export let response = null
 	onMount(() => {
 		error = urlHashToParams($page.url.hash)
 	})

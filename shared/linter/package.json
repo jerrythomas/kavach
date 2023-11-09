@@ -9,8 +9,8 @@
     "latest": "pnpm upgrade --latest"
   },
   "dependencies": {
-    "@alexanderniebuhr/prettier-plugin-unocss": "^0.0.4",
-    "eslint": "^8.52.0",
+    "@unocss/eslint-config": "^0.57.2",
+    "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "3.0.3",
     "prettier-plugin-svelte": "^3.0.3"
@@ -19,7 +19,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "eslint-plugin-svelte": "^2.34.0",
+    "eslint-plugin-svelte": "^2.35.0",
     "svelte": "^4.2.2"
   }
 }
