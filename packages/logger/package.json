@@ -9,7 +9,6 @@
 		"logging"
 	],
 	"main": "index.js",
-	"svelte": "src/index.js",
 	"module": "src/index.js",
 	"types": "dist/index.d.ts",
 	"type": "module",

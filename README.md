@@ -10,7 +10,7 @@ Furthermore, Kavach is fully themeable and supports a variety of design styles, 
 
 Kavach also provides support for role-based route protection. This allows you to ensure that only users with the appropriate permissions can access certain routes or pages in your application.
 
-Kavach currently supports using Supabase for authentication, and also includes support for row-level security. This allows you to implement fine-grained controls over which users have access to which data within your application. Support for Firebase, Auth0, and AWS Cognito is coming soon, so you'll have even more options for secure and reliable authentication in your app.
+Kavach currently supports using Supabase for authentication and also includes support for row-level security. This allows you to implement fine-grained controls over which users have access to which data within your application. Support for Firebase, Auth0, and AWS Cognito is coming soon, so you'll have even more options for secure and reliable authentication in your app.
 
 [![Maintainability][maintainability_badge]][maintainability_url]
 [![Test Coverage][coverage_badge]][coverage_url]
@@ -31,7 +31,7 @@ If you're interested in trying out Kavach for yourself, you can visit the offici
 
 ## Getting started
 
-Get started quickly using [degit](https://github.com/Rich-Harris/degit). Select the library you want to use and run degit to get a sample app.
+Get started quickly using [degit](https://github.com/Rich-Harris/degit). Select the library you want to use and run "degit" to get a sample app.
 
 ```bash
 npx degit jerrythomas/kavach/sites/skeleton my-app
