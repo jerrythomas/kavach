@@ -36,7 +36,7 @@
     "eslint-config-shared": "workspace:*",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
-    "turbo": "^1.10.16"
+    "turbo": "^1.11.3"
   },
   "lint-staged": {
     "*.{js,svelte}": "eslint --cache --fix",
