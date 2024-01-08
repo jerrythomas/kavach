@@ -35,8 +35,8 @@ export function createDeflector(options = {}) {
 		const redirectedTo = isAllowed
 			? route
 			: isAuthenticated
-			? routesByRole[role].home //appRoutes.home
-			: appRoutes.login
+				? routesByRole[role].home //appRoutes.home
+				: appRoutes.login
 
 		logger.debug({
 			module: 'deflector',
