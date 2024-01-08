@@ -133,23 +133,25 @@ describe('Logger', () => {
 		const data = { message: 'foo' }
 		const logger = getLogger(writer, { level })
 
-		it.each(Object.entries(loggingLevels))(
-			'should only log at level ="%s"',
-			(name, value) => {
-				expect(logger[name](data)).toBeTruthy()
-				if (value <= level) {
-					expect(writer.write).toHaveBeenCalledWith({
-						level: name,
-						logged_at,
-						running_on,
-						message: 'foo'
-					})
-					expect(writer.write).toHaveBeenCalledOnce()
-				} else {
-					expect(writer.write).not.toHaveBeenCalled()
+		describe(level, () => {
+			it.each(Object.entries(loggingLevels))(
+				'should only log at level ="%s"',
+				(name, value) => {
+					expect(logger[name](data)).toBeTruthy()
+					if (value <= level) {
+						expect(writer.write).toHaveBeenCalledWith({
+							level: name,
+							logged_at,
+							running_on,
+							message: 'foo'
+						})
+						expect(writer.write).toHaveBeenCalledOnce()
+					} else {
+						expect(writer.write).not.toHaveBeenCalled()
+					}
 				}
-			}
-		)
+			)
+		})
 		// expect(writer.write).toHaveBeenCalledTimes(count)
 	})
 })
