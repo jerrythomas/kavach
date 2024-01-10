@@ -8,6 +8,31 @@
 
 	export let error = {}
 	export let response = null
+	let providers = [
+		{
+			name: 'google',
+			label: 'Continue With Google'
+		},
+		{
+			name: 'github',
+			label: 'Continue With Github'
+		},
+		{
+			name: 'azure',
+			label: 'Continue With Azure',
+			scopes: ['email']
+		},
+		{
+			mode: 'otp',
+			name: 'magic',
+			label: 'email for Magic Link'
+		},
+		{
+			mode: 'password',
+			name: 'email',
+			label: 'Sign in using'
+		}
+	]
 	onMount(() => {
 		error = urlHashToParams($page.url.hash)
 	})
@@ -23,9 +48,14 @@
 <!--  -->
 <nav class="flex flex-col flex-grow items-center p-8 gap-2">
 	<section class="flex flex-col w-full gap-2 py-2">
-		<AuthProvider name="google" label="Continue With Google" />
-		<AuthProvider name="github" label="Continue With Github" />
-		<AuthProvider name="azure" label="Continue With Azure" />
+		{#each providers as provider}
+			{#if ['google', 'github', 'azure'].includes(provider.name)}
+				<AuthProvider {...provider} on:success={handleSuccess} on:error={handleError} />
+			{/if}
+		{/each}
+		<!-- <AuthProvider name="google" label="Continue With Google" /> -->
+		<!-- <AuthProvider name="github" label="Continue With Github" /> -->
+		<!-- <AuthProvider name="azure" label="Continue With Azure" scopes={['email']} /> -->
 	</section>
 	<!-- <Divide>or</Divide> -->
 	<section class="flex flex-col w-full py-2">
