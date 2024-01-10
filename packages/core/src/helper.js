@@ -22,14 +22,39 @@ export function hasAuthParams(url) {
 export function urlHashToParams(url) {
 	const [, hash] = url.split('#')
 	if (hash && hash.length) {
-		return hash
+		let result = hash
 			.split('&')
-			.map((kv) => kv.split('='))
+			.map((kv) => extractKeyValuePair(kv))
 			.reduce((acc, kv) => ({ ...acc, [kv[0]]: kv[1] }), {})
+
+		return result
 	}
 	return {}
 }
 
+/**
+ * Extracts key value pairs from the data string where key and value are separated by '='.
+ *
+ * @param {string} data
+ * @param {string} separator - separator between key and value (default '=')
+ * @returns {[string, string]} [key, value] pair
+ */
+export function extractKeyValuePair(data, separator = '=') {
+	let values = data.split(separator)
+	if (values.length === 1) {
+		values.push('')
+	} else if (values.length > 2) {
+		values = [values[0], values.slice(1).join(separator)]
+	} else {
+		values[1] = decodeURIComponent(values[1])
+		if (values[1].includes('%')) {
+			values[1] = values[1]
+				.substring(0, values[1].indexOf('%'))
+				.replace(/\+/g, ' ')
+		}
+	}
+	return [values[0], values[1]]
+}
 /**
  * Generates a redirect response using the provided inputs
  *

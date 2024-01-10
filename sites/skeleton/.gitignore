@@ -8,3 +8,5 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+favicon_io
+favicon_io.zip

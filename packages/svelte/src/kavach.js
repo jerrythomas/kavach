@@ -11,7 +11,6 @@ export const authStatus = writable()
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
 	const logger = options?.logger ?? zeroLogger
-	// const invalidate = options?.invalidate ?? (() => {})
 	const invalidateAll = options?.invalidateAll ?? (() => {})
 
 	const signIn = async (credentials) => {
@@ -47,6 +46,7 @@ export function createKavach(adapter, options) {
 		adapter.onAuthChange(async (event, session) => {
 			if (url) {
 				authStatus.set(adapter.parseUrlError(url))
+				console.log('onAuthChange, message in url', adapter.parseUrlError(url))
 			}
 
 			const result = await fetch(deflector.page.session, {
