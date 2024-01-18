@@ -27,7 +27,7 @@
 		} else if (mode === 'otp') {
 			result = await kavach.signIn({ provider: name, email: value })
 		} else {
-			await kavach.signIn({ provider: name, scopes })
+			await kavach.signIn({ provider: name, scopes, redirectTo: window.location.href })
 		}
 		if (result) {
 			if (result.error) {

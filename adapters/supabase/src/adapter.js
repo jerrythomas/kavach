@@ -25,7 +25,7 @@ async function handleSignIn(client, credentials) {
 	} else {
 		result = await client.auth.signInWithOAuth({
 			provider,
-			options: { scopes: scopes.join(' ') }
+			options: { scopes: scopes.join(' '), redirectTo }
 		})
 	}
 	return transformResult(result)
@@ -48,6 +48,7 @@ function parseUrlError(url) {
 /** @type {import('./types').GetSupabaseAdapter}  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
+
 	const signIn = async (credentials) => {
 		return handleSignIn(client, credentials)
 	}
