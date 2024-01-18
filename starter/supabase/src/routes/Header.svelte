@@ -2,7 +2,8 @@
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
 	import { Icon, ProgressBar } from '@rokkit/atoms'
 	import { goto } from '$app/navigation'
-	import { gravatar } from '@kavach/core'
+	import UserIcon from './UserIcon.svelte'
+	import DarkModeToggle from './DarkModeToggle.svelte'
 
 	let className = ''
 	export { className as class }
@@ -12,10 +13,11 @@
 	export let menu = []
 
 	let loading = false
+
 	beforeNavigate(() => (loading = true))
 	afterNavigate(() => (loading = false))
 
-	$: avatar = user?.avatar_url ?? gravatar(user?.email)
+
 </script>
 
 <header
@@ -41,11 +43,8 @@
 			{/each}
 		</nav>
 	</top-menu>
-	<settings class="flex items-center justify-end gap-3 pr-4">
-		{#if user}
-			<p>{user.full_name}</p>
-			<img src={avatar} alt={user.name} class="aspect-square h-8" />
-			<Icon name="carbon:logout" label="logout" on:click={() => goto('/logout')} />
-		{/if}
+	<settings class="flex items-center justify-end gap-4 pr-4">
+		<DarkModeToggle />
+		<UserIcon {user} />
 	</settings>
 </header>

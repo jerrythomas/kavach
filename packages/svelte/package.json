@@ -56,9 +56,9 @@
     "@kavach/core": "workspace:*",
     "@kavach/deflector": "workspace:*",
     "@kavach/logger": "workspace:*",
-    "@rokkit/atoms": "1.0.0-next.66",
-    "@rokkit/molecules": "1.0.0-next.66",
-    "@rokkit/organisms": "1.0.0-next.66",
+    "@rokkit/atoms": "1.0.0-next.67",
+    "@rokkit/molecules": "1.0.0-next.67",
+    "@rokkit/organisms": "1.0.0-next.67",
     "ramda": "^0.29.1"
   }
 }
