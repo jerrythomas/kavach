@@ -13,7 +13,7 @@ import {
  * @param {string} key
  * @returns {object}
  */
-export function asObject(value, key) {
+export function asObject(value, key = 'message') {
 	return value ? (typeof value === 'object' ? value : { [key]: value }) : {}
 }
 
@@ -34,7 +34,7 @@ export async function log(writer, level, data) {
 		level,
 		running_on: runningOn,
 		logged_at: currentDate.toISOString(),
-		...asObject(data, 'message')
+		...asObject(data)
 	})
 }
 
