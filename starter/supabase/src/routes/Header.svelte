@@ -1,7 +1,6 @@
 <script>
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
-	import { Icon, ProgressBar } from '@rokkit/atoms'
-	import { goto } from '$app/navigation'
+	import { ProgressBar } from '@rokkit/atoms'
 	import UserIcon from './UserIcon.svelte'
 	import DarkModeToggle from './DarkModeToggle.svelte'
 
@@ -16,8 +15,6 @@
 
 	beforeNavigate(() => (loading = true))
 	afterNavigate(() => (loading = false))
-
-
 </script>
 
 <header

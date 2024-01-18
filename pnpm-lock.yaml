@@ -508,16 +508,16 @@ importers:
         specifier: ^5.0.11
         version: 5.0.11
       '@kavach/adapter-supabase':
-        specifier: workspace:1.0.0-next.20
+        specifier: workspace:1.0.0-next.21
         version: link:../../adapters/supabase
       '@kavach/core':
-        specifier: workspace:1.0.0-next.20
+        specifier: workspace:1.0.0-next.21
         version: link:../../packages/core
       '@kavach/logger':
-        specifier: workspace:1.0.0-next.20
+        specifier: workspace:1.0.0-next.21
         version: link:../../packages/logger
       '@kavach/svelte':
-        specifier: workspace:1.0.0-next.20
+        specifier: workspace:1.0.0-next.21
         version: link:../../packages/svelte
       '@rokkit/actions':
         specifier: 1.0.0-next.67
