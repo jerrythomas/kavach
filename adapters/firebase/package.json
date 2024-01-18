@@ -1,50 +1,50 @@
 {
-	"name": "@kavach/adapter-firebase",
-	"version": "1.0.0-next.19",
-	"description": "Adapter to use firebase with kavach.",
-	"author": "Jerry Thomas <me@jerrythomas.name>",
-	"license": "MIT",
-	"main": "index.js",
-	"module": "src/index.js",
-	"types": "dist/index.d.ts",
-	"type": "module",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jerrythomas/kavach",
-		"directory": "adapters/firebase"
-	},
-	"prettier": "@jerrythomas/prettier-config",
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"prepublishOnly": "tsc",
-		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
-		"format": "prettier --write --plugin-search-dir=. .",
-		"test:ui": "vitest --ui",
-		"test": "vitest",
-		"bundle": "release-it",
-		"upgrade": "pnpm upgrade --latest && pnpm test:ci",
-		"release": "pnpm publish --access public"
-	},
-	"devDependencies": {
-		"@jerrythomas/prettier-config": "^1.0.2",
-		"@vitest/ui": "~1.2.1",
-		"eslint-config-shared": "workspace:*",
-		"jsdom": "^23.2.0",
-		"shared-config": "workspace:*",
-		"typescript": "^5.3.3",
-		"vite": "^5.0.11",
-		"vitest": "~1.2.1"
-	},
-	"dependencies": {
-		"@kavach/core": "workspace:*"
-	},
-	"exports": {
-		"./package.json": "./package.json",
-		".": {
-			"import": "./src/index.js",
-			"svelte": "./src/index.js"
-		}
-	}
+  "name": "@kavach/adapter-firebase",
+  "version": "1.0.0-next.20",
+  "description": "Adapter to use firebase with kavach.",
+  "author": "Jerry Thomas <me@jerrythomas.name>",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "src/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerrythomas/kavach",
+    "directory": "adapters/firebase"
+  },
+  "prettier": "@jerrythomas/prettier-config",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "lint": "prettier --check --plugin-search-dir=. . && eslint .",
+    "format": "prettier --write --plugin-search-dir=. .",
+    "test:ui": "vitest --ui",
+    "test": "vitest",
+    "bundle": "release-it",
+    "upgrade": "pnpm upgrade --latest && pnpm test:ci",
+    "release": "pnpm publish --access public"
+  },
+  "devDependencies": {
+    "@jerrythomas/prettier-config": "^1.0.2",
+    "@vitest/ui": "~1.2.1",
+    "eslint-config-shared": "workspace:*",
+    "jsdom": "^23.2.0",
+    "shared-config": "workspace:*",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vitest": "~1.2.1"
+  },
+  "dependencies": {
+    "@kavach/core": "workspace:*"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./src/index.js",
+      "svelte": "./src/index.js"
+    }
+  }
 }

@@ -1,64 +1,64 @@
 {
-	"name": "@kavach/svelte",
-	"version": "1.0.0-next.19",
-	"description": "Drop in security for web apps.",
-	"author": "Jerry Thomas <me@jerrythomas.name>",
-	"license": "MIT",
-	"main": "index.js",
-	"module": "src/index.js",
-	"types": "dist/index.d.ts",
-	"type": "module",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jerrythomas/kavach",
-		"directory": "packages/kavach"
-	},
-	"prettier": "@jerrythomas/prettier-config",
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"prepublishOnly": "tsc",
-		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
-		"test:ci": "vitest run",
-		"test:ui": "vitest --ui",
-		"test": "vitest",
-		"coverage": "vitest run --coverage",
-		"upgrade": "pnpm upgrade --latest && pnpm test:ci",
-		"release": "pnpm publish --access public"
-	},
-	"devDependencies": {
-		"@jerrythomas/prettier-config": "^1.0.2",
-		"@sveltejs/vite-plugin-svelte": "^3.0.1",
-		"@testing-library/svelte": "^4.0.5",
-		"@vitest/coverage-v8": "^1.2.1",
-		"@vitest/ui": "~1.2.1",
-		"eslint-config-shared": "workspace:*",
-		"js-yaml": "^4.1.0",
-		"jsdom": "^23.2.0",
-		"shared-config": "workspace:*",
-		"svelte": "^4.2.9",
-		"typescript": "^5.3.3",
-		"vite": "^5.0.11",
-		"vitest": "~1.2.1"
-	},
-	"exports": {
-		"./package.json": "./package.json",
-		".": {
-			"types": "./types/index.d.ts",
-			"import": "./src/index.js",
-			"svelte": "./src/index.js"
-		}
-	},
-	"dependencies": {
-		"@kavach/cookie": "workspace:*",
-		"@kavach/core": "workspace:*",
-		"@kavach/deflector": "workspace:*",
-		"@kavach/logger": "workspace:*",
-		"@rokkit/atoms": "1.0.0-next.66",
-		"@rokkit/molecules": "1.0.0-next.66",
-		"@rokkit/organisms": "1.0.0-next.66",
-		"ramda": "^0.29.1"
-	}
+  "name": "@kavach/svelte",
+  "version": "1.0.0-next.20",
+  "description": "Drop in security for web apps.",
+  "author": "Jerry Thomas <me@jerrythomas.name>",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "src/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerrythomas/kavach",
+    "directory": "packages/kavach"
+  },
+  "prettier": "@jerrythomas/prettier-config",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "test:ci": "vitest run",
+    "test:ui": "vitest --ui",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "upgrade": "pnpm upgrade --latest && pnpm test:ci",
+    "release": "pnpm publish --access public"
+  },
+  "devDependencies": {
+    "@jerrythomas/prettier-config": "^1.0.2",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "@testing-library/svelte": "^4.0.5",
+    "@vitest/coverage-v8": "^1.2.1",
+    "@vitest/ui": "~1.2.1",
+    "eslint-config-shared": "workspace:*",
+    "js-yaml": "^4.1.0",
+    "jsdom": "^23.2.0",
+    "shared-config": "workspace:*",
+    "svelte": "^4.2.9",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vitest": "~1.2.1"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js",
+      "svelte": "./src/index.js"
+    }
+  },
+  "dependencies": {
+    "@kavach/cookie": "workspace:*",
+    "@kavach/core": "workspace:*",
+    "@kavach/deflector": "workspace:*",
+    "@kavach/logger": "workspace:*",
+    "@rokkit/atoms": "1.0.0-next.66",
+    "@rokkit/molecules": "1.0.0-next.66",
+    "@rokkit/organisms": "1.0.0-next.66",
+    "ramda": "^0.29.1"
+  }
 }

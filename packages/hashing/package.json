@@ -1,51 +1,51 @@
 {
-	"name": "@kavach/hashing",
-	"version": "1.0.0-next.19",
-	"description": "Hashing functions.",
-	"author": "Jerry Thomas <me@jerrythomas.name>",
-	"license": "MIT",
-	"main": "index.js",
-	"module": "src/index.js",
-	"types": "dist/index.d.ts",
-	"type": "module",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jerrythomas/kavach",
-		"directory": "packages/hashing"
-	},
-	"prettier": "@jerrythomas/prettier-config",
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"prepublishOnly": "tsc",
-		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
-		"test:ci": "vitest run",
-		"test:ui": "vitest --ui",
-		"test": "vitest",
-		"coverage": "vitest run --coverage",
-		"upgrade": "pnpm upgrade --latest && pnpm test:ci",
-		"release": "pnpm publish --access public"
-	},
-	"devDependencies": {
-		"@jerrythomas/prettier-config": "^1.0.2",
-		"@types/node": "^20.11.5",
-		"@vitest/coverage-v8": "^1.2.1",
-		"@vitest/ui": "~1.2.1",
-		"eslint-config-shared": "workspace:*",
-		"shared-config": "workspace:*",
-		"typescript": "^5.3.3",
-		"vite": "^5.0.11",
-		"vitest": "1.2.1"
-	},
-	"exports": {
-		"./package.json": "./package.json",
-		"./provider.css": "./src/provider.css",
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./src/index.js",
-			"svelte": "./src/index.js"
-		}
-	}
+  "name": "@kavach/hashing",
+  "version": "1.0.0-next.20",
+  "description": "Hashing functions.",
+  "author": "Jerry Thomas <me@jerrythomas.name>",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "src/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerrythomas/kavach",
+    "directory": "packages/hashing"
+  },
+  "prettier": "@jerrythomas/prettier-config",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "test:ci": "vitest run",
+    "test:ui": "vitest --ui",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "upgrade": "pnpm upgrade --latest && pnpm test:ci",
+    "release": "pnpm publish --access public"
+  },
+  "devDependencies": {
+    "@jerrythomas/prettier-config": "^1.0.2",
+    "@types/node": "^20.11.5",
+    "@vitest/coverage-v8": "^1.2.1",
+    "@vitest/ui": "~1.2.1",
+    "eslint-config-shared": "workspace:*",
+    "shared-config": "workspace:*",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vitest": "1.2.1"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./provider.css": "./src/provider.css",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.js",
+      "svelte": "./src/index.js"
+    }
+  }
 }

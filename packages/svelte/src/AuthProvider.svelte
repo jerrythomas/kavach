@@ -3,7 +3,7 @@
 	import { InputField } from '@rokkit/organisms'
 	import { getContext } from 'svelte'
 	import { createEventDispatcher } from 'svelte'
-  import AuthPassword from './AuthPassword.svelte'
+	import AuthPassword from './AuthPassword.svelte'
 
 	const dispatch = createEventDispatcher()
 	const kavach = getContext('kavach')
@@ -27,7 +27,11 @@
 		} else if (mode === 'otp') {
 			result = await kavach.signIn({ provider: name, email: value })
 		} else {
-			await kavach.signIn({ provider: name, scopes, redirectTo: window.location.href })
+			await kavach.signIn({
+				provider: name,
+				scopes,
+				redirectTo: window.location.href
+			})
 		}
 		if (result) {
 			if (result.error) {
@@ -40,7 +44,7 @@
 </script>
 
 {#if mode === 'oauth'}
-  <Button on:click={signIn} {label} leftIcon="i-auth-{name}" />
+	<Button on:click={signIn} {label} leftIcon="i-auth-{name}" />
 {:else if mode === 'password'}
 	<AuthPassword bind:value bind:password on:click={signIn} />
 {:else}

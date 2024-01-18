@@ -13,17 +13,24 @@
 	}
 </script>
 
-<InputField name="email" type={type} icon="i-auth-{type}" label={type} autocomplete="on" bind:value />
-	<InputField
-	  name="password"
-		type="password"
-		icon="i-auth-password"
-		label="Password"
-		bind:password
-	/>
-	<button
-		on:click={handle}
-		class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
-	>
-		Sign in
-	</button>
+<InputField
+	name="email"
+	{type}
+	icon="i-auth-{type}"
+	label={type}
+	autocomplete="on"
+	bind:value
+/>
+<InputField
+	name="password"
+	type="password"
+	icon="i-auth-password"
+	label="Password"
+	bind:password
+/>
+<button
+	on:click={handle}
+	class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+>
+	Sign in
+</button>
