@@ -40,13 +40,24 @@ export function createKavach(adapter, options) {
 
 	const onAuthChange = (url) => {
 		if (RUNNING_ON !== 'browser') {
-			logger.error('onAuthChange should only be called from browser')
+			logger.error({
+				message: 'onAuthChange should only be called from browser',
+				module: 'kavach',
+				method: 'onAuthChange',
+				path: url
+			})
 			return
 		}
 		adapter.onAuthChange(async (event, session) => {
 			if (url) {
 				authStatus.set(adapter.parseUrlError(url))
-				console.log('onAuthChange, message in url', adapter.parseUrlError(url))
+				logger.debug({
+					message: 'onAuthChange, message in url',
+					module: 'kavach',
+					method: 'onAuthChange',
+					path: url,
+					data: adapter.parseUrlError(url)
+				})
 			}
 
 			const result = await fetch(deflector.page.session, {
@@ -93,18 +104,12 @@ export function createKavach(adapter, options) {
 				: null
 
 		deflector.setSession(event.locals['session'])
-		// console.log(
-		// 	event.url.pathname,
-		// 	deflector.isAuthenticated,
-		// 	deflector.authorizedRoutes
-		// )
+
 		if (event.url.pathname.startsWith(deflector.page.session)) {
 			return handleSessionSync(event, adapter, deflector)
 		}
 
-		// handleUnauthorizedAccess
 		return handleUnauthorizedAccess({ event, resolve })
-		// return resolve(event)
 	}
 	return {
 		signIn,
@@ -126,7 +131,6 @@ export function createKavach(adapter, options) {
 export function setCookieFromSession(session) {
 	if (session) {
 		const maxAge = session.expires_in ?? 3600 //* 1000
-
 		return setHeaderCookies(
 			{
 				session: {
@@ -145,10 +149,10 @@ async function handleSessionSync(event, adapter, deflector) {
 	let session = null
 	let status = 200
 	let error = null
-	// console.log(deflector.page.session, data.event, data.session)
+
 	if (data.session) {
 		const result = await adapter.synchronize(data.session)
-		// console.log('synchronize result', result)
+
 		if (!result.error) {
 			session = result.data.session
 		} else {
@@ -158,9 +162,7 @@ async function handleSessionSync(event, adapter, deflector) {
 	} else {
 		await adapter.signOut()
 	}
-	// console.log('after synchronize', session, status, error)
 	deflector.setSession(session)
 	const headers = setCookieFromSession(session)
-	// console.log(headers)
 	return new Response({ session, error }, { status, headers })
 }
