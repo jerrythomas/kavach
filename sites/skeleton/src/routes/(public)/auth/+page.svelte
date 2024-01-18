@@ -20,7 +20,7 @@
 		{
 			name: 'azure',
 			label: 'Continue With Azure',
-			scopes: ['email']
+			scopes: ['email','profile']
 		},
 		{
 			mode: 'otp',
