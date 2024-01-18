@@ -20,5 +20,5 @@
 	onMount(() => kavach.onAuthChange($page.url))
 </script>
 
-<Header user={data.session?.user} title={data.title}/>
+<Header user={data.session?.user} title={data.title} />
 <slot />

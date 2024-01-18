@@ -30,7 +30,7 @@
     "shared/*"
   ],
   "devDependencies": {
-    "@jerrythomas/prettier-config": "^1.0.0",
+    "@jerrythomas/prettier-config": "^1.0.2",
     "bumpp": "^9.3.0",
     "eslint": "^8.56.0",
     "eslint-config-shared": "workspace:*",

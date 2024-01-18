@@ -1,21 +1,21 @@
 <script>
 	import { AuthProvider } from '@kavach/svelte'
-	import { urlHashToParams } from '@kavach/core'
-	import { page } from '$app/stores'
-	import { onMount } from 'svelte'
+	// import { urlHashToParams } from '@kavach/core'
+	// import { page } from '$app/stores'
+	// import { onMount } from 'svelte'
 
-	let error = {}
-	let response = null
-	onMount(() => {
-		error = urlHashToParams($page.url.hash)
-	})
+	// let error = {}
+	// let response = null
+	// onMount(() => {
+	// 	error = urlHashToParams($page.url.hash)
+	// })
 
-	function handleError(event) {
-		error = event.detail
-	}
-	function handleSuccess(event) {
-		response = event.detail
-	}
+	// function handleError(event) {
+	// 	error = event.detail
+	// }
+	// function handleSuccess(event) {
+	// 	response = event.detail
+	// }
 </script>
 
 <!--  -->

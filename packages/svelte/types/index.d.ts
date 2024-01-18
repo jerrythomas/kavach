@@ -1,4 +1,4 @@
-export interface AuthProvider {
+export interface Provider {
 	mode: 'otp' | 'oauth' | 'password'
 	provider: string
 	label?: string

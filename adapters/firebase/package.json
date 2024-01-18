@@ -28,7 +28,7 @@
 		"release": "pnpm publish --access public"
 	},
 	"devDependencies": {
-		"@jerrythomas/prettier-config": "^1.0.0",
+		"@jerrythomas/prettier-config": "^1.0.2",
 		"@vitest/ui": "~1.2.1",
 		"eslint-config-shared": "workspace:*",
 		"jsdom": "^23.2.0",

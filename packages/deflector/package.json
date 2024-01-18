@@ -39,7 +39,7 @@
 		"ramda": "^0.29.1"
 	},
 	"devDependencies": {
-		"@jerrythomas/prettier-config": "^1.0.0",
+		"@jerrythomas/prettier-config": "^1.0.2",
 		"@types/node": "^20.11.5",
 		"@vitest/coverage-v8": "^1.2.1",
 		"@vitest/ui": "~1.2.1",

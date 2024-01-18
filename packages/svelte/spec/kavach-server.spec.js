@@ -30,9 +30,12 @@ describe('Endpoint functions', () => {
 		const kavach = createKavach(adapter, { invalidateAll, logger })
 
 		kavach.onAuthChange()
-		expect(logger.error).toHaveBeenCalledWith(
-			'onAuthChange should only be called from browser'
-		)
+		expect(logger.error).toHaveBeenCalledWith({
+			message: 'onAuthChange should only be called from browser',
+			method: 'onAuthChange',
+			module: 'kavach',
+			path: undefined
+		})
 		expect(adapter.onAuthChange).not.toHaveBeenCalled()
 		expect(global.fetch).not.toHaveBeenCalled()
 		expect(invalidateAll).not.toHaveBeenCalled()

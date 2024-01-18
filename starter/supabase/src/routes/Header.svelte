@@ -45,11 +45,7 @@
 		{#if user}
 			<p>{user.full_name}</p>
 			<img src={avatar} alt={user.name} class="aspect-square h-8" />
-			<Icon
-				name="carbon:logout"
-				label="logout"
-				on:click={() => goto('/logout')}
-			/>
+			<Icon name="carbon:logout" label="logout" on:click={() => goto('/logout')} />
 		{/if}
 	</settings>
 </header>
