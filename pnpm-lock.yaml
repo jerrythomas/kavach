@@ -76,6 +76,12 @@ importers:
       '@jerrythomas/prettier-config':
         specifier: ^1.0.2
         version: 1.0.2(prettier@3.2.4)(svelte@4.2.9)
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^3.0.1
+        version: 3.0.1(svelte@4.2.9)(vite@5.0.11)
+      '@vitest/coverage-v8':
+        specifier: ^1.2.1
+        version: 1.2.1(vitest@1.2.1)
       '@vitest/ui':
         specifier: ~1.2.1
         version: 1.2.1(vitest@1.2.1)
@@ -508,16 +514,16 @@ importers:
         specifier: ^5.0.11
         version: 5.0.11
       '@kavach/adapter-supabase':
-        specifier: workspace:1.0.0-next.21
+        specifier: workspace:latest
         version: link:../../adapters/supabase
       '@kavach/core':
-        specifier: workspace:1.0.0-next.21
+        specifier: workspace:latest
         version: link:../../packages/core
       '@kavach/logger':
-        specifier: workspace:1.0.0-next.21
+        specifier: workspace:latest
         version: link:../../packages/logger
       '@kavach/svelte':
-        specifier: workspace:1.0.0-next.21
+        specifier: workspace:latest
         version: link:../../packages/svelte
       '@rokkit/actions':
         specifier: 1.0.0-next.67
@@ -2119,7 +2125,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.2.1(@types/node@20.11.5)(@vitest/ui@1.2.1)(jsdom@23.2.0)
+      vitest: 1.2.1(@vitest/ui@1.2.1)(jsdom@23.2.0)
     transitivePeerDependencies:
       - supports-color
     dev: true

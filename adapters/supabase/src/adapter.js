@@ -1,6 +1,8 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams } from '@kavach/core'
 
+const defaultOrigin = window ? window.location.origin : ''
+
 /**
  * Handles sign in based on the credentials provided
  *
@@ -9,7 +11,8 @@ import { urlHashToParams } from '@kavach/core'
  * @returns {Promise<import('@kavach/core').AuthResponse>}
  */
 async function handleSignIn(client, credentials) {
-	const { email, phone, password, provider, scopes, redirectTo } = credentials
+	const { email, phone, password, provider, scopes } = credentials
+	const redirectTo = credentials.redirectTo ?? defaultOrigin
 
 	let result
 	if (provider === 'magic') {
@@ -17,21 +20,25 @@ async function handleSignIn(client, credentials) {
 		result = await client.auth.signInWithOtp({ email })
 		result = { ...result, credentials: { provider, email } }
 	} else if (password) {
+		const options = { emailRedirectTo: redirectTo }
 		const creds = email
-			? { email, password, options: { emailRedirectTo: redirectTo } }
-			: { phone, password, options: { emailRedirectTo: redirectTo } }
+			? { email, password, options }
+			: { phone, password, options }
 
 		result = await client.auth.signInWithPassword(creds)
 	} else {
 		result = await client.auth.signInWithOAuth({
 			provider,
-			options: { scopes: scopes.join(' '), redirectTo }
+			options: {
+				scopes: scopes.join(' '),
+				redirectTo
+			}
 		})
 	}
 	return transformResult(result)
 }
 
-function parseUrlError(url) {
+export function parseUrlError(url) {
 	let error = { isError: false }
 	let result = urlHashToParams(url.hash)
 	if (result.error) {
@@ -48,6 +55,11 @@ function parseUrlError(url) {
 /** @type {import('./types').GetSupabaseAdapter}  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
+	const clients = createClientsForSchemas(
+		options.url,
+		options.anonKey,
+		options.schema
+	)
 
 	const signIn = async (credentials) => {
 		return handleSignIn(client, credentials)
@@ -70,6 +82,7 @@ export function getAdapter(options) {
 		const {
 			data: { subscription }
 		} = client.auth.onAuthStateChange(async (event, session) => {
+			await synchronizeClients(session)
 			await callback(event, session)
 		})
 		return () => {
@@ -77,7 +90,15 @@ export function getAdapter(options) {
 		}
 	}
 	const synchronize = async (session) => {
+		await synchronizeClients(session)
 		return client.auth.setSession(session)
+	}
+
+	const synchronizeClients = async (session) => {
+		const result = Object.keys(clients).map(async (schema) => {
+			clients[schema].auth.setSession(session)
+		})
+		return Promise.all(result)
 	}
 
 	return {
@@ -87,12 +108,14 @@ export function getAdapter(options) {
 		synchronize,
 		onAuthChange,
 		parseUrlError,
-		client
+		client,
+		db: (schema = null) => (schema ? clients[schema] : client)
 	}
 }
 
 /**
  * Transforms supabase result into a structure that can be used by kavach
+ *
  * @param {*} result
  * @returns
  */
@@ -116,4 +139,20 @@ export function transformResult({ data, error, credentials }) {
 			data
 		}
 	}
+}
+
+/**
+ * Generates clients for each schema. This is required to support multiple schemas with supabase
+ *
+ * @param {string} url            The url of the supabase server
+ * @param {string} anonKey        The anon key of the supabase server
+ * @param {Array<string>} schemas An array of schemas to create clients for
+ * @returns
+ */
+function createClientsForSchemas(url, anonKey, schemas = []) {
+	const clients = schemas.map((schema) => ({
+		[schema]: createClient(url, anonKey, { schema })
+	}))
+
+	return clients
 }

@@ -29,8 +29,7 @@
 		} else {
 			await kavach.signIn({
 				provider: name,
-				scopes,
-				redirectTo: window.location.href
+				scopes
 			})
 		}
 		if (result) {

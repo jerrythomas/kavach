@@ -23,11 +23,14 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "test:ui": "vitest --ui",
     "test": "vitest",
+    "coverage": "vitest --coverage",
     "upgrade": "pnpm upgrade --latest && pnpm test:ci",
     "release": "pnpm publish --access public"
   },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "@vitest/coverage-v8": "^1.2.1",
     "@vitest/ui": "~1.2.1",
     "eslint-config-shared": "workspace:*",
     "jsdom": "^23.2.0",
