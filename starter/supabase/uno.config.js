@@ -13,13 +13,7 @@ import { defaultAuthIcons } from '@kavach/core'
 
 export default defineConfig({
 	extractors: [extractorSvelte()],
-	safelist: [
-		...defaultIcons,
-		...defaultAuthIcons,
-		'-translate-x-full',
-		'carbon:logout',
-		'solar:logout-2-outline'
-	],
+	safelist: [...defaultIcons, ...defaultAuthIcons, '-translate-x-full'],
 	rules: [...themeRules()],
 	shortcuts: {
 		...iconShortcuts(defaultIcons, 'i-rokkit'),
@@ -61,8 +55,9 @@ export default defineConfig({
 		presetIcons({
 			collections: {
 				rokkit: () => import('@rokkit/icons/ui.json').then((i) => i.default),
-				auth: () => import('@rokkit/icons/auth.json').then((i) => i.default),
-				solar: () => import('@iconify-json/solar/icons.json').then((i) => i.default)
+				auth: () => import('@rokkit/icons/auth.json').then((i) => i.default)
+				// app: () => import('@rokkit/icons/app.json').then((i) => i.default)
+				// solar: () => import('@iconify-json/solar/icons.json').then((i) => i.default)
 			}
 		})
 	],

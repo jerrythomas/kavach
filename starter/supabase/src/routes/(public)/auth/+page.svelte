@@ -23,7 +23,7 @@
 	<section class="flex flex-col w-full gap-2 py-2">
 		<!-- <AuthProvider name="github" label="Continue With Github" /> -->
 		<!-- <AuthProvider name="google" label="Continue With Google" /> -->
-		<AuthProvider name="azure" label="Continue With Azure" scopes={['email', 'name']} />
+		<AuthProvider name="azure" label="Continue With Azure" scopes={['email', 'profile']} />
 	</section>
 	<!-- <Divide>or</Divide> -->
 	<!-- <section class="flex flex-col w-full py-2">

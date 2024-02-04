@@ -1,7 +1,8 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams } from '@kavach/core'
 
-const defaultOrigin = window ? window.location.origin : ''
+const defaultOrigin =
+	typeof window !== 'undefined' ? window.location.origin : ''
 
 /**
  * Handles sign in based on the credentials provided
