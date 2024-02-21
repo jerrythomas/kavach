@@ -9,7 +9,7 @@
 	const kavach = getContext('kavach')
 
 	let className = ''
-	export { className as class}
+	export { className as class }
 	/** @type {'otp'|'oauth'|'password'} */
 	export let mode = 'oauth'
 	/** @type {string} */
@@ -45,7 +45,12 @@
 </script>
 
 {#if mode === 'oauth'}
-	<Button on:click={signIn} {label} leftIcon="i-auth-{name}"  class={className} />
+	<Button
+		on:click={signIn}
+		{label}
+		leftIcon="i-auth-{name}"
+		class={className}
+	/>
 {:else if mode === 'password'}
 	<AuthPassword bind:value bind:password on:click={signIn} class={className} />
 {:else}
