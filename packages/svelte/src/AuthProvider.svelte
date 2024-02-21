@@ -8,6 +8,8 @@
 	const dispatch = createEventDispatcher()
 	const kavach = getContext('kavach')
 
+	let className = ''
+	export { className as class}
 	/** @type {'otp'|'oauth'|'password'} */
 	export let mode = 'oauth'
 	/** @type {string} */
@@ -43,11 +45,11 @@
 </script>
 
 {#if mode === 'oauth'}
-	<Button on:click={signIn} {label} leftIcon="i-auth-{name}" />
+	<Button on:click={signIn} {label} leftIcon="i-auth-{name}"  class={className} />
 {:else if mode === 'password'}
-	<AuthPassword bind:value bind:password on:click={signIn} />
+	<AuthPassword bind:value bind:password on:click={signIn} class={className} />
 {:else}
-	<form on:submit={signIn} class="flex w-full p-0">
+	<form on:submit={signIn} class="flex w-full p-0 {className}">
 		<InputField
 			type="email"
 			name="magic"
