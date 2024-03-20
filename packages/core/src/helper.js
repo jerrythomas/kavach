@@ -21,7 +21,7 @@ export function hasAuthParams(url) {
  */
 export function urlHashToParams(url) {
 	const [, hash] = url.split('#')
-	if (hash && hash.length) {
+	if (hash?.length) {
 		let result = hash
 			.split('&')
 			.map((kv) => extractKeyValuePair(kv))
