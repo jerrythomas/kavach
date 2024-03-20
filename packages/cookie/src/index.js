@@ -64,7 +64,7 @@ export function parse(str, options) {
 		var val = pair.slice(++eq_idx, pair.length).trim()
 
 		// quoted values
-		if ('"' == val[0]) {
+		if (val[0] == '"') {
 			val = val.slice(1, -1)
 		}
 
@@ -113,7 +113,7 @@ export function serialize(name, val, options) {
 
 	var str = name + '=' + value
 
-	if (null != opt.maxAge) {
+	if (opt.maxAge != null) {
 		var maxAge = opt.maxAge - 0
 
 		if (isNaN(maxAge) || !isFinite(maxAge)) {
