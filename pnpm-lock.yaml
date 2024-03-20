@@ -514,38 +514,38 @@ importers:
         specifier: ^5.0.11
         version: 5.0.11
       '@kavach/adapter-supabase':
-        specifier: workspace:1.0.0-next.23
+        specifier: workspace:*
         version: link:../../adapters/supabase
       '@kavach/core':
-        specifier: workspace:1.0.0-next.23
+        specifier: workspace:*
         version: link:../../packages/core
       '@kavach/logger':
-        specifier: workspace:1.0.0-next.23
+        specifier: workspace:*
         version: link:../../packages/logger
       '@kavach/svelte':
-        specifier: workspace:1.0.0-next.23
+        specifier: workspace:*
         version: link:../../packages/svelte
       '@rokkit/actions':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/atoms':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/core':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/icons':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/layout':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/molecules':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/organisms':
-        specifier: 1.0.0-next.81
-        version: 1.0.0-next.81
+        specifier: latest
+        version: 1.0.0-next.92
       '@rokkit/stores':
         specifier: 1.0.0-next.81
         version: 1.0.0-next.81
@@ -1401,11 +1401,29 @@ packages:
       ramda: 0.29.1
     dev: false
 
+  /@rokkit/actions@1.0.0-next.92:
+    resolution: {integrity: sha512-9PUS4TZTjvWWWpatEmXanubHGc/BgOdp88WtOivZIFO5XbYXIyckfXcZVhbFtrUMywhRj0PGtaTGdOKloZCbcQ==}
+    dependencies:
+      '@rokkit/core': 1.0.0-next.92
+      '@rokkit/stores': 1.0.0-next.92
+      ramda: 0.29.1
+    dev: false
+
   /@rokkit/atoms@1.0.0-next.81:
     resolution: {integrity: sha512-1z67RSIMs6/dl0N49qfsHhavveUA0LpPcHjoeKB/pr4Y/o50SPDFmvNSmberBiHCeU/FmBI0BKyjZsZmWsvIxg==}
     dependencies:
       '@rokkit/actions': 1.0.0-next.81
       '@rokkit/core': 1.0.0-next.81
+      marked: 12.0.0
+      marked-gfm-heading-id: 3.1.3(marked@12.0.0)
+      marked-mangle: 1.1.7(marked@12.0.0)
+    dev: false
+
+  /@rokkit/atoms@1.0.0-next.92:
+    resolution: {integrity: sha512-IB2R7LcgB3qup7uf4agHfHq+LlDmXsk69kl9vPM4TGO+XlrAycSo6fnBXI6dXVU0nZab5QAU/xOMYkJtEFtAGA==}
+    dependencies:
+      '@rokkit/actions': 1.0.0-next.92
+      '@rokkit/core': 1.0.0-next.92
       marked: 12.0.0
       marked-gfm-heading-id: 3.1.3(marked@12.0.0)
       marked-mangle: 1.1.7(marked@12.0.0)
@@ -1418,6 +1436,13 @@ packages:
       ramda: 0.29.1
     dev: false
 
+  /@rokkit/core@1.0.0-next.92:
+    resolution: {integrity: sha512-AIvww2fVCiP7MFaOpRBdVB4HzDDqRcjdqhP/GsteDihiIZNvO4tBaXCtseh3729jT847dGSyFYexBiDBHBVB+A==}
+    dependencies:
+      date-fns: 3.3.1
+      ramda: 0.29.1
+    dev: false
+
   /@rokkit/icons@1.0.0-next.81:
     resolution: {integrity: sha512-BBGvIXtRjx//qJKMdByymoNSynnWMWxs7vu4euOz216JhhP0LGR0uts7ZZTBXy1Xcm17ZixyoSqPudUZP8ecOQ==}
     hasBin: true
@@ -1425,14 +1450,22 @@ packages:
       '@mdi/svg': 7.4.47
     dev: false
 
-  /@rokkit/layout@1.0.0-next.81:
-    resolution: {integrity: sha512-z7sz98rsjOQWnjgFP53mzKsBMfE74FYRsoIdjkCeQ1kJL7CvTfZOFEmEYgdjNZEs2S3S8QbdIngqme9pV3sa7Q==}
+  /@rokkit/icons@1.0.0-next.92:
+    resolution: {integrity: sha512-qduGlkOoa3ajDFcJUuZCuDZvmYmze37iTK59Nt8NcU+g6sBaNDpCbj/+JOvavVig9RZyCiOWQS1baeVVWwimaA==}
+    hasBin: true
     dependencies:
-      '@rokkit/actions': 1.0.0-next.81
-      '@rokkit/atoms': 1.0.0-next.81
-      '@rokkit/core': 1.0.0-next.81
-      '@rokkit/molecules': 1.0.0-next.81
-      '@rokkit/organisms': 1.0.0-next.81
+      '@mdi/svg': 7.4.47
+    dev: false
+
+  /@rokkit/layout@1.0.0-next.92:
+    resolution: {integrity: sha512-gcwohaETjnvEATQfv+rSxfycJEUltxF3tOjms6vvXhhz1wDR5orVIiukLqvAnjEw582Na1yF7SF6r/dPnGRAVQ==}
+    dependencies:
+      '@rokkit/actions': 1.0.0-next.92
+      '@rokkit/atoms': 1.0.0-next.92
+      '@rokkit/core': 1.0.0-next.92
+      '@rokkit/molecules': 1.0.0-next.92
+      '@rokkit/organisms': 1.0.0-next.92
+      '@rokkit/stores': 1.0.0-next.92
       d3-scale: 4.0.2
       date-fns: 3.3.1
     dev: false
@@ -1449,6 +1482,18 @@ packages:
       ramda: 0.29.1
     dev: false
 
+  /@rokkit/molecules@1.0.0-next.92:
+    resolution: {integrity: sha512-etS3l6SXa/DvZzcEQx/u8QjnWCga8N4JY1LMfGCG/4nflckpBGQTeJnn51RXGxzg/XsuoinuItw6KpwLZgJeuw==}
+    dependencies:
+      '@rokkit/actions': 1.0.0-next.92
+      '@rokkit/atoms': 1.0.0-next.92
+      '@rokkit/core': 1.0.0-next.92
+      '@rokkit/stores': 1.0.0-next.92
+      d3-scale: 4.0.2
+      date-fns: 3.3.1
+      ramda: 0.29.1
+    dev: false
+
   /@rokkit/organisms@1.0.0-next.81:
     resolution: {integrity: sha512-mu/+as5WZaSqE19VZK0IyhHNM7dgN782hu71eJHKHJrWExrJR4glVAPJi5B+zSoTD1H2j+mao6ibidJ8XUl02w==}
     dependencies:
@@ -1459,10 +1504,27 @@ packages:
       ramda: 0.29.1
     dev: false
 
+  /@rokkit/organisms@1.0.0-next.92:
+    resolution: {integrity: sha512-a6kp1MTgy+D5nUcQalXWdWzGHadX1X/HLVbTy2a6Na1QDX6YswVIMjEmRrs6C5jgBukd8iS7dFpYEBogx+sAzA==}
+    dependencies:
+      '@rokkit/actions': 1.0.0-next.92
+      '@rokkit/atoms': 1.0.0-next.92
+      '@rokkit/core': 1.0.0-next.92
+      '@rokkit/molecules': 1.0.0-next.92
+      ramda: 0.29.1
+    dev: false
+
   /@rokkit/stores@1.0.0-next.81:
     resolution: {integrity: sha512-7uUprxYkCNCINSIv2WBUqS+6d2QhJY7f3nC6wmYl7elAm9S5ktczwV64ImBEaVjH5HBC7FXlCO7qd96v5lO/gQ==}
     dependencies:
       '@rokkit/core': 1.0.0-next.81
+      ramda: 0.29.1
+    dev: false
+
+  /@rokkit/stores@1.0.0-next.92:
+    resolution: {integrity: sha512-wPCLfFJVVFkC+IGgHVeRycj2IyYedVfCxkI2FKkvGVqFyBz6yWdhDBgVYmV25/xlwIg+vo1fa9+L5i6ToZ+gdg==}
+    dependencies:
+      '@rokkit/core': 1.0.0-next.92
       ramda: 0.29.1
     dev: false
 
