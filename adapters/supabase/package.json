@@ -23,7 +23,7 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "test:ui": "vitest --ui",
     "test": "vitest",
-    "coverage": "vitest --coverage",
+    "coverage": "vitest run --coverage",
     "upgrade": "pnpm upgrade --latest && pnpm test:ci",
     "release": "pnpm publish --access public"
   },

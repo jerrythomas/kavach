@@ -6,12 +6,10 @@ name = "test-coverage"
 [[analyzers]]
 name = "javascript"
 
-  [analyzers.meta]
-  environment = [
-    "vitest",
-    "nodejs",
-    "browser"
-  ]
+[analyzers.meta]
+environment = ["nodejs", "vitest", "browser"]
 
 [[transformers]]
 name = "prettier"
+
+test_patterns = ["**/spec/**"]

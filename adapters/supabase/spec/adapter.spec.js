@@ -40,15 +40,16 @@ describe('getAdapter', () => {
 			schema: ['public']
 		}
 		const adapter = getAdapter(options)
-		expect(adapter).toHaveProperty('signIn')
-		expect(adapter).toHaveProperty('signUp')
-		expect(adapter).toHaveProperty('signOut')
-		expect(adapter).toHaveProperty('synchronize')
-		expect(adapter).toHaveProperty('onAuthChange')
-		expect(adapter).toHaveProperty('parseUrlError')
-		// expect(adapter).toHaveProperty('client')
-		expect(adapter).toHaveProperty('db')
-		expect(Object.keys(adapter)).toHaveLength(7)
+		expect(Object.keys(adapter)).toEqual([
+			'signIn',
+			'signUp',
+			'signOut',
+			'synchronize',
+			'onAuthChange',
+			'parseUrlError',
+			'client',
+			'db'
+		])
 	})
 
 	it('should handle sign in', async () => {
