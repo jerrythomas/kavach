@@ -19,8 +19,8 @@
   },
   "scripts": {
     "prepublishOnly": "tsc",
-    "lint": "prettier --check --plugin-search-dir=. . && eslint .",
-    "format": "prettier --write --plugin-search-dir=. .",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
     "test:ui": "vitest --ui",
     "test": "vitest",
     "bundle": "release-it",
@@ -29,13 +29,13 @@
   },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
-    "@vitest/ui": "~1.3.1",
+    "@vitest/ui": "~1.4.0",
     "eslint-config-shared": "workspace:*",
     "jsdom": "^24.0.0",
     "shared-config": "workspace:*",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.4",
-    "vitest": "~1.3.1"
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6",
+    "vitest": "~1.4.0"
   },
   "dependencies": {
     "@kavach/core": "workspace:*"
