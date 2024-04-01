@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import cookie from '../src/index.js'
 
 describe('Cookie Serialize', () => {
+	const identity = (v) => v
+
 	it('basic', () => {
 		expect(cookie.serialize('foo', 'bar')).toEqual('foo=bar')
 		expect(cookie.serialize('foo', 'bar baz')).toEqual('foo=bar%20baz')
@@ -150,17 +152,13 @@ describe('Cookie Serialize', () => {
 	it('unencoded', () => {
 		expect(
 			cookie.serialize('cat', '+ ', {
-				encode: function (value) {
-					return value
-				}
+				encode: identity
 			})
 		).toEqual('cat=+ ')
 
 		expect(
 			cookie.serialize.bind(cookie, 'cat', '+ \n', {
-				encode: function (value) {
-					return value
-				}
+				encode: identity
 			})
 		).toThrowError(/argument val is invalid/)
 	})

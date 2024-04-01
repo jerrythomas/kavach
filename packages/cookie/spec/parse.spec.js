@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { parse } from '../src/index.js'
 
-const identity = (v) => v
-
 describe('Cookie Parser', () => {
+	const identity = (v) => v
+
 	it('argument validation', () => {
 		expect(parse.bind()).toThrowError(/argument str must be a string/)
 		expect(parse.bind(null, 42)).toThrowError(/argument str must be a string/)
