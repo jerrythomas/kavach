@@ -6,12 +6,15 @@ import { getRequestData } from './request'
 import { RUNNING_ON } from './constants'
 import { writable } from 'svelte/store'
 
+const pass = async () => {
+	/* Used as a placeholder */
+}
 export const authStatus = writable()
 // eslint-disable-next-line
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
 	const logger = options?.logger ?? zeroLogger
-	const invalidateAll = options?.invalidateAll ?? (() => {})
+	const invalidateAll = options?.invalidateAll ?? pass
 
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)

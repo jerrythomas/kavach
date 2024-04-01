@@ -76,4 +76,9 @@ async function handleAuthCallback(client) {
 	} catch (error) {
 		return Promise.resolve(handleError(error))
 	}
+	return Promise.resolve({
+		type: 'error',
+		message: 'Authentication failed',
+		data: null
+	})
 }

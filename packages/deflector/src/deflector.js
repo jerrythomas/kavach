@@ -96,7 +96,7 @@ export function cleanupRoles(routes, defaultRoutes) {
 
 		for (let j = i + 1; j < roleRoutes.length; j++) {
 			//eslint-disable-next-line max-depth
-			while (j < roleRoutes.length && roleRoutes[j].startsWith(current + '/')) {
+			while (j < roleRoutes.length && roleRoutes[j].startsWith(`${current}/`)) {
 				roleRoutes.splice(j, 1)
 			}
 		}
@@ -147,7 +147,7 @@ export function isRouteAllowed(route, allowedRoutes) {
 
 	for (let i = 0; i < allowedRoutes.length && !isAllowed; i++) {
 		isAllowed =
-			route === allowedRoutes[i] || route.startsWith(allowedRoutes[i] + '/')
+			route === allowedRoutes[i] || route.startsWith(`${allowedRoutes[i]}/`)
 	}
 	return isAllowed
 }

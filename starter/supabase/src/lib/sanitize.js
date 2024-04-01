@@ -10,8 +10,8 @@ export function replaceNewlinesInQuotes(input) {
 	// This regex pattern uses a negative lookbehind to ignore escaped quotes.
 	const regex = /"((?:[^"\\]|\\.)*)"/g
 
-	return input.replace(regex, function (match, group) {
-		return '"' + group.replace(/\n/g, '<br/>') + '"'
+	return input.replace(regex, (_, group) => {
+		return `"${group.replace(/\n/g, '<br/>')}"`
 	})
 }
 

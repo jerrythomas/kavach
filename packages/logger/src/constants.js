@@ -1,4 +1,6 @@
-export const pass = async () => {}
+export const pass = async () => {
+	/* Used as a placeholder */
+}
 
 export const runningOn = typeof window === 'undefined' ? 'server' : 'browser'
 /** @type {import('./types').LogLevel} */
