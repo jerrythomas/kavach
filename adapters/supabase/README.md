@@ -1,9 +1,9 @@
-# Kavach
+# @kavach/adapter-supabase
 
-> Kavach - Protective Armour
+Adapter for using supabase with kavach
 
 ## Usage
 
 ```bash
-pnpm add kavach @kavach/supabase
+pnpm add kavach @kavach/adapter-supabase
 ```

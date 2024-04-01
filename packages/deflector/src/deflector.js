@@ -6,6 +6,7 @@ import { zeroLogger } from '@kavach/logger'
  * @param {import('./types').DeflectorOptions} options
  * @returns {import('./types').Deflector}
  */
+// eslint-disable-next-line max-lines-per-function
 export function createDeflector(options = {}) {
 	const appRoutes = getAppRoutes(options)
 	const routesByRole = getRoutesByRole(options, appRoutes)
@@ -94,6 +95,7 @@ export function cleanupRoles(routes, defaultRoutes) {
 		const current = roleRoutes[i]
 
 		for (let j = i + 1; j < roleRoutes.length; j++) {
+			//eslint-disable-next-line max-depth
 			while (j < roleRoutes.length && roleRoutes[j].startsWith(current + '/')) {
 				roleRoutes.splice(j, 1)
 			}

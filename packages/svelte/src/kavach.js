@@ -7,7 +7,7 @@ import { RUNNING_ON } from './constants'
 import { writable } from 'svelte/store'
 
 export const authStatus = writable()
-
+// eslint-disable-next-line
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
 	const logger = options?.logger ?? zeroLogger
@@ -38,6 +38,7 @@ export function createKavach(adapter, options) {
 		// invalidate(APP_AUTH_CONTEXT)
 	}
 
+	// eslint-disable-next-line
 	const onAuthChange = (url) => {
 		if (RUNNING_ON !== 'browser') {
 			logger.error({
@@ -68,7 +69,7 @@ export function createKavach(adapter, options) {
 				})
 			})
 
-			if (result.status == 200) {
+			if (result.status === 200) {
 				invalidateAll()
 				// invalidate(APP_AUTH_CONTEXT)
 				// deflector.setSession(session)

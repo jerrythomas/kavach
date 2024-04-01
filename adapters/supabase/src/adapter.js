@@ -54,6 +54,7 @@ export function parseUrlError(url) {
 }
 
 /** @type {import('./types').GetSupabaseAdapter}  */
+// eslint-disable-next-line max-lines-per-function
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
 	const clients = createClientsForSchemas(
@@ -124,7 +125,7 @@ export function transformResult({ data, error, credentials }) {
 	let message = ''
 	if (!error) {
 		message =
-			data.provider == 'magic'
+			data.provider === 'magic'
 				? `Magic link has been sent to "${credentials.email}".`
 				: ''
 		return { type: 'info', data, message }

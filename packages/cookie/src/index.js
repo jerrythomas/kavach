@@ -40,7 +40,7 @@ var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/
  * @return {object}
  * @public
  */
-
+// eslint-disable-next-line
 export function parse(str, options) {
 	if (typeof str !== 'string') {
 		throw new TypeError('argument str must be a string')
@@ -64,12 +64,12 @@ export function parse(str, options) {
 		var val = pair.slice(++eq_idx, pair.length).trim()
 
 		// quoted values
-		if (val[0] == '"') {
+		if (val[0] === '"') {
 			val = val.slice(1, -1)
 		}
 
 		// only assign once
-		if (undefined == obj[key]) {
+		if (obj[key] === undefined) {
 			obj[key] = tryDecode(val, dec)
 		}
 	}
@@ -92,9 +92,9 @@ export function parse(str, options) {
  * @return {string}
  * @public
  */
-
+// eslint-disable-next-line
 export function serialize(name, val, options) {
-	var opt = options || {}
+	var opt = { maxAge: null, ...(options || {}) }
 	var enc = opt.encode || encode
 
 	if (typeof enc !== 'function') {
@@ -113,7 +113,7 @@ export function serialize(name, val, options) {
 
 	var str = name + '=' + value
 
-	if (opt.maxAge != null) {
+	if (opt.maxAge !== null) {
 		var maxAge = opt.maxAge - 0
 
 		if (isNaN(maxAge) || !isFinite(maxAge)) {

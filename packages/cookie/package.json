@@ -34,13 +34,13 @@
   },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "@vitest/coverage-v8": "^1.4.0",
     "@vitest/ui": "~1.4.0",
     "eslint-config-shared": "workspace:*",
     "shared-config": "workspace:*",
     "typescript": "^5.4.3",
-    "vite": "^5.2.6",
+    "vite": "^5.2.7",
     "vitest": "1.4.0"
   },
   "exports": {

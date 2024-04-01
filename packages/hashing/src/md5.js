@@ -5,6 +5,7 @@
  * @param {*} x
  * @param {*} k
  */
+// eslint-disable-next-line max-lines-per-function
 function md5cycle(x, k) {
 	let a = x[0],
 		b = x[1],

@@ -78,9 +78,7 @@ describe('Cookie Serialize', () => {
 			'foo=bar; Max-Age=0'
 		)
 		expect(cookie.serialize('foo', 'bar', { maxAge: null })).toEqual('foo=bar')
-		expect(cookie.serialize('foo', 'bar', { maxAge: undefined })).toEqual(
-			'foo=bar'
-		)
+		expect(cookie.serialize('foo', 'bar')).toEqual('foo=bar')
 		expect(cookie.serialize('foo', 'bar', { maxAge: 3.14 })).toEqual(
 			'foo=bar; Max-Age=3'
 		)

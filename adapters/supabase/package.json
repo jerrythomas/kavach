@@ -19,8 +19,8 @@
   },
   "scripts": {
     "prepublishOnly": "tsc",
-    "lint": "prettier --check --plugin-search-dir=. . && eslint .",
-    "format": "prettier --write --plugin-search-dir=. .",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
     "test:ui": "vitest --ui",
     "test": "vitest",
     "coverage": "vitest run --coverage",
@@ -36,12 +36,12 @@
     "jsdom": "^24.0.0",
     "shared-config": "workspace:*",
     "typescript": "^5.4.3",
-    "vite": "^5.2.6",
+    "vite": "^5.2.7",
     "vitest": "~1.4.0"
   },
   "dependencies": {
     "@kavach/core": "workspace:*",
-    "@supabase/supabase-js": "^2.39.8",
+    "@supabase/supabase-js": "^2.41.1",
     "ramda": "^0.29.1"
   },
   "exports": {

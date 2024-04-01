@@ -1,15 +1,9 @@
 {
-  "name": "@kavach/deflector",
+  "name": "@kavach/adapter-auth0",
   "version": "1.0.0-next.25",
-  "description": "A deflector for role based route handling",
+  "description": "Adapter to use auth0 with kavach.",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
-  "keywords": [
-    "deflector",
-    "routes",
-    "routing",
-    "role based routing"
-  ],
   "main": "index.js",
   "module": "src/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/jerrythomas/kavach",
-    "directory": "packages/deflector"
+    "directory": "adapters/auth0"
   },
   "prettier": "@jerrythomas/prettier-config",
   "publishConfig": {
@@ -27,31 +21,28 @@
     "prepublishOnly": "tsc",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
-    "test:ci": "vitest run",
     "test:ui": "vitest --ui",
     "test": "vitest",
-    "coverage": "vitest run --coverage",
+    "bundle": "release-it",
     "upgrade": "pnpm upgrade --latest && pnpm test:ci",
     "release": "pnpm publish --access public"
   },
-  "dependencies": {
-    "@kavach/logger": "workspace:*",
-    "ramda": "^0.29.1"
-  },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
-    "@types/node": "^20.12.2",
-    "@vitest/coverage-v8": "^1.4.0",
     "@vitest/ui": "~1.4.0",
+    "eslint-config-shared": "workspace:*",
+    "jsdom": "^24.0.0",
     "shared-config": "workspace:*",
     "typescript": "^5.4.3",
     "vite": "^5.2.7",
-    "vitest": "1.4.0"
+    "vitest": "~1.4.0"
+  },
+  "dependencies": {
+    "@kavach/core": "workspace:*"
   },
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./src/index.js",
       "svelte": "./src/index.js"
     }
