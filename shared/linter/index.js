@@ -14,6 +14,9 @@ module.exports = {
 	rules: {
 		complexity: ['error', 5],
 		'max-depth': ['error', 2],
+		'max-params': ['error', 4],
+		'no-console': 'error',
+		'no-return-await': 'error',
 		eqeqeq: 'error',
 		'no-eq-null': 'error',
 		'no-implicit-coercion': 'error',

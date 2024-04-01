@@ -66,7 +66,7 @@ export function getLogger(writer, options = {}) {
 			[logLevel]:
 				value <= levelValue
 					? async (/** @type {Object} */ message) =>
-							await log(writer, logLevel, message)
+							log(writer, logLevel, message)
 					: pass
 		}))
 		.reduce((acc, orig) => ({ ...acc, ...orig }), {})
