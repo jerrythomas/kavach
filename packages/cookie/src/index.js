@@ -14,9 +14,9 @@
  * @private
  */
 
-var decode = decodeURIComponent
-var encode = encodeURIComponent
-var pairSplitRegExp = /; */
+const decode = decodeURIComponent
+const encode = encodeURIComponent
+const pairSplitRegExp = /; */
 
 /**
  * RegExp to match field-content in RFC 7230 sec 3.2
@@ -27,7 +27,7 @@ var pairSplitRegExp = /; */
  */
 
 // eslint-disable-next-line no-control-regex
-var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/
+const fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/
 
 /**
  * Parse a cookie header.
@@ -46,22 +46,22 @@ export function parse(str, options) {
 		throw new TypeError('argument str must be a string')
 	}
 
-	var obj = {}
-	var opt = options || {}
-	var pairs = str.split(pairSplitRegExp)
-	var dec = opt.decode || decode
+	const obj = {}
+	const opt = options || {}
+	const pairs = str.split(pairSplitRegExp)
+	const dec = opt.decode || decode
 
-	for (var i = 0; i < pairs.length; i++) {
-		var pair = pairs[i]
-		var eq_idx = pair.indexOf('=')
+	for (let i = 0; i < pairs.length; i++) {
+		const pair = pairs[i]
+		let eq_idx = pair.indexOf('=')
 
 		// skip things that don't look like key=value
 		if (eq_idx < 0) {
 			continue
 		}
 
-		var key = pair.slice(0, eq_idx).trim()
-		var val = pair.slice(++eq_idx, pair.length).trim()
+		const key = pair.slice(0, eq_idx).trim()
+		let val = pair.slice(++eq_idx, pair.length).trim()
 
 		// quoted values
 		if (val[0] === '"') {
@@ -94,8 +94,8 @@ export function parse(str, options) {
  */
 // eslint-disable-next-line
 export function serialize(name, val, options) {
-	var opt = { maxAge: null, ...(options || {}) }
-	var enc = opt.encode || encode
+	const opt = { maxAge: null, ...(options || {}) }
+	const enc = opt.encode || encode
 
 	if (typeof enc !== 'function') {
 		throw new TypeError('option encode is invalid')
@@ -105,16 +105,16 @@ export function serialize(name, val, options) {
 		throw new TypeError('argument name is invalid')
 	}
 
-	var value = enc(val)
+	const value = enc(val)
 
 	if (value && !fieldContentRegExp.test(value)) {
 		throw new TypeError('argument val is invalid')
 	}
 
-	var str = name + '=' + value
+	let str = name + '=' + value
 
 	if (opt.maxAge !== null) {
-		var maxAge = opt.maxAge - 0
+		const maxAge = opt.maxAge - 0
 
 		if (isNaN(maxAge) || !isFinite(maxAge)) {
 			throw new TypeError('option maxAge is invalid')
@@ -156,7 +156,7 @@ export function serialize(name, val, options) {
 	}
 
 	if (opt.sameSite) {
-		var sameSite =
+		const sameSite =
 			typeof opt.sameSite === 'string'
 				? opt.sameSite.toLowerCase()
 				: opt.sameSite

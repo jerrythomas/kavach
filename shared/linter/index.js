@@ -17,6 +17,7 @@ module.exports = {
 		'max-params': ['error', 4],
 		'no-console': 'error',
 		'no-return-await': 'error',
+		'prefer-const': 'error',
 		eqeqeq: 'error',
 		'no-eq-null': 'error',
 		'no-implicit-coercion': 'error',
