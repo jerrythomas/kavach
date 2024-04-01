@@ -99,12 +99,12 @@ export function createKavach(adapter, options) {
 	const handle = async ({ event, resolve }) => {
 		const cookieSession = event.cookies.get('session')
 
-		event.locals['session'] =
+		event.locals.session =
 			cookieSession && cookieSession !== 'undefined'
 				? JSON.parse(cookieSession)
 				: null
 
-		deflector.setSession(event.locals['session'])
+		deflector.setSession(event.locals.session)
 
 		if (event.url.pathname.startsWith(deflector.page.session)) {
 			return handleSessionSync(event, adapter, deflector)

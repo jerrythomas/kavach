@@ -20,7 +20,7 @@ export function createDeflector(options = {}) {
 		role = session?.user?.role ?? 'public'
 
 		isAuthenticated = role !== 'public'
-		authorizedRoutes = [...routesByRole['public'].routes]
+		authorizedRoutes = [...routesByRole.public.routes]
 
 		if (isAuthenticated && role in routesByRole) {
 			authorizedRoutes = [...authorizedRoutes, ...routesByRole[role].routes]

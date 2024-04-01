@@ -63,9 +63,7 @@ export function getAdapter(options) {
 		options.schema
 	)
 
-	const signIn = async (credentials) => {
-		return handleSignIn(client, credentials)
-	}
+	const signIn = async (credentials) => handleSignIn(client, credentials)
 
 	const signUp = async ({ email, password, redirectTo }) => {
 		let result = await client.auth.signUp({
@@ -97,9 +95,9 @@ export function getAdapter(options) {
 	}
 
 	const synchronizeClients = async (session) => {
-		const result = Object.keys(clients).map(async (schema) => {
+		const result = Object.keys(clients).map(async (schema) =>
 			clients[schema].auth.setSession(session)
-		})
+		)
 		return Promise.all(result)
 	}
 

@@ -71,6 +71,5 @@ export function getLogger(writer, options = {}) {
 		}))
 		.reduce((acc, orig) => ({ ...acc, ...orig }), {})
 
-	// @ts-ignore
 	return logger
 }
