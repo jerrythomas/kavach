@@ -20,7 +20,7 @@ describe('kavach', () => {
 			expires_in: 2000
 		}
 	]
-	let adapter
+	let adapter = null
 
 	beforeEach(() => {
 		adapter = createMockAdapter()

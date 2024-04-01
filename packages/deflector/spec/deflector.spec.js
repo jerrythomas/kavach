@@ -36,7 +36,7 @@ describe('Router functions', () => {
 	})
 
 	it('should exclude app routes from a route list', () => {
-		let routes = [
+		const routes = [
 			...Object.values(defaultRoutes.app),
 			...Object.values(defaultRoutes.app)
 		]
@@ -57,9 +57,7 @@ describe('Router functions', () => {
 	it('should set routes by role', () => {
 		const app = defaultRoutes.app
 		let options = {}
-		let routesByRole
-
-		routesByRole = getRoutesByRole(options, app)
+		let routesByRole = getRoutesByRole(options, app)
 		expect(routesByRole).toEqual({
 			public: { home: '/', routes: [] },
 			authenticated: { home: '/', routes: [app.home, app.logout] }

@@ -73,7 +73,7 @@ export function getActions(client) {
  * @param {Request} request
  */
 export async function getRequestBody(request) {
-	let body
+	let body = null
 	try {
 		body = await request.formData()
 		body = Object.fromEntries(body.entries())
@@ -84,6 +84,12 @@ export async function getRequestBody(request) {
 	return body
 }
 
+/**
+ * Inserts data into the database using the fetch API
+ * @param {function(string, RequestInit): Promise<Response>} fetch
+ * @param {string} entity
+ * @param {any} data
+ */
 export async function insertData(fetch, entity, data) {
 	const result = await fetch(`/data/${entity}`, {
 		method: 'PUT',
@@ -101,6 +107,12 @@ export async function insertData(fetch, entity, data) {
 	return Array.isArray(data) ? rows : rows[0]
 }
 
+/**
+ * Updates data in the database using the fetch API
+ * @param {function(string, RequestInit): Promise<Response>} fetch
+ * @param {string} entity
+ * @param {any} data
+ */
 export async function updateData(fetch, entity, data) {
 	const result = await fetch(`/data/${entity}`, {
 		method: 'POST',
@@ -117,6 +129,13 @@ export async function updateData(fetch, entity, data) {
 	return Array.isArray(data) ? rows : rows[0]
 }
 
+/**
+ * Selects data from the database using the fetch API
+ * @param {function(string, RequestInit): Promise<Response>} fetch
+ * @param {string} entity
+ * @param {any} data
+ * @param {string} columns
+ */
 export async function selectData(fetch, entity, data = {}, columns = '*') {
 	let params = ''
 	const filter = Object.entries(data)
@@ -159,12 +178,20 @@ export async function send(method, url, data, options = { fetch }) {
 	return result.json()
 }
 
+/**
+ * Returns an object with the CRUD actions for the database
+ *
+ * @param {Object} options
+ * @param {function(string, RequestInit): Promise<Response>} options.fetch
+ * @returns {DatabaseActions}
+ */
 export function getAPIInterface(options = { fetch }) {
 	const { fetch } = options
 	return {
 		get: (entity, data, columns) => selectData(fetch, entity, data, columns),
 		put: (entity, data) => insertData(fetch, entity, data),
 		post: (entity, data) => updateData(fetch, entity, data),
-		patch: (entity, data) => updateData(fetch, entity, data)
+		patch: (entity, data) => updateData(fetch, entity, data),
+		delete: (entity, data) => send('DELETE', `/data/${entity}`, data, options)
 	}
 }

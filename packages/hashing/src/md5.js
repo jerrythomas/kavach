@@ -96,6 +96,7 @@ function md5cycle(x, k) {
  * @param {*} t
  * @returns
  */
+// eslint-disable-next-line max-params
 function cmn(q, a, b, x, s, t) {
 	a = add32(add32(a, q), add32(x, t))
 	return add32((a << s) | (a >>> (32 - s)), b)
@@ -112,6 +113,7 @@ function cmn(q, a, b, x, s, t) {
  * @param {*} t
  * @returns
  */
+// eslint-disable-next-line max-params
 function ff(a, b, c, d, x, s, t) {
 	return cmn((b & c) | (~b & d), a, b, x, s, t)
 }
@@ -127,6 +129,7 @@ function ff(a, b, c, d, x, s, t) {
  * @param {*} t
  * @returns
  */
+// eslint-disable-next-line max-params
 function gg(a, b, c, d, x, s, t) {
 	return cmn((b & d) | (c & ~d), a, b, x, s, t)
 }
@@ -142,6 +145,7 @@ function gg(a, b, c, d, x, s, t) {
  * @param {*} t
  * @returns
  */
+// eslint-disable-next-line max-params
 function hh(a, b, c, d, x, s, t) {
 	return cmn(b ^ c ^ d, a, b, x, s, t)
 }
@@ -157,6 +161,7 @@ function hh(a, b, c, d, x, s, t) {
  * @param {*} t
  * @returns
  */
+// eslint-disable-next-line max-params
 function ii(a, b, c, d, x, s, t) {
 	return cmn(c ^ (b | ~d), a, b, x, s, t)
 }
@@ -170,7 +175,7 @@ function md51(s) {
 	// let txt = ''
 	let n = s.length,
 		state = [1732584193, -271733879, -1732584194, 271733878],
-		i
+		i = 0
 	for (i = 64; i <= s.length; i += 64) {
 		md5cycle(state, md5blk(s.substring(i - 64, i)))
 	}

@@ -1,7 +1,13 @@
 import { pick } from 'ramda'
 
+/**
+ * Get the request body from a request object
+ *
+ * @param {Request} request
+ * @returns {Promise<Object>}
+ */
 export async function getRequestBody(request) {
-	let body
+	let body = null
 	try {
 		body = await request.formData()
 		body = Object.fromEntries(body.entries())
@@ -12,6 +18,13 @@ export async function getRequestBody(request) {
 	return body
 }
 
+/**
+ * Get the request data from a request object
+ *
+ * @param {Request} request
+ * @param {URL} url
+ * @returns {Promise<Object>}
+ */
 export async function getRequestData({ request, url }) {
 	const body = await getRequestBody(request)
 	const data = {
@@ -21,6 +34,12 @@ export async function getRequestData({ request, url }) {
 	return data
 }
 
+/**
+ * Split the auth data from a request object
+ *
+ * @param {Request} event
+ * @returns {Promise<Object>}
+ */
 export async function splitAuthData(event) {
 	const data = await getRequestData(event)
 	const { mode } = data
@@ -33,6 +52,12 @@ export async function splitAuthData(event) {
 	return { mode, credentials, options }
 }
 
+/**
+ * Convert an object to a URL with params
+ *
+ * @param {Request} request
+ * @param {URL} url
+ */
 export function asURLWithParams(host, path = '', data = {}) {
 	let params = ''
 	if (data && typeof data === 'object') {

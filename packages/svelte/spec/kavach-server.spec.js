@@ -3,7 +3,7 @@ import { createMockAdapter } from './mock'
 import { createKavach } from '../src/kavach'
 
 describe('Endpoint functions', () => {
-	let adapter
+	let adapter = null
 	let invalidateAll = vi.fn()
 	const logger = {
 		info: vi.fn(),

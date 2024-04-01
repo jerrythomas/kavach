@@ -15,7 +15,7 @@ async function handleSignIn(client, credentials) {
 	const { email, phone, password, provider, scopes } = credentials
 	const redirectTo = credentials.redirectTo ?? defaultOrigin
 
-	let result
+	let result = null
 	if (provider === 'magic') {
 		const { email } = credentials
 		result = await client.auth.signInWithOtp({ email })

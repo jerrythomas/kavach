@@ -28,9 +28,9 @@ export async function getUserPhotoFromMicrosoft(email, token) {
 		}
 	})
 
-	let photo
+	let photo = null
 	if (response.ok) {
-		photo = await response.body // read stream
+		photo = response.body // read stream
 	}
 	return {
 		ok: response.ok,
