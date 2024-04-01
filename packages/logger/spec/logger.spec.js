@@ -74,19 +74,19 @@ describe('Logger', () => {
 	it('should create a zero logger when a valid LogWriter is not provided', () => {
 		let logger = getLogger()
 
-		Object.keys(loggingLevels).map((level) => {
+		Object.keys(loggingLevels).forEach((level) => {
 			logger[level]({})
 			expect(writer.write).not.toHaveBeenCalled()
 		})
 		logger = getLogger({})
 
-		Object.keys(loggingLevels).map((level) => {
+		Object.keys(loggingLevels).forEach((level) => {
 			logger[level]({})
 			expect(writer.write).not.toHaveBeenCalled()
 		})
 		logger = getLogger({ write: 'x' })
 
-		Object.keys(loggingLevels).map((level) => {
+		Object.keys(loggingLevels).forEach((level) => {
 			logger[level]({})
 			expect(writer.write).not.toHaveBeenCalled()
 		})

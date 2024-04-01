@@ -71,8 +71,8 @@ async function handleSignIn(credentials, options, app) {
 		})
 	} else {
 		const authProvider = authProviders[credentials.provider]()
-		scopes.map((scope) => authProvider.addScope(scope))
-		params.map((param) => authProvider.setCustomParameters(param))
+		scopes.forEach((scope) => authProvider.addScope(scope))
+		params.forEach((param) => authProvider.setCustomParameters(param))
 
 		const result = await signInWithPopup(app, authProvider)
 		return result.user

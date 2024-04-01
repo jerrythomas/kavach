@@ -119,7 +119,7 @@ export function getRoutesByRole(options, appRoutes) {
 
 	options.roles = { ...routesByRole, ...options.roles }
 
-	Object.entries(options.roles).map(([role, roleRoutes]) => {
+	Object.entries(options.roles).forEach(([role, roleRoutes]) => {
 		const defaultRoutes =
 			role === 'public' ? [] : [appRoutes.home, appRoutes.logout]
 
@@ -160,7 +160,7 @@ export function isRouteAllowed(route, allowedRoutes) {
  * @returns
  */
 export function removeAppRoutes(routes, appRoutes) {
-	Object.values(appRoutes).map((route) => {
+	Object.values(appRoutes).forEach((route) => {
 		let index = 0
 		do {
 			index = routes.findIndex((path) => path === route)
