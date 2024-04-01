@@ -64,7 +64,7 @@ export function asURLWithParams(host, path = '', data = {}) {
 		params = Object.entries(data)
 			.map(([key, value]) => `${key}=${value}`)
 			.join('&')
-		params = params.length ? '?' + params : params
+		params = params.length ? `?${params}` : params
 	}
 	return host + path + params
 }

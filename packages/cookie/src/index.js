@@ -111,7 +111,7 @@ export function serialize(name, val, options) {
 		throw new TypeError('argument val is invalid')
 	}
 
-	let str = name + '=' + value
+	let str = `${name}=${value}`
 
 	if (opt.maxAge !== null) {
 		const maxAge = opt.maxAge - 0
@@ -120,7 +120,7 @@ export function serialize(name, val, options) {
 			throw new TypeError('option maxAge is invalid')
 		}
 
-		str += '; Max-Age=' + Math.floor(maxAge)
+		str += `; Max-Age=${Math.floor(maxAge)}`
 	}
 
 	if (opt.domain) {
@@ -128,7 +128,7 @@ export function serialize(name, val, options) {
 			throw new TypeError('option domain is invalid')
 		}
 
-		str += '; Domain=' + opt.domain
+		str += `; Domain=${opt.domain}`
 	}
 
 	if (opt.path) {
@@ -136,7 +136,7 @@ export function serialize(name, val, options) {
 			throw new TypeError('option path is invalid')
 		}
 
-		str += '; Path=' + opt.path
+		str += `; Path=${opt.path}`
 	}
 
 	if (opt.expires) {
@@ -144,7 +144,7 @@ export function serialize(name, val, options) {
 			throw new TypeError('option expires is invalid')
 		}
 
-		str += '; Expires=' + opt.expires.toUTCString()
+		str += `; Expires=${opt.expires.toUTCString()}`
 	}
 
 	if (opt.httpOnly) {

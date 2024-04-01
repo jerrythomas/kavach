@@ -17,7 +17,7 @@ export function getProviderConfigFromNames(names) {
 	const providers = names.map((name) => ({
 		mode: getModeForProvider(name),
 		name: name.toLowerCase(),
-		label: name === 'Magic' ? 'email for Magic Link' : 'Sign in with ' + name,
+		label: name === 'Magic' ? 'email for Magic Link' : `Sign in with ${name}`,
 		scopes: [],
 		params: getParamsForProvider(name)
 	}))

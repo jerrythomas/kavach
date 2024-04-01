@@ -18,6 +18,7 @@ module.exports = {
 		'no-console': 'error',
 		'no-return-await': 'error',
 		'prefer-const': 'error',
+		'prefer-template': 'error',
 		eqeqeq: 'error',
 		'no-eq-null': 'error',
 		'no-implicit-coercion': 'error',

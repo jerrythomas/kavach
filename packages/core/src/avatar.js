@@ -24,7 +24,7 @@ export async function getUserPhotoFromMicrosoft(email, token) {
 	const response = await fetch(url, {
 		method: 'get',
 		headers: {
-			Authorization: 'Bearer ' + token
+			Authorization: `Bearer ${token}`
 		}
 	})
 
