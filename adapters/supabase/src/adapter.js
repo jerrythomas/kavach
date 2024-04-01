@@ -89,16 +89,16 @@ export function getAdapter(options) {
 			subscription.unsubscribe()
 		}
 	}
-	const synchronize = async (session) => {
-		await synchronizeClients(session)
-		return client.auth.setSession(session)
-	}
 
 	const synchronizeClients = async (session) => {
 		const result = Object.keys(clients).map(async (schema) =>
 			clients[schema].auth.setSession(session)
 		)
 		return Promise.all(result)
+	}
+	const synchronize = async (session) => {
+		await synchronizeClients(session)
+		return client.auth.setSession(session)
 	}
 
 	return {

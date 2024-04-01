@@ -8,24 +8,24 @@ import createAuth0Client from '@auth0/auth0-spa-js'
  * @returns The adapter exposing methods for signIn, signUp, signOut, and related functionalities.
  */
 export async function getAdapter(options) {
-	const auth0 = await createAuth0Client(
+	const client = await createAuth0Client(
 		pick(['domain', 'clientId', 'redirectUri'], options)
 	)
 
 	const signIn = async () => {
 		// Redirect the user to Auth0 login page
-		await auth0.loginWithRedirect()
+		await client.loginWithRedirect()
 	}
 
 	const signUp = async () => {
 		// For Auth0, signUp process can be similar, but you may want to use a different action after redirect
-		await auth0.loginWithRedirect({
+		await client.loginWithRedirect({
 			screen_hint: 'signup'
 		})
 	}
 
 	const signOut = async () => {
-		await auth0.logout({
+		await client.logout({
 			returnTo: window.location.origin
 		})
 	}
@@ -41,10 +41,10 @@ export async function getAdapter(options) {
 		signIn,
 		signUp,
 		signOut,
-		handleAuthCallback: () => handleAuthCallback(auth0),
+		handleAuthCallback: () => handleAuthCallback(client),
 		parseUrlError: () => null, // Implement as needed based on your URL error handling
 		onAuthChange,
-		client: auth0,
+		client,
 		db: () => null // Placeholder, Auth0 does not manage database directly.
 	}
 }
@@ -58,17 +58,22 @@ function handleError(error) {
 	}
 }
 
-const handleAuthCallback = async (auth0) => {
+/**
+ * Handles the authentication callback from Auth0.
+ *
+ * @param {Object} client The Auth0 client instance.
+ */
+async function handleAuthCallback(client) {
 	// When the user returns to the app after authentication, handle the authentication tokens
 	try {
-		await auth0.handleRedirectCallback()
-		const isAuthenticated = await auth0.isAuthenticated()
+		await client.handleRedirectCallback()
+		const isAuthenticated = await client.isAuthenticated()
 		if (isAuthenticated) {
 			// User is authenticated, you can get the user profile or tokens as needed
-			const user = await auth0.getUser()
-			return { type: 'success', data: user }
+			const user = await client.getUser()
+			return Promise.resolve({ type: 'success', data: user })
 		}
 	} catch (error) {
-		return handleError(error)
+		return Promise.resolve(handleError(error))
 	}
 }
