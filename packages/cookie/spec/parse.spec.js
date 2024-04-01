@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { parse } from '../src/index.js'
 
+const identity = (v) => v
+
 describe('Cookie Parser', () => {
 	it('argument validation', () => {
 		expect(parse.bind()).toThrowError(/argument str must be a string/)
@@ -41,17 +43,13 @@ describe('Cookie Parser', () => {
 	it('unencoded', () => {
 		expect(
 			parse('foo="bar=123456789&name=Magic+Mouse"', {
-				decode: function (v) {
-					return v
-				}
+				decode: identity
 			})
 		).toEqual({ foo: 'bar=123456789&name=Magic+Mouse' })
 
 		expect(
 			parse('email=%20%22%2c%3b%2f', {
-				decode: function (v) {
-					return v
-				}
+				decode: identity
 			})
 		).toEqual({ email: '%20%22%2c%3b%2f' })
 	})
@@ -59,9 +57,7 @@ describe('Cookie Parser', () => {
 	it('dates', () => {
 		expect(
 			parse('priority=true; expires=Wed, 29 Jan 2014 17:43:25 GMT; Path=/', {
-				decode: function (v) {
-					return v
-				}
+				decode: identity
 			})
 		).toEqual({
 			priority: 'true',
@@ -73,9 +69,7 @@ describe('Cookie Parser', () => {
 	it('missing value', () => {
 		expect(
 			parse('foo; bar=1; fizz= ; buzz=2', {
-				decode: function (v) {
-					return v
-				}
+				decode: identity
 			})
 		).toEqual({ bar: '1', fizz: '', buzz: '2' })
 	})
