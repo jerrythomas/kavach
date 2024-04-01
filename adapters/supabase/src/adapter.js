@@ -41,7 +41,7 @@ async function handleSignIn(client, credentials) {
 
 export function parseUrlError(url) {
 	let error = { isError: false }
-	let result = urlHashToParams(url.hash)
+	const result = urlHashToParams(url.hash)
 	if (result.error) {
 		error = {
 			isError: true,
@@ -66,7 +66,7 @@ export function getAdapter(options) {
 	const signIn = async (credentials) => handleSignIn(client, credentials)
 
 	const signUp = async ({ email, password, redirectTo }) => {
-		let result = await client.auth.signUp({
+		const result = await client.auth.signUp({
 			email,
 			password,
 			options: { emailRedirectTo: redirectTo }
@@ -76,6 +76,17 @@ export function getAdapter(options) {
 
 	const signOut = () => {
 		return client.auth.signOut()
+	}
+
+	const synchronizeClients = async (session) => {
+		const result = Object.keys(clients).map(async (schema) =>
+			clients[schema].auth.setSession(session)
+		)
+		return Promise.all(result)
+	}
+	const synchronize = async (session) => {
+		await synchronizeClients(session)
+		return client.auth.setSession(session)
 	}
 
 	const onAuthChange = (callback) => {
@@ -88,17 +99,6 @@ export function getAdapter(options) {
 		return () => {
 			subscription.unsubscribe()
 		}
-	}
-
-	const synchronizeClients = async (session) => {
-		const result = Object.keys(clients).map(async (schema) =>
-			clients[schema].auth.setSession(session)
-		)
-		return Promise.all(result)
-	}
-	const synchronize = async (session) => {
-		await synchronizeClients(session)
-		return client.auth.setSession(session)
 	}
 
 	return {
