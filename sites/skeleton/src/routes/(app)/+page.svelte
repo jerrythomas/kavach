@@ -7,7 +7,7 @@
 		{ completed: true, task: 'a completed task' },
 		{ completed: false, task: 'a pending task' }
 	]
-	let history = [
+	const history = [
 		{
 			name: 'Jerry Thomas',
 			email: 'jerry.thomas@senecaglobal.com',

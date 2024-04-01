@@ -8,7 +8,7 @@
 	import { page } from '$app/stores'
 	import { media, kavach } from '$lib'
 
-	let site = writable({
+	const site = writable({
 		sidebar: $media.large
 	})
 	export let data

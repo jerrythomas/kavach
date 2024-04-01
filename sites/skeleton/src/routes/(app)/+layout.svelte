@@ -2,7 +2,7 @@
 	import UserProfile from '$lib/UserProfile.svelte'
 	import { page } from '$app/stores'
 
-	let menu = [
+	const menu = [
 		{ icon: 'home', href: '/', label: 'Home' },
 		{ icon: 'lock', href: '/protected', label: 'Protected' },
 		{ icon: 'unlock', href: '/public', label: 'Public' },

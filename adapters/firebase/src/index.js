@@ -33,7 +33,7 @@ export function adapter(config) {
 	const app = getApps().length === 0 ? initializeApp(config) : getApp()
 	const handler = getAuth(app)
 	let _authUser = null
-	let _token = null
+	const _token = null
 
 	const getUser = () => {
 		return getUserInfo(_authUser)

@@ -4,7 +4,7 @@ import { createKavach } from '../src/kavach'
 
 describe('Endpoint functions', () => {
 	let adapter = null
-	let invalidateAll = vi.fn()
+	const invalidateAll = vi.fn()
 	const logger = {
 		info: vi.fn(),
 		debug: vi.fn(),

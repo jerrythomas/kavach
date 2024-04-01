@@ -73,7 +73,7 @@ export function gravatar(email, size = 256, d = 'identicon', rating = 'G') {
  * @returns
  */
 export function deriveName(email) {
-	let parts = (email || '')
+	const parts = (email || '')
 		.split('@')[0]
 		.split('.')
 		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))

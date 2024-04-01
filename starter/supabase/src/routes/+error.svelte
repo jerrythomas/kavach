@@ -4,7 +4,7 @@
 
 	// we don't want to use <svelte:window bind:online> here, because we only care about the online
 	// state when the page first loads
-	let online = typeof navigator !== 'undefined' ? navigator.onLine : true
+	const online = typeof navigator !== 'undefined' ? navigator.onLine : true
 </script>
 
 <svelte:head>

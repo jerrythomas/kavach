@@ -89,7 +89,7 @@ export function getAppRoutes(options) {
  * @returns {Array<string>}
  */
 export function cleanupRoles(routes, defaultRoutes) {
-	let roleRoutes = [...new Set([...routes, ...defaultRoutes])].sort()
+	const roleRoutes = [...new Set([...routes, ...defaultRoutes])].sort()
 
 	for (let i = 0; i < roleRoutes.length; i++) {
 		const current = roleRoutes[i]
@@ -112,7 +112,7 @@ export function cleanupRoles(routes, defaultRoutes) {
  * @returns {Record<string, import('./types').RoleRoute>}
  */
 export function getRoutesByRole(options, appRoutes) {
-	let routesByRole = {
+	const routesByRole = {
 		public: { home: appRoutes.home, routes: [] },
 		authenticated: { home: appRoutes.home, routes: [] }
 	}

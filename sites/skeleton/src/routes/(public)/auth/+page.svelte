@@ -8,7 +8,7 @@
 
 	export let error = {}
 	export let response = null
-	let providers = [
+	const providers = [
 		{
 			name: 'google',
 			label: 'Continue With Google'

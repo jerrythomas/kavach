@@ -39,6 +39,6 @@ export function revertNewlinesInJSON(data) {
  * @returns {object}
  */
 export function sanitizedJson(input) {
-	let data = JSON.parse(replaceNewlinesInQuotes(input))
+	const data = JSON.parse(replaceNewlinesInQuotes(input))
 	return revertNewlinesInJSON(data)
 }

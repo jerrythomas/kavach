@@ -8,8 +8,8 @@ describe('Logger', () => {
 	const writer = {
 		write: vi.fn()
 	}
-	let date = new Date()
-	let logged_at = date.toISOString()
+	const date = new Date()
+	const logged_at = date.toISOString()
 
 	beforeEach(() => {
 		vi.useFakeTimers()

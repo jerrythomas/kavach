@@ -75,7 +75,7 @@ describe('kavach', () => {
 	it('should sign out on server when session is null', async () => {
 		const kavach = createKavach(adapter)
 
-		let event = createMockEvent({
+		const event = createMockEvent({
 			json: {},
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
 		})
@@ -102,10 +102,10 @@ describe('kavach', () => {
 	it('should return error when session is invalid', async () => {
 		const kavach = createKavach(adapter)
 		const error = 'Invalid session'
-		let session = {
+		const session = {
 			user: { id: 'foo', role: 'authenticated' }
 		}
-		let event = createMockEvent({
+		const event = createMockEvent({
 			json: {
 				session
 			},
@@ -140,7 +140,7 @@ describe('kavach', () => {
 			const maxAge = session.expires_in ? session.expires_in : 3600
 			const cookieOptions = `Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Strict`
 
-			let event = createMockEvent({
+			const event = createMockEvent({
 				json: {
 					session
 				},
@@ -201,7 +201,7 @@ describe('kavach', () => {
 	it.each([{ invalidateAll }, {}])(
 		'should sign out using adapter',
 		async (options) => {
-			let kavach = createKavach(adapter, options)
+			const kavach = createKavach(adapter, options)
 			await kavach.signOut()
 
 			expect(adapter.signOut).toHaveBeenCalledWith()
@@ -217,7 +217,7 @@ describe('kavach', () => {
 	)
 
 	it('should set event.locals', async () => {
-		let event = createMockEvent({
+		const event = createMockEvent({
 			json: {},
 			cookies: { session: JSON.stringify({ user: 'foo' }) },
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
