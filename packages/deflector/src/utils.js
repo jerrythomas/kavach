@@ -50,3 +50,17 @@ export function isEndpointRoute(endpoints, route) {
 	)
 	return Boolean(match)
 }
+
+/**
+ * Get redirect paths for various app routes
+ *
+ * @param {import('./types').AppRoute} app
+ * @returns {import('./types').Redirects}
+ */
+export function getRedirects(app) {
+	return {
+		401: app.login,
+		403: app.unauthorized ?? app.home,
+		302: app.home
+	}
+}

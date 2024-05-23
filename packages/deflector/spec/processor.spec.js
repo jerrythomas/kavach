@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
 	addRulesForAppRoutes,
 	getAuthorizedRoutes,
-	matchRoute,
 	organizeRulesByRole,
 	processAppRoutes,
 	processRoutingRules
@@ -121,66 +120,6 @@ describe('Route Processor', () => {
 						{ path: '/all', public: false, roles: ['admin', 'user'] }
 					]
 				}
-			})
-		})
-	})
-
-	describe('matchRoute', () => {
-		const routesByRole = organizeRulesByRole(
-			processRoutingRules(
-				validateRoutingRules([
-					{ path: '/home', public: true },
-					{ path: '/admin', roles: 'admin' },
-					{ path: '/user', roles: 'user' },
-					{ path: '/all', roles: ['user', 'admin'] }
-				])
-			)
-		)
-		const roles = [null, 'user', 'admin', 'other']
-
-		it.each(roles)('should allow public routes when role is [%s]', (role) => {
-			const routePath = '/home'
-			const authorizedRoutes = getAuthorizedRoutes(routesByRole, role)
-			const outcome = matchRoute(authorizedRoutes, routePath, role)
-			expect(outcome).toEqual({
-				accessible: true,
-				rule: { path: '/home', public: true, roles: '*' },
-				statusCode: 200
-			})
-		})
-
-		it('should allow protected routes for role', () => {
-			const routePath = '/admin'
-			const authorizedRoutes = getAuthorizedRoutes(routesByRole, 'admin')
-			const outcome = matchRoute(authorizedRoutes, routePath, 'admin')
-			expect(outcome).toEqual({
-				accessible: true,
-				rule: { path: '/admin', public: false, roles: 'admin' },
-				statusCode: 200
-			})
-		})
-
-		it('should not allow protected route for unauthorised role', () => {
-			const routePath = '/admin'
-			const authorizedRoutes = getAuthorizedRoutes(routesByRole, 'user')
-			const outcome = matchRoute(authorizedRoutes, routePath, 'user')
-			expect(outcome).toEqual({ accessible: false, statusCode: 403 })
-		})
-
-		it('should not allow protected route for unauthenticated user', () => {
-			const routePath = '/admin'
-			const authorizedRoutes = getAuthorizedRoutes(routesByRole, null)
-			const outcome = matchRoute(authorizedRoutes, routePath, null)
-			expect(outcome).toEqual({ accessible: false, statusCode: 401 })
-		})
-
-		it.each(roles)('should not allow unknown routes for role [%s]', (role) => {
-			const routePath = '/dashboard'
-			const authorizedRoutes = getAuthorizedRoutes(routesByRole, role)
-			const outcome = matchRoute(authorizedRoutes, routePath, role)
-			expect(outcome).toEqual({
-				accessible: false,
-				statusCode: role === null ? 401 : 403
 			})
 		})
 	})

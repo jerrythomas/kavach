@@ -1,5 +1,5 @@
 import { clone, omit, pick } from 'ramda'
-import { findMatchingRoute, routeDepth } from './utils'
+import { routeDepth } from './utils'
 
 const appRouteKeys = [
 	'home',
@@ -84,35 +84,11 @@ export function getAuthorizedRoutes(config, userRole) {
 		routes = [
 			...routes,
 			...(config.protected[userRole] || []),
-			...(config.protected['*'] || [])
+			...config.protected['*']
 		].sort((a, b) => routeDepth(b.path) - routeDepth(a.path))
 	}
 
 	return routes
-}
-
-/**
- * Determines route accessibility based on authentication status and role. Uses updated organization of routes.
- *
- * @param {import('./types').RoutingRules}  authorizedRoutes - The routes organized by public and protected roles.
- * @param {String}                          routePath    - The requested route path.
- * @param {String|null}                     userRole     - User's role or null if unauthenticated.
- * @return {import('./types').RouteMatchOutcome} Outcome detailing route accessibility and further action.
- */
-export function matchRoute(authorizedRoutes, routePath, userRole) {
-	const match = findMatchingRoute(authorizedRoutes, routePath)
-
-	if (match) {
-		return {
-			accessible: true,
-			statusCode: 200,
-			rule: match
-		}
-	}
-	return {
-		accessible: false,
-		statusCode: userRole === null ? 401 : 403
-	}
 }
 
 /**

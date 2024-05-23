@@ -90,8 +90,8 @@
 
 /**
  * @typedef RouteMatchOutcome
- * @property {boolean}     accessible - true if the route is accessible
- * @property {200|401|403} statusCode - 200, 401, 403
+ * @property {boolean}         accessible - true if the route is accessible
+ * @property {200|302|401|403} statusCode - 200, 302, 401, 403
  * @property {RoutingRule} [rule] - The matched rule if accessible
  */
 
