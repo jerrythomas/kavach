@@ -80,15 +80,16 @@ export function getAdapter(options) {
 	// Cognito handles session management internally, but for UI updates, consider using Amplify Hub or custom event listeners.
 	const onAuthChange = () => {
 		// Not directly applicable with Cognito without using additional services like Amplify Hub
+		// eslint-disable-next-line no-console
 		console.warn(
 			'onAuthChange functionality needs custom implementation with AWS Amplify Hub or similar.'
 		)
 	}
 
 	return {
-		signIn: async (credentials) => await handleSignIn(credentials, Auth),
-		signUp: async (credentials) => await handleSignUp(credentials, Auth),
-		signOut: async () => await handleSignOut(Auth),
+		signIn: async (credentials) => handleSignIn(credentials, Auth),
+		signUp: async (credentials) => handleSignUp(credentials, Auth),
+		signOut: async () => handleSignOut(Auth),
 		onAuthChange,
 		parseUrlError: () => null, // This function is specific to handling errors from URL parameters, commonly used in OAuth flows.
 		client: null, // AWS Cognito does not have a direct equivalent to a "client" in the Supabase sense.

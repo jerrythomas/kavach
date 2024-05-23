@@ -41,6 +41,7 @@
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
     "@types/node": "^20.12.2",
+    "@types/ramda": "^0.29.12",
     "@vitest/coverage-v8": "^1.4.0",
     "@vitest/ui": "~1.4.0",
     "shared-config": "workspace:*",

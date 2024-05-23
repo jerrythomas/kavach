@@ -1,4 +1,14 @@
 import { zeroLogger } from '@kavach/logger'
+import {
+	addRulesForAppRoutes,
+	getAuthorizedRoutes,
+	matchRoute,
+	organizeRulesByRole,
+	processAppRoutes,
+	processRoutingRules
+} from './processor'
+import { validateRoutingRules } from './validations'
+import { isEndpointRoute } from './utils'
 
 /**
  * Create a deflector using provided options
@@ -24,8 +34,6 @@ export function createDeflector(options = {}) {
 
 		if (isAuthenticated && role in routesByRole) {
 			authorizedRoutes = [...authorizedRoutes, ...routesByRole[role].routes]
-		} else {
-			authorizedRoutes = [...authorizedRoutes]
 		}
 	}
 
@@ -95,7 +103,7 @@ export function cleanupRoles(routes, defaultRoutes) {
 		const current = roleRoutes[i]
 
 		for (let j = i + 1; j < roleRoutes.length; j++) {
-			//eslint-disable-next-line max-depth
+			// eslint-disable-next-line max-depth
 			while (j < roleRoutes.length && roleRoutes[j].startsWith(`${current}/`)) {
 				roleRoutes.splice(j, 1)
 			}
@@ -168,4 +176,74 @@ export function removeAppRoutes(routes, appRoutes) {
 		} while (index > -1)
 	})
 	return routes
+}
+
+/**
+ * Validate rules, log errors and warnings, and configure the rules.
+ *
+ * @param {import('./types').DeflectorOptions} options
+ * @param {import('./types').Logger}           logger
+ * @returns {import('./types').RoutingConfig}
+ */
+export function configureRules(options, logger) {
+	const logInfo = { module: 'deflector', method: 'configure' }
+	let { rules = [] } = options
+	const appRoutes = processAppRoutes(options.app)
+
+	rules = addRulesForAppRoutes(rules, appRoutes)
+	rules = validateRoutingRules(rules)
+
+	const errors = rules.filter((rule) => Array.isArray(rule.errors))
+	if (errors.length)
+		logger.error({
+			...logInfo,
+			data: { errors },
+			message: 'invalid rules detected'
+		})
+
+	const warnings = rules.filter((rule) => Array.isArray(rule.warnings))
+	if (warnings.length)
+		logger.warn({
+			...logInfo,
+			data: { warnings },
+			message: 'identified redundant rules'
+		})
+
+	rules = processRoutingRules(rules)
+	rules = organizeRulesByRole(rules, appRoutes)
+
+	return { app: appRoutes, ...rules }
+}
+
+/**
+ * Protect a route and provide a redirect/response if not allowed.
+ *
+ * @param {import('./types').AllowedRoutes} allowedRoutes
+ * @param {string}                          path
+ */
+export function protectRoute(allowedRoutes, path) {
+	const { app, rules, role } = allowedRoutes
+	const redirects = {
+		401: app.login,
+		403: app.unauthorized ?? app.home
+	}
+	const result = matchRoute(rules, path, role)
+	if (result.accessible || isEndpointRoute(app.endpoints, path)) return result
+
+	return { redirect: redirects[result.statusCode], ...result }
+}
+
+/**
+ * Configure the routes for current role
+ *
+ * @param {import('./types').RoutingConfig} config
+ * @param {string}                          role
+ * @returns {import('./types').AllowedRoutes}
+ */
+export function configureRoleRoutes(config, role) {
+	return {
+		app: config.app,
+		rules: getAuthorizedRoutes(config, role),
+		role
+	}
 }

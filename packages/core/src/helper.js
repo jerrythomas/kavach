@@ -4,7 +4,7 @@ import { serialize } from '@kavach/cookie'
 /**
  * Checks if the url contains non empty 'access_token' in the url hash
  *
- * @param {String} url
+ * @param {string} url
  * @returns {boolean}
  */
 export function hasAuthParams(url) {
@@ -16,7 +16,7 @@ export function hasAuthParams(url) {
 /**
  * Extracts key value pairs from the url hash.
  *
- * @param {String} url
+ * @param {string} url
  * @returns {Object} key value pair of all parameters in the hash
  */
 export function urlHashToParams(url) {

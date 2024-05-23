@@ -1,14 +1,18 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
 	getAppRoutes,
 	removeAppRoutes,
 	cleanupRoles,
 	getRoutesByRole,
 	isRouteAllowed,
-	createDeflector
+	createDeflector,
+	configureRules,
+	protectRoute,
+	configureRoleRoutes
 } from '../src/deflector'
 import { options } from './fixtures/config'
 import { pick } from 'ramda'
+// import { getAuthorizedRoutes } from '../src/processor'
 
 describe('Router functions', () => {
 	const defaultRoutes = {
@@ -139,5 +143,235 @@ describe('Router functions', () => {
 		expect(res.redirect('/blog')).toEqual('/blog')
 		expect(res.redirect('/user')).toEqual(options.roles.other.home)
 		expect(res.redirect('/other')).toEqual('/other')
+	})
+
+	describe('configureRules', () => {
+		const logger = {
+			warn: vi.fn(),
+			error: vi.fn()
+		}
+		beforeEach(() => {
+			logger.warn.mockClear()
+			logger.error.mockClear()
+		})
+		it('should configure default rules', () => {
+			const config = configureRules({}, logger)
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
+			expect(config).toEqual({
+				app: {
+					home: '/',
+					login: '/auth',
+					logout: '/logout',
+					session: '/auth/session',
+					unauthorized: null,
+					endpoints: ['/api', '/data', '/auth/session']
+				},
+				public: [{ path: '/auth', public: true, roles: '*' }],
+				protected: {
+					'*': [
+						{ path: '/', public: false, roles: '*' },
+						{ path: '/logout', public: false, roles: '*' }
+					]
+				}
+			})
+		})
+
+		it('should log and exclude rules with errors', () => {
+			const config = configureRules(
+				{
+					app: { home: '/home', login: '/login', logout: '/logout' },
+					rules: [{}, { path: '/auth' }, { path: '/public', public: true }]
+				},
+				logger
+			)
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).toHaveBeenCalledWith({
+				module: 'deflector',
+				method: 'configure',
+				message: 'invalid rules detected',
+				data: {
+					errors: [
+						{
+							public: false,
+							roles: '*',
+							depth: 0,
+							errors: ['Path must be a non-empty string']
+						}
+					]
+				}
+			})
+			expect(config).toEqual({
+				app: {
+					home: '/home',
+					login: '/login',
+					logout: '/logout',
+					session: '/auth/session',
+					unauthorized: null,
+					endpoints: ['/api', '/data', '/auth/session']
+				},
+				public: [
+					{ path: '/auth/session', public: true, roles: '*' },
+					{ path: '/public', public: true, roles: '*' },
+					{ path: '/login', public: true, roles: '*' }
+				],
+				protected: {
+					'*': [
+						{ path: '/auth', public: false, roles: '*' },
+						{ path: '/home', public: false, roles: '*' },
+						{ path: '/logout', public: false, roles: '*' }
+						// { path: '/', public: false, roles: '*' }
+					]
+				}
+			})
+		})
+
+		it('should identify and log warnings', () => {
+			const config = configureRules(
+				{
+					app: { home: '/home', login: '/login', logout: '/logout' },
+					rules: [
+						{ path: '/auth' },
+						{ path: '/home/about' },
+						{ path: '/public', public: true }
+					]
+				},
+				logger
+			)
+
+			expect(logger.error).not.toHaveBeenCalled()
+			expect(logger.warn).toHaveBeenCalledWith({
+				module: 'deflector',
+				method: 'configure',
+				message: 'identified redundant rules',
+				data: {
+					warnings: [
+						{
+							path: '/home/about',
+							public: false,
+							roles: '*',
+							depth: 2,
+							redundant: true,
+							warnings: ['Redundant rule: /home includes /home/about']
+						}
+					]
+				}
+			})
+			expect(config).toEqual({
+				app: {
+					home: '/home',
+					login: '/login',
+					logout: '/logout',
+					session: '/auth/session',
+					unauthorized: null,
+					endpoints: ['/api', '/data', '/auth/session']
+				},
+				public: [
+					{ path: '/auth/session', public: true, roles: '*' },
+					{ path: '/public', public: true, roles: '*' },
+					{ path: '/login', public: true, roles: '*' }
+				],
+				protected: {
+					'*': [
+						{
+							path: '/home/about',
+							public: false,
+							redundant: true,
+							roles: '*',
+							warnings: ['Redundant rule: /home includes /home/about']
+						},
+						{ path: '/auth', public: false, roles: '*' },
+						{ path: '/home', public: false, roles: '*' },
+						{ path: '/logout', public: false, roles: '*' }
+						// { path: '/', public: false, roles: '*' }
+					]
+				}
+			})
+		})
+	})
+
+	describe('protectRoute', () => {
+		const logger = {
+			warn: vi.fn(),
+			error: vi.fn()
+		}
+		const config = configureRules(
+			{
+				rules: [
+					{ path: '/api' },
+					{ path: '/admin', roles: 'admin' },
+					{ path: '/data', roles: 'admin' },
+					{ path: '/public', public: true }
+				]
+			},
+			logger
+		)
+
+		it('should allow routes for role [admin]', () => {
+			const userRole = 'admin'
+			const allowedRoutes = configureRoleRoutes(config, userRole)
+			const result = protectRoute(allowedRoutes, '/api', userRole)
+			expect(result).toEqual({
+				accessible: true,
+				rule: { path: '/api', public: false, roles: '*' },
+				statusCode: 200
+			})
+		})
+		it('should allow public routes for unauthenticated', () => {
+			const userRole = null
+			const allowedRoutes = configureRoleRoutes(config, userRole)
+			const result = protectRoute(allowedRoutes, '/public', userRole)
+			expect(result).toEqual({
+				accessible: true,
+				rule: {
+					path: '/public',
+					public: true,
+					roles: '*'
+				},
+				statusCode: 200
+			})
+		})
+
+		it('should redirect page routes for unauthenticated', () => {
+			const userRole = null
+			const allowedRoutes = configureRoleRoutes(config, userRole)
+			const result = protectRoute(allowedRoutes, '/', userRole)
+			expect(result).toEqual({
+				accessible: false,
+				redirect: '/auth',
+				statusCode: 401
+			})
+		})
+
+		it('should redirect page routes for role user', () => {
+			const userRole = 'user'
+			const allowedRoutes = configureRoleRoutes(config, userRole)
+			const result = protectRoute(allowedRoutes, '/admin', userRole)
+			expect(result).toEqual({
+				accessible: false,
+				redirect: '/',
+				statusCode: 403
+			})
+		})
+
+		it('should block api routes for unauthenticated', () => {
+			const userRole = null
+			const allowedRoutes = configureRoleRoutes(config, userRole)
+			const result = protectRoute(allowedRoutes, '/api', userRole)
+			expect(result).toEqual({
+				accessible: false,
+				statusCode: 401
+			})
+		})
+
+		it('should block api routes for role [user]', () => {
+			const userRole = 'user'
+			const allowedRoutes = configureRoleRoutes(config, userRole)
+			const result = protectRoute(allowedRoutes, '/data', userRole)
+			expect(result).toEqual({
+				accessible: false,
+				statusCode: 403
+			})
+		})
 	})
 })
