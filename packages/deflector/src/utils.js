@@ -31,9 +31,7 @@ export function fillMissingProps(route) {
  * @returns {string}
  */
 export function findMatchingRoute(routes, path) {
-	return routes.find(
-		(route) => path === route.path || path.startsWith(`${route.path}/`)
-	)
+	return routes.find((route) => path === route || path.startsWith(`${route}/`))
 }
 
 /**
@@ -44,10 +42,7 @@ export function findMatchingRoute(routes, path) {
  * @returns {boolean}
  */
 export function isEndpointRoute(endpoints, route) {
-	const match = findMatchingRoute(
-		endpoints.map((path) => ({ path })),
-		route
-	)
+	const match = findMatchingRoute(endpoints, route)
 	return Boolean(match)
 }
 

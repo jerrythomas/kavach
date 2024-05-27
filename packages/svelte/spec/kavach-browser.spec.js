@@ -41,7 +41,7 @@ describe('kavach', () => {
 			'signOut',
 			'onAuthChange',
 			'handle',
-			'deflectedPath',
+			// 'deflectedPath',
 			// 'status',
 			'client'
 		])
@@ -62,6 +62,7 @@ describe('kavach', () => {
 		})
 
 		await kavach.handle({ event, resolve })
+		// expect(resolve).toHaveBeenCalled()
 		expect(resolve).not.toHaveBeenCalledWith(event)
 		expect(Response).toHaveBeenCalledWith(
 			{},

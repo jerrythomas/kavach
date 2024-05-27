@@ -73,3 +73,13 @@ export function getLogger(writer, options = {}) {
 
 	return logger
 }
+
+/**
+ * Creates a log level from a string
+ *
+ * @param {string} level
+ * @returns {import('./types').LogLevel}
+ */
+export function getLogLevel(level) {
+	return level in loggingLevels ? level : defaultLogLevel
+}

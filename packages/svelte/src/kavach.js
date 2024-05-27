@@ -3,7 +3,7 @@ import { zeroLogger } from '@kavach/logger'
 import { createDeflector } from '@kavach/deflector'
 import { getUserInfo, setHeaderCookies } from '@kavach/core'
 import { getRequestData } from './request'
-import { RUNNING_ON } from './constants'
+import { RUNNING_ON, HTTP_STATUS_MESSAGE } from './constants'
 import { writable } from 'svelte/store'
 
 const pass = async () => {
@@ -13,6 +13,7 @@ export const authStatus = writable()
 // eslint-disable-next-line
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
+
 	const logger = options?.logger ?? zeroLogger
 	const invalidateAll = options?.invalidateAll ?? pass
 
@@ -32,7 +33,7 @@ export function createKavach(adapter, options) {
 	}
 	const signOut = async () => {
 		await adapter.signOut()
-		await fetch(deflector.page.session, {
+		await fetch(deflector.app.session, {
 			method: 'POST',
 			body: JSON.stringify({ event: 'SIGNED_OUT' })
 		})
@@ -64,7 +65,7 @@ export function createKavach(adapter, options) {
 				})
 			}
 
-			const result = await fetch(deflector.page.session, {
+			const result = await fetch(deflector.app.session, {
 				method: 'POST',
 				body: JSON.stringify({
 					event,
@@ -77,27 +78,45 @@ export function createKavach(adapter, options) {
 				// invalidate(APP_AUTH_CONTEXT)
 				// deflector.setSession(session)
 				// const location =
-				// 	event === 'SIGNED_IN' ? deflector.page.home : deflector.page.login
+				// 	event === 'SIGNED_IN' ? deflector.app.home : deflector.app.login
 				// goto(location)
 			}
 			return result
 		})
 	}
 	async function handleUnauthorizedAccess({ event, resolve }) {
-		const pathname = deflectedPath(event.url)
+		const result = deflector.protect(event.url.pathname)
 
-		if (pathname !== event.url.pathname) {
-			return new Response(
-				{},
-				{ status: 303, headers: { location: event.url.origin + pathname } }
-			)
+		if (result.status !== 200) {
+			if (result.redirect) {
+				return new Response(
+					{},
+					{
+						status: 303,
+						headers: { location: event.url.origin + result.redirect }
+					}
+				)
+			} else {
+				return new Response(
+					{ erorr: HTTP_STATUS_MESSAGE[result.status] },
+					{ status: result.status }
+				)
+			}
 		}
+		// const pathname = deflectedPath(event.url)
+
+		// if (pathname !== event.url.pathname) {
+		// 	return new Response(
+		// 		{},
+		// 		{ status: 303, headers: { location: event.url.origin + pathname } }
+		// 	)
+		// }
 		return resolve(event)
 	}
 
-	function deflectedPath(url) {
-		return deflector.redirect(url.pathname)
-	}
+	// function deflectedPath(url) {
+	// 	return deflector.redirect(url.pathname)
+	// }
 
 	const handle = async ({ event, resolve }) => {
 		const cookieSession = event.cookies.get('session')
@@ -109,7 +128,7 @@ export function createKavach(adapter, options) {
 
 		deflector.setSession(event.locals.session)
 
-		if (event.url.pathname.startsWith(deflector.page.session)) {
+		if (event.url.pathname.startsWith(deflector.app.session)) {
 			return handleSessionSync(event, adapter, deflector)
 		}
 
@@ -121,7 +140,7 @@ export function createKavach(adapter, options) {
 		signOut,
 		onAuthChange,
 		handle,
-		deflectedPath,
+		// deflectedPath,
 		client: adapter.client
 	}
 }

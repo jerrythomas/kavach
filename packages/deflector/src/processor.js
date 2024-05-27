@@ -92,6 +92,27 @@ export function getAuthorizedRoutes(config, userRole) {
 }
 
 /**
+ * Get restricted routes for a role. This will allow us to have .
+ *
+ * @param {import('./types').RoutingConfig} config - Routes organized by public and protected roles.
+ * @param {String}                          userRole     - User's role or null if unauthenticated.
+ */
+export function getRestrictedRoutes(config, userRole) {
+	const restricted = []
+	Object.keys(config.protected)
+		.filter((role) => role !== '*' && role !== userRole)
+		.forEach((role) => {
+			config.protected[role].forEach((route) => {
+				if (!Array.isArray(route.roles) || !route.roles.includes(role)) {
+					if (!restricted.find((x) => x.path === route.path))
+						restricted.push(route)
+				}
+			})
+		})
+
+	return restricted.sort((a, b) => routeDepth(b.path) - routeDepth(a.path))
+}
+/**
  * Use provided routes or use defaults for pages
  *
  * @param {import('./types').DeflectorOptions} appRoutes

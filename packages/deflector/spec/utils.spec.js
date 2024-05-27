@@ -52,15 +52,9 @@ describe('utils', () => {
 	})
 	describe('findMatchingRoute', () => {
 		it('should find a matching route', () => {
-			const routes = [
-				{ path: '/home/about/contact' },
-				{ path: '/home/about' },
-				{ path: '/home' }
-			]
-			expect(findMatchingRoute(routes, '/home')).toEqual({ path: '/home' })
-			expect(findMatchingRoute(routes, '/home/about')).toEqual({
-				path: '/home/about'
-			})
+			const routes = ['/home/about/contact', '/home/about', '/home']
+			expect(findMatchingRoute(routes, '/home')).toEqual('/home')
+			expect(findMatchingRoute(routes, '/home/about')).toEqual('/home/about')
 			expect(findMatchingRoute(routes, '/me')).toBeUndefined()
 		})
 	})

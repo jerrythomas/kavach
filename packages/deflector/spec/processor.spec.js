@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
 	addRulesForAppRoutes,
 	getAuthorizedRoutes,
+	getRestrictedRoutes,
 	organizeRulesByRole,
 	processAppRoutes,
 	processRoutingRules
@@ -226,7 +227,47 @@ describe('Route Processor', () => {
 			])
 		})
 	})
+	describe('getAuthorizedRoutes', () => {
+		const routeConfig = organizeRulesByRole(
+			processRoutingRules(
+				validateRoutingRules([
+					{ path: '/home', public: true },
+					{ path: '/about', public: true },
+					{ path: '/about/me', public: false },
+					{ path: '/admin', roles: 'admin' },
+					{ path: '/user', roles: 'user' },
+					{ path: '/all', roles: ['admin', 'user'] },
+					{ path: '/shared' }
+				])
+			)
+		)
 
+		it('should include all protected routes when not authenticated', () => {
+			const routes = getRestrictedRoutes(routeConfig, 'unknown')
+			expect(routes).toEqual([
+				{
+					path: '/admin',
+					public: false,
+					roles: 'admin'
+				},
+				{
+					path: '/user',
+					public: false,
+					roles: 'user'
+				}
+			])
+		})
+		it('should include routes which exclude role = user', () => {
+			const routes = getRestrictedRoutes(routeConfig, 'user')
+			expect(routes).toEqual([
+				{
+					path: '/admin',
+					public: false,
+					roles: 'admin'
+				}
+			])
+		})
+	})
 	describe('addRulesForAppRoutes', () => {
 		it('should add rules for app routes', () => {
 			const appRoutes = processAppRoutes({

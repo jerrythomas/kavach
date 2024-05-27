@@ -1,5 +1,6 @@
 /**
  * @typedef SupabaseConfig
+ * @property {any} [client]
  * @property {string} url
  * @property {string} anonKey
  */
