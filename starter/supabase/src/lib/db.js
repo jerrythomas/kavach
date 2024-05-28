@@ -43,27 +43,32 @@ export function getActions(client) {
 	async function get(entity, data) {
 		const columns = data.select ? data.select : '*'
 		delete data.select
-		return client.from(entity).select(columns).match(data)
+		const result = await client.from(entity).select(columns).match(data)
+		return result
 	}
 
 	/** @type {DatabaseAction} */
 	async function put(entity, data) {
-		return client.from(entity).insert(data).select()
+		const result = await client.from(entity).insert(data).select()
+		return result
 	}
 
 	/** @type {DatabaseAction} */
 	async function post(entity, data) {
-		return client.from(entity).upsert(data).select()
+		const result = await client.from(entity).upsert(data).select()
+		return result
 	}
 
 	/** @type {DatabaseAction} */
 	async function patch(entity, data) {
-		return client.from(entity).update(data).select()
+		const result = await client.from(entity).update(data).select()
+		return result
 	}
 
 	/** @type {DatabaseAction} */
 	async function del(entity, data) {
-		return client.from(entity).delete().match(data)
+		const result = await client.from(entity).delete().match(data)
+		return result
 	}
 
 	return { get, put, post, patch, delete: del }

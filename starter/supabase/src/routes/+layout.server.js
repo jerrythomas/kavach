@@ -1,5 +1,5 @@
 /** @type {import('./$types').LayoutServerLoad} */
-export async function load({ locals }) {
+export function load({ locals }) {
 	return {
 		// @ts-ignore
 		// eslint-disable-next-line no-undef

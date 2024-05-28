@@ -2,7 +2,7 @@ import { kavach } from '$lib/auth'
 import { json } from '@sveltejs/kit'
 
 /** @type {import('./$types').RequestHandler} */
-export async function POST() {
+export function POST() {
 	// event.locals['key'] = event.url.pathname;
 	// console.log('api +server.js')
 	const session = kavach.client.getSession()
