@@ -359,9 +359,6 @@ importers:
 
   packages/svelte:
     dependencies:
-      '@kavach/cookie':
-        specifier: workspace:*
-        version: link:../cookie
       '@kavach/core':
         specifier: workspace:*
         version: link:../core

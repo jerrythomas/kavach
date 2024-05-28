@@ -53,7 +53,6 @@
     }
   },
   "dependencies": {
-    "@kavach/cookie": "workspace:*",
     "@kavach/core": "workspace:*",
     "@kavach/deflector": "workspace:*",
     "@kavach/logger": "workspace:*",

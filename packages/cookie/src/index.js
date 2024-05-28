@@ -41,7 +41,7 @@ const fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/u
  * @public
  */
 // eslint-disable-next-line
-function parse(str, options) {
+export function parse(str, options) {
 	if (typeof str !== 'string') {
 		throw new TypeError('argument str must be a string')
 	}
@@ -93,7 +93,7 @@ function parse(str, options) {
  * @public
  */
 // eslint-disable-next-line
-function serialize(name, val, options) {
+export function serialize(name, val, options) {
 	const opt = { maxAge: null, ...(options || {}) }
 	const enc = opt.encode || encode
 
@@ -187,9 +187,8 @@ function serialize(name, val, options) {
  *
  * @param {string} str
  * @param {function} decodeFn
- * @private
+ * @returns {string}
  */
-
 function tryDecode(str, decodeFn) {
 	try {
 		return decodeFn(str)
@@ -198,7 +197,7 @@ function tryDecode(str, decodeFn) {
 	}
 }
 
-export default {
-	parse,
-	serialize
-}
+// export default {
+// 	parse,
+// 	serialize
+// }
