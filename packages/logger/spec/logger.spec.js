@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { log, getLogger } from '../src/logger'
+import { log, getLogger, getLogLevel } from '../src/logger'
 import { loggingLevels, runningOn } from '../src/constants'
 
 describe('Logger', () => {
@@ -47,6 +47,7 @@ describe('Logger', () => {
 			message: 'foo'
 		})
 	})
+
 	it('should spread attributes of data', () => {
 		const level = 'info'
 		log(writer, level, { message: 'foo', path: 'bar' })
@@ -152,6 +153,19 @@ describe('Logger', () => {
 				}
 			)
 		})
-		// expect(writer.write).toHaveBeenCalledTimes(count)
+	})
+
+	describe('getLogLevel', () => {
+		it('should return default level', () => {
+			expect(getLogLevel()).toBe('error')
+			expect(getLogLevel('')).toBe('error')
+			expect(getLogLevel('23')).toBe('error')
+		})
+		it('should return level', () => {
+			expect(getLogLevel('error')).toBe('error')
+			expect(getLogLevel('warn')).toBe('warn')
+			expect(getLogLevel('info')).toBe('info')
+			expect(getLogLevel('debug')).toBe('debug')
+		})
 	})
 })

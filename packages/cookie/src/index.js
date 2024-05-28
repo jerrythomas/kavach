@@ -186,13 +186,13 @@ export function serialize(name, val, options) {
  * Try decoding a string using a decoding function.
  *
  * @param {string} str
- * @param {function} decode
+ * @param {function} decodeFn
  * @private
  */
 
-function tryDecode(str, decode) {
+function tryDecode(str, decodeFn) {
 	try {
-		return decode(str)
+		return decodeFn(str)
 	} catch (e) {
 		return str
 	}

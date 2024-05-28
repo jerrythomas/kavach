@@ -3,7 +3,7 @@
   "version": "1.0.0-next.25",
   "description": "Drop in authentication including route protection and redirects.",
   "main": "index.js",
-  "packageManager": "pnpm@8.8.0",
+  "packageManager": "pnpm@9.1.3",
   "private": true,
   "scripts": {
     "clean": "find . -name 'coverage' -o -name 'vitest*timestamp*' -o -name '.vercel' | xargs rm -rf",
@@ -24,11 +24,7 @@
   },
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",
-  "workspaces": [
-    "packages/*",
-    "adapters/*",
-    "shared/*"
-  ],
+  "workspaces": ["packages/*", "adapters/*", "shared/*"],
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
     "bumpp": "^9.4.0",

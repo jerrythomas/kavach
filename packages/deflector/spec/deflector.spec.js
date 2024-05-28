@@ -24,77 +24,82 @@ describe('Router functions', () => {
 			{ path: '/other', roles: 'other' }
 		]
 	}
-	const res = createDeflector(options)
 
-	afterEach(() => {
-		res.setSession()
-	})
+	describe('createDeflector', () => {
+		const res = createDeflector(options)
 
-	it('should have app routes', () => {
-		expect(res).toEqual({
-			app: {
-				home: '/',
-				login: '/auth',
-				logout: '/logout',
-				session: '/auth/session',
-				unauthorized: null,
-				endpoints: ['/api', '/data', '/auth/session']
-			},
-			protect: expect.any(Function),
-			setSession: expect.any(Function)
+		afterEach(() => {
+			res.setSession()
 		})
-	})
-	it('should protect routes when user is not logged in', () => {
-		expect(res.protect(page.home)).toEqual({
-			status: 401,
-			redirect: page.login
+
+		it('should work with defult options', () => {
+			const res = createDeflector()
+			expect(res).toEqual({
+				app: {
+					home: '/',
+					login: '/auth',
+					logout: '/logout',
+					session: '/auth/session',
+					unauthorized: null,
+					endpoints: ['/api', '/data', '/auth/session']
+				},
+				protect: expect.any(Function),
+				setSession: expect.any(Function)
+			})
 		})
-		expect(res.protect(page.login)).toEqual({
-			status: 200
+
+		it('should protect routes when user is not logged in', () => {
+			expect(res.protect(page.home)).toEqual({
+				status: 401,
+				redirect: page.login
+			})
+			expect(res.protect(page.login)).toEqual({
+				status: 200
+			})
+			expect(res.protect(page.logout)).toEqual({
+				status: 401,
+				redirect: page.login
+			})
+			expect(res.protect('/blog')).toEqual({
+				status: 200
+			})
+			expect(res.protect('/user')).toEqual({
+				status: 401,
+				redirect: page.login
+			})
 		})
-		expect(res.protect(page.logout)).toEqual({
-			status: 401,
-			redirect: page.login
+		it('should protect routes when role is "authenticated"', () => {
+			res.setSession({ user: { role: 'authenticated' } })
+			expect(res.protect(page.home)).toEqual({
+				status: 200
+			})
+			expect(res.protect(page.login)).toEqual({
+				status: 302,
+				redirect: page.home
+			})
+			expect(res.protect(page.logout)).toEqual({ status: 200 })
+			expect(res.protect('/blog')).toEqual({ status: 200 })
+			expect(res.protect('/user')).toEqual({ status: 200 })
+			expect(res.protect('/other')).toEqual({
+				status: 403,
+				redirect: page.home
+			})
 		})
-		expect(res.protect('/blog')).toEqual({
-			status: 200
+		it('should protect routes when role is "other"', () => {
+			res.setSession({ user: { role: 'other' } })
+			expect(res.protect(page.home)).toEqual({ status: 200 })
+			expect(res.protect(page.login)).toEqual({
+				status: 302,
+				redirect: page.home
+			})
+			expect(res.protect(page.logout)).toEqual({ status: 200 })
+			expect(res.protect('/blog')).toEqual({ status: 200 })
+			expect(res.protect('/user')).toEqual({
+				status: 403,
+				redirect: page.home
+			})
+			expect(res.protect('/other')).toEqual({ status: 200 })
 		})
-		expect(res.protect('/user')).toEqual({
-			status: 401,
-			redirect: page.login
-		})
-	})
-	it('should protect routes when role is "authenticated"', () => {
-		res.setSession({ user: { role: 'authenticated' } })
-		expect(res.protect(page.home)).toEqual({
-			status: 200
-		})
-		expect(res.protect(page.login)).toEqual({
-			status: 302,
-			redirect: page.home
-		})
-		expect(res.protect(page.logout)).toEqual({ status: 200 })
-		expect(res.protect('/blog')).toEqual({ status: 200 })
-		expect(res.protect('/user')).toEqual({ status: 200 })
-		expect(res.protect('/other')).toEqual({
-			status: 403,
-			redirect: page.home
-		})
-	})
-	it('should protect routes when role is "other"', () => {
-		res.setSession({ user: { role: 'other' } })
-		expect(res.protect(page.home)).toEqual({ status: 200 })
-		expect(res.protect(page.login)).toEqual({
-			status: 302,
-			redirect: page.home
-		})
-		expect(res.protect(page.logout)).toEqual({ status: 200 })
-		expect(res.protect('/blog')).toEqual({ status: 200 })
-		expect(res.protect('/user')).toEqual({
-			status: 403,
-			redirect: page.home
-		})
-		expect(res.protect('/other')).toEqual({ status: 200 })
 	})
 
 	describe('configureRules', () => {
@@ -309,6 +314,7 @@ describe('Router functions', () => {
 			const outcome = protectRoute(allowedRoutes, '/public', role)
 			expect(outcome).toEqual({ status: 200 })
 		})
+
 		it.each(roles.slice(1))(
 			'should allow shared routes when role is [%s]',
 			(role) => {
@@ -317,6 +323,7 @@ describe('Router functions', () => {
 				expect(outcome).toEqual({ status: 200 })
 			}
 		)
+
 		it.each(roles.slice(1))(
 			'should redirect login to home role is [%s]',
 			(role) => {

@@ -1,7 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
 import { createKavach } from '../src/kavach'
-// import { APP_AUTH_CONTEXT } from '../src/constants'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
@@ -41,8 +40,6 @@ describe('kavach', () => {
 			'signOut',
 			'onAuthChange',
 			'handle',
-			// 'deflectedPath',
-			// 'status',
 			'client'
 		])
 	})
@@ -62,7 +59,7 @@ describe('kavach', () => {
 		})
 
 		await kavach.handle({ event, resolve })
-		// expect(resolve).toHaveBeenCalled()
+
 		expect(resolve).not.toHaveBeenCalledWith(event)
 		expect(Response).toHaveBeenCalledWith(
 			{},
@@ -70,6 +67,17 @@ describe('kavach', () => {
 				headers: { location: 'http://localhost/auth' },
 				status: 303
 			}
+		)
+	})
+	it('should return json response for unauthorized endpoint access', async () => {
+		const kavach = createKavach(adapter)
+		const event = createMockEvent({
+			url: { pathname: '/api/xyz' }
+		})
+		await kavach.handle({ event, resolve })
+		expect(Response).toHaveBeenCalledWith(
+			{ error: 'Unauthorized' },
+			{ status: 401 }
 		)
 	})
 
@@ -230,74 +238,91 @@ describe('kavach', () => {
 			JSON.parse(event.cookies.get('session'))
 		)
 	})
-	// it('should allow public path', async () => {
-	// 	const kavach = createKavach(adapter)
-	// 	let event = createMockEvent({
-	// 		url: { pathname: '/auth' }
-	// 	})
 
-	// 	await kavach.handlers[3]({ event, resolve })
-	// 	expect(resolve).toHaveBeenCalledWith(event)
-	// 	expect(Response.redirect).not.toHaveBeenCalled()
-	// })
-
-	// it('should redirect access on protected path', async () => {
-	// 	const kavach = createKavach(adapter)
-	// 	let event = createMockEvent({
-	// 		url: { pathname: '/', origin: 'http://localhost:5173' }
-	// 	})
-
-	// 	await kavach.handlers[3]({ event, resolve })
-	// 	expect(resolve).not.toHaveBeenCalledWith()
-	// 	expect(Response.redirect).toHaveBeenCalledWith(
-	// 		'http://localhost:5173/auth',
-	// 		301
-	// 	)
-	// })
-
-	/**
-	 * @vitest-environment jsdom
-	 */
-	it('should handle auth change to SIGNED_IN', async () => {
-		global.fetch = vi.fn().mockImplementation(() => {
-			return { status: 200 }
-		})
-		adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
-			const result = await cb('SIGNED_IN', 'foo')
-			expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-				body: '{"event":"SIGNED_IN","session":"foo"}',
-				method: 'POST'
+	describe('onAuthChange', () => {
+		/**
+		 * @vitest-environment jsdom
+		 */
+		beforeEach(() => {
+			global.fetch = vi.fn().mockImplementation(() => {
+				return { status: 200 }
 			})
-			// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-			expect(invalidateAll).toHaveBeenCalled()
-			// expect(goto).toHaveBeenCalledWith('/')
-			expect(result).toEqual({ status: 200 })
 		})
-		const kavach = createKavach(adapter, { invalidateAll })
 
-		kavach.onAuthChange({ hash: '' })
-		expect(adapter.parseUrlError).toHaveBeenCalled()
-		expect(adapter.onAuthChange).toHaveBeenCalled()
-	})
-	it('should handle auth change to SIGNED_OUT', async () => {
-		global.fetch = vi.fn().mockImplementation(() => {
-			return { status: 200 }
-		})
-		adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
-			const result = await cb('SIGNED_OUT', null)
-			expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-				body: '{"event":"SIGNED_OUT","session":null}',
-				method: 'POST'
+		it('should handle auth change to SIGNED_IN', async () => {
+			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
+				const result = await cb('SIGNED_IN', 'foo')
+				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
+					body: '{"event":"SIGNED_IN","session":"foo"}',
+					method: 'POST'
+				})
+
+				expect(invalidateAll).toHaveBeenCalled()
+				expect(result).toEqual({ status: 200 })
 			})
-			// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-			expect(invalidateAll).toHaveBeenCalled()
-			// expect(goto).toHaveBeenCalledWith('/auth')
-			expect(result).toEqual({ status: 200 })
-		})
-		const kavach = createKavach(adapter, { invalidateAll })
+			const kavach = createKavach(adapter, { invalidateAll })
 
-		kavach.onAuthChange({ hash: '' })
-		expect(adapter.parseUrlError).toHaveBeenCalled()
-		expect(adapter.onAuthChange).toHaveBeenCalled()
+			kavach.onAuthChange()
+			expect(adapter.parseUrlError).not.toHaveBeenCalled()
+			expect(adapter.onAuthChange).toHaveBeenCalled()
+		})
+
+		it('should handle error when fetching auth session', () => {
+			global.fetch = vi.fn().mockImplementation(() => {
+				return { status: 401 }
+			})
+
+			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
+				const result = await cb('SIGNED_IN', 'foo')
+				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
+					body: '{"event":"SIGNED_IN","session":"foo"}',
+					method: 'POST'
+				})
+
+				expect(invalidateAll).not.toHaveBeenCalled()
+				expect(result).toEqual({ status: 401 })
+			})
+			const kavach = createKavach(adapter, { invalidateAll })
+
+			kavach.onAuthChange()
+			expect(adapter.parseUrlError).not.toHaveBeenCalled()
+			expect(adapter.onAuthChange).toHaveBeenCalled()
+		})
+
+		it('should handle auth change to SIGNED_IN with url', async () => {
+			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
+				const result = await cb('SIGNED_IN', 'foo')
+				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
+					body: '{"event":"SIGNED_IN","session":"foo"}',
+					method: 'POST'
+				})
+
+				expect(invalidateAll).toHaveBeenCalled()
+				expect(result).toEqual({ status: 200 })
+			})
+			const kavach = createKavach(adapter, { invalidateAll })
+
+			kavach.onAuthChange({ hash: '' })
+			expect(adapter.parseUrlError).toHaveBeenCalled()
+			expect(adapter.onAuthChange).toHaveBeenCalled()
+		})
+
+		it('should handle auth change to SIGNED_OUT', () => {
+			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
+				const result = await cb('SIGNED_OUT', null)
+
+				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
+					body: '{"event":"SIGNED_OUT","session":null}',
+					method: 'POST'
+				})
+				expect(invalidateAll).toHaveBeenCalled()
+				expect(result).toEqual({ status: 200 })
+			})
+			const kavach = createKavach(adapter, { invalidateAll })
+
+			kavach.onAuthChange({ hash: '' })
+			expect(adapter.parseUrlError).toHaveBeenCalled()
+			expect(adapter.onAuthChange).toHaveBeenCalled()
+		})
 	})
 })

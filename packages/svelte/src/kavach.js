@@ -10,6 +10,7 @@ const pass = async () => {
 	/* Used as a placeholder */
 }
 export const authStatus = writable()
+
 // eslint-disable-next-line
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
@@ -20,15 +21,11 @@ export function createKavach(adapter, options) {
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
 		authStatus.set(result)
-		// invalidateAll()
-		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
 	const signUp = async (credentials) => {
 		const result = await adapter.signUp(credentials)
 		authStatus.set(result)
-		// invalidateAll()
-		// invalidate(APP_AUTH_CONTEXT)
 		return result
 	}
 	const signOut = async () => {
@@ -73,14 +70,8 @@ export function createKavach(adapter, options) {
 				})
 			})
 
-			if (result.status === 200) {
-				invalidateAll()
-				// invalidate(APP_AUTH_CONTEXT)
-				// deflector.setSession(session)
-				// const location =
-				// 	event === 'SIGNED_IN' ? deflector.app.home : deflector.app.login
-				// goto(location)
-			}
+			if (result.status === 200) invalidateAll()
+
 			return result
 		})
 	}
@@ -98,25 +89,13 @@ export function createKavach(adapter, options) {
 				)
 			} else {
 				return new Response(
-					{ erorr: HTTP_STATUS_MESSAGE[result.status] },
+					{ error: HTTP_STATUS_MESSAGE[result.status] },
 					{ status: result.status }
 				)
 			}
 		}
-		// const pathname = deflectedPath(event.url)
-
-		// if (pathname !== event.url.pathname) {
-		// 	return new Response(
-		// 		{},
-		// 		{ status: 303, headers: { location: event.url.origin + pathname } }
-		// 	)
-		// }
 		return resolve(event)
 	}
-
-	// function deflectedPath(url) {
-	// 	return deflector.redirect(url.pathname)
-	// }
 
 	const handle = async ({ event, resolve }) => {
 		const cookieSession = event.cookies.get('session')
@@ -140,7 +119,6 @@ export function createKavach(adapter, options) {
 		signOut,
 		onAuthChange,
 		handle,
-		// deflectedPath,
 		client: adapter.client
 	}
 }
@@ -167,6 +145,14 @@ export function setCookieFromSession(session) {
 	return setHeaderCookies({ session })
 }
 
+/**
+ * Synchronize session with the server
+ *
+ * @param {object} event
+ * @param {object} adapter
+ * @param {object} deflector
+ * @returns {object} response
+ */
 async function handleSessionSync(event, adapter, deflector) {
 	const data = await getRequestData(event)
 	let session = null
@@ -185,6 +171,7 @@ async function handleSessionSync(event, adapter, deflector) {
 	} else {
 		await adapter.signOut()
 	}
+
 	deflector.setSession(session)
 	const headers = setCookieFromSession(session)
 	return new Response({ session, error }, { status, headers })

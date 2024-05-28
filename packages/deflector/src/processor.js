@@ -99,11 +99,12 @@ export function getAuthorizedRoutes(config, userRole) {
  */
 export function getRestrictedRoutes(config, userRole) {
 	const restricted = []
+
 	Object.keys(config.protected)
 		.filter((role) => role !== '*' && role !== userRole)
 		.forEach((role) => {
 			config.protected[role].forEach((route) => {
-				if (!Array.isArray(route.roles) || !route.roles.includes(role)) {
+				if (!Array.isArray(route.roles) || !route.roles.includes(userRole)) {
 					if (!restricted.find((x) => x.path === route.path))
 						restricted.push(route)
 				}

@@ -144,7 +144,8 @@ describe('Route Processor', () => {
 				login: '/login',
 				logout: '/logout',
 				session: '/session',
-				unauthorized: '/'
+				unauthorized: '/',
+				endpoints: ['/api', '/data', '/session']
 			})
 			expect(routes).toEqual({
 				home: '/home',
@@ -227,7 +228,7 @@ describe('Route Processor', () => {
 			])
 		})
 	})
-	describe('getAuthorizedRoutes', () => {
+	describe('getRestrictedRoutes', () => {
 		const routeConfig = organizeRulesByRole(
 			processRoutingRules(
 				validateRoutingRules([
@@ -249,6 +250,11 @@ describe('Route Processor', () => {
 					path: '/admin',
 					public: false,
 					roles: 'admin'
+				},
+				{
+					path: '/all',
+					public: false,
+					roles: ['admin', 'user']
 				},
 				{
 					path: '/user',

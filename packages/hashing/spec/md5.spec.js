@@ -9,7 +9,8 @@ describe('hashing', () => {
 			'An MD5 hash is created by taking a string of an any length and encoding it into a 128-bit fingerprint. Encoding the same string using the MD5 algorithm will always result in the same 128-bit hash output.',
 			'01c55844b6ec5fda011691148b5d40d5'
 		],
-		['hello', '5d41402abc4b2a76b9719d911017c592']
+		['hello', '5d41402abc4b2a76b9719d911017c592'],
+		['a'.repeat(56), '3b0c8ac703f828b04c6c197006d17218']
 	]
 
 	it.each(md5Values)(

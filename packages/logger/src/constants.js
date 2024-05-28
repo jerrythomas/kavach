@@ -3,6 +3,7 @@ export const pass = async () => {
 }
 
 export const runningOn = typeof window === 'undefined' ? 'server' : 'browser'
+
 /** @type {import('./types').LogLevel} */
 export const defaultLogLevel = 'error'
 

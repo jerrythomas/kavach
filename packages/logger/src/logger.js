@@ -49,17 +49,17 @@ export async function log(writer, level, data) {
  * @returns {import('./types').Logger}
  */
 export function getLogger(writer, options = {}) {
-	const level = options?.level ?? defaultLogLevel
+	const level = getLogLevel(options?.level)
 
 	/* replace with check for instance of LogWriter */
 	if (!writer || typeof writer.write !== 'function') {
 		return zeroLogger
 	}
 
-	const levelValue =
-		level in loggingLevels
-			? loggingLevels[level]
-			: loggingLevels[defaultLogLevel]
+	const levelValue = loggingLevels[level]
+	// 	level in loggingLevels
+	// 		? loggingLevels[level]
+	// 		: loggingLevels[defaultLogLevel]
 
 	const logger = Object.entries(loggingLevels)
 		.map(([logLevel, value]) => ({
@@ -81,5 +81,6 @@ export function getLogger(writer, options = {}) {
  * @returns {import('./types').LogLevel}
  */
 export function getLogLevel(level) {
+	// if (!level) return defaultLogLevel
 	return level in loggingLevels ? level : defaultLogLevel
 }

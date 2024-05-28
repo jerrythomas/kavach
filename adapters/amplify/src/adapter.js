@@ -6,10 +6,10 @@ import Amplify, { Auth } from 'aws-amplify'
  * @param {*} credentials Credentials for signing in.
  * @returns {Promise<object>} Response object with appropriate fields.
  */
-async function handleSignIn(credentials, Auth) {
+async function handleSignIn(credentials, authInstance) {
 	const { username, password } = credentials
 	try {
-		const user = await Auth.signIn(username, password)
+		const user = await authInstance.signIn(username, password)
 		// Include more data manipulation as necessary.
 		return { type: 'success', data: user }
 	} catch (error) {
@@ -23,10 +23,10 @@ async function handleSignIn(credentials, Auth) {
  * @param {*} credentials Credentials for signing up.
  * @returns {Promise<object>} Response object with appropriate fields.
  */
-async function handleSignUp(credentials, Auth) {
+async function handleSignUp(credentials, authInstance) {
 	const { username, password, attributes = {} } = credentials
 	try {
-		const newUser = await Auth.signUp({
+		const newUser = await authInstance.signUp({
 			username,
 			password,
 			attributes
@@ -42,9 +42,9 @@ async function handleSignUp(credentials, Auth) {
  *
  * @returns {Promise<object>} Sign-out result.
  */
-async function handleSignOut(Auth) {
+async function handleSignOut(authInstance) {
 	try {
-		await Auth.signOut()
+		await authInstance.signOut()
 		return { type: 'success' }
 	} catch (error) {
 		return handleError(error)

@@ -75,64 +75,73 @@ describe('Request functions', () => {
 		}
 	]
 
-	it('should fetch form data from request', async () => {
-		const data = {
-			form: { foo: 'bar', bar: 'baz' }
-		}
-		const event = createMockEvent(data)
-		const result = await getRequestBody(event.request)
-		expect(result).toEqual(data.form)
-	})
-	it('should fetch json data from request', async () => {
-		const data = {
-			json: { foo: 'bar', bar: 'baz' }
-		}
-		const event = createMockEvent(data)
-		const result = await getRequestBody(event.request)
-		expect(result).toEqual(data.json)
-	})
-	it('should fetch data from url params', async () => {
-		const data = {
-			params: { name: 'bar', email: 'foo@bar.com' }
-		}
-		const event = createMockEvent(data)
-		const result = await getRequestData(event)
-		expect(result).toEqual(data.params)
+	describe('getRequestBody', () => {
+		it('should fetch form data from request', async () => {
+			const data = {
+				form: { foo: 'bar', bar: 'baz' }
+			}
+			const event = createMockEvent(data)
+			const result = await getRequestBody(event.request)
+			expect(result).toEqual(data.form)
+		})
+		it('should fetch json data from request', async () => {
+			const data = {
+				json: { foo: 'bar', bar: 'baz' }
+			}
+			const event = createMockEvent(data)
+			const result = await getRequestBody(event.request)
+			expect(result).toEqual(data.json)
+		})
 	})
 
-	it.each(events)(
-		'should combine data from request form/body and url params',
-		async ({ input, expected }) => {
-			const event = createMockEvent(input)
+	describe('getRequestData', () => {
+		it('should fetch data from url params', async () => {
+			const data = {
+				params: { name: 'bar', email: 'foo@bar.com' }
+			}
+			const event = createMockEvent(data)
 			const result = await getRequestData(event)
-			expect(result).toEqual(expected)
-		}
-	)
-
-	it.each(params)(
-		'Should split auth params $msg',
-		async ({ input, expected }) => {
-			const event = createMockEvent(input)
-			const result = await splitAuthData(event)
-			expect(result).toEqual(expected)
-		}
-	)
-
-	it('should build url with params', () => {
-		let url = asURLWithParams('https://example.com')
-		expect(url).toEqual('https://example.com')
-		url = asURLWithParams('https://example.com', '/home')
-		expect(url).toEqual('https://example.com/home')
-		url = asURLWithParams('https://example.com', '/home', [])
-		expect(url).toEqual('https://example.com/home')
-		url = asURLWithParams('https://example.com', '/home', {
-			email: 'foo@bar.com'
+			expect(result).toEqual(data.params)
 		})
-		expect(url).toEqual('https://example.com/home?email=foo@bar.com')
-		url = asURLWithParams('https://example.com', '/home', {
-			email: 'foo@bar.com',
-			name: 'bar'
+
+		it.each(events)(
+			'should combine data from request form/body and url params',
+			async ({ input, expected }) => {
+				const event = createMockEvent(input)
+				const result = await getRequestData(event)
+				expect(result).toEqual(expected)
+			}
+		)
+	})
+	describe('splitAuthData', () => {
+		it.each(params)(
+			'Should split auth params $msg',
+			async ({ input, expected }) => {
+				const event = createMockEvent(input)
+				const result = await splitAuthData(event)
+				expect(result).toEqual(expected)
+			}
+		)
+	})
+	describe('asURLWithParams', () => {
+		it('should build url with params', () => {
+			let url = asURLWithParams('https://example.com')
+			expect(url).toEqual('https://example.com')
+			url = asURLWithParams('https://example.com', '/home', null)
+			expect(url).toEqual('https://example.com/home')
+			url = asURLWithParams('https://example.com', '/home', '')
+			expect(url).toEqual('https://example.com/home')
+			url = asURLWithParams('https://example.com', '/home', [])
+			expect(url).toEqual('https://example.com/home')
+			url = asURLWithParams('https://example.com', '/home', {
+				email: 'foo@bar.com'
+			})
+			expect(url).toEqual('https://example.com/home?email=foo@bar.com')
+			url = asURLWithParams('https://example.com', '/home', {
+				email: 'foo@bar.com',
+				name: 'bar'
+			})
+			expect(url).toEqual('https://example.com/home?email=foo@bar.com&name=bar')
 		})
-		expect(url).toEqual('https://example.com/home?email=foo@bar.com&name=bar')
 	})
 })
