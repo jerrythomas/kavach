@@ -225,7 +225,7 @@ describe('kavach', () => {
 		}
 	)
 
-	it('should set event.locals', async () => {
+	it('should set event.locals', () => {
 		const event = createMockEvent({
 			json: {},
 			cookies: { session: JSON.stringify({ user: 'foo' }) },
@@ -249,7 +249,7 @@ describe('kavach', () => {
 			})
 		})
 
-		it('should handle auth change to SIGNED_IN', async () => {
+		it('should handle auth change to SIGNED_IN', () => {
 			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
 				const result = await cb('SIGNED_IN', 'foo')
 				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
@@ -289,7 +289,7 @@ describe('kavach', () => {
 			expect(adapter.onAuthChange).toHaveBeenCalled()
 		})
 
-		it('should handle auth change to SIGNED_IN with url', async () => {
+		it('should handle auth change to SIGNED_IN with url', () => {
 			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
 				const result = await cb('SIGNED_IN', 'foo')
 				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {

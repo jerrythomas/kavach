@@ -75,7 +75,7 @@ export function createKavach(adapter, options) {
 			return result
 		})
 	}
-	async function handleUnauthorizedAccess({ event, resolve }) {
+	function handleUnauthorizedAccess({ event, resolve }) {
 		const result = deflector.protect(event.url.pathname)
 
 		if (result.status !== 200) {
@@ -97,7 +97,7 @@ export function createKavach(adapter, options) {
 		return resolve(event)
 	}
 
-	const handle = async ({ event, resolve }) => {
+	const handle = ({ event, resolve }) => {
 		const cookieSession = event.cookies.get('session')
 
 		event.locals.session =

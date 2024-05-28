@@ -87,9 +87,9 @@ export function getAdapter(options) {
 	}
 
 	return {
-		signIn: async (credentials) => handleSignIn(credentials, Auth),
-		signUp: async (credentials) => handleSignUp(credentials, Auth),
-		signOut: async () => handleSignOut(Auth),
+		signIn: (credentials) => handleSignIn(credentials, Auth),
+		signUp: (credentials) => handleSignUp(credentials, Auth),
+		signOut: () => handleSignOut(Auth),
 		onAuthChange,
 		parseUrlError: () => null, // This function is specific to handling errors from URL parameters, commonly used in OAuth flows.
 		client: null, // AWS Cognito does not have a direct equivalent to a "client" in the Supabase sense.

@@ -23,7 +23,7 @@ describe('Endpoint functions', () => {
 	})
 
 	// @vitest-environment node
-	it('should not run on server', async () => {
+	it('should not run on server', () => {
 		adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
 			await cb('SIGNED_IN', 'foo')
 		})

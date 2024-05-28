@@ -29,7 +29,8 @@ module.exports = {
 				skipBlankLines: true,
 				skipComments: true
 			}
-		]
+		],
+		'require-await': 'error'
 	},
 	overrides: [
 		{
