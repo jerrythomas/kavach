@@ -1,5 +1,5 @@
 import { defaultCookieOptions } from './constants'
-import { serialize } from '@kavach/cookie'
+import cookie from '@kavach/cookie'
 
 /**
  * Checks if the url contains non empty 'access_token' in the url hash
@@ -106,7 +106,7 @@ export function setHeaderCookies(cookies, options = {}) {
 	const serializeOptions = { ...defaultCookieOptions, ...options }
 	const serializedCookies = Object.entries(cookies).map(([key, value]) => {
 		value = typeof value === 'string' ? value : JSON.stringify(value)
-		return serialize(key, value, serializeOptions)
+		return cookie.serialize(key, value, serializeOptions)
 	})
 
 	return { 'Set-Cookie': serializedCookies }

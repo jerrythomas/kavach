@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
 	getModeForProvider,
 	getParamsForProvider,
+	getUserInfo,
 	getProviderConfigFromNames
 } from '../src/provider'
 
@@ -54,5 +55,44 @@ describe('Provider functions', () => {
 				params: [{ prompt: 'consent', domain_hint: 'organizations' }]
 			}
 		])
+	})
+
+	describe('getUserInfo', () => {
+		it('should return user info', () => {
+			const user = {
+				id: 1,
+				email: 'john.doe@example.com',
+				role: 'user'
+			}
+			expect(getUserInfo(user)).toEqual({
+				id: 1,
+				role: 'user',
+				email: 'john.doe@example.com',
+				avatar_url: undefined,
+				full_name: undefined,
+				app_metadata: undefined
+			})
+		})
+
+		it('should return user info including metadata', () => {
+			const user = {
+				id: 1,
+				email: 'john.doe@example.com',
+				role: 'user',
+				user_metadata: {
+					avatar_url: 'https://example.com/avatar.jpg',
+					full_name: 'John Doe',
+					app_metadata: { plan: 'pro' }
+				}
+			}
+			expect(getUserInfo(user)).toEqual({
+				id: 1,
+				role: 'user',
+				email: 'john.doe@example.com',
+				avatar_url: 'https://example.com/avatar.jpg',
+				full_name: 'John Doe',
+				app_metadata: { plan: 'pro' }
+			})
+		})
 	})
 })
