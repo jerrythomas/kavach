@@ -1,8 +1,2 @@
-export const CORE_ATTRIBUTES = [
-	'level',
-	'running_on',
-	'logged_at',
-	'message',
-	'data',
-	'error'
-]
+export const defaultOrigin =
+	typeof window !== 'undefined' ? window.location.origin : ''
