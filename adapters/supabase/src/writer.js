@@ -9,11 +9,11 @@ import { createClient } from '@supabase/supabase-js'
  */
 export function getLogWriter(config, options) {
 	const client = config.client ?? createClient(config.url, config.anonKey)
-
+	const { table = 'logs' } = options ?? {}
 	/** @type {import('@kavach/core').LogWriter} */
 	const adapter = {
 		write: async (data) => {
-			await client.from(options.table).insert(data)
+			await client.from(table).insert(data)
 		}
 	}
 

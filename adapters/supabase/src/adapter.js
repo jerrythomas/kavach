@@ -1,8 +1,6 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams } from '@kavach/core'
-
-const defaultOrigin =
-	typeof window !== 'undefined' ? window.location.origin : ''
+import { defaultOrigin } from './constants'
 
 /**
  * Handles sign in based on the credentials provided
@@ -12,7 +10,7 @@ const defaultOrigin =
  * @returns {Promise<import('@kavach/core').AuthResponse>}
  */
 async function handleSignIn(client, credentials) {
-	const { email, phone, password, provider, scopes } = credentials
+	const { email, phone, password, provider, scopes = [] } = credentials
 	const redirectTo = credentials.redirectTo ?? defaultOrigin
 
 	let result = null
@@ -59,7 +57,7 @@ export function getAdapter(options) {
 	const clients = createClientsForSchemas(
 		options.url,
 		options.anonKey,
-		options.schema
+		options.schemas
 	)
 
 	const signIn = (credentials) => handleSignIn(client, credentials)
@@ -108,7 +106,7 @@ export function getAdapter(options) {
 		onAuthChange,
 		parseUrlError,
 		client,
-		db: (schema = null) => (schema ? clients[schema] : client)
+		db: (schema = null) => (schema in clients ? clients[schema] : client)
 	}
 }
 
@@ -149,9 +147,13 @@ export function transformResult({ data, error, credentials }) {
  * @returns
  */
 function createClientsForSchemas(url, anonKey, schemas = []) {
-	const clients = schemas.map((schema) => ({
-		[schema]: createClient(url, anonKey, { schema })
-	}))
+	const clients = schemas.reduce(
+		(acc, schema) => ({
+			...acc,
+			[schema]: createClient(url, anonKey, { schema })
+		}),
+		{}
+	)
 
 	return clients
 }
