@@ -9,24 +9,21 @@ import { writable } from 'svelte/store'
 const pass = async () => {
 	/* Used as a placeholder */
 }
-export const authStatus = writable()
+export const authStatus = writable({})
 
-// eslint-disable-next-line
+// eslint-disable-next-line max-lines-per-function
 export function createKavach(adapter, options) {
 	const deflector = createDeflector(options)
-
 	const logger = options?.logger ?? zeroLogger
 	const invalidateAll = options?.invalidateAll ?? pass
 
 	const signIn = async (credentials) => {
 		const result = await adapter.signIn(credentials)
 		authStatus.set(result)
-		return result
 	}
 	const signUp = async (credentials) => {
 		const result = await adapter.signUp(credentials)
 		authStatus.set(result)
-		return result
 	}
 	const signOut = async () => {
 		await adapter.signOut()
@@ -36,82 +33,40 @@ export function createKavach(adapter, options) {
 		})
 		// deflector.setSession(null)
 		invalidateAll()
+		authStatus.set({})
 		// invalidate(APP_AUTH_CONTEXT)
 	}
 
 	// eslint-disable-next-line
 	const onAuthChange = (url) => {
-		if (RUNNING_ON !== 'browser') {
-			logger.error({
-				message: 'onAuthChange should only be called from browser',
-				module: 'kavach',
-				method: 'onAuthChange',
-				path: url
-			})
-			return
-		}
-		adapter.onAuthChange(async (event, session) => {
-			if (url) {
-				authStatus.set(adapter.parseUrlError(url))
-				logger.debug({
-					message: 'onAuthChange, message in url',
-					module: 'kavach',
-					method: 'onAuthChange',
-					path: url,
-					data: adapter.parseUrlError(url)
-				})
-			}
+		if (RUNNING_ON !== 'browser') return
+		const result = adapter.parseUrlError(url)
+		if (result?.type === 'error') authStatus.set(result)
 
+		adapter.onAuthChange(async (event, session) => {
 			const result = await fetch(deflector.app.session, {
 				method: 'POST',
-				body: JSON.stringify({
-					event,
-					session
-				})
+				body: JSON.stringify({ event, session })
 			})
 
 			if (result.status === 200) invalidateAll()
-
+			logger.debug({
+				data: { event, module: 'kavach', method: 'onAuthChange' },
+				message: 'Auth changed'
+			})
 			return result
 		})
 	}
-	function handleUnauthorizedAccess({ event, resolve }) {
-		const result = deflector.protect(event.url.pathname)
-
-		if (result.status !== 200) {
-			if (result.redirect) {
-				return new Response(
-					{},
-					{
-						status: 303,
-						headers: { location: event.url.origin + result.redirect }
-					}
-				)
-			} else {
-				return new Response(
-					{ error: HTTP_STATUS_MESSAGE[result.status] },
-					{ status: result.status }
-				)
-			}
-		}
-		return resolve(event)
-	}
 
 	const handle = ({ event, resolve }) => {
-		const cookieSession = event.cookies.get('session')
-
-		event.locals.session =
-			cookieSession && cookieSession !== 'undefined'
-				? JSON.parse(cookieSession)
-				: null
-
+		event.locals.session = parsedCookieSession(event)
 		deflector.setSession(event.locals.session)
 
 		if (event.url.pathname.startsWith(deflector.app.session)) {
 			return handleSessionSync(event, adapter, deflector)
 		}
 
-		return handleUnauthorizedAccess({ event, resolve })
+		return handleUnauthorizedAccess({ event, resolve }, deflector)
 	}
 	return {
 		signIn,
@@ -121,6 +76,48 @@ export function createKavach(adapter, options) {
 		handle,
 		client: adapter.client
 	}
+}
+
+/**
+ * Parse session from event cookies
+ *
+ * @param {object}   event
+ * @returns {object} session
+ */
+function parsedCookieSession(event) {
+	const cookieSession = event.cookies.get('session')
+	return cookieSession && cookieSession !== 'undefined'
+		? JSON.parse(cookieSession)
+		: null
+}
+
+/**
+ * Handle unauthorized access
+ *
+ * @param {object}   request
+ * @param {object}   deflector
+ * @returns {object} response
+ */
+function handleUnauthorizedAccess({ event, resolve }, deflector) {
+	const result = deflector.protect(event.url.pathname)
+
+	if (result.status !== 200) {
+		if (result.redirect) {
+			return new Response(
+				{},
+				{
+					status: 303,
+					headers: { location: event.url.origin + result.redirect }
+				}
+			)
+		} else {
+			return new Response(
+				{ error: HTTP_STATUS_MESSAGE[result.status] },
+				{ status: result.status }
+			)
+		}
+	}
+	return resolve(event)
 }
 
 /**

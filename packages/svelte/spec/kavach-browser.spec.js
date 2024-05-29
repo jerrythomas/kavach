@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
-import { createKavach } from '../src/kavach'
+import { createKavach, authStatus } from '../src/kavach'
+import { get } from 'svelte/store'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
@@ -83,7 +84,6 @@ describe('kavach', () => {
 
 	it('should sign out on server when session is null', async () => {
 		const kavach = createKavach(adapter)
-
 		const event = createMockEvent({
 			json: {},
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
@@ -186,12 +186,12 @@ describe('kavach', () => {
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
 
 		const kavach = createKavach(adapter, { invalidateAll })
-		const result = await kavach.signIn(credentials)
-
+		await kavach.signIn(credentials)
 		expect(adapter.signIn).toHaveBeenCalledWith(credentials)
+		expect(get(authStatus)).toEqual({ input: credentials })
 		// expect(invalidateAll).toHaveBeenCalled()
 		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-		expect(result).toEqual({ input: credentials })
+		// expect(result).toEqual({ input: credentials })
 	})
 
 	it('should sign up using adapter', async () => {
@@ -199,12 +199,13 @@ describe('kavach', () => {
 
 		const kavach = createKavach(adapter, { invalidateAll })
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
-		const result = await kavach.signUp(credentials)
+		await kavach.signUp(credentials)
 
 		expect(adapter.signUp).toHaveBeenCalledWith(credentials)
+		expect(get(authStatus)).toEqual({ input: credentials })
 		// expect(invalidateAll).toHaveBeenCalled()
 		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-		expect(result).toEqual({ input: credentials })
+		// expect(result).toEqual({ input: credentials })
 	})
 
 	it.each([{ invalidateAll }, {}])(
@@ -218,6 +219,7 @@ describe('kavach', () => {
 				body: JSON.stringify({ event: 'SIGNED_OUT' }),
 				method: 'POST'
 			})
+			expect(get(authStatus)).toEqual({})
 			// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 			if (options.invalidateAll) {
 				expect(invalidateAll).toHaveBeenCalled()
@@ -263,8 +265,9 @@ describe('kavach', () => {
 			const kavach = createKavach(adapter, { invalidateAll })
 
 			kavach.onAuthChange()
-			expect(adapter.parseUrlError).not.toHaveBeenCalled()
+			expect(adapter.parseUrlError).toHaveBeenCalled()
 			expect(adapter.onAuthChange).toHaveBeenCalled()
+			expect(get(authStatus)).toEqual({})
 		})
 
 		it('should handle error when fetching auth session', () => {
@@ -285,26 +288,24 @@ describe('kavach', () => {
 			const kavach = createKavach(adapter, { invalidateAll })
 
 			kavach.onAuthChange()
-			expect(adapter.parseUrlError).not.toHaveBeenCalled()
-			expect(adapter.onAuthChange).toHaveBeenCalled()
-		})
-
-		it('should handle auth change to SIGNED_IN with url', () => {
-			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
-				const result = await cb('SIGNED_IN', 'foo')
-				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-					body: '{"event":"SIGNED_IN","session":"foo"}',
-					method: 'POST'
-				})
-
-				expect(invalidateAll).toHaveBeenCalled()
-				expect(result).toEqual({ status: 200 })
-			})
-			const kavach = createKavach(adapter, { invalidateAll })
-
-			kavach.onAuthChange({ hash: '' })
 			expect(adapter.parseUrlError).toHaveBeenCalled()
 			expect(adapter.onAuthChange).toHaveBeenCalled()
+			expect(get(authStatus)).toEqual({})
+		})
+
+		it('should handle error in url hash', () => {
+			adapter.parseUrlError = vi
+				.fn()
+				.mockImplementation(() => ({ type: 'error', error: 'server_error' }))
+
+			const kavach = createKavach(adapter, { invalidateAll })
+
+			kavach.onAuthChange({
+				hash: 'error=server_error&error_code=500&error_description=Unable+to+exchange+external+code'
+			})
+			expect(adapter.parseUrlError).toHaveBeenCalled()
+			expect(adapter.onAuthChange).toHaveBeenCalled()
+			expect(get(authStatus)).toEqual({ type: 'error', error: 'server_error' })
 		})
 
 		it('should handle auth change to SIGNED_OUT', () => {
