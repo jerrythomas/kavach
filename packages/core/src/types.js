@@ -107,13 +107,15 @@
  * @typedef {(event: string, session: any) => Promise<void>} AuthCallback
  */
 
+/** @typedef {'error'|'success'|'warning'} ResultType */
+
 /**
  * @typedef AuthResult
- * @property {boolean} isError
- * @property {number} [status]
- * @property {string} [name]
- * @property {string} [message]
- * @property {*} [data]
+ * @property {ResultType} type
+ * @property {number}     [status]
+ * @property {string}     [name]
+ * @property {string}     [message]
+ * @property {*}          [data]
  */
 /**
  * @typedef AuthAdapter

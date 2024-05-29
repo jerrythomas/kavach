@@ -24,6 +24,8 @@
  * @property {string} level
  * @property {string} running_on
  * @property {string} logged_at
+ * @property {string} [module]
+ * @property {string} [method]
  * @property {string} [message]
  * @property {Object} [data]
  */
