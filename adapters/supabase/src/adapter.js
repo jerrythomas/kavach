@@ -3,6 +3,60 @@ import { urlHashToParams } from '@kavach/core'
 import { defaultOrigin } from './constants'
 
 /**
+ * Creates an adapter for supabase
+ *
+ * @param {import('./types').AdapterOptions} options
+ * @returns {import('@kavach/core').Adapter}
+ */
+export function getAdapter(options) {
+	const client = createClient(options.url, options.anonKey)
+	const clients = createClientsForSchemas(
+		options.url,
+		options.anonKey,
+		options.schemas
+	)
+
+	const synchronize = async (session) => {
+		await synchronizeClients(clients, session)
+		return client.auth.setSession(session)
+	}
+
+	// const onAuthChange = (callback) => {
+	// 	const {
+	// 		data: { subscription }
+	// 	} = client.auth.onAuthStateChange(async (event, session) => {
+	// 		await synchronizeClients(clients, session)
+	// 		await callback(event, session)
+	// 	})
+	// 	return () => {
+	// 		subscription.unsubscribe()
+	// 	}
+	// }
+
+	return {
+		signIn: (credentials) => handleSignIn(client, credentials),
+		signUp: (credentials) => handleSignUp(client, credentials),
+		signOut: () => client.auth.signOut(),
+		synchronize,
+		onAuthChange: (callback) => handleAuthChange(client, clients, callback),
+		parseUrlError,
+		client,
+		db: (schema) => clients[schema] || client
+	}
+}
+
+function handleAuthChange(client, clients, callback) {
+	const {
+		data: { subscription }
+	} = client.auth.onAuthStateChange(async (event, session) => {
+		await synchronizeClients(clients, session)
+		await callback(event, session)
+	})
+	return () => {
+		subscription.unsubscribe()
+	}
+}
+/**
  * Handles sign in based on the credentials provided
  *
  * @param {*} client
@@ -36,6 +90,28 @@ async function handleSignIn(client, credentials) {
 	return transformResult(result)
 }
 
+/**
+ * Handles sign up based on the credentials provided
+ *
+ * @param {*} client
+ * @param {import('@kavach/core').AuthCredentials} credentials
+ * @returns {Promise<import('@kavach/core').AuthResponse>}
+ */
+async function handleSignUp(client, { email, password, redirectTo }) {
+	const result = await client.auth.signUp({
+		email,
+		password,
+		options: { emailRedirectTo: redirectTo }
+	})
+	return transformResult(result)
+}
+
+/**
+ * Parses the url hash to check if there is an error
+ *
+ * @param {URL} url
+ * @returns {import('./types').AuthError}
+ */
 export function parseUrlError(url) {
 	let error = { isError: false }
 	const result = urlHashToParams(url.hash)
@@ -48,66 +124,6 @@ export function parseUrlError(url) {
 		}
 	}
 	return error
-}
-
-/** @type {import('./types').GetSupabaseAdapter}  */
-// eslint-disable-next-line max-lines-per-function
-export function getAdapter(options) {
-	const client = createClient(options.url, options.anonKey)
-	const clients = createClientsForSchemas(
-		options.url,
-		options.anonKey,
-		options.schemas
-	)
-
-	const signIn = (credentials) => handleSignIn(client, credentials)
-
-	const signUp = async ({ email, password, redirectTo }) => {
-		const result = await client.auth.signUp({
-			email,
-			password,
-			options: { emailRedirectTo: redirectTo }
-		})
-		return transformResult(result)
-	}
-
-	const signOut = () => {
-		return client.auth.signOut()
-	}
-
-	const synchronizeClients = (session) => {
-		const result = Object.keys(clients).map((schema) =>
-			clients[schema].auth.setSession(session)
-		)
-		return Promise.all(result)
-	}
-	const synchronize = async (session) => {
-		await synchronizeClients(session)
-		return client.auth.setSession(session)
-	}
-
-	const onAuthChange = (callback) => {
-		const {
-			data: { subscription }
-		} = client.auth.onAuthStateChange(async (event, session) => {
-			await synchronizeClients(session)
-			await callback(event, session)
-		})
-		return () => {
-			subscription.unsubscribe()
-		}
-	}
-
-	return {
-		signIn,
-		signUp,
-		signOut,
-		synchronize,
-		onAuthChange,
-		parseUrlError,
-		client,
-		db: (schema = null) => (schema in clients ? clients[schema] : client)
-	}
 }
 
 /**
@@ -141,8 +157,8 @@ export function transformResult({ data, error, credentials }) {
 /**
  * Generates clients for each schema. This is required to support multiple schemas with supabase
  *
- * @param {string} url            The url of the supabase server
- * @param {string} anonKey        The anon key of the supabase server
+ * @param {string}        url     The url of the supabase server
+ * @param {string}        anonKey The anon key of the supabase server
  * @param {Array<string>} schemas An array of schemas to create clients for
  * @returns
  */
@@ -150,10 +166,25 @@ function createClientsForSchemas(url, anonKey, schemas = []) {
 	const clients = schemas.reduce(
 		(acc, schema) => ({
 			...acc,
-			[schema]: createClient(url, anonKey, { schema })
+			[schema]: createClient(url, anonKey, { db: { schema } })
 		}),
 		{}
 	)
 
 	return clients
+}
+
+/**
+ * Synchronizes the session across all clients
+ *
+ * @param {Record<string, import('@supabase/supabase-js').SupabaseClient>} clients
+ * @param {import('@supabase/supabase-js').Session} session
+ * @returns {Promise<void>}
+ */
+const synchronizeClients = (clients, session) => {
+	// if (!session) return Promise.resolve()
+	const result = Object.keys(clients).map((schema) =>
+		clients[schema].auth.setSession(session)
+	)
+	return Promise.all(result)
 }

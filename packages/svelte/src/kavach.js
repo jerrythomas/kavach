@@ -1,148 +1,123 @@
-import { pick } from 'ramda'
-import { zeroLogger } from '@kavach/logger'
-import { createDeflector } from '@kavach/deflector'
 import { getUserInfo, setHeaderCookies } from '@kavach/core'
-import { getRequestData } from './request'
-import { RUNNING_ON, HTTP_STATUS_MESSAGE } from './constants'
+import { createDeflector } from '@kavach/deflector'
+import { zeroLogger } from '@kavach/logger'
+import { pick } from 'ramda'
 import { writable } from 'svelte/store'
+import { HTTP_STATUS_MESSAGE, RUNNING_ON } from './constants'
+import { getRequestData } from './request'
 
 const pass = async () => {
 	/* Used as a placeholder */
 }
 export const authStatus = writable()
 
-// eslint-disable-next-line
+/**
+ * Create Kavach instance
+ *
+ * @param {object} adapter
+ * @param {object} options
+ * @returns {object} kavach
+ */
 export function createKavach(adapter, options) {
-	const deflector = createDeflector(options)
-
-	const logger = options?.logger ?? zeroLogger
-	const invalidateAll = options?.invalidateAll ?? pass
-
-	const signIn = async (credentials) => {
-		const result = await adapter.signIn(credentials)
-		authStatus.set(result)
-		return result
-	}
-	const signUp = async (credentials) => {
-		const result = await adapter.signUp(credentials)
-		authStatus.set(result)
-		return result
-	}
-	const signOut = async () => {
-		await adapter.signOut()
-		await fetch(deflector.app.session, {
-			method: 'POST',
-			body: JSON.stringify({ event: 'SIGNED_OUT' })
-		})
-		// deflector.setSession(null)
-		invalidateAll()
-		// invalidate(APP_AUTH_CONTEXT)
+	const agents = {
+		logger: options?.logger ?? zeroLogger,
+		deflector: createDeflector(options),
+		invalidateAll: options?.invalidateAll ?? pass
 	}
 
-	// eslint-disable-next-line
-	const onAuthChange = (url) => {
-		if (RUNNING_ON !== 'browser') {
-			logger.error({
-				message: 'onAuthChange should only be called from browser',
-				module: 'kavach',
-				method: 'onAuthChange',
-				path: url
-			})
-			return
-		}
-		adapter.onAuthChange(async (event, session) => {
-			if (url) {
-				authStatus.set(adapter.parseUrlError(url))
-				logger.debug({
-					message: 'onAuthChange, message in url',
-					module: 'kavach',
-					method: 'onAuthChange',
-					path: url,
-					data: adapter.parseUrlError(url)
-				})
-			}
-
-			const result = await fetch(deflector.app.session, {
-				method: 'POST',
-				body: JSON.stringify({
-					event,
-					session
-				})
-			})
-
-			if (result.status === 200) invalidateAll()
-
-			return result
-		})
-	}
-	function handleUnauthorizedAccess({ event, resolve }) {
-		const result = deflector.protect(event.url.pathname)
-
-		if (result.status !== 200) {
-			if (result.redirect) {
-				return new Response(
-					{},
-					{
-						status: 303,
-						headers: { location: event.url.origin + result.redirect }
-					}
-				)
-			} else {
-				return new Response(
-					{ error: HTTP_STATUS_MESSAGE[result.status] },
-					{ status: result.status }
-				)
-			}
-		}
-		return resolve(event)
-	}
-
-	const handle = ({ event, resolve }) => {
-		const cookieSession = event.cookies.get('session')
-
-		event.locals.session =
-			cookieSession && cookieSession !== 'undefined'
-				? JSON.parse(cookieSession)
-				: null
-
-		deflector.setSession(event.locals.session)
-
-		if (event.url.pathname.startsWith(deflector.app.session)) {
-			return handleSessionSync(event, adapter, deflector)
-		}
-
-		return handleUnauthorizedAccess({ event, resolve })
-	}
 	return {
-		signIn,
-		signUp,
-		signOut,
-		onAuthChange,
-		handle,
+		signIn: (credentials) => adapter.signIn(credentials),
+		signUp: (credentials) => adapter.signUp(credentials),
+		signOut: () => handleSignOut(adapter, agents),
+		onAuthChange: () => handleAuthChange(adapter, agents),
+		handle: (request) => handleRouteProtection(adapter, agents, request),
 		client: adapter.client
 	}
 }
 
 /**
- * Returns a cookie header using provided object and options
+ * Handle route protection
  *
- * @param {*} session
- * @returns {object} cookie header
+ * @param {object} adapter
+ * @param {object} agents
+ * @param {object} request
+ * @returns {Promise<void>}
  */
-export function setCookieFromSession(session) {
-	if (session) {
-		const maxAge = session.expires_in ?? 3600 //* 1000
-		return setHeaderCookies(
-			{
-				session: {
-					...pick(['refresh_token', 'access_token'], session),
-					user: getUserInfo(session.user)
-				}
-			},
-			{ maxAge }
-		)
+function handleRouteProtection(adapter, agents, { event, resolve }) {
+	const { deflector } = agents
+	event.locals.session = parseSessionFromCookies(event)
+	deflector.setSession(event.locals.session)
+
+	if (event.url.pathname.startsWith(deflector.app.session)) {
+		return handleSessionSync(event, adapter, deflector)
 	}
-	return setHeaderCookies({ session })
+
+	return handleUnauthorizedAccess(agents, { event, resolve })
+}
+/**
+ * Handle auth change
+ *
+ * @param {object} adapter
+ * @param {object} agents
+ */
+function handleAuthChange(adapter, agents) {
+	const { invalidateAll, logger } = agents
+	if (RUNNING_ON !== 'browser') return
+
+	adapter.onAuthChange(async (event, session) => {
+		logger.debug({
+			message: 'onAuthChange',
+			data: { module: 'kavach', method: 'onAuthChange', event }
+		})
+
+		const result = await syncSessionWithServer(agents, event, session)
+		if (result.status === 200) invalidateAll()
+
+		return result
+	})
+}
+
+/**
+ * Handle sign out
+ *
+ * @param {object} adapter
+ * @param {object} deflector
+ * @param {function} invalidateAll
+ * @returns {Promise<void>}
+ */
+async function handleSignOut(adapter, agents) {
+	await adapter.signOut()
+	syncSessionWithServer(agents, 'SIGNED_OUT')
+	agents.invalidateAll()
+}
+
+/**
+ * Handle unauthorized access
+ *
+ * @param {object} deflector
+ * @param {object} request
+ * @returns {Response}
+ */
+function handleUnauthorizedAccess(agents, { event, resolve }) {
+	const result = agents.deflector.protect(event.url.pathname)
+
+	if (result.status !== 200) {
+		if (result.redirect) {
+			return new Response(
+				{},
+				{
+					status: 303,
+					headers: { location: event.url.origin + result.redirect }
+				}
+			)
+		} else {
+			return new Response(
+				{ error: HTTP_STATUS_MESSAGE[result.status] },
+				{ status: result.status }
+			)
+		}
+	}
+	return resolve(event)
 }
 
 /**
@@ -175,4 +150,55 @@ async function handleSessionSync(event, adapter, deflector) {
 	deflector.setSession(session)
 	const headers = setCookieFromSession(session)
 	return new Response({ session, error }, { status, headers })
+}
+
+/**
+ * Parse session from cookies
+ *
+ * @param {object} event
+ * @returns {object} session
+ */
+function parseSessionFromCookies(event) {
+	const cookieSession = event.cookies.get('session')
+
+	return cookieSession && cookieSession !== 'undefined'
+		? JSON.parse(cookieSession)
+		: null
+}
+
+/**
+ * Returns a cookie header using provided object and options
+ *
+ * @param {*} session
+ * @returns {object} cookie header
+ */
+export function setCookieFromSession(session) {
+	if (session) {
+		const maxAge = session.expires_in ?? 3600 //* 1000
+		return setHeaderCookies(
+			{
+				session: {
+					...pick(['refresh_token', 'access_token'], session),
+					user: getUserInfo(session.user)
+				}
+			},
+			{ maxAge }
+		)
+	}
+	return setHeaderCookies({ session })
+}
+
+/**
+ * Send sign in status and session to server
+ *
+ * @param {object} deflector
+ * @param {object} event
+ * @param {object} session
+ */
+async function syncSessionWithServer(agents, event, session = null) {
+	const result = await fetch(agents.deflector.app.session, {
+		method: 'POST',
+		body: JSON.stringify({ event, session })
+	})
+	return result
 }

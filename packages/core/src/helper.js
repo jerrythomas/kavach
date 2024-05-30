@@ -48,10 +48,9 @@ export function extractKeyValuePair(data, separator = '=') {
 	} else {
 		values[1] = decodeURIComponent(values[1])
 		if (values[1].includes('%')) {
-			values[1] = values[1]
-				.substring(0, values[1].indexOf('%'))
-				.replace(/\+/g, ' ')
+			values[1] = values[1].substring(0, values[1].indexOf('%'))
 		}
+		values[1] = values[1].replaceAll(/[_|+]/g, ' ')
 	}
 	return [values[0], values[1]]
 }

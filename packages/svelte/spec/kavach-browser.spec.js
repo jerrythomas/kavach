@@ -189,8 +189,6 @@ describe('kavach', () => {
 		const result = await kavach.signIn(credentials)
 
 		expect(adapter.signIn).toHaveBeenCalledWith(credentials)
-		// expect(invalidateAll).toHaveBeenCalled()
-		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 		expect(result).toEqual({ input: credentials })
 	})
 
@@ -202,8 +200,6 @@ describe('kavach', () => {
 		const result = await kavach.signUp(credentials)
 
 		expect(adapter.signUp).toHaveBeenCalledWith(credentials)
-		// expect(invalidateAll).toHaveBeenCalled()
-		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
 		expect(result).toEqual({ input: credentials })
 	})
 
@@ -215,10 +211,10 @@ describe('kavach', () => {
 
 			expect(adapter.signOut).toHaveBeenCalledWith()
 			expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-				body: JSON.stringify({ event: 'SIGNED_OUT' }),
+				body: JSON.stringify({ event: 'SIGNED_OUT', session: null }),
 				method: 'POST'
 			})
-			// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
+
 			if (options.invalidateAll) {
 				expect(invalidateAll).toHaveBeenCalled()
 			}
@@ -289,24 +285,6 @@ describe('kavach', () => {
 			expect(adapter.onAuthChange).toHaveBeenCalled()
 		})
 
-		it('should handle auth change to SIGNED_IN with url', () => {
-			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
-				const result = await cb('SIGNED_IN', 'foo')
-				expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-					body: '{"event":"SIGNED_IN","session":"foo"}',
-					method: 'POST'
-				})
-
-				expect(invalidateAll).toHaveBeenCalled()
-				expect(result).toEqual({ status: 200 })
-			})
-			const kavach = createKavach(adapter, { invalidateAll })
-
-			kavach.onAuthChange({ hash: '' })
-			expect(adapter.parseUrlError).toHaveBeenCalled()
-			expect(adapter.onAuthChange).toHaveBeenCalled()
-		})
-
 		it('should handle auth change to SIGNED_OUT', () => {
 			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
 				const result = await cb('SIGNED_OUT', null)
@@ -321,7 +299,6 @@ describe('kavach', () => {
 			const kavach = createKavach(adapter, { invalidateAll })
 
 			kavach.onAuthChange({ hash: '' })
-			expect(adapter.parseUrlError).toHaveBeenCalled()
 			expect(adapter.onAuthChange).toHaveBeenCalled()
 		})
 	})
