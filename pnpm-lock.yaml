@@ -396,6 +396,9 @@ importers:
       '@vitest/coverage-istanbul':
         specifier: ^1.6.0
         version: 1.6.0(vitest@1.6.0(@types/node@20.12.12)(@vitest/ui@1.6.0)(jsdom@24.0.0))
+      '@vitest/expect':
+        specifier: ^1.6.0
+        version: 1.6.0
       '@vitest/ui':
         specifier: ~1.6.0
         version: 1.6.0(vitest@1.6.0)

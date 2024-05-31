@@ -16,9 +16,8 @@
  */
 
 /**
- * @typedef AuthError
- * @property {string} message
- * @property {string} name
- * @property {string} status
+ * @typedef CompositeURL
+ * @property {string} hash
+ * @property {string} path
  */
 export default {}

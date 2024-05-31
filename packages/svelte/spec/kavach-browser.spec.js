@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
-import { createKavach } from '../src/kavach'
+import { createKavach, logAuthError } from '../src/kavach'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
@@ -228,7 +228,7 @@ describe('kavach', () => {
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
 		})
 
-		const kavach = createKavach(adapter)
+		const kavach = createKavach(adapter, { invalidateAll })
 		kavach.handle({ event, resolve })
 		expect(event.locals.session).toEqual(
 			JSON.parse(event.cookies.get('session'))
@@ -300,6 +300,92 @@ describe('kavach', () => {
 
 			kavach.onAuthChange({ hash: '' })
 			expect(adapter.onAuthChange).toHaveBeenCalled()
+		})
+	})
+
+	describe('handleAuthUrlError', () => {
+		const url = { pathname: '/auth/session', hash: '#' }
+		const logger = { error: vi.fn() }
+		const page = {
+			subscribe: vi.fn((callback) => {
+				setTimeout(() => {
+					callback({ url })
+				}, 100)
+				return () => {}
+			})
+		}
+
+		beforeEach(() => {
+			vi.useFakeTimers()
+		})
+
+		afterEach(() => {
+			vi.useRealTimers()
+		})
+
+		it('should handle url error', async () => {
+			const error = {
+				code: 500,
+				status: 'server error',
+				message: 'Internal Server Error'
+			}
+
+			adapter.parseUrlError = vi.fn().mockImplementation(() => error)
+
+			const kavach = createKavach(adapter, { logger, page })
+			expect(kavach).toBeDefined()
+
+			vi.advanceTimersByTime(100)
+			await vi.runAllTimersAsync()
+			expect(adapter.parseUrlError).toHaveBeenCalledWith(url)
+			expect(logger.error).toHaveBeenCalledWith({
+				message: error.message,
+				error,
+				data: {
+					module: 'kavach',
+					method: 'handleAuthUrlError',
+					url: { pathname: '/auth/session', hash: '#' }
+				}
+			})
+		})
+
+		it('should not call function when there is no error', async () => {
+			adapter.parseUrlError = vi.fn().mockImplementation(() => null)
+
+			url.hash = ''
+			const kavach = createKavach(adapter, { logger, page })
+			expect(kavach).toBeDefined()
+
+			vi.advanceTimersByTime(100)
+			await vi.runAllTimersAsync()
+			expect(adapter.parseUrlError).toHaveBeenCalledWith(url)
+			expect(logger.error).not.toHaveBeenCalledOnce()
+		})
+	})
+
+	describe('logAuthError', () => {
+		const error = {
+			code: 500,
+			status: 'server error',
+			message: 'Internal Server Error'
+		}
+
+		const logger = { error: vi.fn() }
+
+		it('should log error', () => {
+			logAuthError(logger, { error }, 'handleSignIn')
+			expect(logger.error).toHaveBeenCalledWith({
+				message: error.message,
+				error,
+				data: {
+					module: 'kavach',
+					method: 'handleSignIn'
+				}
+			})
+		})
+		it('should not log error if there is none', () => {
+			logAuthError(logger, {}, 'handleSignIn')
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 })

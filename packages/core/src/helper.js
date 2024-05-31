@@ -20,7 +20,7 @@ export function hasAuthParams(url) {
  * @returns {Object} key value pair of all parameters in the hash
  */
 export function urlHashToParams(url) {
-	const [, hash] = url.split('#')
+	const [, hash] = (url ?? '').split('#')
 	if (hash?.length) {
 		const result = hash
 			.split('&')

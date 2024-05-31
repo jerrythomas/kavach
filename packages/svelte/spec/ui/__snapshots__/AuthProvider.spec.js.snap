@@ -1,0 +1,69 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthProvider.svelte > should render oauth button 1`] = `
+<body>
+  <div>
+    <button
+      class="flex flex-row items-center "
+      type="submit"
+    >
+      <icon-left
+        class="flex flex-row"
+      >
+        <icon
+          aria-label="i-auth-google"
+          class="flex flex-shrink-0 items-center justify-center "
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-google"
+          />
+        </icon>
+      </icon-left>
+       
+      <p>
+        Sign in with Google
+      </p>
+      
+       
+    </button>
+    
+  </div>
+</body>
+`;
+
+exports[`AuthProvider.svelte > should render oauth button with scopes 1`] = `
+<body>
+  <div>
+    <button
+      class="flex flex-row items-center "
+      type="submit"
+    >
+      <icon-left
+        class="flex flex-row"
+      >
+        <icon
+          aria-label="i-auth-azure"
+          class="flex flex-shrink-0 items-center justify-center "
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-azure"
+          />
+        </icon>
+      </icon-left>
+       
+      <p>
+        Sign in with Azure
+      </p>
+      
+       
+    </button>
+    
+  </div>
+</body>
+`;

@@ -14,33 +14,61 @@ export const authStatus = writable()
 /**
  * Create Kavach instance
  *
- * @param {object} adapter
+ * @param {import('@kavach/core').AuthAdapter} adapter
  * @param {object} options
  * @returns {object} kavach
  */
-export function createKavach(adapter, options) {
+export function createKavach(adapter, options = {}) {
+	const { page } = options
 	const agents = {
-		logger: options?.logger ?? zeroLogger,
+		logger: options.logger ?? zeroLogger,
 		deflector: createDeflector(options),
-		invalidateAll: options?.invalidateAll ?? pass
+		invalidateAll: options.invalidateAll ?? pass
+	}
+	if (page && RUNNING_ON === 'browser') {
+		page.subscribe(({ url }) => {
+			handleAuthUrlError(adapter, agents, url)
+		})
 	}
 
 	return {
-		signIn: (credentials) => adapter.signIn(credentials),
-		signUp: (credentials) => adapter.signUp(credentials),
+		signIn: (credentials) => handleSignIn(adapter, agents, credentials),
+		signUp: (credentials) => handleSignUp(adapter, agents, credentials),
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
+		// onAuthUrlError: (url, callback) =>
+		// 	handleAuthUrlError(adapter, agents, url, callback),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
 		client: adapter.client
 	}
 }
 
 /**
+  * Parse auth errors from url, log them and provide error to callback
+  *
+  * @param {import('@kavach/core').AuthAdapter} adapter
+  * @param {import('./types').KavachAgents}     agents
+  * @param {import('./types').CompositeURL}     url
+
+*/
+function handleAuthUrlError(adapter, agents, url) {
+	const error = adapter.parseUrlError(url)
+	if (error) {
+		agents.logger.error({
+			message: error.message,
+			data: { module: 'kavach', method: 'handleAuthUrlError', url },
+			error
+		})
+		authStatus.set({ error, message: error.message })
+	}
+}
+
+/**
  * Handle route protection
  *
- * @param {object} adapter
- * @param {object} agents
- * @param {object} request
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ * @param {object}                             request
  * @returns {Promise<void>}
  */
 function handleRouteProtection(adapter, agents, { event, resolve }) {
@@ -57,8 +85,8 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 /**
  * Handle auth change
  *
- * @param {object} adapter
- * @param {object} agents
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
  */
 function handleAuthChange(adapter, agents) {
 	const { invalidateAll, logger } = agents
@@ -66,7 +94,7 @@ function handleAuthChange(adapter, agents) {
 
 	adapter.onAuthChange(async (event, session) => {
 		logger.debug({
-			message: 'onAuthChange',
+			message: 'authentication state changed',
 			data: { module: 'kavach', method: 'onAuthChange', event }
 		})
 
@@ -80,22 +108,68 @@ function handleAuthChange(adapter, agents) {
 /**
  * Handle sign out
  *
- * @param {object} adapter
- * @param {object} deflector
- * @param {function} invalidateAll
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
  * @returns {Promise<void>}
  */
 async function handleSignOut(adapter, agents) {
 	await adapter.signOut()
 	syncSessionWithServer(agents, 'SIGNED_OUT')
 	agents.invalidateAll()
+	authStatus.set(null)
 }
 
 /**
+ * Handle sign in using adapter
+ *
+ * @param {import('@kavach/core').AuthAdapter}     adapter
+ * @param {import('./types').KavachAgents}         agents
+ * @param {import('@kavach/core').AuthCredentials} credentials
+ * @returns {Promise<import('@kavach/core').AuthResponse>}
+ */
+async function handleSignIn(adapter, agents, credentials) {
+	const result = await adapter.signIn(credentials)
+	authStatus.set(result)
+	logAuthError(agents.logger, result, 'handleSignIn')
+	return result
+}
+
+/**
+ * Handle sign up using adapter
+ *
+ * @param {import('@kavach/core').AuthAdapter}     adapter
+ * @param {import('./types').KavachAgents}         agents
+ * @param {import('@kavach/core').AuthCredentials} credentials
+ * @returns {Promise<import('@kavach/core').AuthResponse>}
+ */
+async function handleSignUp(adapter, agents, credentials) {
+	const result = await adapter.signUp(credentials)
+	authStatus.set(result)
+	logAuthError(agents.logger, result, 'handleSignUp')
+	return result
+}
+
+/**
+ * Log error if result has error
+ *
+ * @param {import('@kavach/logger').Logger}     logger
+ * @param {import('@kavach/core').AuthResponse} result
+ * @param {string} method
+ */
+export function logAuthError(logger, result, method) {
+	if (result.error) {
+		logger.error({
+			message: result.error.message,
+			data: { module: 'kavach', method },
+			error: result.error
+		})
+	}
+}
+/**
  * Handle unauthorized access
  *
- * @param {object} deflector
- * @param {object} request
+ * @param {import('@kavach/core').Deflector} deflector
+ * @param {object}                           request
  * @returns {Response}
  */
 function handleUnauthorizedAccess(agents, { event, resolve }) {
@@ -124,8 +198,8 @@ function handleUnauthorizedAccess(agents, { event, resolve }) {
  * Synchronize session with the server
  *
  * @param {object} event
- * @param {object} adapter
- * @param {object} deflector
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('@kavach/core').Deflector}   deflector
  * @returns {object} response
  */
 async function handleSessionSync(event, adapter, deflector) {
@@ -155,7 +229,7 @@ async function handleSessionSync(event, adapter, deflector) {
 /**
  * Parse session from cookies
  *
- * @param {object} event
+ * @param {object}   event
  * @returns {object} session
  */
 function parseSessionFromCookies(event) {
@@ -191,7 +265,7 @@ export function setCookieFromSession(session) {
 /**
  * Send sign in status and session to server
  *
- * @param {object} deflector
+ * @param {import('@kavach/core').Deflector} deflector
  * @param {object} event
  * @param {object} session
  */

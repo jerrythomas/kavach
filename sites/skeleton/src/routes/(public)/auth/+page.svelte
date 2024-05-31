@@ -1,5 +1,5 @@
 <script>
-	import { AuthProvider } from '@kavach/svelte'
+	import { AuthProvider } from '@kavach/svelte/ui'
 	// import { getContext } from 'svelte'
 	// import Divide from '$lib/Divide.svelte'
 	import { urlHashToParams } from '@kavach/core'

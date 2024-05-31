@@ -1,7 +1,7 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams } from '@kavach/core'
 import { defaultOrigin } from './constants'
-
+import { pick, omit } from 'ramda'
 /**
  * Creates an adapter for supabase
  *
@@ -21,18 +21,6 @@ export function getAdapter(options) {
 		return client.auth.setSession(session)
 	}
 
-	// const onAuthChange = (callback) => {
-	// 	const {
-	// 		data: { subscription }
-	// 	} = client.auth.onAuthStateChange(async (event, session) => {
-	// 		await synchronizeClients(clients, session)
-	// 		await callback(event, session)
-	// 	})
-	// 	return () => {
-	// 		subscription.unsubscribe()
-	// 	}
-	// }
-
 	return {
 		signIn: (credentials) => handleSignIn(client, credentials),
 		signUp: (credentials) => handleSignUp(client, credentials),
@@ -45,6 +33,14 @@ export function getAdapter(options) {
 	}
 }
 
+/**
+ * Handles auth change
+ *
+ * @param {*} client
+ * @param {*} clients
+ * @param {import('@kavach/core').AuthChangeCallback} callback
+ * @returns {() => void} unsubscribe
+ */
 function handleAuthChange(client, clients, callback) {
 	const {
 		data: { subscription }
@@ -68,26 +64,20 @@ async function handleSignIn(client, credentials) {
 	const redirectTo = credentials.redirectTo ?? defaultOrigin
 
 	let result = null
-	if (provider === 'magic') {
-		result = await client.auth.signInWithOtp({ email })
-		result = { ...result, credentials: { provider, email } }
-	} else if (password) {
-		const options = { emailRedirectTo: redirectTo }
-		const creds = email
-			? { email, password, options }
-			: { phone, password, options }
+	let creds = null
 
+	if (provider === 'magic') {
+		creds = { email, options: { emailRedirectTo: redirectTo } }
+		result = await client.auth.signInWithOtp(creds)
+	} else if (password) {
+		creds = email ? { email, password } : { phone, password }
 		result = await client.auth.signInWithPassword(creds)
 	} else {
-		result = await client.auth.signInWithOAuth({
-			provider,
-			options: {
-				scopes: scopes.join(' '),
-				redirectTo
-			}
-		})
+		creds = { provider, options: { scopes: scopes.join(' '), redirectTo } }
+		result = await client.auth.signInWithOAuth(creds)
 	}
-	return transformResult(result)
+
+	return transformResult(result, { ...creds, provider })
 }
 
 /**
@@ -97,33 +87,29 @@ async function handleSignIn(client, credentials) {
  * @param {import('@kavach/core').AuthCredentials} credentials
  * @returns {Promise<import('@kavach/core').AuthResponse>}
  */
-async function handleSignUp(client, { email, password, redirectTo }) {
-	const result = await client.auth.signUp({
-		email,
-		password,
-		options: { emailRedirectTo: redirectTo }
-	})
-	return transformResult(result)
+async function handleSignUp(client, credentials) {
+	const result = await client.auth.signUp(
+		pick(['email', 'password'], credentials)
+	)
+	return transformResult(result, credentials)
 }
 
 /**
  * Parses the url hash to check if there is an error
  *
  * @param {URL} url
- * @returns {import('./types').AuthError}
+ * @returns {import('@kavach/core').AuthError}
  */
 export function parseUrlError(url) {
-	let error = { isError: false }
-	const result = urlHashToParams(url.hash)
+	const result = urlHashToParams(url?.hash)
 	if (result.error) {
-		error = {
-			isError: true,
+		return {
 			status: result.error_code,
 			name: result.error,
 			message: result.error_description
 		}
 	}
-	return error
+	return null
 }
 
 /**
@@ -132,26 +118,25 @@ export function parseUrlError(url) {
  * @param {*} result
  * @returns
  */
-export function transformResult({ data, error, credentials }) {
+export function transformResult({ data, error }, creds) {
 	let message = ''
-	if (!error) {
-		message =
-			data.provider === 'magic'
-				? `Magic link has been sent to "${credentials.email}".`
-				: ''
-		return { type: 'info', data, message }
-	} else {
+	const credentials = omit(['password'], creds)
+
+	if (error) {
 		message =
 			error instanceof AuthApiError && error.status === 400
 				? 'Invalid credentials.'
 				: 'Server error. Try again later.'
 		return {
 			type: 'error',
-			...error,
-			message,
-			data
+			error: pick(['status', 'name', 'message'], error),
+			message
 		}
+	} else if (credentials.provider === 'magic') {
+		message = `Magic link has been sent to "${credentials.email}".`
+		return { type: 'info', data, credentials, message }
 	}
+	return { type: 'success', data, credentials }
 }
 
 /**

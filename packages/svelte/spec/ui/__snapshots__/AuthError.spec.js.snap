@@ -1,0 +1,111 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthError.svelte > should render error with name 1`] = `
+<body>
+  <div>
+    <error
+      class="flex flex-col"
+    >
+      <span>
+         
+        AuthApi
+        :
+         
+        An error
+      </span>
+    </error>
+  </div>
+</body>
+`;
+
+exports[`AuthError.svelte > should render error with status & name 1`] = `
+<body>
+  <div>
+    <error
+      class="flex flex-col"
+    >
+      <span>
+        400
+        :
+         
+        AuthApi
+        :
+         
+        An error
+      </span>
+    </error>
+  </div>
+</body>
+`;
+
+exports[`AuthError.svelte > should render error with status 1`] = `
+<body>
+  <div>
+    <error
+      class="flex flex-col"
+    >
+      <span>
+        400
+        :
+         
+         
+        An error
+      </span>
+    </error>
+  </div>
+</body>
+`;
+
+exports[`AuthError.svelte > should render with changes 1`] = `
+<body>
+  <div>
+    <error
+      class="flex flex-col"
+    >
+      <span>
+         
+         
+        An error occurred
+      </span>
+    </error>
+  </div>
+</body>
+`;
+
+exports[`AuthError.svelte > should render with changes 2`] = `
+<body>
+  <div>
+    <error
+      class="flex flex-col"
+    >
+      <span>
+         
+        AuthApi
+        :
+         
+        Something else
+      </span>
+    </error>
+  </div>
+</body>
+`;
+
+exports[`AuthError.svelte > should render with changes 3`] = `
+<body>
+  <div>
+    <error
+      class="flex flex-col"
+    >
+      <span>
+        400
+        :
+         
+        AuthApi
+        :
+         
+        Another error
+      </span>
+    </error>
+  </div>
+</body>
+`;
