@@ -11,21 +11,14 @@ import { iconShortcuts, defaultIcons, themeColors, themeRules } from '@rokkit/th
 import { defaultAuthIcons } from '@kavach/core'
 
 export default defineConfig({
+	content: {
+		pipeline: {
+			include: ['src/**/*.svelte', 'src/**/*.css']
+		}
+	},
 	extractors: [extractorSvelte()],
 	rules: [...themeRules()],
-	safelist: [
-		...defaultIcons,
-		...defaultAuthIcons,
-		'-translate-x-full',
-		'bg-danger-subtle',
-		'bg-danger-muted',
-		'bg-success-subtle',
-		'bg-success-muted',
-		'bg-warning-subtle',
-		'bg-warning-muted',
-		'bg-info-subtle',
-		'bg-info-muted'
-	],
+	safelist: [...defaultIcons, ...defaultAuthIcons, '-translate-x-full'],
 	shortcuts: {
 		...iconShortcuts(defaultIcons, 'i-rokkit')
 	},

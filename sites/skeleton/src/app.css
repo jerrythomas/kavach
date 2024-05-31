@@ -57,21 +57,21 @@ input-select selected-item {
 } */
 
 alert {
-  @apply bg-neutral-subtle border-neutral-muted text-neutral-800;
+  @apply bg-neutral-subtle border-neutral-muted text-neutral-900;
 }
 
 alert.danger {
-  @apply bg-danger-subtle border-danger-muted;
+  @apply bg-danger border-danger-100 text-neutral-900;
 }
 
 alert.success {
-  @apply bg-success-subtle border-success-muted;
+  @apply bg-success border-success-muted text-neutral-900;
 }
 
 alert.info {
-  @apply bg-info-subtle border-info-muted;
+  @apply bg-info border-info-muted text-neutral-900;
 }
 
 alert.warning {
-  @apply bg-warning-subtle border-warning-muted;
+  @apply bg-warning border-warning-muted text-neutral-900;
 }
