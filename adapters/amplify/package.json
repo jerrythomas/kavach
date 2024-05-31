@@ -32,15 +32,15 @@
     "@vitest/coverage-istanbul": "^1.6.0",
     "@vitest/ui": "~1.6.0",
     "eslint-config-shared": "workspace:*",
-    "jsdom": "^24.0.0",
+    "jsdom": "^24.1.0",
     "shared-config": "workspace:*",
-    "typescript": "^5.4.3",
-    "vite": "^5.2.7",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12",
     "vitest": "~1.6.0"
   },
   "dependencies": {
     "@kavach/core": "workspace:*",
-    "aws-amplify": "^6.0.25"
+    "aws-amplify": "^6.3.4"
   },
   "exports": {
     "./package.json": "./package.json",

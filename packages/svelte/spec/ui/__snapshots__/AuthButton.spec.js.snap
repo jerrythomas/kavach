@@ -1,97 +1,91 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`AuthButton.svelte > should include scopes 1`] = `
-<body>
-  <div>
-    <button
-      class="flex flex-row items-center "
-      type="submit"
+<div>
+  <button
+    class="flex flex-row items-center "
+    type="submit"
+  >
+    <icon-left
+      class="flex flex-row"
     >
-      <icon-left
-        class="flex flex-row"
+      <icon
+        aria-label="logo-azure"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
       >
-        <icon
-          aria-label="logo-azure"
-          class="flex flex-shrink-0 items-center justify-center "
-          role="img"
-          tabindex="-1"
-        >
-          <i
-            aria-hidden="true"
-            class="logo-azure"
-          />
-        </icon>
-      </icon-left>
-       
-      <p>
-        Sign in with Azure
-      </p>
-      
-       
-    </button>
-  </div>
-</body>
+        <i
+          aria-hidden="true"
+          class="logo-azure"
+        />
+      </icon>
+    </icon-left>
+     
+    <p>
+      Sign in with Azure
+    </p>
+    
+     
+  </button>
+</div>
 `;
 
 exports[`AuthButton.svelte > should render using label 1`] = `
-<body>
-  <div>
-    <button
-      class="flex flex-row items-center "
-      type="submit"
+<div>
+  <button
+    class="flex flex-row items-center "
+    type="submit"
+  >
+    <icon-left
+      class="flex flex-row"
     >
-      <icon-left
-        class="flex flex-row"
+      <icon
+        aria-label="logo-google"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
       >
-        <icon
-          aria-label="logo-google"
-          class="flex flex-shrink-0 items-center justify-center "
-          role="img"
-          tabindex="-1"
-        >
-          <i
-            aria-hidden="true"
-            class="logo-google"
-          />
-        </icon>
-      </icon-left>
-       
-      <p>
-        Sign in with Google
-      </p>
-      
-       
-    </button>
-  </div>
-</body>
+        <i
+          aria-hidden="true"
+          class="logo-google"
+        />
+      </icon>
+    </icon-left>
+     
+    <p>
+      Sign in with Google
+    </p>
+    
+     
+  </button>
+</div>
 `;
 
 exports[`AuthButton.svelte > should render using provider 1`] = `
-<body>
-  <div>
-    <button
-      class="flex flex-row items-center "
-      type="submit"
+<div>
+  <button
+    class="flex flex-row items-center "
+    type="submit"
+  >
+    <icon-left
+      class="flex flex-row"
     >
-      <icon-left
-        class="flex flex-row"
+      <icon
+        aria-label="logo-google"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
       >
-        <icon
-          aria-label="logo-google"
-          class="flex flex-shrink-0 items-center justify-center "
-          role="img"
-          tabindex="-1"
-        >
-          <i
-            aria-hidden="true"
-            class="logo-google"
-          />
-        </icon>
-      </icon-left>
-       
-      
-       
-    </button>
-  </div>
-</body>
+        <i
+          aria-hidden="true"
+          class="logo-google"
+        />
+      </icon>
+    </icon-left>
+     
+    
+     
+  </button>
+</div>
 `;

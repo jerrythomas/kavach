@@ -1,35 +1,29 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`AuthResponse.svelte > should render response with changes 1`] = `
-<body>
-  <div>
-    
-  </div>
-</body>
+<div>
+  
+</div>
 `;
 
 exports[`AuthResponse.svelte > should render response with changes 2`] = `
-<body>
-  <div>
-    <alert
-      class="flex flex-col w-full"
-    >
-      Successfully logged in
-    </alert>
-    
-  </div>
-</body>
+<div>
+  <alert
+    class="flex flex-col w-full"
+  >
+    Successfully logged in
+  </alert>
+  
+</div>
 `;
 
 exports[`AuthResponse.svelte > should render response with error 1`] = `
-<body>
-  <div>
-    <alert
-      class="flex flex-col w-full hasError"
-    >
-      An error occurred
-    </alert>
-    
-  </div>
-</body>
+<div>
+  <alert
+    class="flex flex-col w-full hasError"
+  >
+    An error occurred
+  </alert>
+  
+</div>
 `;

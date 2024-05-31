@@ -29,19 +29,19 @@
   },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
-    "@sveltejs/vite-plugin-svelte": "^3.0.2",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@vitest/coverage-istanbul": "^1.6.0",
     "@vitest/ui": "~1.6.0",
     "eslint-config-shared": "workspace:*",
-    "jsdom": "^24.0.0",
+    "jsdom": "^24.1.0",
     "shared-config": "workspace:*",
-    "typescript": "^5.4.3",
-    "vite": "^5.2.7",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12",
     "vitest": "~1.6.0"
   },
   "dependencies": {
     "@kavach/core": "workspace:*",
-    "@supabase/supabase-js": "^2.41.1",
+    "@supabase/supabase-js": "^2.43.4",
     "ramda": "^0.29.1"
   },
   "exports": {
