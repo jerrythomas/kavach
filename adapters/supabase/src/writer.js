@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { pick } from 'ramda'
 
 /**
  * Creates a kavach adapter to work with supabase
@@ -8,7 +9,9 @@ import { createClient } from '@supabase/supabase-js'
  * @returns {import('@kavach/core').LogWriter}
  */
 export function getLogWriter(config, options) {
-	const client = config.client ?? createClient(config.url, config.anonKey)
+	const client =
+		config.client ??
+		createClient(config.url, config.anonKey, { db: pick(['schema'], config) })
 	const { table = 'logs' } = options ?? {}
 
 	/** @type {import('@kavach/core').LogWriter} */

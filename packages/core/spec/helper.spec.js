@@ -32,7 +32,7 @@ describe('Helper functions', () => {
 				'https://kavach.vercel.app/auth#error=server_error&error_code=500&error_description=Unable+to+exchange+external+code%253A+0.ARIA32EImwmt30e01JoAgoq58HuyW2kf3VpEpwXcKlrNwQrWAAA.AgABAAIAAAAmoFfGtYxvRrNriQdPKIZ-AgDs_wUA9P_H4zoxyzaAya3YcrENNUg-9epulTlB3BHZMxNpyiPttjTwudfhwDVQP95G4ELGgnII_zNli49Lf7Jyi2T_pSr6DgED5FzuVoeDiFS26qn1VUu6zJuZaZv5tL89KP_nre3d16tmkGv5MVaJdmCeqzyPVW5igokRrjJ9phbO6QDGZSlbgdLHTDou2sbx9KliTPN4Zg9ZrApj42IvShpdpBIOQDc-N-YDjXei5JD4Jg5D3JVLIMwG9uoF_QvEWFM8rHxZGsIr0F_3vvPsGqwD6NK6E8OWeLHCXie5nBywfWmIW-7js3feSfa8TnkKASyNKT6hF90A2olr2vAh5KJby1TSED8qUqbizMXYJw8iq65u1JkDT43PEibMKlkgiqVWsRE02GItCrSZ3GKF8mgYAnvU8-fbFXHQlroWn66gT_cSW-glSqAYxgSptJdRm8akMF5eOEatrcOAN3mogWbpN8xTHn9tIplAR7RE3srCY36xCgOTiGZK7oomVsjg27GhpSUk7Omh73JLTEN5-jGNEeKhbY0TxX7nY88J67tko-c4Ek2Ktp33UI1XEr0mVOZJ9N2_4vl22xumxFwLKAc-RmZO9OKNHmDAR-MOOS_6KLAgYQWaykvNZqniFeow4sUs2ZPcETZ3E3OQ7u_W84lzRGq73v6WqGzWY8qW_7RDIQlqbNFIhBL-opYQrOtImI6men3LVFhMgxi7p0g'
 			)
 			expect(params).toEqual({
-				error: 'server_error',
+				error: 'server error',
 				error_code: '500',
 				error_description: 'Unable to exchange external code'
 			})

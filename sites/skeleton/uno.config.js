@@ -13,7 +13,19 @@ import { defaultAuthIcons } from '@kavach/core'
 export default defineConfig({
 	extractors: [extractorSvelte()],
 	rules: [...themeRules()],
-	safelist: [...defaultIcons, ...defaultAuthIcons, '-translate-x-full'],
+	safelist: [
+		...defaultIcons,
+		...defaultAuthIcons,
+		'-translate-x-full',
+		'bg-danger-subtle',
+		'bg-danger-muted',
+		'bg-success-subtle',
+		'bg-success-muted',
+		'bg-warning-subtle',
+		'bg-warning-muted',
+		'bg-info-subtle',
+		'bg-info-muted'
+	],
 	shortcuts: {
 		...iconShortcuts(defaultIcons, 'i-rokkit')
 	},

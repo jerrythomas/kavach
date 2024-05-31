@@ -1,25 +1,24 @@
 <script>
-	import { page } from '$app/stores'
-	import { urlHashToParams } from '@kavach/core'
+	import { getContext } from 'svelte'
+	import { authStatus } from '../kavach'
 
 	import AuthProvider from './AuthProvider.svelte'
 	import AuthError from './AuthError.svelte'
 	import AuthResponse from './AuthResponse.svelte'
 
+	const kavach = getContext('kavach')
 	export let providers
-	export let kavach
-
-	$: params = Object.fromEntries($page.url.searchParams.entries())
-	$: hashParams = urlHashToParams($page.url.hash)
 </script>
 
 <auth class="flex flex-col gap-2">
 	<auth-header class="flex flex-col">
-		<!-- {JSON.stringify(hashParams)} -->
-		{#if hashParams.error}
-			<AuthError {...hashParams} />
+		{#if $authStatus}
+			{#if $authStatus.error}
+				<AuthError {...$authStatus.error} />
+			{:else if $authStatus.message}
+				<AuthResponse {...$authStatus} />
+			{/if}
 		{/if}
-		<AuthResponse {...params} />
 	</auth-header>
 
 	<auth-body class="flex flex-col gap-2">

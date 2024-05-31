@@ -1,6 +1,6 @@
 /**
- * @typedef WriterConfig
- * @property {any} [client]
+ * @typedef SupabaseConfig
+ * @property {any}    [client]
  * @property {string} [url]
  * @property {string} [anonKey]
  */
@@ -21,4 +21,9 @@
  * @typedef {(config:SupabaseConfig) => import('@kavach/core').AuthAdapter} GetSupabaseAdapter
  */
 
+/**
+ * @typedef CompositeURL
+ * @property {string} hash
+ * @property {string} path
+ */
 export default {}

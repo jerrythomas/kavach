@@ -55,3 +55,23 @@ input-select selected-item {
 .rokkit input-select:focus-within {
   @apply p-0;
 } */
+
+alert {
+  @apply bg-neutral-subtle border-neutral-muted text-neutral-800;
+}
+
+alert.danger {
+  @apply bg-danger-subtle border-danger-muted;
+}
+
+alert.success {
+  @apply bg-success-subtle border-success-muted;
+}
+
+alert.info {
+  @apply bg-info-subtle border-info-muted;
+}
+
+alert.warning {
+  @apply bg-warning-subtle border-warning-muted;
+}

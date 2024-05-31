@@ -1,7 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
-import { createKavach, authStatus } from '../src/kavach'
-import { get } from 'svelte/store'
+import { createKavach, logAuthError } from '../src/kavach'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
@@ -84,6 +83,7 @@ describe('kavach', () => {
 
 	it('should sign out on server when session is null', async () => {
 		const kavach = createKavach(adapter)
+
 		const event = createMockEvent({
 			json: {},
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
@@ -186,12 +186,10 @@ describe('kavach', () => {
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
 
 		const kavach = createKavach(adapter, { invalidateAll })
-		await kavach.signIn(credentials)
+		const result = await kavach.signIn(credentials)
+
 		expect(adapter.signIn).toHaveBeenCalledWith(credentials)
-		expect(get(authStatus)).toEqual({ input: credentials })
-		// expect(invalidateAll).toHaveBeenCalled()
-		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-		// expect(result).toEqual({ input: credentials })
+		expect(result).toEqual({ input: credentials })
 	})
 
 	it('should sign up using adapter', async () => {
@@ -199,13 +197,10 @@ describe('kavach', () => {
 
 		const kavach = createKavach(adapter, { invalidateAll })
 		const credentials = { email: 'foo@bar.com', passowrd: 'secret' }
-		await kavach.signUp(credentials)
+		const result = await kavach.signUp(credentials)
 
 		expect(adapter.signUp).toHaveBeenCalledWith(credentials)
-		expect(get(authStatus)).toEqual({ input: credentials })
-		// expect(invalidateAll).toHaveBeenCalled()
-		// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
-		// expect(result).toEqual({ input: credentials })
+		expect(result).toEqual({ input: credentials })
 	})
 
 	it.each([{ invalidateAll }, {}])(
@@ -216,11 +211,10 @@ describe('kavach', () => {
 
 			expect(adapter.signOut).toHaveBeenCalledWith()
 			expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-				body: JSON.stringify({ event: 'SIGNED_OUT' }),
+				body: JSON.stringify({ event: 'SIGNED_OUT', session: null }),
 				method: 'POST'
 			})
-			expect(get(authStatus)).toEqual({})
-			// expect(invalidate).toHaveBeenCalledWith(APP_AUTH_CONTEXT)
+
 			if (options.invalidateAll) {
 				expect(invalidateAll).toHaveBeenCalled()
 			}
@@ -234,7 +228,7 @@ describe('kavach', () => {
 			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
 		})
 
-		const kavach = createKavach(adapter)
+		const kavach = createKavach(adapter, { invalidateAll })
 		kavach.handle({ event, resolve })
 		expect(event.locals.session).toEqual(
 			JSON.parse(event.cookies.get('session'))
@@ -265,9 +259,8 @@ describe('kavach', () => {
 			const kavach = createKavach(adapter, { invalidateAll })
 
 			kavach.onAuthChange()
-			expect(adapter.parseUrlError).toHaveBeenCalled()
+			expect(adapter.parseUrlError).not.toHaveBeenCalled()
 			expect(adapter.onAuthChange).toHaveBeenCalled()
-			expect(get(authStatus)).toEqual({})
 		})
 
 		it('should handle error when fetching auth session', () => {
@@ -288,24 +281,8 @@ describe('kavach', () => {
 			const kavach = createKavach(adapter, { invalidateAll })
 
 			kavach.onAuthChange()
-			expect(adapter.parseUrlError).toHaveBeenCalled()
+			expect(adapter.parseUrlError).not.toHaveBeenCalled()
 			expect(adapter.onAuthChange).toHaveBeenCalled()
-			expect(get(authStatus)).toEqual({})
-		})
-
-		it('should handle error in url hash', () => {
-			adapter.parseUrlError = vi
-				.fn()
-				.mockImplementation(() => ({ type: 'error', error: 'server_error' }))
-
-			const kavach = createKavach(adapter, { invalidateAll })
-
-			kavach.onAuthChange({
-				hash: 'error=server_error&error_code=500&error_description=Unable+to+exchange+external+code'
-			})
-			expect(adapter.parseUrlError).toHaveBeenCalled()
-			expect(adapter.onAuthChange).toHaveBeenCalled()
-			expect(get(authStatus)).toEqual({ type: 'error', error: 'server_error' })
 		})
 
 		it('should handle auth change to SIGNED_OUT', () => {
@@ -322,8 +299,93 @@ describe('kavach', () => {
 			const kavach = createKavach(adapter, { invalidateAll })
 
 			kavach.onAuthChange({ hash: '' })
-			expect(adapter.parseUrlError).toHaveBeenCalled()
 			expect(adapter.onAuthChange).toHaveBeenCalled()
+		})
+	})
+
+	describe('handleAuthUrlError', () => {
+		const url = { pathname: '/auth/session', hash: '#' }
+		const logger = { error: vi.fn() }
+		const page = {
+			subscribe: vi.fn((callback) => {
+				setTimeout(() => {
+					callback({ url })
+				}, 100)
+				return () => {}
+			})
+		}
+
+		beforeEach(() => {
+			vi.useFakeTimers()
+		})
+
+		afterEach(() => {
+			vi.useRealTimers()
+		})
+
+		it('should handle url error', async () => {
+			const error = {
+				code: 500,
+				status: 'server error',
+				message: 'Internal Server Error'
+			}
+
+			adapter.parseUrlError = vi.fn().mockImplementation(() => error)
+
+			const kavach = createKavach(adapter, { logger, page })
+			expect(kavach).toBeDefined()
+
+			vi.advanceTimersByTime(100)
+			await vi.runAllTimersAsync()
+			expect(adapter.parseUrlError).toHaveBeenCalledWith(url)
+			expect(logger.error).toHaveBeenCalledWith({
+				message: error.message,
+				error,
+				data: {
+					module: 'kavach',
+					method: 'handleAuthUrlError',
+					url: { pathname: '/auth/session', hash: '#' }
+				}
+			})
+		})
+
+		it('should not call function when there is no error', async () => {
+			adapter.parseUrlError = vi.fn().mockImplementation(() => null)
+
+			url.hash = ''
+			const kavach = createKavach(adapter, { logger, page })
+			expect(kavach).toBeDefined()
+
+			vi.advanceTimersByTime(100)
+			await vi.runAllTimersAsync()
+			expect(adapter.parseUrlError).toHaveBeenCalledWith(url)
+			expect(logger.error).not.toHaveBeenCalledOnce()
+		})
+	})
+
+	describe('logAuthError', () => {
+		const error = {
+			code: 500,
+			status: 'server error',
+			message: 'Internal Server Error'
+		}
+
+		const logger = { error: vi.fn() }
+
+		it('should log error', () => {
+			logAuthError(logger, { error }, 'handleSignIn')
+			expect(logger.error).toHaveBeenCalledWith({
+				message: error.message,
+				error,
+				data: {
+					module: 'kavach',
+					method: 'handleSignIn'
+				}
+			})
+		})
+		it('should not log error if there is none', () => {
+			logAuthError(logger, {}, 'handleSignIn')
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 })

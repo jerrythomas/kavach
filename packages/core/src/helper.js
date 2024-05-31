@@ -20,7 +20,7 @@ export function hasAuthParams(url) {
  * @returns {Object} key value pair of all parameters in the hash
  */
 export function urlHashToParams(url) {
-	const [, hash] = url.split('#')
+	const [, hash] = (url ?? '').split('#')
 	if (hash?.length) {
 		const result = hash
 			.split('&')
@@ -48,10 +48,9 @@ export function extractKeyValuePair(data, separator = '=') {
 	} else {
 		values[1] = decodeURIComponent(values[1])
 		if (values[1].includes('%')) {
-			values[1] = values[1]
-				.substring(0, values[1].indexOf('%'))
-				.replace(/\+/g, ' ')
+			values[1] = values[1].substring(0, values[1].indexOf('%'))
 		}
+		values[1] = values[1].replaceAll(/[_|+]/g, ' ')
 	}
 	return [values[0], values[1]]
 }

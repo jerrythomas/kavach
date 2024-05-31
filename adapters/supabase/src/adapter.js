@@ -1,14 +1,13 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams } from '@kavach/core'
 import { defaultOrigin } from './constants'
-
+import { pick, omit } from 'ramda'
 /**
- * Get an adapter for Supabase authentication
+ * Creates an adapter for supabase
  *
- * @param {import('./types').SupabaseConfig} options
- * @returns {import('./types').AuthAdapter}
+ * @param {import('./types').AdapterOptions} options
+ * @returns {import('@kavach/core').Adapter}
  */
-// eslint-disable-next-line max-lines-per-function
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
 	const clients = createClientsForSchemas(
@@ -17,47 +16,42 @@ export function getAdapter(options) {
 		options.schemas
 	)
 
-	const signIn = (credentials) => handleSignIn(client, credentials)
-
-	const signUp = async ({ email, password, redirectTo }) => {
-		const result = await client.auth.signUp({
-			email,
-			password,
-			options: { emailRedirectTo: redirectTo }
-		})
-		return transformResult(result)
-	}
-
-	const signOut = () => client.auth.signOut()
 	const synchronize = async (session) => {
-		await synchronizeClients(session, clients)
+		await synchronizeClients(clients, session)
 		return client.auth.setSession(session)
 	}
 
-	const onAuthChange = (callback) => {
-		const {
-			data: { subscription }
-		} = client.auth.onAuthStateChange(async (event, session) => {
-			await synchronize(session)
-			await callback(event, session)
-		})
-		return () => {
-			subscription.unsubscribe()
-		}
-	}
-
 	return {
-		signIn,
-		signUp,
-		signOut,
+		signIn: (credentials) => handleSignIn(client, credentials),
+		signUp: (credentials) => handleSignUp(client, credentials),
+		signOut: () => client.auth.signOut(),
 		synchronize,
-		onAuthChange,
+		onAuthChange: (callback) => handleAuthChange(client, clients, callback),
 		parseUrlError,
 		client,
-		db: (schema = null) => (schema in clients ? clients[schema] : client)
+		db: (schema) => clients[schema] || client
 	}
 }
 
+/**
+ * Handles auth change
+ *
+ * @param {*} client
+ * @param {*} clients
+ * @param {import('@kavach/core').AuthChangeCallback} callback
+ * @returns {() => void} unsubscribe
+ */
+function handleAuthChange(client, clients, callback) {
+	const {
+		data: { subscription }
+	} = client.auth.onAuthStateChange(async (event, session) => {
+		await synchronizeClients(clients, session)
+		await callback(event, session)
+	})
+	return () => {
+		subscription.unsubscribe()
+	}
+}
 /**
  * Handles sign in based on the credentials provided
  *
@@ -70,40 +64,46 @@ async function handleSignIn(client, credentials) {
 	const redirectTo = credentials.redirectTo ?? defaultOrigin
 
 	let result = null
-	if (provider === 'magic') {
-		result = await client.auth.signInWithOtp({ email })
-		result = { ...result, credentials: { provider, email } }
-	} else if (password) {
-		const options = { emailRedirectTo: redirectTo }
-		const creds = email
-			? { email, password, options }
-			: { phone, password, options }
+	let creds = null
 
+	if (provider === 'magic') {
+		creds = { email, options: { emailRedirectTo: redirectTo } }
+		result = await client.auth.signInWithOtp(creds)
+	} else if (password) {
+		creds = email ? { email, password } : { phone, password }
 		result = await client.auth.signInWithPassword(creds)
 	} else {
-		result = await client.auth.signInWithOAuth({
-			provider,
-			options: {
-				scopes: scopes.join(' '),
-				redirectTo
-			}
-		})
+		creds = { provider, options: { scopes: scopes.join(' '), redirectTo } }
+		result = await client.auth.signInWithOAuth(creds)
 	}
-	return transformResult(result)
+
+	return transformResult(result, { ...creds, provider })
 }
 
 /**
- * Parses error from URL hash
+ * Handles sign up based on the credentials provided
+ *
+ * @param {*} client
+ * @param {import('@kavach/core').AuthCredentials} credentials
+ * @returns {Promise<import('@kavach/core').AuthResponse>}
+ */
+async function handleSignUp(client, credentials) {
+	const result = await client.auth.signUp(
+		pick(['email', 'password'], credentials)
+	)
+	return transformResult(result, credentials)
+}
+
+/**
+ * Parses the url hash to check if there is an error
  *
  * @param {URL} url
- * @returns {import('@kavach/core').AuthResult}
+ * @returns {import('@kavach/core').AuthError}
  */
 export function parseUrlError(url) {
 	const result = urlHashToParams(url?.hash)
-
 	if (result.error) {
 		return {
-			type: 'error',
 			status: result.error_code,
 			name: result.error,
 			message: result.error_description
@@ -118,28 +118,25 @@ export function parseUrlError(url) {
  * @param {*} result
  * @returns {import('@kavach/core').AuthResult}
  */
-export function transformResult({ data, error, credentials }) {
+export function transformResult({ data, error }, creds) {
 	let message = ''
-	if (!error) {
-		if (data.provider === 'magic')
-			return {
-				type: 'success',
-				message: `Magic link has been sent to "${credentials.email}".`,
-				data
-			}
-		return null
-	} else {
+	const credentials = omit(['password'], creds)
+
+	if (error) {
 		message =
 			error instanceof AuthApiError && error.status === 400
 				? 'Invalid credentials.'
 				: 'Server error. Try again later.'
 		return {
 			type: 'error',
-			...error,
-			message,
-			data
+			error: pick(['status', 'name', 'message'], error),
+			message
 		}
+	} else if (credentials.provider === 'magic') {
+		message = `Magic link has been sent to "${credentials.email}".`
+		return { type: 'info', data, credentials, message }
 	}
+	return { type: 'success', data, credentials }
 }
 
 /**
@@ -154,7 +151,7 @@ function createClientsForSchemas(url, anonKey, schemas = []) {
 	const clients = schemas.reduce(
 		(acc, schema) => ({
 			...acc,
-			[schema]: createClient(url, anonKey, { schema })
+			[schema]: createClient(url, anonKey, { db: { schema } })
 		}),
 		{}
 	)
@@ -163,13 +160,14 @@ function createClientsForSchemas(url, anonKey, schemas = []) {
 }
 
 /**
- * Synchronizes the session with all clients
+ * Synchronizes the session across all clients
  *
- * @param {*} session
- * @param {*} clients
+ * @param {Record<string, import('@supabase/supabase-js').SupabaseClient>} clients
+ * @param {import('@supabase/supabase-js').Session} session
  * @returns {Promise<void>}
  */
-function synchronizeClients(session, clients) {
+const synchronizeClients = (clients, session) => {
+	// if (!session) return Promise.resolve()
 	const result = Object.keys(clients).map((schema) =>
 		clients[schema].auth.setSession(session)
 	)

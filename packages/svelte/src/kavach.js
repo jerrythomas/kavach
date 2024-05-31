@@ -1,105 +1,179 @@
-import { pick } from 'ramda'
-import { zeroLogger } from '@kavach/logger'
-import { createDeflector } from '@kavach/deflector'
 import { getUserInfo, setHeaderCookies } from '@kavach/core'
-import { getRequestData } from './request'
-import { RUNNING_ON, HTTP_STATUS_MESSAGE } from './constants'
+import { createDeflector } from '@kavach/deflector'
+import { zeroLogger } from '@kavach/logger'
+import { pick } from 'ramda'
 import { writable } from 'svelte/store'
+import { HTTP_STATUS_MESSAGE, RUNNING_ON } from './constants'
+import { getRequestData } from './request'
 
 const pass = async () => {
 	/* Used as a placeholder */
 }
-export const authStatus = writable({})
+export const authStatus = writable()
 
-// eslint-disable-next-line max-lines-per-function
-export function createKavach(adapter, options) {
-	const deflector = createDeflector(options)
-	const logger = options?.logger ?? zeroLogger
-	const invalidateAll = options?.invalidateAll ?? pass
-
-	const signIn = async (credentials) => {
-		const result = await adapter.signIn(credentials)
-		authStatus.set(result)
+/**
+ * Create Kavach instance
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {object} options
+ * @returns {object} kavach
+ */
+export function createKavach(adapter, options = {}) {
+	const { page } = options
+	const agents = {
+		logger: options.logger ?? zeroLogger,
+		deflector: createDeflector(options),
+		invalidateAll: options.invalidateAll ?? pass
 	}
-	const signUp = async (credentials) => {
-		const result = await adapter.signUp(credentials)
-		authStatus.set(result)
-	}
-	const signOut = async () => {
-		await adapter.signOut()
-		await fetch(deflector.app.session, {
-			method: 'POST',
-			body: JSON.stringify({ event: 'SIGNED_OUT' })
-		})
-		// deflector.setSession(null)
-		invalidateAll()
-		authStatus.set({})
-		// invalidate(APP_AUTH_CONTEXT)
-	}
-
-	// eslint-disable-next-line
-	const onAuthChange = (url) => {
-		if (RUNNING_ON !== 'browser') return
-		const result = adapter.parseUrlError(url)
-		if (result?.type === 'error') authStatus.set(result)
-
-		adapter.onAuthChange(async (event, session) => {
-			const result = await fetch(deflector.app.session, {
-				method: 'POST',
-				body: JSON.stringify({ event, session })
-			})
-
-			if (result.status === 200) invalidateAll()
-			logger.debug({
-				data: { event, module: 'kavach', method: 'onAuthChange' },
-				message: 'Auth changed'
-			})
-			return result
+	if (page && RUNNING_ON === 'browser') {
+		page.subscribe(({ url }) => {
+			handleAuthUrlError(adapter, agents, url)
 		})
 	}
 
-	const handle = ({ event, resolve }) => {
-		event.locals.session = parsedCookieSession(event)
-		deflector.setSession(event.locals.session)
-
-		if (event.url.pathname.startsWith(deflector.app.session)) {
-			return handleSessionSync(event, adapter, deflector)
-		}
-
-		return handleUnauthorizedAccess({ event, resolve }, deflector)
-	}
 	return {
-		signIn,
-		signUp,
-		signOut,
-		onAuthChange,
-		handle,
+		signIn: (credentials) => handleSignIn(adapter, agents, credentials),
+		signUp: (credentials) => handleSignUp(adapter, agents, credentials),
+		signOut: () => handleSignOut(adapter, agents),
+		onAuthChange: () => handleAuthChange(adapter, agents),
+		// onAuthUrlError: (url, callback) =>
+		// 	handleAuthUrlError(adapter, agents, url, callback),
+		handle: (request) => handleRouteProtection(adapter, agents, request),
 		client: adapter.client
 	}
 }
 
 /**
- * Parse session from event cookies
- *
- * @param {object}   event
- * @returns {object} session
- */
-function parsedCookieSession(event) {
-	const cookieSession = event.cookies.get('session')
-	return cookieSession && cookieSession !== 'undefined'
-		? JSON.parse(cookieSession)
-		: null
+  * Parse auth errors from url, log them and provide error to callback
+  *
+  * @param {import('@kavach/core').AuthAdapter} adapter
+  * @param {import('./types').KavachAgents}     agents
+  * @param {import('./types').CompositeURL}     url
+
+*/
+function handleAuthUrlError(adapter, agents, url) {
+	const error = adapter.parseUrlError(url)
+	if (error) {
+		agents.logger.error({
+			message: error.message,
+			data: { module: 'kavach', method: 'handleAuthUrlError', url },
+			error
+		})
+		authStatus.set({ error, message: error.message })
+	}
 }
 
 /**
+ * Handle route protection
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ * @param {object}                             request
+ * @returns {Promise<void>}
+ */
+function handleRouteProtection(adapter, agents, { event, resolve }) {
+	const { deflector } = agents
+	event.locals.session = parseSessionFromCookies(event)
+	deflector.setSession(event.locals.session)
+
+	if (event.url.pathname.startsWith(deflector.app.session)) {
+		return handleSessionSync(event, adapter, deflector)
+	}
+
+	return handleUnauthorizedAccess(agents, { event, resolve })
+}
+/**
+ * Handle auth change
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ */
+function handleAuthChange(adapter, agents) {
+	const { invalidateAll, logger } = agents
+	if (RUNNING_ON !== 'browser') return
+
+	adapter.onAuthChange(async (event, session) => {
+		logger.debug({
+			message: 'authentication state changed',
+			data: { module: 'kavach', method: 'onAuthChange', event }
+		})
+
+		const result = await syncSessionWithServer(agents, event, session)
+		if (result.status === 200) invalidateAll()
+
+		return result
+	})
+}
+
+/**
+ * Handle sign out
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ * @returns {Promise<void>}
+ */
+async function handleSignOut(adapter, agents) {
+	await adapter.signOut()
+	syncSessionWithServer(agents, 'SIGNED_OUT')
+	agents.invalidateAll()
+	authStatus.set(null)
+}
+
+/**
+ * Handle sign in using adapter
+ *
+ * @param {import('@kavach/core').AuthAdapter}     adapter
+ * @param {import('./types').KavachAgents}         agents
+ * @param {import('@kavach/core').AuthCredentials} credentials
+ * @returns {Promise<import('@kavach/core').AuthResponse>}
+ */
+async function handleSignIn(adapter, agents, credentials) {
+	const result = await adapter.signIn(credentials)
+	authStatus.set(result)
+	logAuthError(agents.logger, result, 'handleSignIn')
+	return result
+}
+
+/**
+ * Handle sign up using adapter
+ *
+ * @param {import('@kavach/core').AuthAdapter}     adapter
+ * @param {import('./types').KavachAgents}         agents
+ * @param {import('@kavach/core').AuthCredentials} credentials
+ * @returns {Promise<import('@kavach/core').AuthResponse>}
+ */
+async function handleSignUp(adapter, agents, credentials) {
+	const result = await adapter.signUp(credentials)
+	authStatus.set(result)
+	logAuthError(agents.logger, result, 'handleSignUp')
+	return result
+}
+
+/**
+ * Log error if result has error
+ *
+ * @param {import('@kavach/logger').Logger}     logger
+ * @param {import('@kavach/core').AuthResponse} result
+ * @param {string} method
+ */
+export function logAuthError(logger, result, method) {
+	if (result.error) {
+		logger.error({
+			message: result.error.message,
+			data: { module: 'kavach', method },
+			error: result.error
+		})
+	}
+}
+/**
  * Handle unauthorized access
  *
- * @param {object}   request
- * @param {object}   deflector
- * @returns {object} response
+ * @param {import('@kavach/core').Deflector} deflector
+ * @param {object}                           request
+ * @returns {Response}
  */
-function handleUnauthorizedAccess({ event, resolve }, deflector) {
-	const result = deflector.protect(event.url.pathname)
+function handleUnauthorizedAccess(agents, { event, resolve }) {
+	const result = agents.deflector.protect(event.url.pathname)
 
 	if (result.status !== 200) {
 		if (result.redirect) {
@@ -118,6 +192,52 @@ function handleUnauthorizedAccess({ event, resolve }, deflector) {
 		}
 	}
 	return resolve(event)
+}
+
+/**
+ * Synchronize session with the server
+ *
+ * @param {object} event
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('@kavach/core').Deflector}   deflector
+ * @returns {object} response
+ */
+async function handleSessionSync(event, adapter, deflector) {
+	const data = await getRequestData(event)
+	let session = null
+	let status = 200
+	let error = null
+
+	if (data.session) {
+		const result = await adapter.synchronize(data.session)
+
+		if (!result.error) {
+			session = result.data.session
+		} else {
+			status = 500
+			error = result.error
+		}
+	} else {
+		await adapter.signOut()
+	}
+
+	deflector.setSession(session)
+	const headers = setCookieFromSession(session)
+	return new Response({ session, error }, { status, headers })
+}
+
+/**
+ * Parse session from cookies
+ *
+ * @param {object}   event
+ * @returns {object} session
+ */
+function parseSessionFromCookies(event) {
+	const cookieSession = event.cookies.get('session')
+
+	return cookieSession && cookieSession !== 'undefined'
+		? JSON.parse(cookieSession)
+		: null
 }
 
 /**
@@ -143,33 +263,16 @@ export function setCookieFromSession(session) {
 }
 
 /**
- * Synchronize session with the server
+ * Send sign in status and session to server
  *
+ * @param {import('@kavach/core').Deflector} deflector
  * @param {object} event
- * @param {object} adapter
- * @param {object} deflector
- * @returns {object} response
+ * @param {object} session
  */
-async function handleSessionSync(event, adapter, deflector) {
-	const data = await getRequestData(event)
-	let session = null
-	let status = 200
-	let error = null
-
-	if (data.session) {
-		const result = await adapter.synchronize(data.session)
-
-		if (!result.error) {
-			session = result.data.session
-		} else {
-			status = 500
-			error = result.error
-		}
-	} else {
-		await adapter.signOut()
-	}
-
-	deflector.setSession(session)
-	const headers = setCookieFromSession(session)
-	return new Response({ session, error }, { status, headers })
+async function syncSessionWithServer(agents, event, session = null) {
+	const result = await fetch(agents.deflector.app.session, {
+		method: 'POST',
+		body: JSON.stringify({ event, session })
+	})
+	return result
 }

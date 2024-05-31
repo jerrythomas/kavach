@@ -71,14 +71,30 @@ describe('getAdapter', () => {
 		expect(adapter.db()).toEqual(adapter.client)
 		expect(adapter.db('public')).toEqual(adapter.client)
 	})
+
 	it('should handle sign in using magic link', async () => {
 		const adapter = getAdapter(options)
 		const credentials = { provider: 'magic', email: 'a@b.com' }
 		const result = await adapter.signIn(credentials)
 		expect(adapter.client.auth.signInWithOtp).toHaveBeenCalledWith({
-			email: 'a@b.com'
+			email: 'a@b.com',
+			options: {
+				emailRedirectTo: 'http://localhost:3000'
+			}
 		})
-		expect(result).toBeNull()
+
+		expect(result).toEqual({
+			type: 'info',
+			data: {},
+			credentials: {
+				email: 'a@b.com',
+				options: {
+					emailRedirectTo: 'http://localhost:3000'
+				},
+				provider: 'magic'
+			},
+			message: 'Magic link has been sent to "a@b.com".'
+		})
 	})
 
 	it('should handle sign in using email & password', async () => {
@@ -91,10 +107,14 @@ describe('getAdapter', () => {
 		const result = await adapter.signIn(credentials)
 		expect(adapter.client.auth.signInWithPassword).toHaveBeenCalledWith({
 			email: 'a@b.com',
-			password: '123456',
-			options: { emailRedirectTo: 'http://localhost:3000' }
+			password: '123456'
 		})
-		expect(result).toBeNull()
+
+		expect(result).toEqual({
+			type: 'success',
+			data: {},
+			credentials: omit(['password'], credentials)
+		})
 	})
 
 	it('should handle sign in using phone & password', async () => {
@@ -107,10 +127,17 @@ describe('getAdapter', () => {
 		const result = await adapter.signIn(credentials)
 		expect(adapter.client.auth.signInWithPassword).toHaveBeenCalledWith({
 			phone: '1234567890',
-			password: '123456',
-			options: { emailRedirectTo: 'http://localhost:3000' }
+			password: '123456'
 		})
-		expect(result).toBeNull()
+
+		expect(result).toEqual({
+			type: 'success',
+			data: {},
+			credentials: {
+				phone: '1234567890',
+				provider: 'password'
+			}
+		})
 	})
 
 	it('should handle sign in using oAuth', async () => {
@@ -119,11 +146,19 @@ describe('getAdapter', () => {
 			provider: 'gmail'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(adapter.client.auth.signInWithOAuth).toHaveBeenCalledWith({
+		const expectedCreds = {
 			provider: 'gmail',
 			options: { scopes: '', redirectTo: 'http://localhost:3000' }
+		}
+		expect(adapter.client.auth.signInWithOAuth).toHaveBeenCalledWith(
+			expectedCreds
+		)
+
+		expect(result).toEqual({
+			type: 'success',
+			data: { provider: 'gmail' },
+			credentials: expectedCreds
 		})
-		expect(result).toBeNull()
 	})
 
 	it('should handle sign up', async () => {
@@ -136,10 +171,14 @@ describe('getAdapter', () => {
 		const result = await adapter.signUp(credentials)
 		expect(adapter.client.auth.signUp).toHaveBeenCalledWith({
 			email: 'a@b.com',
-			password: '123456',
-			options: { emailRedirectTo: undefined }
+			password: '123456'
 		})
-		expect(result).toBeNull()
+
+		expect(result).toEqual({
+			type: 'success',
+			data: {},
+			credentials: omit(['password'], credentials)
+		})
 	})
 
 	it('should handle sign out', async () => {
@@ -162,23 +201,25 @@ describe('getAdapter', () => {
 
 describe('transformResult', () => {
 	it('should transform result for successful response', () => {
-		const result = {
-			data: { provider: 'email' },
-			credentials: { email: 'test@example.com' }
-		}
-		const transformed = transformResult(result)
-		expect(transformed).toBeNull()
-	})
-	it('should transform result for magic link response', () => {
-		const result = {
-			data: { provider: 'magic' },
-			credentials: { email: 'test@example.com' }
-		}
-		const transformed = transformResult(result)
+		const credentials = { email: 'test@example.com' }
+		const result = { data: {} }
+		const transformed = transformResult(result, credentials)
+
 		expect(transformed).toEqual({
 			type: 'success',
+			data: {},
+			credentials
+		})
+	})
+	it('should transform result for magic link response', () => {
+		const credentials = { email: 'test@example.com', provider: 'magic' }
+		const result = {}
+		const transformed = transformResult(result, credentials)
+		expect(transformed).toEqual({
+			type: 'info',
 			message: 'Magic link has been sent to "test@example.com".',
-			data: { provider: 'magic' }
+			data: undefined,
+			credentials: { email: 'test@example.com', provider: 'magic' }
 		})
 	})
 	it('should transform result for error response', () => {
@@ -186,9 +227,8 @@ describe('transformResult', () => {
 		const transformed = transformResult(result)
 		expect(transformed).toEqual({
 			type: 'error',
-			...result.error,
-			message: 'Server error. Try again later.',
-			data: result.data
+			error: { message: 'Error', status: 400 },
+			message: 'Server error. Try again later.'
 		})
 	})
 	it('should transform result for error response (AuthApiError)', () => {
@@ -197,9 +237,12 @@ describe('transformResult', () => {
 		const transformed = transformResult(result)
 		expect(transformed).toEqual({
 			type: 'error',
-			...error,
-			message: 'Invalid credentials.',
-			data: undefined // Assuming the data part should be undefined in the error case
+			error: {
+				status: 400,
+				name: 'AuthApiError',
+				message: 'Invalid credentials.'
+			},
+			message: 'Invalid credentials.'
 		})
 	})
 })
@@ -217,9 +260,8 @@ describe('parseUrlError', () => {
 		}
 		const result = parseUrlError(url)
 		expect(result).toEqual({
-			type: 'error',
 			status: '400',
-			name: 'invalid_request',
+			name: 'invalid request',
 			message: 'The request is missing a required parameter.'
 		})
 	})

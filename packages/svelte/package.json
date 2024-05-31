@@ -34,6 +34,7 @@
     "@testing-library/svelte": "^4.1.0",
     "@types/ramda": "^0.29.12",
     "@vitest/coverage-istanbul": "^1.6.0",
+    "@vitest/expect": "^1.6.0",
     "@vitest/ui": "~1.6.0",
     "eslint-config-shared": "workspace:*",
     "js-yaml": "^4.1.0",
@@ -46,6 +47,7 @@
   },
   "exports": {
     "./package.json": "./package.json",
+    "./ui": "./src/ui/index.js",
     ".": {
       "types": "./types/index.d.ts",
       "import": "./src/index.js",

@@ -53,19 +53,19 @@
 /**
  * @typedef AuthProvider
  * @property {'otp' | 'oauth' | 'password'} mode
- * @property {string}	provider
- * @property {string} [label]
+ * @property {string}	       provider
+ * @property {string}        [label]
  * @property {Array<string>} scopes
  * @property {Array<string>} params
  */
 
 /**
  * @typedef CookieOptions
- * @property {string} [path]
+ * @property {string}  [path]
  * @property {boolean} [httpOnly]
  * @property {boolean} [secure]
  * @property {'none'|'strict'|'lax'} [sameSite]
- * @property {number} [maxAge]
+ * @property {number}  [maxAge]
  */
 
 /**
@@ -77,7 +77,8 @@
 /**
  * @typedef OtpCredentials
  * @property {'magic'} provider
- * @property {string} email
+ * @property {string}  email
+ * @property {string}  [redirectTo]
  */
 
 /**
@@ -102,13 +103,35 @@
  * @property {string} [phone]
  * @property {string} [redirectTo]
  * @property {Array<string>} [scopes]
+ * @property {Object} [options]
  */
+
 /**
  * @typedef {(event: string, session: any) => Promise<void>} AuthCallback
  */
 
 /** @typedef {'error'|'success'|'warning'} ResultType */
 
+/**
+ * @typedef AuthError
+ * @property {number|string} [status]  - HTTP status code
+ * @property {string}        [name]    - Error name
+ * @property {string}        [message] - Error message
+ */
+
+/**
+ * @typedef {'info'|'success'|'error'} AuthResponseType
+ */
+
+/**
+  * @typedef AuthResponse
+  * @property {AuthResponseType} type
+  * @property {string}           [message]
+  * @property {AuthError}        [error]
+  * @property {object}           [data]
+  * @property {AuthCredentials}  [credentials]
+
+*/
 /**
  * @typedef AuthResult
  * @property {ResultType} type
@@ -117,6 +140,7 @@
  * @property {string}     [message]
  * @property {*}          [data]
  */
+
 /**
  * @typedef AuthAdapter
  * @property {(credentials: AuthCredentials) => Promise<AuthResult>}	signIn
