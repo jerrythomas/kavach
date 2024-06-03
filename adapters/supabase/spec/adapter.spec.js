@@ -53,35 +53,67 @@ describe('getAdapter', () => {
 	}
 	it('should create a client and define auth functions', () => {
 		const adapter = getAdapter(options)
-		expect(Object.keys(adapter)).toEqual([
-			'signIn',
-			'signUp',
-			'signOut',
-			'synchronize',
-			'onAuthChange',
-			'parseUrlError',
-			'client',
-			'db'
-		])
+		expect(adapter).toEqual({
+			signIn: expect.any(Function),
+			signUp: expect.any(Function),
+			signOut: expect.any(Function),
+			synchronize: expect.any(Function),
+			onAuthChange: expect.any(Function),
+			parseUrlError: expect.any(Function),
+			// client: expect.any(Function),
+			server: expect.any(Function)
+		})
+	})
+
+	describe('server', () => {
+		it('should return actions for a schema', () => {
+			const adapter = getAdapter(options)
+			const actions = adapter.server('public')
+			expect(actions).toEqual({
+				call: expect.any(Function),
+				delete: expect.any(Function),
+				get: expect.any(Function),
+				patch: expect.any(Function),
+				post: expect.any(Function),
+				put: expect.any(Function),
+				connection: expect.any(Object)
+			})
+		})
+
+		it('should return actions without schema', () => {
+			const adapter = getAdapter(options)
+			const actions = adapter.server()
+			expect(actions).toEqual({
+				call: expect.any(Function),
+				delete: expect.any(Function),
+				get: expect.any(Function),
+				patch: expect.any(Function),
+				post: expect.any(Function),
+				put: expect.any(Function),
+				connection: expect.any(Object)
+			})
+		})
 	})
 
 	it('should create adapters without multiple clients', () => {
 		const adapter = getAdapter(omit(['schemas'], options))
-
-		expect(adapter.db()).toEqual(adapter.client)
-		expect(adapter.db('public')).toEqual(adapter.client)
+		expect(adapter.server('public').connection).toEqual(
+			adapter.server().connection
+		)
 	})
 
 	it('should handle sign in using magic link', async () => {
 		const adapter = getAdapter(options)
 		const credentials = { provider: 'magic', email: 'a@b.com' }
 		const result = await adapter.signIn(credentials)
-		expect(adapter.client.auth.signInWithOtp).toHaveBeenCalledWith({
-			email: 'a@b.com',
-			options: {
-				emailRedirectTo: 'http://localhost:3000'
+		expect(adapter.server().connection.auth.signInWithOtp).toHaveBeenCalledWith(
+			{
+				email: 'a@b.com',
+				options: {
+					emailRedirectTo: 'http://localhost:3000'
+				}
 			}
-		})
+		)
 
 		expect(result).toEqual({
 			type: 'info',
@@ -105,7 +137,9 @@ describe('getAdapter', () => {
 			password: '123456'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(adapter.client.auth.signInWithPassword).toHaveBeenCalledWith({
+		expect(
+			adapter.server().connection.auth.signInWithPassword
+		).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			password: '123456'
 		})
@@ -125,7 +159,9 @@ describe('getAdapter', () => {
 			password: '123456'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(adapter.client.auth.signInWithPassword).toHaveBeenCalledWith({
+		expect(
+			adapter.server().connection.auth.signInWithPassword
+		).toHaveBeenCalledWith({
 			phone: '1234567890',
 			password: '123456'
 		})
@@ -150,9 +186,9 @@ describe('getAdapter', () => {
 			provider: 'gmail',
 			options: { scopes: '', redirectTo: 'http://localhost:3000' }
 		}
-		expect(adapter.client.auth.signInWithOAuth).toHaveBeenCalledWith(
-			expectedCreds
-		)
+		expect(
+			adapter.server().connection.auth.signInWithOAuth
+		).toHaveBeenCalledWith(expectedCreds)
 
 		expect(result).toEqual({
 			type: 'success',
@@ -169,7 +205,7 @@ describe('getAdapter', () => {
 			password: '123456'
 		}
 		const result = await adapter.signUp(credentials)
-		expect(adapter.client.auth.signUp).toHaveBeenCalledWith({
+		expect(adapter.server().connection.auth.signUp).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			password: '123456'
 		})
@@ -184,16 +220,18 @@ describe('getAdapter', () => {
 	it('should handle sign out', async () => {
 		const adapter = getAdapter(options)
 		await adapter.signOut()
-		expect(adapter.client.auth.signOut).toHaveBeenCalled()
+		expect(adapter.server().connection.auth.signOut).toHaveBeenCalled()
 	})
 
 	it('should synchronize session', async () => {
 		const adapter = getAdapter(options)
 		await adapter.synchronize({ mock: 'session' })
-		expect(adapter.db('public').auth.setSession).toHaveBeenCalledWith({
+		expect(
+			adapter.server('public').connection.auth.setSession
+		).toHaveBeenCalledWith({
 			mock: 'session'
 		})
-		expect(adapter.client.auth.setSession).toHaveBeenCalledWith({
+		expect(adapter.server().connection.auth.setSession).toHaveBeenCalledWith({
 			mock: 'session'
 		})
 	})
@@ -290,7 +328,9 @@ describe('onAuthChange', () => {
 		const unsubscribe = adapter.onAuthChange(callback)
 		vi.advanceTimersByTime(100)
 		await vi.runAllTimersAsync()
-		expect(adapter.client.auth.onAuthStateChange).toHaveBeenCalled()
+		expect(
+			adapter.server().connection.auth.onAuthStateChange
+		).toHaveBeenCalled()
 
 		// Ensure the callback was called with the expected arguments
 		expect(callback).toHaveBeenCalledWith('SIGNED_IN', { user: 'test user' })

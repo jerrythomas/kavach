@@ -30,6 +30,7 @@
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@types/ramda": "^0.29.12",
     "@vitest/coverage-istanbul": "^1.6.0",
     "@vitest/ui": "~1.6.0",
     "eslint-config-shared": "workspace:*",

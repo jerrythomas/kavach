@@ -26,4 +26,5 @@
  * @property {string} hash
  * @property {string} path
  */
+
 export default {}

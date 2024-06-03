@@ -1,12 +1,13 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams } from '@kavach/core'
 import { defaultOrigin } from './constants'
+import { getActions } from './actions'
 import { pick, omit } from 'ramda'
 /**
  * Creates an adapter for supabase
  *
- * @param {import('./types').AdapterOptions} options
- * @returns {import('@kavach/core').Adapter}
+ * @param {import('./types').SupabaseConfig} options
+ * @returns {import('@kavach/core').AuthAdapter}
  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
@@ -16,6 +17,12 @@ export function getAdapter(options) {
 		options.schemas
 	)
 
+	/**
+	 * Synchronizes the session with all the clients
+	 *
+	 * @param {any} session
+	 * @returns {Promise<void>}
+	 */
 	const synchronize = async (session) => {
 		await synchronizeClients(clients, session)
 		return client.auth.setSession(session)
@@ -28,8 +35,8 @@ export function getAdapter(options) {
 		synchronize,
 		onAuthChange: (callback) => handleAuthChange(client, clients, callback),
 		parseUrlError,
-		client,
-		db: (schema) => clients[schema] || client
+		// client: (schema) => clients[schema] || client,
+		server: (schema) => getActions(clients[schema] || client)
 	}
 }
 
