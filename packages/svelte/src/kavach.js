@@ -36,10 +36,9 @@ export function createKavach(adapter, options = {}) {
 		signUp: (credentials) => handleSignUp(adapter, agents, credentials),
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
-		// onAuthUrlError: (url, callback) =>
-		// 	handleAuthUrlError(adapter, agents, url, callback),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
-		client: adapter.client
+		// client: (schema) => adapter.client(schema),
+		server: (schema) => adapter.server(schema)
 	}
 }
 

@@ -22,6 +22,10 @@ export function createMockAdapter(options) {
 		}),
 		verifyOtp: vi.fn(),
 		onAuthChange: vi.fn(),
-		parseUrlError: vi.fn()
+		parseUrlError: vi.fn(),
+		signUp: vi.fn(),
+		server: vi
+			.fn()
+			.mockImplementation((schema) => ({ connection: `${schema} connection` }))
 	}
 }

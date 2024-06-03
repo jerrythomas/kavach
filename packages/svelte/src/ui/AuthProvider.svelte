@@ -52,7 +52,7 @@
 		class={className}
 	/>
 {:else if mode === 'password'}
-	<AuthPassword bind:value bind:password on:click={signIn} class={className} />
+	<AuthPassword bind:value bind:password on:click={signIn} />
 {:else}
 	<form on:submit={signIn} class="flex w-full p-0 {className}">
 		<InputField

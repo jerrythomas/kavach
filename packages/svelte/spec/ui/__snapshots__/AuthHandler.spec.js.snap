@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthHandler.svelte > should render multiple providers 1`] = `
+<div>
+  <auth
+    class="flex flex-col gap-2"
+  >
+    <auth-header
+      class="flex flex-col"
+    />
+     
+    <auth-body
+      class="flex flex-col gap-2"
+    >
+      <button
+        class="flex flex-row items-center "
+        type="submit"
+      >
+        <icon-left
+          class="flex flex-row"
+        >
+          <icon
+            aria-label="i-auth-google"
+            class="flex flex-shrink-0 items-center justify-center "
+            role="img"
+            tabindex="-1"
+          >
+            <i
+              aria-hidden="true"
+              class="i-auth-google"
+            />
+          </icon>
+        </icon-left>
+         
+        <p>
+          Sign in with Google
+        </p>
+        
+         
+      </button>
+      
+    </auth-body>
+  </auth>
+</div>
+`;

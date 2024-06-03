@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AuthProvider.svelte > should render oauth button 1`] = `
+exports[`AuthProvider.svelte > oauth > should render oauth button 1`] = `
 <div>
   <button
     class="flex flex-row items-center "
@@ -32,7 +32,7 @@ exports[`AuthProvider.svelte > should render oauth button 1`] = `
 </div>
 `;
 
-exports[`AuthProvider.svelte > should render oauth button with scopes 1`] = `
+exports[`AuthProvider.svelte > oauth > should render oauth button with scopes 1`] = `
 <div>
   <button
     class="flex flex-row items-center "
@@ -59,6 +59,376 @@ exports[`AuthProvider.svelte > should render oauth button with scopes 1`] = `
     </p>
     
      
+  </button>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
+<div>
+  <form
+    class="flex w-full p-0 "
+  >
+    <input-field
+      class="flex flex-col input-email empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+       
+      <field
+        aria-label="magic link"
+        class="w-full flex flex-row items-center"
+      >
+        <icon
+          aria-label="i-auth-magic"
+          class="flex flex-shrink-0 items-center justify-center "
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+        </icon>
+         
+         
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        
+         
+      </field>
+       
+    </input-field>
+  </form>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
+<div>
+  <form
+    class="flex w-full p-0 custom"
+  >
+    <input-field
+      class="flex flex-col input-email empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+       
+      <field
+        aria-label="magic link"
+        class="w-full flex flex-row items-center"
+      >
+        <icon
+          aria-label="i-auth-magic"
+          class="flex flex-shrink-0 items-center justify-center "
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+        </icon>
+         
+         
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        
+         
+      </field>
+       
+    </input-field>
+  </form>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1`] = `
+<div>
+  <form
+    class="flex w-full p-0 "
+  >
+    <input-field
+      class="flex flex-col input-email empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+       
+      <field
+        aria-label="magic link"
+        class="w-full flex flex-row items-center"
+      >
+        <icon
+          aria-label="i-auth-magic"
+          class="flex flex-shrink-0 items-center justify-center "
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+        </icon>
+         
+         
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        
+         
+      </field>
+       
+    </input-field>
+  </form>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2`] = `
+<div>
+  <form
+    class="flex w-full p-0 custom"
+  >
+    <input-field
+      class="flex flex-col input-email empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+       
+      <field
+        aria-label="magic link"
+        class="w-full flex flex-row items-center"
+      >
+        <icon
+          aria-label="i-auth-magic"
+          class="flex flex-shrink-0 items-center justify-center "
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-otp"
+          />
+        </icon>
+         
+         
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Send me a link"
+          type="email"
+        />
+        
+        
+         
+      </field>
+       
+    </input-field>
+  </form>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > password > should handle errors 1`] = `
+<div>
+  <input-field
+    class="flex flex-col input-email empty"
+  >
+    <label
+      for="email"
+    >
+      email
+    </label>
+     
+    <field
+      aria-label="email"
+      class="w-full flex flex-row items-center"
+    >
+      <icon
+        aria-label="i-auth-email"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
+      >
+        <i
+          aria-hidden="true"
+          class="i-auth-email"
+        />
+      </icon>
+       
+       
+      <input
+        autocomplete="on"
+        id="email"
+        name="email"
+        type="email"
+      />
+      
+      
+       
+    </field>
+     
+  </input-field>
+   
+  <input-field
+    class="flex flex-col input-password empty"
+  >
+    <label
+      for="password"
+    >
+      Password
+    </label>
+     
+    <field
+      aria-label="Password"
+      class="w-full flex flex-row items-center"
+    >
+      <icon
+        aria-label="i-auth-password"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
+      >
+        <i
+          aria-hidden="true"
+          class="i-auth-password"
+        />
+      </icon>
+       
+       
+      <input
+        id="password"
+        name="password"
+        password=""
+        type="password"
+      />
+      
+      
+       
+    </field>
+     
+  </input-field>
+   
+  <button
+    class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+  >
+    Sign in
+  </button>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > password > should render email/password auth 1`] = `
+<div>
+  <input-field
+    class="flex flex-col input-email empty"
+  >
+    <label
+      for="email"
+    >
+      email
+    </label>
+     
+    <field
+      aria-label="email"
+      class="w-full flex flex-row items-center"
+    >
+      <icon
+        aria-label="i-auth-email"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
+      >
+        <i
+          aria-hidden="true"
+          class="i-auth-email"
+        />
+      </icon>
+       
+       
+      <input
+        autocomplete="on"
+        id="email"
+        name="email"
+        type="email"
+      />
+      
+      
+       
+    </field>
+     
+  </input-field>
+   
+  <input-field
+    class="flex flex-col input-password empty"
+  >
+    <label
+      for="password"
+    >
+      Password
+    </label>
+     
+    <field
+      aria-label="Password"
+      class="w-full flex flex-row items-center"
+    >
+      <icon
+        aria-label="i-auth-password"
+        class="flex flex-shrink-0 items-center justify-center "
+        role="img"
+        tabindex="-1"
+      >
+        <i
+          aria-hidden="true"
+          class="i-auth-password"
+        />
+      </icon>
+       
+       
+      <input
+        id="password"
+        name="password"
+        password=""
+        type="password"
+      />
+      
+      
+       
+    </field>
+     
+  </input-field>
+   
+  <button
+    class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+  >
+    Sign in
   </button>
   
 </div>

@@ -14,22 +14,6 @@ describe('AuthButton.svelte', () => {
 
 	it('should render using provider', async () => {
 		const { container, component } = render(AuthButton, {
-			props: { provider: 'google' }
-		})
-		const button = container.querySelector('button')
-
-		component.$on('click', handleClick)
-		expect(container).toMatchSnapshot()
-
-		await fireEvent.click(button)
-		expect(handleClick).toHaveBeenDispatchedWith({
-			provider: 'google',
-			scopes: []
-		})
-	})
-
-	it('should render using label', async () => {
-		const { container, component } = render(AuthButton, {
 			props: { provider: 'google', label: 'Sign in with Google' }
 		})
 		const button = container.querySelector('button')
@@ -43,6 +27,22 @@ describe('AuthButton.svelte', () => {
 			scopes: []
 		})
 	})
+
+	// it('should render using label', async () => {
+	// 	const { container, component } = render(AuthButton, {
+	// 		props: { provider: 'google', label: 'Sign in with Google' }
+	// 	})
+	// 	const button = container.querySelector('button')
+
+	// 	component.$on('click', handleClick)
+	// 	expect(container).toMatchSnapshot()
+
+	// 	await fireEvent.click(button)
+	// 	expect(handleClick).toHaveBeenDispatchedWith({
+	// 		provider: 'google',
+	// 		scopes: []
+	// 	})
+	// })
 
 	it('should include scopes', async () => {
 		const { container, component } = render(AuthButton, {

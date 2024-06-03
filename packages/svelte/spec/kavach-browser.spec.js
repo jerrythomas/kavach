@@ -34,14 +34,21 @@ describe('kavach', () => {
 
 	it('should create kavach using an adapter', () => {
 		const kavach = createKavach(adapter)
-		expect(Object.keys(kavach)).toEqual([
-			'signIn',
-			'signUp',
-			'signOut',
-			'onAuthChange',
-			'handle',
-			'client'
-		])
+		expect(kavach).toEqual({
+			signIn: expect.any(Function),
+			signUp: expect.any(Function),
+			signOut: expect.any(Function),
+			onAuthChange: expect.any(Function),
+			handle: expect.any(Function),
+			// client: expect.any(Function),
+			server: expect.any(Function)
+		})
+	})
+
+	it('should return the server actions', () => {
+		const kavach = createKavach(adapter)
+		expect(kavach.server()).toEqual(adapter.server())
+		expect(kavach.server('public')).toEqual(adapter.server('public'))
 	})
 
 	it('should bypass the session handler', async () => {
