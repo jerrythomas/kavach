@@ -107,6 +107,12 @@
  */
 
 /**
+ * @typedef {EmailAuthCredentials| PhoneAuthCredentials} PasswordCredentials
+ */
+/**
+ * @typedef {string|undefined} Schema
+ */
+/**
  * @typedef {(event: string, session: any) => Promise<void>} AuthCallback
  */
 
@@ -142,19 +148,41 @@
  */
 
 /**
- * @typedef AuthAdapter
- * @property {(credentials: AuthCredentials) => Promise<AuthResult>}	signIn
- * @property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<AuthResult>}	signUp
- * @property {() => Promise<*>} signOut
- * @property {(session: AuthSession) => Promise<AuthResult>}	synchronize
- * @property {(callback: AuthCallback) => void} onAuthChange
-// property {(credentials: OtpCredentials) => Promise<void>}	verifyOtp
-// property {() => Promise<void>}	resetPassword
-// property {(credentials: EmailAuthCredentials| PhoneAuthCredentials) => Promise<void>} updatePassword
- * @property {*} client
- * @property {(url: Object) => AuthResult} parseUrlError
-}
+ * @typedef ActionResponse
+ * @property {any}    [data]
+ * @property {any}    [error]
+ * @property {number} status
+ */
 
+/**
+ * @typedef Action
+ * @type {function(string, any): Promise<ActionResponse>}
+ */
+
+/**
+ * @typedef ServerAction
+ * @property {Action} get
+ * @property {Action} put
+ * @property {Action} post
+ * @property {Action} delete
+ * @property {Action} patch
+ * @property {Action} [call]
+ */
+
+/**
+ * @typedef AuthAdapter
+ * @property {(credentials: AuthCredentials) => Promise<AuthResult>}     signIn
+ * @property {(credentials: PasswordCredentials) => Promise<AuthResult>} signUp
+ * @property {() => Promise<*>}                                          signOut
+ * @property {(session: AuthSession) => Promise<AuthResult>}	           synchronize
+ * @property {(callback: AuthCallback) => void}                          onAuthChange
+ * @property {(credentials: OtpCredentials) => Promise<void>}	           [verifyOtp]
+ * @property {() => Promise<void>}	                                     [resetPassword]
+ * @property {(credentials: PasswordCredentials) => Promise<void>}       [updatePassword]
+ * @property {(schema: Schema ) => any}                                  [client]
+ * @property {(url: Object) => AuthResult}                               [parseUrlError]
+ * @property {(schema: Schema) => ServerAction}                          [server]
+ */
 
 /**
  * @typedef {(config:Object) => AuthAdapter} GetAdapter
