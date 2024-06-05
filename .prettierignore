@@ -6,3 +6,4 @@ coverage/**
 .turbo/**
 .vercel/**
 dist/**
+pnpm-lock.yaml
