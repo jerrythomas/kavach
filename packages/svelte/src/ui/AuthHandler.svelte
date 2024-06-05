@@ -1,12 +1,10 @@
 <script>
-	import { getContext } from 'svelte'
 	import { authStatus } from '../kavach'
 
 	import AuthProvider from './AuthProvider.svelte'
-	import AuthError from './AuthError.svelte'
 	import AuthResponse from './AuthResponse.svelte'
+	import AuthError from './AuthError.svelte'
 
-	const kavach = getContext('kavach')
 	export let providers
 </script>
 
@@ -23,7 +21,7 @@
 
 	<auth-body class="flex flex-col gap-2">
 		{#each providers as data}
-			<AuthProvider {...data} authUrl={kavach.endpoint.login} on:submit />
+			<AuthProvider {...data} on:submit />
 		{/each}
 	</auth-body>
 </auth>

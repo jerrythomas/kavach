@@ -11,6 +11,8 @@
 	function handle() {
 		dispatch('click', { [type]: value, password })
 	}
+
+	$: type = type === 'phone' ? 'tel' : type
 </script>
 
 <InputField

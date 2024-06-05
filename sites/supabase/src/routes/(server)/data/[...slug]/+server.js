@@ -1,19 +1,19 @@
 import { json } from '@sveltejs/kit'
-import { createClient } from '@supabase/supabase-js'
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public'
-import { getActions, getEntity } from '$lib/db'
-
-// Create a single supabase client for interacting with your database
-const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
-const actions = getActions(supabase)
+import { getEntity } from '$lib/db'
+import { kavach } from '$lib/auth'
+import { omit } from 'ramda'
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
 export async function GET({ params, url }) {
-	const { entity } = getEntity(params.slug)
+	const { schema, entity } = getEntity(params.slug)
+	const actions = kavach.server(schema)
 	const body = Object.fromEntries(url.searchParams.entries())
-	const { data, error, status } = await actions.get(entity, body)
+	const { data, error, status } = await actions.get(entity, {
+		columns: body[':select'],
+		filter: omit([':select'], body)
+	})
 
 	if (error) return json({ error }, { status })
 	return json(data)
@@ -23,7 +23,8 @@ export async function GET({ params, url }) {
  * @type {import('@sveltejs/kit').RequestHandler}
  */
 export async function POST({ params, request }) {
-	const { entity } = getEntity(params.slug)
+	const { schema, entity } = getEntity(params.slug)
+	const actions = kavach.server(schema)
 	const body = await request.json()
 	const { data, error, status } = await actions.post(entity, body)
 
@@ -35,7 +36,8 @@ export async function POST({ params, request }) {
  * @type {import('@sveltejs/kit').RequestHandler}
  */
 export async function PUT({ params, request }) {
-	const { entity } = getEntity(params.slug)
+	const { schema, entity } = getEntity(params.slug)
+	const actions = kavach.server(schema)
 	const body = await request.json()
 	const { data, error, status } = await actions.put(entity, body)
 
@@ -47,7 +49,8 @@ export async function PUT({ params, request }) {
  * @type {import('@sveltejs/kit').RequestHandler}
  */
 export async function DELETE({ params, request }) {
-	const { entity } = getEntity(params.slug)
+	const { schema, entity } = getEntity(params.slug)
+	const actions = kavach.server(schema)
 	const body = await request.json() //getRequestBody(request)
 	const { data, error, status } = await actions.delete(entity, body)
 
