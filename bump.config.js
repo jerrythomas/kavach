@@ -3,7 +3,7 @@
 export default {
 	files: [
 		'package.json',
-		// 'pnpm-lock.yaml',
+		'pnpm-lock.yaml',
 		'packages/*/package.json',
 		'adapters/*/package.json',
 		'shared/*/package.json',

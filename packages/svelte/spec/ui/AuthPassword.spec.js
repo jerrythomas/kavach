@@ -50,7 +50,7 @@ describe('AuthPassword.svelte', () => {
 		await fireEvent.click(button)
 		await tick()
 		expect(handle).toHaveBeenDispatchedWith({
-			tel: '+1 555-555-555',
+			phone: '+1 555-555-555',
 			password: ''
 		})
 	})
