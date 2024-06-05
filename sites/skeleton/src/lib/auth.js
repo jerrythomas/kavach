@@ -10,7 +10,7 @@ import { page } from '$app/stores'
 // export const client = createClient(appConfig.supabase.url, appConfig.supabase.anonKey)
 
 const adapter = getAdapter(appConfig.supabase)
-const writer = getLogWriter({ client: adapter.client }, appConfig.logging)
+const writer = getLogWriter(appConfig.supabase, appConfig.logging)
 export const logger = getLogger(writer, appConfig.logging)
 export const kavach = createKavach(adapter, {
 	logger,

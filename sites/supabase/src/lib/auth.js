@@ -8,7 +8,7 @@ import { goto, invalidateAll, invalidate } from '$app/navigation'
 
 const adapter = getAdapter(appConfig.supabase)
 // @ts-ignore
-const writer = getLogWriter({ client: adapter.client }, appConfig.logging)
+const writer = getLogWriter(appConfig.supabase, appConfig.logging)
 // @ts-ignore
 export const logger = getLogger(writer, appConfig.logging)
 export const kavach = createKavach(adapter, {

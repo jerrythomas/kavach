@@ -21,13 +21,13 @@ The `context` attribute is used to store the context of the log. This is useful 
 Since this is an object it can contain any additional shared context information like request_id, user_id, etc.
 
 ```js
-const rootlogger = getLogger(writer, {context: {module: 'foo'}})
+const rootlogger = getLogger(writer, { context: { module: 'foo' } })
 
 rootlogger.info('modules scope')
 
-function bar(){
-   const logger = rootLogger.getContextLogger({method:'bar'})
-   logger.info('function scope')
+function bar() {
+  const logger = rootLogger.getContextLogger({ method: 'bar' })
+  logger.info('function scope')
 }
 
 rootlogger.info('modules scope again')

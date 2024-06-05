@@ -1,0 +1,36 @@
+{
+  "slides": [
+    {
+      "title": "Core Features of Kavach",
+      "image": "/static/images/core-features.svg",
+      "description": "Kavach is a powerful Node.js library that simplifies integrating authentication and role-based route access control in your applications.",
+      "points": [
+        "Easy integration of authentication and role-based route access.",
+        "Supports multiple authentication aggregators like Supabase, Firebase, Auth0, and Amplify.",
+        "Offers various authentication mechanisms such as OAuth, magic links, and password authentication."
+      ]
+    },
+    {
+      "title": "Route Protection Mechanisms",
+      "image": "/static/images/route-protection.svg",
+      "description": "Kavach ensures that your application's routes are protected by default. Configure routes easily and ensure only authorized users have access.",
+      "points": [
+        "Configure specific routes like home, login, logout, unauthorized, and session sync endpoints.",
+        "All routes are protected by default; public routes need explicit configuration.",
+        "Login page redirects to the home page post authentication.",
+        "Private routes can be set for all roles, specific roles, or a single role."
+      ]
+    },
+    {
+      "title": "Demo Pages and User Scenarios",
+      "image": "/static/images/demo-pages.svg",
+      "description": "Explore various demo pages to see Kavach in action. Understand how to set up protected and public routes and experiment with role-based access.",
+      "points": [
+        "Protected page accessible to all roles.",
+        "Public route for common access.",
+        "Pages demonstrating secure and public endpoint calls with response codes.",
+        "Role-based access demonstration page."
+      ]
+    }
+  ]
+}
