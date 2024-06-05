@@ -23,17 +23,20 @@ export function asObject(value, key = 'message') {
  * - adds log level, runtime environment and logging timestamp to the log data
  * - offloads writng to a LogWriter instance
  *
- * @param {import('./types').LogWriter} writer
- * @param {String} level
- * @param {Object} data
+ * @param {import('./types').LogWriter}     writer
+ * @param {String}                          level
+ * @param {Object}                          data
+ * @param {import('./types').LoggerContext} context
+ * @returns {Promise<void>}
  */
-export async function log(writer, level, data) {
+export async function log(writer, level, data, context = {}) {
 	const currentDate = new Date()
 
 	await writer.write({
 		level,
 		running_on: runningOn,
 		logged_at: currentDate.toISOString(),
+		context,
 		...asObject(data)
 	})
 }
@@ -50,18 +53,34 @@ export async function log(writer, level, data) {
  */
 export function getLogger(writer, options = {}) {
 	const level = getLogLevel(options?.level)
-	const levelValue = loggingLevels[level]
+	const context = options?.context || {}
 
 	if (!writer || typeof writer.write !== 'function') return zeroLogger
 
+	return getContextLogger(writer, level, context)
+}
+
+/**
+ * Get a logger for a context. Context includes attributes like package, module, method
+ *
+ * @param {import('./types').LogWriter}     writer
+ * @param {import('./types').LoggerContext} context
+ * @returns {import('./types').Logger}
+ */
+export function getContextLogger(writer, level, context) {
+	const levelValue = loggingLevels[level]
 	const logger = Object.entries(loggingLevels)
 		.map(([logLevel, value]) => ({
 			[logLevel]:
 				value <= levelValue
-					? (/** @type {Object} */ message) => log(writer, logLevel, message)
+					? (/** @type {Object} */ message) =>
+							log(writer, logLevel, message, context)
 					: pass
 		}))
 		.reduce((acc, orig) => ({ ...acc, ...orig }), {})
+
+	logger.getContextLogger = (newContext) =>
+		getContextLogger(writer, level, { ...context, ...newContext })
 
 	return logger
 }

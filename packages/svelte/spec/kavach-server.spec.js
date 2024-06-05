@@ -9,7 +9,8 @@ describe('Endpoint functions', () => {
 		info: vi.fn(),
 		debug: vi.fn(),
 		error: vi.fn(),
-		warn: vi.fn()
+		warn: vi.fn(),
+		getContextLogger: vi.fn().mockReturnThis()
 	}
 	beforeEach(() => {
 		adapter = createMockAdapter()

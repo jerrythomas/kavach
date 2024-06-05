@@ -21,10 +21,14 @@ export const authStatus = writable()
 export function createKavach(adapter, options = {}) {
 	const { page } = options
 	const agents = {
-		logger: options.logger ?? zeroLogger,
+		logger: (options.logger ?? zeroLogger).getContextLogger({
+			package: '@kavach/svelte',
+			module: 'kavach'
+		}),
 		deflector: createDeflector(options),
 		invalidateAll: options.invalidateAll ?? pass
 	}
+
 	if (page && RUNNING_ON === 'browser') {
 		page.subscribe(({ url }) => {
 			handleAuthUrlError(adapter, agents, url)
@@ -51,11 +55,14 @@ export function createKavach(adapter, options = {}) {
 
 */
 function handleAuthUrlError(adapter, agents, url) {
+	const logger = agents.logger.getContextLogger({
+		method: 'handleAuthUrlError'
+	})
 	const error = adapter.parseUrlError(url)
 	if (error) {
-		agents.logger.error({
+		logger.error({
 			message: error.message,
-			data: { module: 'kavach', method: 'handleAuthUrlError', url },
+			data: { url },
 			error
 		})
 		authStatus.set({ error, message: error.message })
@@ -88,13 +95,14 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
  * @param {import('./types').KavachAgents}     agents
  */
 function handleAuthChange(adapter, agents) {
-	const { invalidateAll, logger } = agents
+	const { invalidateAll } = agents
+	const logger = agents.logger.getContextLogger({ method: 'handleAuthChange' })
 	if (RUNNING_ON !== 'browser') return
 
 	adapter.onAuthChange(async (event, session) => {
 		logger.debug({
 			message: 'authentication state changed',
-			data: { module: 'kavach', method: 'onAuthChange', event }
+			data: { event }
 		})
 
 		const result = await syncSessionWithServer(agents, event, session)
@@ -127,9 +135,11 @@ async function handleSignOut(adapter, agents) {
  * @returns {Promise<import('@kavach/core').AuthResponse>}
  */
 async function handleSignIn(adapter, agents, credentials) {
+	const logger = agents.logger.getContextLogger({ method: 'handleSignIn' })
 	const result = await adapter.signIn(credentials)
 	authStatus.set(result)
-	logAuthError(agents.logger, result, 'handleSignIn')
+	if (result.error)
+		logger.error({ message: result.error.message, error: result.error })
 	return result
 }
 
@@ -142,28 +152,14 @@ async function handleSignIn(adapter, agents, credentials) {
  * @returns {Promise<import('@kavach/core').AuthResponse>}
  */
 async function handleSignUp(adapter, agents, credentials) {
+	const logger = agents.logger.getContextLogger({ method: 'handleSignUp' })
 	const result = await adapter.signUp(credentials)
 	authStatus.set(result)
-	logAuthError(agents.logger, result, 'handleSignUp')
+	if (result.error)
+		logger.error({ message: result.error.message, error: result.error })
 	return result
 }
 
-/**
- * Log error if result has error
- *
- * @param {import('@kavach/logger').Logger}     logger
- * @param {import('@kavach/core').AuthResponse} result
- * @param {string} method
- */
-export function logAuthError(logger, result, method) {
-	if (result.error) {
-		logger.error({
-			message: result.error.message,
-			data: { module: 'kavach', method },
-			error: result.error
-		})
-	}
-}
 /**
  * Handle unauthorized access
  *

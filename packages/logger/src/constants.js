@@ -16,10 +16,12 @@ export const loggingLevels = {
 	trace: 5
 }
 
+/** @type {import('./types').Logger} */
 export const zeroLogger = {
 	info: pass,
 	warn: pass,
 	debug: pass,
 	error: pass,
-	trace: pass
+	trace: pass,
+	getContextLogger: () => zeroLogger
 }

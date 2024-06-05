@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
-import { createKavach, logAuthError } from '../src/kavach'
+import { createKavach } from '../src/kavach'
 
 describe('kavach', () => {
 	const resolve = vi.fn()
@@ -312,7 +312,14 @@ describe('kavach', () => {
 
 	describe('handleAuthUrlError', () => {
 		const url = { pathname: '/auth/session', hash: '#' }
-		const logger = { error: vi.fn() }
+		const logger = {
+			info: vi.fn(),
+			debug: vi.fn(),
+			error: vi.fn(),
+			warn: vi.fn(),
+			getContextLogger: () => logger
+		}
+
 		const page = {
 			subscribe: vi.fn((callback) => {
 				setTimeout(() => {
@@ -330,6 +337,16 @@ describe('kavach', () => {
 			vi.useRealTimers()
 		})
 
+		it('should initiate the logger', () => {
+			const logger = { getContextLogger: vi.fn() }
+			const kavach = createKavach(adapter, { logger, page })
+			expect(logger.getContextLogger).toHaveBeenCalledWith({
+				package: '@kavach/svelte',
+				module: 'kavach'
+			})
+			expect(kavach).toBeDefined()
+		})
+
 		it('should handle url error', async () => {
 			const error = {
 				code: 500,
@@ -340,6 +357,11 @@ describe('kavach', () => {
 			adapter.parseUrlError = vi.fn().mockImplementation(() => error)
 
 			const kavach = createKavach(adapter, { logger, page })
+			// expect(logger.getContextLogger).toHaveBeenCalledWith({
+			// 	package: '@kavach/svelte',
+			// 	module: 'kavach'
+			// })
+
 			expect(kavach).toBeDefined()
 
 			vi.advanceTimersByTime(100)
@@ -349,8 +371,6 @@ describe('kavach', () => {
 				message: error.message,
 				error,
 				data: {
-					module: 'kavach',
-					method: 'handleAuthUrlError',
 					url: { pathname: '/auth/session', hash: '#' }
 				}
 			})
@@ -367,32 +387,6 @@ describe('kavach', () => {
 			await vi.runAllTimersAsync()
 			expect(adapter.parseUrlError).toHaveBeenCalledWith(url)
 			expect(logger.error).not.toHaveBeenCalledOnce()
-		})
-	})
-
-	describe('logAuthError', () => {
-		const error = {
-			code: 500,
-			status: 'server error',
-			message: 'Internal Server Error'
-		}
-
-		const logger = { error: vi.fn() }
-
-		it('should log error', () => {
-			logAuthError(logger, { error }, 'handleSignIn')
-			expect(logger.error).toHaveBeenCalledWith({
-				message: error.message,
-				error,
-				data: {
-					module: 'kavach',
-					method: 'handleSignIn'
-				}
-			})
-		})
-		it('should not log error if there is none', () => {
-			logAuthError(logger, {}, 'handleSignIn')
-			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 })

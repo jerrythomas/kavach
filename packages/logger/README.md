@@ -14,6 +14,25 @@ The logged data is expected to be provided as an object. The attributes of the o
 
 Below are some examples assuming that the logger has been called on the server side at 8 am on 2022-11-05. The logger does not do any validation on the data structure it receives. It is up to the developer to ensure that the LogWriter will be able to handle the data appropriately.
 
+## Context
+
+The `context` attribute is used to store the context of the log. This is useful when you want to store some information that is common to all logs. For example, you might want to store some additional information say the package, module or method that the log was generated from. Since this can be nested, the getContextLogger method is provided to create a logger with the context already set.
+
+Since this is an object it can contain any additional shared context information like request_id, user_id, etc.
+
+```js
+const rootlogger = getLogger(writer, {context: {module: 'foo'}})
+
+rootlogger.info('modules scope')
+
+function bar(){
+   const logger = rootLogger.getContextLogger({method:'bar'})
+   logger.info('function scope')
+}
+
+rootlogger.info('modules scope again')
+```
+
 ### String message input
 
 ```js
@@ -79,7 +98,9 @@ create table if not exists public.logs(
 , running_on               varchar
 , logged_at                timestamp with time zone
 , message                  varchar
+, context                  jsonb
 , data                     jsonb
+, error                    jsonb
 , written_at               timestamp with time zone default now()
 )
 ```
