@@ -3,7 +3,7 @@ import {
 	defineConfig,
 	presetIcons,
 	presetTypography,
-	presetUno,
+	presetMini as presetUno,
 	transformerDirectives,
 	transformerVariantGroup
 } from 'unocss'

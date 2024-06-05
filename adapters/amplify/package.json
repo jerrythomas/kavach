@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@kavach/core": "workspace:*",
-    "aws-amplify": "^6.3.4"
+    "aws-amplify": "^6.3.5"
   },
   "exports": {
     "./package.json": "./package.json",

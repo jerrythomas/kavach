@@ -34,44 +34,6 @@ form {
   @apply p-4;
 }
 
-/* button.flat {
-  @apply bg-gradient-to-r from-primary to-secondary text-neutral-200 rounded-none;
-  @apply flex items-center justify-center min-h-12;
-}
-
-button.flat.disabled {
-  @apply from-neutral-muted to-neutral-muted text-neutral-500;
-} */
-/* input-field field input-select {
-  @apply px-0 h-full border-transparent;
-}
-input-select {
-  @apply border-transparent;
-}
-input-select selected-item {
-  @apply bg-transparent w-full min-h-10 border-0;
-}
-
-.rokkit input-select:focus-within {
-  @apply p-0;
-} */
-
-alert {
-  @apply bg-neutral-subtle border-neutral-muted text-neutral-900;
-}
-
-alert.danger {
-  @apply bg-danger border-danger-100 text-neutral-900;
-}
-
-alert.success {
-  @apply bg-success border-success-muted text-neutral-900;
-}
-
-alert.info {
-  @apply bg-info border-info-muted text-neutral-900;
-}
-
-alert.warning {
-  @apply bg-warning border-warning-muted text-neutral-900;
+icon i {
+  @apply mx-auto;
 }

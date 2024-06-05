@@ -49,3 +49,7 @@ button.flat.disabled {
 input:-internal-autofill-selected {
   @apply bg-neutral-muted !important;
 }
+
+icon i {
+  @apply mx-auto;
+}

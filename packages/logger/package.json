@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
-    "@types/node": "^20.12.13",
+    "@types/node": "^20.14.2",
     "@vitest/coverage-istanbul": "^1.6.0",
     "@vitest/ui": "~1.6.0",
     "eslint-config-shared": "workspace:*",

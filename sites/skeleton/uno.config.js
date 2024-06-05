@@ -2,8 +2,8 @@ import extractorSvelte from '@unocss/extractor-svelte'
 import {
 	defineConfig,
 	presetIcons,
+	presetMini as presetUno,
 	presetTypography,
-	presetUno,
 	transformerDirectives,
 	transformerVariantGroup
 } from 'unocss'

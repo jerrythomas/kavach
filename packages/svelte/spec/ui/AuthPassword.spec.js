@@ -34,24 +34,24 @@ describe('AuthPassword.svelte', () => {
 			password: ''
 		})
 	})
-	it('should render phone/password auth', () => {
-		const { container } = render(AuthPassword, {
+	it('should render phone/password auth', async () => {
+		const { container, component } = render(AuthPassword, {
 			props: { type: 'phone' }
 		})
 		expect(container).toMatchSnapshot()
-		// component.$on('click', handle)
+		component.$on('click', handle)
 
-		// const phoneInput = container.querySelector('input[type="phone"]')
-		// const passwordInput = container.querySelector('input[type="password"]')
-		// const button = container.querySelector('button')
+		const phoneInput = container.querySelector('input[type="tel"]')
+		const passwordInput = container.querySelector('input[type="password"]')
+		const button = container.querySelector('button')
 
-		// await fireEvent.input(phoneInput, { target: { value: '+1 555-555-555' } })
-		// await fireEvent.input(passwordInput, { target: { value: 'password' } })
-		// await fireEvent.click(button)
-		// await tick()
-		// expect(handle).toHaveBeenDispatchedWith({
-		// 	phone: '+1 555-555-555',
-		// 	password: ''
-		// })
+		await fireEvent.input(phoneInput, { target: { value: '+1 555-555-555' } })
+		await fireEvent.input(passwordInput, { target: { value: 'password' } })
+		await fireEvent.click(button)
+		await tick()
+		expect(handle).toHaveBeenDispatchedWith({
+			tel: '+1 555-555-555',
+			password: ''
+		})
 	})
 })
