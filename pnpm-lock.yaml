@@ -12,8 +12,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(prettier@3.3.0)(svelte@4.2.17)
       bumpp:
-        specifier: ^9.4.1
-        version: 9.4.1
+        specifier: 9.3.1
+        version: 9.3.1
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -2168,8 +2168,8 @@ packages:
   buffer@4.9.2:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
 
-  bumpp@9.4.1:
-    resolution: {integrity: sha512-kzhp/LpNX0HkUpEyLd7sU2LTN/mbAVgcxJ1Zi2cAJTE/tul6rypSKGpH8UywDpzKWItL8LVdKsIFnwmylw0+7g==}
+  bumpp@9.3.1:
+    resolution: {integrity: sha512-GQsf2Kwsvoxu8RL4euMvUwN3baZsIuigCPF+iGNQEa19+62MqYcpzxyjbspJT9qCipecpWKcEy6lC5kVoTs1Kw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -6020,12 +6020,11 @@ snapshots:
       ieee754: 1.2.1
       isarray: 1.0.0
 
-  bumpp@9.4.1:
+  bumpp@9.3.1:
     dependencies:
       '@jsdevtools/ez-spawn': 3.0.4
       c12: 1.10.0
       cac: 6.7.14
-      escalade: 3.1.2
       fast-glob: 3.3.2
       js-yaml: 4.1.0
       prompts: 2.4.2

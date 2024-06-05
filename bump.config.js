@@ -1,13 +1,13 @@
-import { defineConfig } from 'bumpp'
+// import defineConfig from 'bumpp'
 
-export default defineConfig({
+export default {
 	files: [
 		'package.json',
-		'pnpm-lock.yaml',
+		// 'pnpm-lock.yaml',
 		'packages/*/package.json',
 		'adapters/*/package.json',
 		'shared/*/package.json',
 		'sites/*/package.json'
 	],
 	recursive: true
-})
+}
