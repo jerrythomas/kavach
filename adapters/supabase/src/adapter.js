@@ -3,41 +3,65 @@ import { urlHashToParams } from '@kavach/core'
 import { defaultOrigin } from './constants'
 import { getActions } from './actions'
 import { pick, omit } from 'ramda'
+
 /**
- * Creates an adapter for supabase
+ * Parses the url hash to check if there is an error
  *
- * @param {import('./types').SupabaseConfig} options
- * @returns {import('@kavach/core').AuthAdapter}
+ * @param {URL} url
+ * @returns {import('@kavach/core').AuthError}
  */
-export function getAdapter(options) {
-	const client = createClient(options.url, options.anonKey)
-	const clients = createClientsForSchemas(
-		options.url,
-		options.anonKey,
-		options.schemas
+export function parseUrlError(url) {
+	const result = urlHashToParams(url?.hash)
+	if (result.error) {
+		return {
+			status: result.error_code,
+			name: result.error,
+			message: result.error_description
+		}
+	}
+	return null
+}
+
+/**
+ * Transforms supabase result into a structure that can be used by kavach
+ *
+ * @param {*} result
+ * @returns {import('@kavach/core').AuthResult}
+ */
+export function transformResult({ data, error }, creds) {
+	let message = ''
+	const credentials = omit(['password'], creds)
+
+	if (error) {
+		message =
+			error instanceof AuthApiError && error.status === 400
+				? 'Invalid credentials.'
+				: 'Server error. Try again later.'
+		return {
+			type: 'error',
+			error: pick(['status', 'name', 'message'], error),
+			message
+		}
+	} else if (credentials.provider === 'magic') {
+		message = `Magic link has been sent to "${credentials.email}".`
+		return { type: 'info', data, credentials, message }
+	}
+	return { type: 'success', data, credentials }
+}
+
+/**
+ * Synchronizes the session across all clients
+ *
+ * @param {Record<string, import('@supabase/supabase-js').SupabaseClient>} clients
+ * @param {import('@supabase/supabase-js').Session} session
+ * @returns {Promise<void>}
+ */
+const synchronizeClients = (clients, session) => {
+	// if (!session) return Promise.resolve()
+	const result = Object.keys(clients).map((schema) =>
+		clients[schema].auth.setSession(session)
 	)
-
-	/**
-	 * Synchronizes the session with all the clients
-	 *
-	 * @param {any} session
-	 * @returns {Promise<void>}
-	 */
-	const synchronize = async (session) => {
-		await synchronizeClients(clients, session)
-		return client.auth.setSession(session)
-	}
-
-	return {
-		signIn: (credentials) => handleSignIn(client, credentials),
-		signUp: (credentials) => handleSignUp(client, credentials),
-		signOut: () => client.auth.signOut(),
-		synchronize,
-		onAuthChange: (callback) => handleAuthChange(client, clients, callback),
-		parseUrlError,
-		// client: (schema) => clients[schema] || client,
-		server: (schema) => getActions(clients[schema] || client)
-	}
+	return Promise.all(result)
 }
 
 /**
@@ -102,51 +126,6 @@ async function handleSignUp(client, credentials) {
 }
 
 /**
- * Parses the url hash to check if there is an error
- *
- * @param {URL} url
- * @returns {import('@kavach/core').AuthError}
- */
-export function parseUrlError(url) {
-	const result = urlHashToParams(url?.hash)
-	if (result.error) {
-		return {
-			status: result.error_code,
-			name: result.error,
-			message: result.error_description
-		}
-	}
-	return null
-}
-
-/**
- * Transforms supabase result into a structure that can be used by kavach
- *
- * @param {*} result
- * @returns {import('@kavach/core').AuthResult}
- */
-export function transformResult({ data, error }, creds) {
-	let message = ''
-	const credentials = omit(['password'], creds)
-
-	if (error) {
-		message =
-			error instanceof AuthApiError && error.status === 400
-				? 'Invalid credentials.'
-				: 'Server error. Try again later.'
-		return {
-			type: 'error',
-			error: pick(['status', 'name', 'message'], error),
-			message
-		}
-	} else if (credentials.provider === 'magic') {
-		message = `Magic link has been sent to "${credentials.email}".`
-		return { type: 'info', data, credentials, message }
-	}
-	return { type: 'success', data, credentials }
-}
-
-/**
  * Generates clients for each schema. This is required to support multiple schemas with supabase
  *
  * @param {string}        url     The url of the supabase server
@@ -167,16 +146,38 @@ function createClientsForSchemas(url, anonKey, schemas = []) {
 }
 
 /**
- * Synchronizes the session across all clients
+ * Creates an adapter for supabase
  *
- * @param {Record<string, import('@supabase/supabase-js').SupabaseClient>} clients
- * @param {import('@supabase/supabase-js').Session} session
- * @returns {Promise<void>}
+ * @param {import('./types').SupabaseConfig} options
+ * @returns {import('@kavach/core').AuthAdapter}
  */
-const synchronizeClients = (clients, session) => {
-	// if (!session) return Promise.resolve()
-	const result = Object.keys(clients).map((schema) =>
-		clients[schema].auth.setSession(session)
+export function getAdapter(options) {
+	const client = createClient(options.url, options.anonKey)
+	const clients = createClientsForSchemas(
+		options.url,
+		options.anonKey,
+		options.schemas
 	)
-	return Promise.all(result)
+
+	/**
+	 * Synchronizes the session with all the clients
+	 *
+	 * @param {any} session
+	 * @returns {Promise<void>}
+	 */
+	const synchronize = async (session) => {
+		await synchronizeClients(clients, session)
+		return client.auth.setSession(session)
+	}
+
+	return {
+		signIn: (credentials) => handleSignIn(client, credentials),
+		signUp: (credentials) => handleSignUp(client, credentials),
+		signOut: () => client.auth.signOut(),
+		synchronize,
+		onAuthChange: (callback) => handleAuthChange(client, clients, callback),
+		parseUrlError,
+		// client: (schema) => clients[schema] || client,
+		server: (schema) => getActions(clients[schema] || client)
+	}
 }

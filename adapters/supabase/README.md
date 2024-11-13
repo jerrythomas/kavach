@@ -18,7 +18,9 @@ create table if not exists logs (
 , level                    varchar
 , running_on               varchar
 , logged_at                timestamp with time zone
+, context                  jsonb
 , message                  text
 , data                     jsonb
+, error                    jsonb
 );
 ```
