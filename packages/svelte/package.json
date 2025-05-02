@@ -30,22 +30,21 @@
   },
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
-    "@testing-library/svelte": "^5.1.0",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/ramda": "^0.30.0",
-    "@vitest/coverage-istanbul": "^1.6.0",
-    "@vitest/coverage-v8": "^1.6.0",
-    "@vitest/expect": "^1.6.0",
-    "@vitest/ui": "~1.6.0",
-    "eslint-config-shared": "workspace:*",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@testing-library/svelte": "^5.2.7",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/ramda": "^0.30.2",
+    "@vitest/coverage-istanbul": "^3.1.2",
+    "@vitest/coverage-v8": "^3.1.2",
+    "@vitest/expect": "^3.1.2",
+    "@vitest/ui": "~3.1.2",
     "js-yaml": "^4.1.0",
-    "jsdom": "^24.1.0",
+    "jsdom": "^26.1.0",
     "shared-config": "workspace:*",
-    "svelte": "^4.2.17",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.12",
-    "vitest": "~1.6.0"
+    "svelte": "^5.28.2",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.4",
+    "vitest": "~3.1.2"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -60,9 +59,7 @@
     "@kavach/core": "workspace:*",
     "@kavach/deflector": "workspace:*",
     "@kavach/logger": "workspace:*",
-    "@rokkit/atoms": "1.0.0-next.96",
-    "@rokkit/molecules": "1.0.0-next.96",
-    "@rokkit/organisms": "1.0.0-next.96",
+    "@rokkit/ui": "latest",
     "ramda": "^0.30.1"
   }
 }

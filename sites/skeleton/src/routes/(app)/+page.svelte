@@ -3,7 +3,7 @@
 	import { List } from '@rokkit/organisms'
 	import User from '$lib/User.svelte'
 
-	export let todos = [
+	let todos = [
 		{ completed: true, task: 'a completed task' },
 		{ completed: false, task: 'a pending task' }
 	]
@@ -15,7 +15,7 @@
 			provider: 'azure'
 		}
 	]
-	export let value
+	let value
 
 	function add() {
 		todos = [...todos, { completed: false, task: value }]
@@ -31,7 +31,7 @@
 	<input type="text" name="todo" bind:value class="flex flex-grow" />
 </form>
 
-{#each todos as todo}
+{#each todos as todo, index (index)}
 	<div class="flex flex-row w-full items-center gap-2 task">
 		<InputCheckbox bind:value={todo.completed} />
 		<!-- <Input type="checkbox" name="completed" bind:checked={todo.completed} /> -->

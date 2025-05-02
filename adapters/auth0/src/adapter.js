@@ -2,6 +2,46 @@ import { pick } from 'ramda'
 import createAuth0Client from '@auth0/auth0-spa-js'
 
 /**
+ * Handles errors that occur during authentication.
+ *
+ * @param {*} error The error object.
+ * @returns {{type: string, message: string, code: string, data: null}}
+ */
+function handleError(error) {
+	return {
+		type: 'error',
+		message: error.message || 'An unknown error occurred',
+		code: error.error || error.code,
+		data: null
+	}
+}
+
+/**
+ * Handles the authentication callback from Auth0.
+ *
+ * @param {Object} client The Auth0 client instance.
+ */
+async function handleAuthCallback(client) {
+	// When the user returns to the app after authentication, handle the authentication tokens
+	try {
+		await client.handleRedirectCallback()
+		const isAuthenticated = await client.isAuthenticated()
+		if (isAuthenticated) {
+			// User is authenticated, you can get the user profile or tokens as needed
+			const user = await client.getUser()
+			return Promise.resolve({ type: 'success', data: user })
+		}
+	} catch (error) {
+		return Promise.resolve(handleError(error))
+	}
+	return Promise.resolve({
+		type: 'error',
+		message: 'Authentication failed',
+		data: null
+	})
+}
+
+/**
  * Adapts Auth0 functionality to the expected adapter interface.
  *
  * @param {Object} options Configuration options for Auth0.
@@ -47,38 +87,4 @@ export async function getAdapter(options) {
 		client,
 		db: () => null // Placeholder, Auth0 does not manage database directly.
 	}
-}
-
-function handleError(error) {
-	return {
-		type: 'error',
-		message: error.message || 'An unknown error occurred',
-		code: error.error || error.code,
-		data: null
-	}
-}
-
-/**
- * Handles the authentication callback from Auth0.
- *
- * @param {Object} client The Auth0 client instance.
- */
-async function handleAuthCallback(client) {
-	// When the user returns to the app after authentication, handle the authentication tokens
-	try {
-		await client.handleRedirectCallback()
-		const isAuthenticated = await client.isAuthenticated()
-		if (isAuthenticated) {
-			// User is authenticated, you can get the user profile or tokens as needed
-			const user = await client.getUser()
-			return Promise.resolve({ type: 'success', data: user })
-		}
-	} catch (error) {
-		return Promise.resolve(handleError(error))
-	}
-	return Promise.resolve({
-		type: 'error',
-		message: 'Authentication failed',
-		data: null
-	})
 }

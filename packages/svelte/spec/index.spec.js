@@ -5,12 +5,12 @@ import * as utilities from '../src'
 describe('utilities', () => {
 	it('should contain all exported utilities', () => {
 		expect(Object.keys(utilities)).toEqual([
+			'createKavach',
+			'authStatus',
 			'getRequestBody',
 			'getRequestData',
 			'splitAuthData',
-			'asURLWithParams',
-			'createKavach',
-			'authStatus'
+			'asURLWithParams'
 		])
 	})
 })

@@ -8,23 +8,6 @@
  */
 
 /**
- * Converts an array of names into array of providers
- *
- * @param {Array<string>} names
- * @returns {Array<ProviderConfig>}
- */
-export function getProviderConfigFromNames(names) {
-	const providers = names.map((name) => ({
-		mode: getModeForProvider(name),
-		name: name.toLowerCase(),
-		label: name === 'Magic' ? 'email for Magic Link' : `Sign in with ${name}`,
-		scopes: [],
-		params: getParamsForProvider(name)
-	}))
-	return providers
-}
-
-/**
  * Identifies mode based on the input
  *
  * @param  {string} name
@@ -51,6 +34,22 @@ export function getParamsForProvider(name) {
 	return params
 }
 
+/**
+ * Converts an array of names into array of providers
+ *
+ * @param {Array<string>} names
+ * @returns {Array<ProviderConfig>}
+ */
+export function getProviderConfigFromNames(names) {
+	const providers = names.map((name) => ({
+		mode: getModeForProvider(name),
+		name: name.toLowerCase(),
+		label: name === 'Magic' ? 'email for Magic Link' : `Sign in with ${name}`,
+		scopes: [],
+		params: getParamsForProvider(name)
+	}))
+	return providers
+}
 /**
  * Extracts the user info from the supabase user object
  *

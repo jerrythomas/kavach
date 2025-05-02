@@ -34,6 +34,7 @@ vi.mock('@supabase/supabase-js', async (importOriginal) => ({
 			onAuthStateChange: vi.fn((callback) => {
 				subscription = { unsubscribe: vi.fn() }
 				// Trigger the callback to simulate an auth event
+				// eslint-disable-next-line no-undef
 				setTimeout(() => {
 					callback('SIGNED_IN', { user: 'test user' })
 				}, 100)

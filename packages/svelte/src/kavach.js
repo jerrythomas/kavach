@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { getUserInfo, setHeaderCookies } from '@kavach/core'
 import { createDeflector } from '@kavach/deflector'
 import { zeroLogger } from '@kavach/logger'
@@ -10,41 +11,6 @@ const pass = async () => {
 	/* Used as a placeholder */
 }
 export const authStatus = writable()
-
-/**
- * Create Kavach instance
- *
- * @param {import('@kavach/core').AuthAdapter} adapter
- * @param {object} options
- * @returns {object} kavach
- */
-export function createKavach(adapter, options = {}) {
-	const { page } = options
-	const agents = {
-		logger: (options.logger ?? zeroLogger).getContextLogger({
-			package: '@kavach/svelte',
-			module: 'kavach'
-		}),
-		deflector: createDeflector(options),
-		invalidateAll: options.invalidateAll ?? pass
-	}
-
-	if (page && RUNNING_ON === 'browser') {
-		page.subscribe(({ url }) => {
-			handleAuthUrlError(adapter, agents, url)
-		})
-	}
-
-	return {
-		signIn: (credentials) => handleSignIn(adapter, agents, credentials),
-		signUp: (credentials) => handleSignUp(adapter, agents, credentials),
-		signOut: () => handleSignOut(adapter, agents),
-		onAuthChange: () => handleAuthChange(adapter, agents),
-		handle: (request) => handleRouteProtection(adapter, agents, request),
-		// client: (schema) => adapter.client(schema),
-		server: (schema) => adapter.server(schema)
-	}
-}
 
 /**
   * Parse auth errors from url, log them and provide error to callback
@@ -67,63 +33,6 @@ function handleAuthUrlError(adapter, agents, url) {
 		})
 		authStatus.set({ error, message: error.message })
 	}
-}
-
-/**
- * Handle route protection
- *
- * @param {import('@kavach/core').AuthAdapter} adapter
- * @param {import('./types').KavachAgents}     agents
- * @param {object}                             request
- * @returns {Promise<void>}
- */
-function handleRouteProtection(adapter, agents, { event, resolve }) {
-	const { deflector } = agents
-	event.locals.session = parseSessionFromCookies(event)
-	deflector.setSession(event.locals.session)
-
-	if (event.url.pathname.startsWith(deflector.app.session)) {
-		return handleSessionSync(event, adapter, deflector)
-	}
-
-	return handleUnauthorizedAccess(agents, { event, resolve })
-}
-/**
- * Handle auth change
- *
- * @param {import('@kavach/core').AuthAdapter} adapter
- * @param {import('./types').KavachAgents}     agents
- */
-function handleAuthChange(adapter, agents) {
-	const { invalidateAll } = agents
-	const logger = agents.logger.getContextLogger({ method: 'handleAuthChange' })
-	if (RUNNING_ON !== 'browser') return
-
-	adapter.onAuthChange(async (event, session) => {
-		logger.debug({
-			message: 'authentication state changed',
-			data: { event }
-		})
-
-		const result = await syncSessionWithServer(agents, event, session)
-		if (result.status === 200) invalidateAll()
-
-		return result
-	})
-}
-
-/**
- * Handle sign out
- *
- * @param {import('@kavach/core').AuthAdapter} adapter
- * @param {import('./types').KavachAgents}     agents
- * @returns {Promise<void>}
- */
-async function handleSignOut(adapter, agents) {
-	await adapter.signOut()
-	syncSessionWithServer(agents, 'SIGNED_OUT')
-	agents.invalidateAll()
-	authStatus.set(null)
 }
 
 /**
@@ -190,6 +99,27 @@ function handleUnauthorizedAccess(agents, { event, resolve }) {
 }
 
 /**
+ * Returns a cookie header using provided object and options
+ *
+ * @param {*} session
+ * @returns {object} cookie header
+ */
+export function setCookieFromSession(session) {
+	if (session) {
+		const maxAge = session.expires_in ?? 3600 //* 1000
+		return setHeaderCookies(
+			{
+				session: {
+					...pick(['refresh_token', 'access_token'], session),
+					user: getUserInfo(session.user)
+				}
+			},
+			{ maxAge }
+		)
+	}
+	return setHeaderCookies({ session })
+}
+/**
  * Synchronize session with the server
  *
  * @param {object} event
@@ -236,28 +166,6 @@ function parseSessionFromCookies(event) {
 }
 
 /**
- * Returns a cookie header using provided object and options
- *
- * @param {*} session
- * @returns {object} cookie header
- */
-export function setCookieFromSession(session) {
-	if (session) {
-		const maxAge = session.expires_in ?? 3600 //* 1000
-		return setHeaderCookies(
-			{
-				session: {
-					...pick(['refresh_token', 'access_token'], session),
-					user: getUserInfo(session.user)
-				}
-			},
-			{ maxAge }
-		)
-	}
-	return setHeaderCookies({ session })
-}
-
-/**
  * Send sign in status and session to server
  *
  * @param {import('@kavach/core').Deflector} deflector
@@ -270,4 +178,95 @@ async function syncSessionWithServer(agents, event, session = null) {
 		body: JSON.stringify({ event, session })
 	})
 	return result
+}
+
+/**
+ * Handle route protection
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ * @param {object}                             request
+ * @returns {Promise<void>}
+ */
+function handleRouteProtection(adapter, agents, { event, resolve }) {
+	const { deflector } = agents
+	event.locals.session = parseSessionFromCookies(event)
+	deflector.setSession(event.locals.session)
+
+	if (event.url.pathname.startsWith(deflector.app.session)) {
+		return handleSessionSync(event, adapter, deflector)
+	}
+
+	return handleUnauthorizedAccess(agents, { event, resolve })
+}
+/**
+ * Handle auth change
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ */
+function handleAuthChange(adapter, agents) {
+	const { invalidateAll } = agents
+	const logger = agents.logger.getContextLogger({ method: 'handleAuthChange' })
+	if (RUNNING_ON !== 'browser') return
+
+	adapter.onAuthChange(async (event, session) => {
+		logger.debug({
+			message: 'authentication state changed',
+			data: { event }
+		})
+
+		const result = await syncSessionWithServer(agents, event, session)
+		if (result.status === 200) invalidateAll()
+
+		return result
+	})
+}
+
+/**
+ * Handle sign out
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('./types').KavachAgents}     agents
+ * @returns {Promise<void>}
+ */
+async function handleSignOut(adapter, agents) {
+	await adapter.signOut()
+	syncSessionWithServer(agents, 'SIGNED_OUT')
+	agents.invalidateAll()
+	authStatus.set(null)
+}
+/**
+ * Create Kavach instance
+ *
+ * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {object} options
+ * @returns {object} kavach
+ */
+export function createKavach(adapter, options = {}) {
+	const { page } = options
+	const agents = {
+		logger: (options.logger ?? zeroLogger).getContextLogger({
+			package: '@kavach/svelte',
+			module: 'kavach'
+		}),
+		deflector: createDeflector(options),
+		invalidateAll: options.invalidateAll ?? pass
+	}
+
+	if (page && RUNNING_ON === 'browser') {
+		page.subscribe(({ url }) => {
+			handleAuthUrlError(adapter, agents, url)
+		})
+	}
+
+	return {
+		signIn: (credentials) => handleSignIn(adapter, agents, credentials),
+		signUp: (credentials) => handleSignUp(adapter, agents, credentials),
+		signOut: () => handleSignOut(adapter, agents),
+		onAuthChange: () => handleAuthChange(adapter, agents),
+		handle: (request) => handleRouteProtection(adapter, agents, request),
+		// client: (schema) => adapter.client(schema),
+		server: (schema) => adapter.server(schema)
+	}
 }

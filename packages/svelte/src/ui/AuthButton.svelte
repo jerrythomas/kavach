@@ -1,19 +1,18 @@
 <script>
-	import { Button } from '@rokkit/molecules'
-	import { createEventDispatcher } from 'svelte'
+	import { Button } from '@rokkit/ui'
 
-	const dispatch = createEventDispatcher()
-
-	/** @type {string} */
-	export let provider
-	/** @type {string} */
-	export let label
-	/** @type {Array<string>} */
-	export let scopes = []
+	/**
+	 * @typedef Props
+	 * @property {string} provider
+	 * @property {string} label
+	 * @property {Array<string>} scopes
+	 * @property {Function} onclick
+	 */
+	let { provider, label, scopes = [], onclick } = $props()
 
 	function handle() {
-		dispatch('click', { provider, scopes })
+		onclick?.({ provider, scopes })
 	}
 </script>
 
-<Button on:click={handle} {label} leftIcon="logo-{provider}" />
+<Button onclick={handle} {label} leftIcon="logo-{provider}" />

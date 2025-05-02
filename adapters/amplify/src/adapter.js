@@ -1,6 +1,37 @@
 import Amplify, { Auth } from 'aws-amplify'
 
 /**
+ * Configures the Amplify library with the provided options.
+ *
+ * @param {*} options Configuration options for Amplify.
+ */
+function configure(options) {
+	Amplify.configure({
+		Auth: {
+			region: options.region,
+			userPoolId: options.userPoolId,
+			userPoolWebClientId: options.userPoolWebClientId,
+			authenticationFlowType: options.authenticationFlowType || 'USER_SRP_AUTH'
+		}
+	})
+}
+
+/**
+ * A helper function to format errors.
+ *
+ * @param {*} error The error object received from a failed operation.
+ * @returns {object} The formatted error.
+ */
+function handleError(error) {
+	return {
+		type: 'error',
+		message: error.message || 'An unknown error occurred',
+		code: error.code,
+		data: null
+	}
+}
+
+/**
  * Handles the sign-in process based on the provided credentials.
  *
  * @param {*} credentials Credentials for signing in.
@@ -52,21 +83,6 @@ async function handleSignOut(authInstance) {
 }
 
 /**
- * A helper function to format errors.
- *
- * @param {*} error The error object received from a failed operation.
- * @returns {object} The formatted error.
- */
-function handleError(error) {
-	return {
-		type: 'error',
-		message: error.message || 'An unknown error occurred',
-		code: error.code,
-		data: null
-	}
-}
-
-/**
  * Adapts AWS Cognito functionality to the expected adapter interface.
  *
  * @param {Object} options Configuration options for AWS Amplify (Cognito).
@@ -95,15 +111,4 @@ export function getAdapter(options) {
 		client: null, // AWS Cognito does not have a direct equivalent to a "client" in the Supabase sense.
 		db: () => null // Placeholder to maintain structural consistency. Database interactions would typically use other AWS services like DynamoDB.
 	}
-}
-
-function configure(options) {
-	Amplify.configure({
-		Auth: {
-			region: options.region,
-			userPoolId: options.userPoolId,
-			userPoolWebClientId: options.userPoolWebClientId,
-			authenticationFlowType: options.authenticationFlowType || 'USER_SRP_AUTH'
-		}
-	})
 }

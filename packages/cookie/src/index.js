@@ -19,6 +19,22 @@ const encode = encodeURIComponent
 const pairSplitRegExp = /; */
 
 /**
+ * Try decoding a string using a decoding function.
+ *
+ * @param {string} str
+ * @param {function} decodeFn
+ * @returns {string}
+ */
+function tryDecode(str, decodeFn) {
+	try {
+		return decodeFn(str)
+		// eslint-disable-next-line no-unused-vars
+	} catch (e) {
+		return str
+	}
+}
+
+/**
  * RegExp to match field-content in RFC 7230 sec 3.2
  *
  * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
@@ -26,7 +42,6 @@ const pairSplitRegExp = /; */
  * obs-text      = %x80-FF
  */
 
-// eslint-disable-next-line no-control-regex
 const fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/u
 
 /**
@@ -114,13 +129,13 @@ export function serialize(name, val, options) {
 	let str = `${name}=${value}`
 
 	if (opt.maxAge !== null) {
-		const maxAge = opt.maxAge - 0
+		// const maxAge = Number(opt.maxAge) - 0
 
-		if (isNaN(maxAge) || !isFinite(maxAge)) {
+		if (isNaN(opt.maxAge) || !isFinite(opt.maxAge)) {
 			throw new TypeError('option maxAge is invalid')
 		}
 
-		str += `; Max-Age=${Math.floor(maxAge)}`
+		str += `; Max-Age=${Math.floor(Number(opt.maxAge))}`
 	}
 
 	if (opt.domain) {
@@ -181,23 +196,3 @@ export function serialize(name, val, options) {
 
 	return str
 }
-
-/**
- * Try decoding a string using a decoding function.
- *
- * @param {string} str
- * @param {function} decodeFn
- * @returns {string}
- */
-function tryDecode(str, decodeFn) {
-	try {
-		return decodeFn(str)
-	} catch (e) {
-		return str
-	}
-}
-
-// export default {
-// 	parse,
-// 	serialize
-// }

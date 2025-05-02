@@ -18,7 +18,11 @@ export function toDataURL(buffer, contentType = 'image/jpeg') {
  * @param {String} token
  * @returns {Promise<any>} containing status and the photo in a Buffer
  */
-export async function getUserPhotoFromMicrosoft(email, token) {
+export async function getUserPhotoFromMicrosoft(
+	email,
+	token,
+	fetch = global.fetch
+) {
 	const url = `https://graph.microsoft.com/v1.0/users/${email}/photo/$value`
 
 	const response = await fetch(url, {

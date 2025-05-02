@@ -42,25 +42,6 @@ export async function log(writer, level, data, context = {}) {
 }
 
 /**
- * Get a logger object using a writer and log level
- *
- * - Log level defaults to 'error'
- * - Logger instance defaults to a zero logger when an invalid writer is provided
- *
- * @param {*} writer  Any writer object with a write method
- * @param {import('./types').LoggerOptions} options
- * @returns {import('./types').Logger}
- */
-export function getLogger(writer, options = {}) {
-	const level = getLogLevel(options?.level)
-	const context = options?.context || {}
-
-	if (!writer || typeof writer.write !== 'function') return zeroLogger
-
-	return getContextLogger(writer, level, context)
-}
-
-/**
  * Get a logger for a context. Context includes attributes like package, module, method
  *
  * @param {import('./types').LogWriter}     writer
@@ -93,4 +74,23 @@ export function getContextLogger(writer, level, context) {
  */
 export function getLogLevel(level) {
 	return level in loggingLevels ? level : defaultLogLevel
+}
+
+/**
+ * Get a logger object using a writer and log level
+ *
+ * - Log level defaults to 'error'
+ * - Logger instance defaults to a zero logger when an invalid writer is provided
+ *
+ * @param {*} writer  Any writer object with a write method
+ * @param {import('./types').LoggerOptions} options
+ * @returns {import('./types').Logger}
+ */
+export function getLogger(writer, options = {}) {
+	const level = getLogLevel(options.level)
+	const context = options.context ?? {}
+
+	if (!writer || typeof writer.write !== 'function') return zeroLogger
+
+	return getContextLogger(writer, level, context)
 }

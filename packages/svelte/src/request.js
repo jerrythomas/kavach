@@ -11,6 +11,7 @@ export async function getRequestBody(request) {
 	try {
 		body = await request.formData()
 		body = Object.fromEntries(body.entries())
+		// eslint-disable-next-line no-unused-vars
 	} catch (err) {
 		body = await request.json()
 	}

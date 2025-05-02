@@ -6,13 +6,14 @@ exports[`AuthError.svelte > should render error with name 1`] = `
     class="flex flex-col"
   >
     <span>
+      <!---->
        
-      AuthApi
-      :
-       
-      An error
+      AuthApi:
+      <!---->
+       An error
     </span>
   </error>
+  
 </div>
 `;
 
@@ -22,15 +23,15 @@ exports[`AuthError.svelte > should render error with status & name 1`] = `
     class="flex flex-col"
   >
     <span>
-      400
-      :
+      400:
+      <!---->
        
-      AuthApi
-      :
-       
-      An error
+      AuthApi:
+      <!---->
+       An error
     </span>
   </error>
+  
 </div>
 `;
 
@@ -40,13 +41,14 @@ exports[`AuthError.svelte > should render error with status 1`] = `
     class="flex flex-col"
   >
     <span>
-      400
-      :
+      400:
+      <!---->
        
-       
-      An error
+      <!---->
+       An error
     </span>
   </error>
+  
 </div>
 `;
 
@@ -56,44 +58,12 @@ exports[`AuthError.svelte > should render with changes 1`] = `
     class="flex flex-col"
   >
     <span>
+      <!---->
        
-       
-      An error occurred
+      <!---->
+       An error occurred
     </span>
   </error>
-</div>
-`;
-
-exports[`AuthError.svelte > should render with changes 2`] = `
-<div>
-  <error
-    class="flex flex-col"
-  >
-    <span>
-       
-      AuthApi
-      :
-       
-      Something else
-    </span>
-  </error>
-</div>
-`;
-
-exports[`AuthError.svelte > should render with changes 3`] = `
-<div>
-  <error
-    class="flex flex-col"
-  >
-    <span>
-      400
-      :
-       
-      AuthApi
-      :
-       
-      Another error
-    </span>
-  </error>
+  
 </div>
 `;

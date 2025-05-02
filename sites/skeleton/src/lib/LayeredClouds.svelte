@@ -1,19 +1,19 @@
 <script>
-	let className = ''
-
-	export { className as class }
-	export let width = '100%'
-	export let height = 72
-	export let layers = []
-	export let seconds = 10
-	export let animation = true
-	export let direction = 'y'
+	let {
+		class: className = '',
+		width = '100%',
+		height = 72,
+		layers = [],
+		seconds = 10,
+		animation = true,
+		direction = 'y'
+	} = $props()
 </script>
 
 <svg {width} {height} viewBox="0 0 320 72" style:--seconds="{seconds}s" class={className}>
-	{#each layers as layer}
+	{#each layers as layer, index (index)}
 		<g class={layer.class} fill={layer.fill}>
-			{#each layer.items as item, index}
+			{#each layer.items as item, index (index)}
 				{#if item.rx === item.ry}
 					<circle
 						class:bobble={animation}

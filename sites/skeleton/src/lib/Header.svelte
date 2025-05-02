@@ -4,11 +4,7 @@
 	import { media } from '$lib'
 	import ThemeSwitcher from './ThemeSwitcher.svelte'
 
-	let className = ''
-	export { className as class }
-
-	export let version
-	export let menu = []
+	let { class: className = '', version, menu = [] } = $props()
 
 	let loading = false
 	beforeNavigate(() => (loading = true))
@@ -31,7 +27,7 @@
 	</div>
 	<settings class="flex items-center justify-end gap-3 pr-4">
 		<nav class="flex gap-3 pr-3 uppercase text-neutral-900">
-			{#each menu as item}
+			{#each menu as item, index (index)}
 				<a
 					href="/{item.slug}"
 					class="border-b-2 leading-loose active:border-secondary-700 hover:text-secondary-700"

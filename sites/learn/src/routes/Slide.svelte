@@ -10,7 +10,7 @@
 	<img src={image} alt={title} />
 	<p class="py-4">{description}</p>
 	<ul class="flex flex-col list-disc px-4 gap-1">
-		{#each points as point}
+		{#each points as point, index (index)}
 			<li>{point}</li>
 		{/each}
 	</ul>

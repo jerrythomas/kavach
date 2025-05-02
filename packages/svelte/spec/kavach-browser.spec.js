@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createMockAdapter, createMockEvent } from './mock'
 import { createKavach } from '../src/kavach'

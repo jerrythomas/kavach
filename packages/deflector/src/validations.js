@@ -60,28 +60,6 @@ export function validateRoutingRule(rule) {
 }
 
 /**
- * A redundant rule has a path that is included in another rule and has the same public value or roles.
- * This function identifies redundant rules and marks them as such.
- *
- * @param {import('./types').RoutingRules} rules
- * @returns {import('./types').RoutingRules} The rules with redundant rules identified
- */
-export function validateRedundantRules(rules) {
-	const maxDepth = Math.max(...rules.map(({ depth }) => depth))
-
-	for (let i = maxDepth; i > 0; i--) {
-		const children = rules.filter((rule) => rule.depth === i)
-		const parents = rules.filter((rule) => rule.depth < i)
-
-		children.forEach((rule) => {
-			markRedundant(rule, parents)
-		})
-	}
-
-	return rules
-}
-
-/**
  * Marks a rule as redundant if it is included in another rule and has the same public value or roles.
  *
  * @param {import('./types').RoutingRule} rule
@@ -102,6 +80,28 @@ export function markRedundant(rule, rules) {
 		]
 	}
 	return rule
+}
+
+/**
+ * A redundant rule has a path that is included in another rule and has the same public value or roles.
+ * This function identifies redundant rules and marks them as such.
+ *
+ * @param {import('./types').RoutingRules} rules
+ * @returns {import('./types').RoutingRules} The rules with redundant rules identified
+ */
+export function validateRedundantRules(rules) {
+	const maxDepth = Math.max(...rules.map(({ depth }) => depth))
+
+	for (let i = maxDepth; i > 0; i--) {
+		const children = rules.filter((rule) => rule.depth === i)
+		const parents = rules.filter((rule) => rule.depth < i)
+
+		children.forEach((rule) => {
+			markRedundant(rule, parents)
+		})
+	}
+
+	return rules
 }
 
 /**

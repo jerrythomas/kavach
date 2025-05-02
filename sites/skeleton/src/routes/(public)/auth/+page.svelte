@@ -3,11 +3,11 @@
 	// import { getContext } from 'svelte'
 	// import Divide from '$lib/Divide.svelte'
 	import { urlHashToParams } from '@kavach/core'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { onMount } from 'svelte'
 
-	export let error = {}
-	export let response = null
+	let error = {}
+	let response = null
 	const providers = [
 		{
 			name: 'google',
@@ -34,7 +34,7 @@
 		}
 	]
 	onMount(() => {
-		error = urlHashToParams($page.url.hash)
+		error = urlHashToParams(page.url.hash)
 	})
 
 	function handleError(event) {
@@ -48,7 +48,7 @@
 <!--  -->
 <nav class="flex flex-col flex-grow items-center p-8 gap-2">
 	<section class="flex flex-col w-full gap-2 py-2">
-		{#each providers as provider}
+		{#each providers as provider (provider.name)}
 			{#if ['google', 'github', 'azure'].includes(provider.name)}
 				<AuthProvider {...provider} on:success={handleSuccess} on:error={handleError} />
 			{/if}

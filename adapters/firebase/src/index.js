@@ -24,6 +24,49 @@ const authProviders = {
 }
 
 /**
+ *
+ * @param {*} credentials
+ * @param {*} options
+ * @param {*} app
+ * @returns
+ */
+async function handleSignIn(credentials, options, app) {
+	const { provider, email, mode, scopes, params } = credentials
+	const { redirectTo } = options
+
+	if (provider === 'magic' || mode === 'otp') {
+		await sendSignInLinkToEmail(app, email, {
+			url: redirectTo,
+			handleCodeInApp: true
+		})
+	} else {
+		const authProvider = authProviders[credentials.provider]()
+		scopes.forEach((scope) => authProvider.addScope(scope))
+		params.forEach((param) => authProvider.setCustomParameters(param))
+
+		const result = await signInWithPopup(app, authProvider)
+		return result.user
+	}
+	return null
+}
+
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+function getUserInfo(data) {
+	if (!data) return data
+
+	return {
+		id: data.uid,
+		role: 'authenticated',
+		name: data.displayName,
+		...omit(['uid', 'displayName'], data)
+	}
+}
+
+/**
  * Provides an adapter for performing auth actions using firebase
  *
  * @param {*} config
@@ -58,34 +101,4 @@ export function adapter(config) {
 	}
 
 	return { signIn, signOut, onAuthChange, getSession, getUser }
-}
-
-async function handleSignIn(credentials, options, app) {
-	const { provider, email, mode, scopes, params } = credentials
-	const { redirectTo } = options
-
-	if (provider === 'magic' || mode === 'otp') {
-		await sendSignInLinkToEmail(app, email, {
-			url: redirectTo,
-			handleCodeInApp: true
-		})
-	} else {
-		const authProvider = authProviders[credentials.provider]()
-		scopes.forEach((scope) => authProvider.addScope(scope))
-		params.forEach((param) => authProvider.setCustomParameters(param))
-
-		const result = await signInWithPopup(app, authProvider)
-		return result.user
-	}
-	return null
-}
-function getUserInfo(data) {
-	if (!data) return data
-
-	return {
-		id: data.uid,
-		role: 'authenticated',
-		name: data.displayName,
-		...omit(['uid', 'displayName'], data)
-	}
 }

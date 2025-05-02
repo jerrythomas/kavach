@@ -29,7 +29,7 @@
 			<UserProfile {...user} />
 		{/if}
 		<nav class="flex flex-col leading-loose gap-2px">
-			{#each menu as { href, icon, label }}
+			{#each menu as { href, icon, label }, index (index)}
 				<a {href} class:active={$page.url.pathname === href}>
 					<icon class={icon} />
 					{label}

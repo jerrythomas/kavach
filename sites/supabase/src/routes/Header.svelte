@@ -31,7 +31,7 @@
 	</div>
 	<top-menu class="flex flex-grow items-center justify-center">
 		<nav class="flex gap-3 pr-3 uppercase text-neutral-900">
-			{#each menu as item}
+			{#each menu as item, index (index)}
 				<a
 					href="/{item.slug}"
 					class="border-b-2 leading-loose active:border-secondary-700 hover:text-secondary-700"

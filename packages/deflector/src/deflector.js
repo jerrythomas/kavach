@@ -11,30 +11,6 @@ import { validateRoutingRules } from './validations'
 import { findMatchingRoute, isEndpointRoute, getRedirects } from './utils'
 
 /**
- * Create a deflector using provided options
- *
- * @param {import('./types').DeflectorOptions} options
- * @returns {import('./types').Deflector}
- */
-export function createDeflector(options = {}) {
-	const logger = options.logger ?? zeroLogger
-	const config = configureRules(options, logger)
-
-	let sessionConfig = configureRoleRoutes(config, null)
-
-	const setSession = (/** @type {import('./types').AuthSession} */ session) => {
-		sessionConfig = configureRoleRoutes(config, session?.user?.role ?? null)
-	}
-	const protect = (path) => protectRoute(sessionConfig, path)
-
-	return {
-		app: config.app,
-		setSession,
-		protect
-	}
-}
-
-/**
  * Validate rules, log errors and warnings, and configure the rules.
  *
  * @param {import('./types').DeflectorOptions} options
@@ -152,5 +128,29 @@ export function configureRoleRoutes(config, role) {
 			restricted: getRestrictedRoutes(config, role).map((rule) => rule.path)
 		},
 		role
+	}
+}
+
+/**
+ * Create a deflector using provided options
+ *
+ * @param {import('./types').DeflectorOptions} options
+ * @returns {import('./types').Deflector}
+ */
+export function createDeflector(options = {}) {
+	const logger = options.logger ?? zeroLogger
+	const config = configureRules(options, logger)
+
+	let sessionConfig = configureRoleRoutes(config, null)
+
+	const setSession = (/** @type {import('./types').AuthSession} */ session) => {
+		sessionConfig = configureRoleRoutes(config, session?.user?.role ?? null)
+	}
+	const protect = (path) => protectRoute(sessionConfig, path)
+
+	return {
+		app: config.app,
+		setSession,
+		protect
 	}
 }
