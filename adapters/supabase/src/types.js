@@ -12,12 +12,6 @@
  */
 
 /**
- * @typedef SupabaseConfig
- * @property {string}        url
- * @property {string}        anonKey
- * @property {Array<string>} [schemas]
- */
-/**
  * @typedef {(config:SupabaseConfig) => import('@kavach/core').AuthAdapter} GetSupabaseAdapter
  */
 

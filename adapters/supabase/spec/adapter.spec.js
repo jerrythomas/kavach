@@ -8,6 +8,7 @@ let subscription = null
 vi.mock('@supabase/supabase-js', async (importOriginal) => ({
 	...(await importOriginal()),
 	createClient: vi.fn().mockReturnValue({
+		// schema: vi.fn(),
 		auth: {
 			signInWithOtp: vi.fn().mockImplementation((input) => {
 				return {
@@ -61,15 +62,15 @@ describe('getAdapter', () => {
 			synchronize: expect.any(Function),
 			onAuthChange: expect.any(Function),
 			parseUrlError: expect.any(Function),
-			// client: expect.any(Function),
-			server: expect.any(Function)
+			proxy: expect.any(Function),
+			actions: expect.any(Function)
 		})
 	})
 
-	describe('server', () => {
+	describe('actions', () => {
 		it('should return actions for a schema', () => {
 			const adapter = getAdapter(options)
-			const actions = adapter.server('public')
+			const actions = adapter.actions('public')
 			expect(actions).toEqual({
 				call: expect.any(Function),
 				delete: expect.any(Function),
@@ -83,7 +84,7 @@ describe('getAdapter', () => {
 
 		it('should return actions without schema', () => {
 			const adapter = getAdapter(options)
-			const actions = adapter.server()
+			const actions = adapter.actions()
 			expect(actions).toEqual({
 				call: expect.any(Function),
 				delete: expect.any(Function),
@@ -98,23 +99,19 @@ describe('getAdapter', () => {
 
 	it('should create adapters without multiple clients', () => {
 		const adapter = getAdapter(omit(['schemas'], options))
-		expect(adapter.server('public').connection).toEqual(
-			adapter.server().connection
-		)
+		expect(adapter.actions('public').connection).toEqual(adapter.actions().connection)
 	})
 
 	it('should handle sign in using magic link', async () => {
 		const adapter = getAdapter(options)
 		const credentials = { provider: 'magic', email: 'a@b.com' }
 		const result = await adapter.signIn(credentials)
-		expect(adapter.server().connection.auth.signInWithOtp).toHaveBeenCalledWith(
-			{
-				email: 'a@b.com',
-				options: {
-					emailRedirectTo: 'http://localhost:3000'
-				}
+		expect(adapter.actions().connection.auth.signInWithOtp).toHaveBeenCalledWith({
+			email: 'a@b.com',
+			options: {
+				emailRedirectTo: 'http://localhost:3000'
 			}
-		)
+		})
 
 		expect(result).toEqual({
 			type: 'info',
@@ -138,9 +135,7 @@ describe('getAdapter', () => {
 			password: '123456'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(
-			adapter.server().connection.auth.signInWithPassword
-		).toHaveBeenCalledWith({
+		expect(adapter.actions().connection.auth.signInWithPassword).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			password: '123456'
 		})
@@ -160,9 +155,7 @@ describe('getAdapter', () => {
 			password: '123456'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(
-			adapter.server().connection.auth.signInWithPassword
-		).toHaveBeenCalledWith({
+		expect(adapter.actions().connection.auth.signInWithPassword).toHaveBeenCalledWith({
 			phone: '1234567890',
 			password: '123456'
 		})
@@ -187,9 +180,7 @@ describe('getAdapter', () => {
 			provider: 'gmail',
 			options: { scopes: '', redirectTo: 'http://localhost:3000' }
 		}
-		expect(
-			adapter.server().connection.auth.signInWithOAuth
-		).toHaveBeenCalledWith(expectedCreds)
+		expect(adapter.actions().connection.auth.signInWithOAuth).toHaveBeenCalledWith(expectedCreds)
 
 		expect(result).toEqual({
 			type: 'success',
@@ -206,7 +197,7 @@ describe('getAdapter', () => {
 			password: '123456'
 		}
 		const result = await adapter.signUp(credentials)
-		expect(adapter.server().connection.auth.signUp).toHaveBeenCalledWith({
+		expect(adapter.actions().connection.auth.signUp).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			password: '123456'
 		})
@@ -221,18 +212,16 @@ describe('getAdapter', () => {
 	it('should handle sign out', async () => {
 		const adapter = getAdapter(options)
 		await adapter.signOut()
-		expect(adapter.server().connection.auth.signOut).toHaveBeenCalled()
+		expect(adapter.actions().connection.auth.signOut).toHaveBeenCalled()
 	})
 
 	it('should synchronize session', async () => {
 		const adapter = getAdapter(options)
 		await adapter.synchronize({ mock: 'session' })
-		expect(
-			adapter.server('public').connection.auth.setSession
-		).toHaveBeenCalledWith({
+		expect(adapter.actions('public').connection.auth.setSession).toHaveBeenCalledWith({
 			mock: 'session'
 		})
-		expect(adapter.server().connection.auth.setSession).toHaveBeenCalledWith({
+		expect(adapter.actions().connection.auth.setSession).toHaveBeenCalledWith({
 			mock: 'session'
 		})
 	})
@@ -329,9 +318,7 @@ describe('onAuthChange', () => {
 		const unsubscribe = adapter.onAuthChange(callback)
 		vi.advanceTimersByTime(100)
 		await vi.runAllTimersAsync()
-		expect(
-			adapter.server().connection.auth.onAuthStateChange
-		).toHaveBeenCalled()
+		expect(adapter.actions().connection.auth.onAuthStateChange).toHaveBeenCalled()
 
 		// Ensure the callback was called with the expected arguments
 		expect(callback).toHaveBeenCalledWith('SIGNED_IN', { user: 'test user' })

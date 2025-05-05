@@ -12,6 +12,7 @@ describe('actions', () => {
 		delete: vi.fn().mockReturnValue({ match: result }),
 		rpc: result
 	}
+	client.schema = vi.fn().mockReturnThis(client)
 
 	it('should return an object with actions', () => {
 		const actions = getActions(client)
@@ -30,6 +31,14 @@ describe('actions', () => {
 		it('should select data without input', async () => {
 			const actions = getActions(client)
 			await actions.get('entity')
+			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client.select).toHaveBeenCalledWith('*')
+			expect(client.select().match).toHaveBeenCalledWith({})
+		})
+		it('should select data without input (schema)', async () => {
+			const actions = getActions(client)
+			await actions.get('public.entity')
+			expect(client.schema).toHaveBeenCalledWith('public')
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.select).toHaveBeenCalledWith('*')
 			expect(client.select().match).toHaveBeenCalledWith({})
@@ -68,12 +77,28 @@ describe('actions', () => {
 			expect(client.insert).toHaveBeenCalledWith({ data: 'value' })
 			expect(client.insert().select).toHaveBeenCalled()
 		})
+		it('should insert data when schema is provided', async () => {
+			const actions = getActions(client)
+			await actions.put('public.entity', { data: 'value' })
+			expect(client.schema).toHaveBeenCalledWith('public')
+			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client.insert).toHaveBeenCalledWith({ data: 'value' })
+			expect(client.insert().select).toHaveBeenCalled()
+		})
 	})
 
 	describe('post', () => {
 		it('should upsert data', async () => {
 			const actions = getActions(client)
 			await actions.post('entity', { data: 'value' })
+			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client.upsert).toHaveBeenCalledWith({ data: 'value' })
+			expect(client.upsert().select).toHaveBeenCalled()
+		})
+		it('should upsert data when schema is provided', async () => {
+			const actions = getActions(client)
+			await actions.post('public.entity', { data: 'value' })
+			expect(client.schema).toHaveBeenCalledWith('public')
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.upsert).toHaveBeenCalledWith({ data: 'value' })
 			expect(client.upsert().select).toHaveBeenCalled()
@@ -88,12 +113,28 @@ describe('actions', () => {
 			expect(client.update).toHaveBeenCalledWith({ data: 'value' })
 			expect(client.update().select).toHaveBeenCalled()
 		})
+		it('should update data when schema is provided', async () => {
+			const actions = getActions(client)
+			await actions.patch('public.entity', { data: 'value' })
+			expect(client.schema).toHaveBeenCalledWith('public')
+			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client.update).toHaveBeenCalledWith({ data: 'value' })
+			expect(client.update().select).toHaveBeenCalled()
+		})
 	})
 
 	describe('delete', () => {
 		it('should delete data', async () => {
 			const actions = getActions(client)
 			await actions.delete('entity', { filter: 'value' })
+			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client.delete).toHaveBeenCalledWith()
+			expect(client.delete().match).toHaveBeenCalledWith({ filter: 'value' })
+		})
+		it('should delete data when schema is provided', async () => {
+			const actions = getActions(client)
+			await actions.delete('public.entity', { filter: 'value' })
+			expect(client.schema).toHaveBeenCalledWith('public')
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.delete).toHaveBeenCalledWith()
 			expect(client.delete().match).toHaveBeenCalledWith({ filter: 'value' })

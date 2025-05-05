@@ -31,40 +31,51 @@ export function transformResult({ data, error }, creds) {
 	return { type: 'success', data, credentials }
 }
 
-/**
- * Synchronizes the session across all clients
- *
- * @param {Record<string, import('@supabase/supabase-js').SupabaseClient>} clients
- * @param {import('@supabase/supabase-js').Session} session
- * @returns {Promise<void>}
- */
-const synchronizeClients = (clients, session) => {
-	// if (!session) return Promise.resolve()
-	const result = Object.keys(clients).map((schema) =>
-		clients[schema].auth.setSession(session)
-	)
-	return Promise.all(result)
-}
+// /**
+//  * Synchronizes the session across all clients
+//  *
+//  * @param {Record<string, import('@supabase/supabase-js').SupabaseClient>} clients
+//  * @param {import('@supabase/supabase-js').Session} session
+//  * @returns {Promise<void>}
+//  */
+// const synchronizeClients = (clients, session) => {
+// 	// if (!session) return Promise.resolve()
+// 	const result = Object.keys(clients).map((schema) => clients[schema].auth.setSession(session))
+// 	return Promise.all(result)
+// }
 
 /**
  * Handles auth change
  *
  * @param {*} client
- * @param {*} clients
  * @param {import('@kavach/core').AuthChangeCallback} callback
  * @returns {() => void} unsubscribe
  */
-function handleAuthChange(client, clients, callback) {
+function handleAuthChange(client, callback) {
 	const {
 		data: { subscription }
 	} = client.auth.onAuthStateChange(async (event, session) => {
-		await synchronizeClients(clients, session)
+		// await synchronizeClients(clients, session)
 		await callback(event, session)
 	})
 	return () => {
 		subscription.unsubscribe()
 	}
 }
+
+/**
+ * Gets the authentication mode based on the credentials provided
+ *
+ * @param {*} credentials
+ * @returns
+ */
+function getAuthMode(credentials) {
+	const { password, provider } = credentials
+	if (provider === 'magic') return 'magic'
+	if (password) return 'password'
+	return 'oauth'
+}
+
 /**
  * Handles sign in based on the credentials provided
  *
@@ -75,20 +86,39 @@ function handleAuthChange(client, clients, callback) {
 async function handleSignIn(client, credentials) {
 	const { email, phone, password, provider, scopes = [] } = credentials
 	const redirectTo = credentials.redirectTo ?? defaultOrigin
-
-	let result = null
 	let creds = null
-
-	if (provider === 'magic') {
-		creds = { email, options: { emailRedirectTo: redirectTo } }
-		result = await client.auth.signInWithOtp(creds)
-	} else if (password) {
-		creds = email ? { email, password } : { phone, password }
-		result = await client.auth.signInWithPassword(creds)
-	} else {
-		creds = { provider, options: { scopes: scopes.join(' '), redirectTo } }
-		result = await client.auth.signInWithOAuth(creds)
+	const signIn = {
+		magic: async () => {
+			creds = { email, options: { emailRedirectTo: redirectTo } }
+			const result = await client.auth.signInWithOtp(creds)
+			return result
+		},
+		password: async () => {
+			creds = email ? { email, password } : { phone, password }
+			const result = await client.auth.signInWithPassword(creds)
+			return result
+		},
+		oauth: async () => {
+			creds = { provider, options: { scopes: scopes.join(' '), redirectTo } }
+			const result = await client.auth.signInWithOAuth(creds)
+			return result
+		}
 	}
+	const mode = getAuthMode(credentials)
+	const result = await signIn[mode]()
+	// let result = null
+	// let creds = null
+
+	// if (provider === 'magic') {
+	// 	creds = { email, options: { emailRedirectTo: redirectTo } }
+	// 	result = await client.auth.signInWithOtp(creds)
+	// } else if (password) {
+	// 	creds = email ? { email, password } : { phone, password }
+	// 	result = await client.auth.signInWithPassword(creds)
+	// } else {
+	// 	creds = { provider, options: { scopes: scopes.join(' '), redirectTo } }
+	// 	result = await client.auth.signInWithOAuth(creds)
+	// }
 
 	return transformResult(result, { ...creds, provider })
 }
@@ -101,9 +131,7 @@ async function handleSignIn(client, credentials) {
  * @returns {Promise<import('@kavach/core').AuthResponse>}
  */
 async function handleSignUp(client, credentials) {
-	const result = await client.auth.signUp(
-		pick(['email', 'password'], credentials)
-	)
+	const result = await client.auth.signUp(pick(['email', 'password'], credentials))
 	return transformResult(result, credentials)
 }
 
@@ -125,25 +153,25 @@ export function parseUrlError(url) {
 	return null
 }
 
-/**
- * Generates clients for each schema. This is required to support multiple schemas with supabase
- *
- * @param {string}        url     The url of the supabase server
- * @param {string}        anonKey The anon key of the supabase server
- * @param {Array<string>} schemas An array of schemas to create clients for
- * @returns
- */
-function createClientsForSchemas(url, anonKey, schemas = []) {
-	const clients = schemas.reduce(
-		(acc, schema) => ({
-			...acc,
-			[schema]: createClient(url, anonKey, { db: { schema } })
-		}),
-		{}
-	)
+// /**
+//  * Generates clients for each schema. This is required to support multiple schemas with supabase
+//  *
+//  * @param {string}        url     The url of the supabase server
+//  * @param {string}        anonKey The anon key of the supabase server
+//  * @param {Array<string>} schemas An array of schemas to create clients for
+//  * @returns
+//  */
+// function createClientsForSchemas(url, anonKey, schemas = []) {
+// 	const clients = schemas.reduce(
+// 		(acc, schema) => ({
+// 			...acc,
+// 			[schema]: createClient(url, anonKey, { db: { schema } })
+// 		}),
+// 		{}
+// 	)
 
-	return clients
-}
+// 	return clients
+// }
 
 /**
  * Creates an adapter for supabase
@@ -153,11 +181,11 @@ function createClientsForSchemas(url, anonKey, schemas = []) {
  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)
-	const clients = createClientsForSchemas(
-		options.url,
-		options.anonKey,
-		options.schemas
-	)
+	// const clients = createClientsForSchemas(
+	// 	options.url,
+	// 	options.anonKey,
+	// 	options.schemas
+	// )
 
 	/**
 	 * Synchronizes the session with all the clients
@@ -166,7 +194,7 @@ export function getAdapter(options) {
 	 * @returns {Promise<void>}
 	 */
 	const synchronize = async (session) => {
-		await synchronizeClients(clients, session)
+		// await synchronizeClients(clients, session)
 		return client.auth.setSession(session)
 	}
 
@@ -175,9 +203,11 @@ export function getAdapter(options) {
 		signUp: (credentials) => handleSignUp(client, credentials),
 		signOut: () => client.auth.signOut(),
 		synchronize,
-		onAuthChange: (callback) => handleAuthChange(client, clients, callback),
+		onAuthChange: (callback) => handleAuthChange(client, callback),
 		parseUrlError,
-		// client: (schema) => clients[schema] || client,
-		server: (schema) => getActions(clients[schema] || client)
+		proxy: (schema) => {
+			schema ? client.schema(schema) : client
+		},
+		actions: () => getActions(client)
 	}
 }

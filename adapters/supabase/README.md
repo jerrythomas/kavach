@@ -13,12 +13,15 @@ pnpm add kavach @kavach/adapter-supabase
 Create the table below before using this adapter
 
 ```sql
-create table if not exists logs (
-  id                       uuid primary key default uuid_generate_v4()
+create table if not exists public.logs(
+  id                       uuid default uuid_generate_v4()
 , level                    varchar
 , running_on               varchar
 , logged_at                timestamp with time zone
-, message                  text
+, message                  varchar
+, context                  jsonb
 , data                     jsonb
-);
+, error                    jsonb
+, written_at               timestamp with time zone default now()
+)
 ```
