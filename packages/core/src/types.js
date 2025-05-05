@@ -160,7 +160,7 @@
  */
 
 /**
- * @typedef ServerAction
+ * @typedef ServerActions
  * @property {Action} get
  * @property {Action} put
  * @property {Action} post
@@ -179,9 +179,9 @@
  * @property {(credentials: OtpCredentials) => Promise<void>}	           [verifyOtp]
  * @property {() => Promise<void>}	                                     [resetPassword]
  * @property {(credentials: PasswordCredentials) => Promise<void>}       [updatePassword]
- * @property {(schema: Schema ) => any}                                  [client]
+ * @property {(schema: Schema ) => any}                                  [proxy]
  * @property {(url: Object) => AuthResult}                               [parseUrlError]
- * @property {(schema: Schema) => ServerAction}                          [server]
+ * @property {(schema: Schema) => ServerActions}                         [actions]
  */
 
 /**
