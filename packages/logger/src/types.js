@@ -1,4 +1,4 @@
-/** @typedef {'info'|'debug'|'trace'|'error'|'warn'} LogLevel */
+/** @typedef {'info'|'debug'|'trace'|'error'|'warn'|string} LogLevel */
 
 /**
  * @typedef LoggerOptions
@@ -13,12 +13,20 @@
  */
 
 /**
+ * @typedef {function} LoggerFunction
+ * @param {string} message - The log message
+ * @param {Object} [data={}] - Optional data object to log
+ * @param {Object} [error={}] - Optional error object to log
+ * @returns {Promise<void>}
+ */
+
+/**
  * @typedef Logger
- * @property {(message:Object) => Promise<void>} info
- * @property {(message:Object) => Promise<void>} warn
- * @property {(message:Object) => Promise<void>} error
- * @property {(message:Object) => Promise<void>} debug
- * @property {(message:Object) => Promise<void>} trace
+ * @property {LoggerFunction} info
+ * @property {LoggerFunction} warn
+ * @property {LoggerFunction} error
+ * @property {LoggerFunction} debug
+ * @property {LoggerFunction} trace
  * @property {(context:LoggerContext) => Logger} getContextLogger
  */
 

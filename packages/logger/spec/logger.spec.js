@@ -29,14 +29,20 @@ describe('Logger', () => {
 				level,
 				logged_at,
 				running_on,
-				context: {}
+				context: {},
+				message: undefined,
+				data: null,
+				error: null
 			})
 			log(writer, level, {})
 			expect(writer.write).toHaveBeenCalledWith({
 				level,
 				logged_at,
 				running_on,
-				context: {}
+				context: {},
+				message: undefined,
+				data: null,
+				error: null
 			})
 		})
 
@@ -47,39 +53,40 @@ describe('Logger', () => {
 				level,
 				logged_at,
 				running_on,
+				context: {},
 				message: 'foo',
-				context: {}
+				data: null,
+				error: null
 			})
 		})
 
 		it('should spread attributes of data', () => {
 			const level = 'info'
-			log(writer, level, { message: 'foo', path: 'bar' })
+			const content = { message: 'foo', data: { path: 'bar' } }
+			log(writer, level, content)
 			expect(writer.write).toHaveBeenCalledWith({
 				level,
 				logged_at,
 				running_on,
+				context: {},
 				message: 'foo',
-				path: 'bar',
-				context: {}
+				data: { path: 'bar' },
+				error: null
 			})
 		})
 
 		it('should allow nested json objects', () => {
 			const level = 'warn'
-			log(
-				writer,
-				level,
-				{ path: '/', data: { something: 'bar' } },
-				{ package: '' }
-			)
+			const content = { message: '', data: { path: '/', data: { something: 'bar' } } }
+			log(writer, level, content, { package: '' })
 			expect(writer.write).toHaveBeenCalledWith({
 				level,
 				logged_at,
 				running_on,
-				path: '/',
-				data: { something: 'bar' },
-				context: { package: '' }
+				context: { package: '' },
+				message: content.message,
+				data: { path: '/', data: { something: 'bar' } },
+				error: null
 			})
 		})
 	})
@@ -108,7 +115,7 @@ describe('Logger', () => {
 		})
 
 		it('should create a logger', () => {
-			const data = { message: 'foo' }
+			const message = 'foo'
 			const logger = getLogger(writer)
 
 			expect(logger).toEqual({
@@ -119,85 +126,92 @@ describe('Logger', () => {
 				trace: expect.any(Function),
 				getContextLogger: expect.any(Function)
 			})
-			expect(logger.error(data)).toBeTruthy()
-			expect(writer.write).toHaveBeenCalledWith({
-				level: 'error',
-				logged_at,
-				running_on,
-				message: 'foo',
-				context: {}
-			})
-			expect(logger.info(data)).toBeTruthy()
-			expect(logger.warn(data)).toBeTruthy()
-			expect(logger.debug(data)).toBeTruthy()
-			expect(logger.trace(data)).toBeTruthy()
-			expect(writer.write).toHaveBeenCalledOnce()
-		})
-
-		it('should create a logger when invalid level is passed', () => {
-			const data = { message: 'foo' }
-			const logger = getLogger(writer, { level: 'invalid' })
-
-			expect(logger.error(data)).toBeTruthy()
+			expect(logger.error(message)).toBeTruthy()
 			expect(writer.write).toHaveBeenCalledWith({
 				level: 'error',
 				logged_at,
 				running_on,
 				context: {},
-				message: 'foo'
+				message,
+				data: null,
+				error: null
 			})
-			expect(logger.info(data)).toBeTruthy()
-			expect(logger.warn(data)).toBeTruthy()
-			expect(logger.debug(data)).toBeTruthy()
-			expect(logger.trace(data)).toBeTruthy()
+			expect(logger.info(message)).toBeTruthy()
+			expect(logger.warn(message)).toBeTruthy()
+			expect(logger.debug(message)).toBeTruthy()
+			expect(logger.trace(message)).toBeTruthy()
+			expect(writer.write).toHaveBeenCalledOnce()
+		})
+
+		it('should create a logger when invalid level is passed', () => {
+			const message = 'foo'
+			const logger = getLogger(writer, { level: 'invalid' })
+
+			expect(logger.error(message)).toBeTruthy()
+			expect(writer.write).toHaveBeenCalledWith({
+				level: 'error',
+				logged_at,
+				running_on,
+				context: {},
+				message,
+				data: null,
+				error: null
+			})
+			expect(logger.info(message)).toBeTruthy()
+			expect(logger.warn(message)).toBeTruthy()
+			expect(logger.debug(message)).toBeTruthy()
+			expect(logger.trace(message)).toBeTruthy()
 			expect(writer.write).toHaveBeenCalledOnce()
 		})
 
 		it.each(levels)('should create a logger at level ="%s"', (level) => {
-			const data = { message: 'foo' }
+			const message = 'foo'
 			const logger = getLogger(writer, { level })
+			const logLevel = loggingLevels[level]
 
-			describe(level, () => {
-				it.each(Object.entries(loggingLevels))(
-					'should only log at level ="%s"',
-					(name, value) => {
-						expect(logger[name](data)).toBeTruthy()
-						if (value <= level) {
-							expect(writer.write).toHaveBeenCalledWith({
-								level: name,
-								logged_at,
-								running_on,
-								message: 'foo'
-							})
-							expect(writer.write).toHaveBeenCalledOnce()
-						} else {
-							expect(writer.write).not.toHaveBeenCalled()
-						}
-					}
-				)
+			Object.entries(loggingLevels).forEach(([name, value]) => {
+				writer.write.mockClear()
+				expect(logger[name](message)).toBeTruthy()
+				if (value <= logLevel) {
+					expect(writer.write).toHaveBeenCalledWith({
+						level: name,
+						logged_at,
+						running_on,
+						message: 'foo',
+						context: {},
+						data: null,
+						error: null
+					})
+					expect(writer.write).toHaveBeenCalledOnce()
+				} else {
+					expect(writer.write).not.toHaveBeenCalled()
+				}
 			})
 		})
 
 		it('should create a logger with context', () => {
-			const data = { message: 'foo' }
 			const logger = getLogger(writer, { context: { package: 'foo' } })
 			const contextLogger = logger.getContextLogger({ module: 'bar' })
 
-			contextLogger.error(data)
+			contextLogger.error('foo')
 			expect(writer.write).toHaveBeenCalledWith({
 				level: 'error',
 				logged_at,
 				running_on,
+				context: { package: 'foo', module: 'bar' },
 				message: 'foo',
-				context: { package: 'foo', module: 'bar' }
+				data: null,
+				error: null
 			})
-			logger.error(data)
+			logger.error('foo')
 			expect(writer.write).toHaveBeenCalledWith({
 				level: 'error',
 				logged_at,
 				running_on,
+				context: { package: 'foo' },
 				message: 'foo',
-				context: { package: 'foo' }
+				data: null,
+				error: null
 			})
 		})
 	})

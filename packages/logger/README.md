@@ -7,6 +7,7 @@ The logger adds the following attributes to the logged data.
 - logged_at: Timestamp of the log as ISO String
 - running_on: Identifies where the logger was invoked from (server/browser)
 - level: Logging level (error|warn|info|debug|trace)
+- context: JSON object containing the context of the log. This can include additional information like package, module, method, request_id, user_id, etc.
 
 ## Logged Data
 
@@ -50,27 +51,10 @@ This will be sent to the writer as
 }
 ```
 
-### Object as input
+### Including data
 
 ```js
-logger.info({ message: 'foo' })
-```
-
-This will be sent to the writer as
-
-```json
-{
-  "level": "info",
-  "running_on": "server",
-  "logged_at": "2022-11-05T08:00:00.000Z",
-  "message": "foo"
-}
-```
-
-### Object as input (including nested detail)
-
-```js
-logger.info({ message: 'foo', data: { path: 'bar' } })
+logger.info('foo', { path: 'bar' })
 ```
 
 This will be sent to the writer as
@@ -82,6 +66,25 @@ This will be sent to the writer as
   "logged_at": "2022-11-05T08:00:00.000Z",
   "message": "foo",
   "data": { "path": "bar" }
+}
+```
+
+### Including errors
+
+```js
+logger.info('foo', { path: 'bar' }, {code: 404})
+```
+
+This will be sent to the writer as
+
+```json
+{
+  "level": "info",
+  "running_on": "server",
+  "logged_at": "2022-11-05T08:00:00.000Z",
+  "message": "foo",
+  "data": { "path": "bar" },
+  "error": { "code": 404}
 }
 ```
 
@@ -105,4 +108,4 @@ create table if not exists public.logs(
 )
 ```
 
-if you expect your data to contain additional attributes at same level as message, columns should be included to capture those attributes as well.
+The logger is flexible and allows users to configure additional attributes in the data and error attributes.

@@ -1,10 +1,4 @@
-import {
-	defaultLogLevel,
-	zeroLogger,
-	loggingLevels,
-	pass,
-	runningOn
-} from './constants'
+import { defaultLogLevel, zeroLogger, loggingLevels, pass, runningOn } from './constants'
 
 /**
  * Converts a value into an object using provided key
@@ -25,19 +19,22 @@ export function asObject(value, key = 'message') {
  *
  * @param {import('./types').LogWriter}     writer
  * @param {String}                          level
- * @param {Object}                          data
+ * @param {Object}                          content
  * @param {import('./types').LoggerContext} context
  * @returns {Promise<void>}
  */
-export async function log(writer, level, data, context = {}) {
+export async function log(writer, level, content, context = {}) {
 	const currentDate = new Date()
+	const { message, data = null, error = null } = asObject(content)
 
 	await writer.write({
 		level,
 		running_on: runningOn,
 		logged_at: currentDate.toISOString(),
 		context,
-		...asObject(data)
+		message,
+		data,
+		error
 	})
 }
 
@@ -51,11 +48,11 @@ export async function log(writer, level, data, context = {}) {
 export function getContextLogger(writer, level, context) {
 	const levelValue = loggingLevels[level]
 	const logger = Object.entries(loggingLevels)
-		.map(([logLevel, value]) => ({
-			[logLevel]:
+		.map(([levelName, value]) => ({
+			[levelName]:
 				value <= levelValue
-					? (/** @type {Object} */ message) =>
-							log(writer, logLevel, message, context)
+					? (message, data = null, error = null) =>
+							log(writer, levelName, { message, data, error }, context)
 					: pass
 		}))
 		.reduce((acc, orig) => ({ ...acc, ...orig }), {})
