@@ -44,13 +44,13 @@ dependencies:
   '@rokkit/layout':
     specifier: 1.0.0-next.66
     version: 1.0.0-next.66
-  '@rokkit/molecules':
+  '@rokkit/ui':
     specifier: 1.0.0-next.66
     version: 1.0.0-next.66
-  '@rokkit/organisms':
+  '@rokkit/ui':
     specifier: 1.0.0-next.66
     version: 1.0.0-next.66
-  '@rokkit/stores':
+  '@rokkit/states':
     specifier: 1.0.0-next.66
     version: 1.0.0-next.66
   '@rokkit/themes':
@@ -902,8 +902,8 @@ packages:
       '@kavach/deflector': 1.0.0-next.19
       '@kavach/logger': 1.0.0-next.19
       '@rokkit/atoms': 1.0.0-next.66
-      '@rokkit/molecules': 1.0.0-next.66
-      '@rokkit/organisms': 1.0.0-next.66
+      '@rokkit/ui': 1.0.0-next.66
+      '@rokkit/ui': 1.0.0-next.66
       ramda: 0.29.1
     dev: false
 
@@ -948,7 +948,7 @@ packages:
     resolution: {integrity: sha512-E59hDFFJNatKfEEWafZnnLrgMmTrnxY4hvp/1lkZCmik31Tx6UTPWMRSn3HjtnxXg4cNzNG+6N/l39ZU/PsWFg==}
     dependencies:
       '@rokkit/core': 1.0.0-next.66
-      '@rokkit/stores': 1.0.0-next.66
+      '@rokkit/states': 1.0.0-next.66
       ramda: 0.29.1
     dev: false
 
@@ -984,35 +984,35 @@ packages:
       '@rokkit/actions': 1.0.0-next.66
       '@rokkit/atoms': 1.0.0-next.66
       '@rokkit/core': 1.0.0-next.66
-      '@rokkit/molecules': 1.0.0-next.66
-      '@rokkit/organisms': 1.0.0-next.66
+      '@rokkit/ui': 1.0.0-next.66
+      '@rokkit/ui': 1.0.0-next.66
       d3-scale: 4.0.2
       date-fns: 3.2.0
     dev: false
 
-  /@rokkit/molecules@1.0.0-next.66:
+  /@rokkit/ui@1.0.0-next.66:
     resolution: {integrity: sha512-99hFU5HUjOh5eX7xnDRJ1OZujZI9C8KaXe4GTY1UwZylgKInsAfCHHdw/GrxwPbcV4cb48myshYHXZyIavkHdQ==}
     dependencies:
       '@rokkit/actions': 1.0.0-next.66
       '@rokkit/atoms': 1.0.0-next.66
       '@rokkit/core': 1.0.0-next.66
-      '@rokkit/stores': 1.0.0-next.66
+      '@rokkit/states': 1.0.0-next.66
       d3-scale: 4.0.2
       date-fns: 3.2.0
       ramda: 0.29.1
     dev: false
 
-  /@rokkit/organisms@1.0.0-next.66:
+  /@rokkit/ui@1.0.0-next.66:
     resolution: {integrity: sha512-Dt+Ku8Ouu00Hanr3O1ie3wpNxIxfqKkHbAluAtWCyGxXBCO8cTWbisdzSHmVevX0FldsmxvVSl2hBD4By4+HWQ==}
     dependencies:
       '@rokkit/actions': 1.0.0-next.66
       '@rokkit/atoms': 1.0.0-next.66
       '@rokkit/core': 1.0.0-next.66
-      '@rokkit/molecules': 1.0.0-next.66
+      '@rokkit/ui': 1.0.0-next.66
       ramda: 0.29.1
     dev: false
 
-  /@rokkit/stores@1.0.0-next.66:
+  /@rokkit/states@1.0.0-next.66:
     resolution: {integrity: sha512-vCIColOq7mxz3bSIgErXXL6rnUfNy6PAJ7m2gHBiotc/JP/EIN1Rj0kqRRMJ86Ndtae4nA2/U6bJPCaeIKu+YQ==}
     dependencies:
       '@rokkit/core': 1.0.0-next.66

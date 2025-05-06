@@ -1,5 +1,4 @@
 packages:
-  - 'packages/**'
-  - 'adapters/**'
-  - 'sites/**'
-  - 'shared/**'
+  - "adapters/*"
+  - "packages/**"
+  - "sites/**"

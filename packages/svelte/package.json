@@ -18,33 +18,9 @@
     "access": "public"
   },
   "scripts": {
-    "prepublishOnly": "tsc",
-    "lint": "prettier --check . && eslint .",
-    "format": "prettier --write .",
-    "test:ci": "vitest run",
-    "test:ui": "vitest --ui",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "upgrade": "pnpm upgrade --latest && pnpm test:ci",
-    "release": "pnpm publish --access public"
-  },
-  "devDependencies": {
-    "@jerrythomas/prettier-config": "^1.0.2",
-    "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@testing-library/svelte": "^5.2.7",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/ramda": "^0.30.2",
-    "@vitest/coverage-istanbul": "^3.1.2",
-    "@vitest/coverage-v8": "^3.1.2",
-    "@vitest/expect": "^3.1.2",
-    "@vitest/ui": "~3.1.2",
-    "js-yaml": "^4.1.0",
-    "jsdom": "^26.1.0",
-    "shared-config": "workspace:*",
-    "svelte": "^5.28.2",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.4",
-    "vitest": "~3.1.2"
+    "prepublishOnly": "bun clean && bun tsc --project tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "build": "bun prepublishOnly"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -59,7 +35,7 @@
     "@kavach/core": "workspace:*",
     "@kavach/deflector": "workspace:*",
     "@kavach/logger": "workspace:*",
-    "@rokkit/ui": "latest",
+    "@rokkit/ui": "1.0.0-next.113",
     "ramda": "^0.30.1"
   }
 }

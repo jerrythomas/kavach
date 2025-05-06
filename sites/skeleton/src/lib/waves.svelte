@@ -3,7 +3,7 @@
 </script>
 
 <svg
-	class="absolute bottom-0 left-0 right-0 w-full h-1/5 text-neutral-50"
+	class="absolute bottom-0 left-0 right-0 h-1/5 w-full text-neutral-50"
 	xmlns="http://www.w3.org/2000/svg"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	viewBox="0 24 150 28"

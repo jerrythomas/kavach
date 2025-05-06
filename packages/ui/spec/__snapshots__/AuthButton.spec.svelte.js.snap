@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthButton.svelte > should render using provider 1`] = `
+<div>
+  <button
+    aria-label="Sign in with Google"
+    type="button"
+  >
+    <rk-icon
+      aria-label="logo-google"
+      data-tag="icon"
+      role="img"
+      tabindex="-1"
+    >
+      <i
+        aria-hidden="true"
+        class="logo-google"
+      />
+    </rk-icon>
+    <!---->
+     
+    Sign in with Google
+    <!---->
+     
+    <!---->
+    
+    <!---->
+  </button>
+  
+</div>
+`;

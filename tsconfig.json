@@ -21,6 +21,5 @@
     "declaration": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.ts", "**/*.d.ts"],
   "exclude": ["**/spec/**/*", "**/fixtures/**/*"]
 }

@@ -2,12 +2,12 @@
 	import Layers from './Layers.svelte'
 </script>
 
-<content class="flex flex-col w-full h-full md:items-center md:py-10">
+<content class="flex h-full w-full flex-col md:items-center md:py-10">
 	<section
-		class="flex flex-col md:flex-row border border-neutral-subtle rounded-lg shadow-lg w-full min-h-content md:w-200 md:h-100"
+		class="border-neutral-subtle min-h-content md:w-200 md:h-100 flex w-full flex-col rounded-lg border shadow-lg md:flex-row"
 	>
 		<aside
-			class="col-span-2 relative md:w-2/3 min-h-50 bg-gradient-to-b md:bg-gradient-to-r from-primary to-secondary"
+			class="min-h-50 from-primary to-secondary relative col-span-2 bg-gradient-to-b md:w-2/3 md:bg-gradient-to-r"
 		>
 			<Layers />
 		</aside>

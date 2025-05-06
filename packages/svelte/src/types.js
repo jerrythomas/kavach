@@ -16,8 +16,8 @@
 /**
  * @typedef {Object} Provider
  * @property {'otp' | 'oauth' | 'password'} mode - Authentication mode
- * @property {string} provider - Provider identifier
- * @property {string} [label] - Display label for the provider
+ * @property {string} name                       - Name of the provider
+ * @property {string} [label]    - Display label for the provider
  * @property {string[]} [scopes] - OAuth scopes
  * @property {string[]} [params] - Additional parameters
  */

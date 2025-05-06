@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthGroup.svelte > should render multiple providers 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-2"
+  >
+    <!---->
+    <button
+      aria-label="Sign in with Google"
+      type="button"
+    >
+      <rk-icon
+        aria-label="i-auth-google"
+        data-tag="icon"
+        role="img"
+        tabindex="-1"
+      >
+        <i
+          aria-hidden="true"
+          class="i-auth-google"
+        />
+      </rk-icon>
+      <!---->
+       
+      Sign in with Google
+      <!---->
+       
+      <!---->
+      
+      <!---->
+    </button>
+    
+    
+  </div>
+  
+</div>
+`;

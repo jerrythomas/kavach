@@ -1,7 +1,7 @@
 <script>
-	import { theme } from '@rokkit/stores'
+	import { theme } from '@rokkit/states'
 	import { Icon } from '@rokkit/atoms'
-	import { Switch } from '@rokkit/organisms'
+	import { Switch } from '@rokkit/ui'
 
 	let darkMode = false
 

@@ -1,50 +1,50 @@
 {
-  "name": "kavach",
-  "version": "1.0.0-next.27",
-  "description": "Drop in authentication including route protection and redirects.",
+  "name": "repro-svelte-import",
+  "version": "0.0.1",
+  "description": "Reproduction for issue with svelte import",
   "type": "module",
-  "packageManager": "pnpm@9.1.4",
   "private": true,
   "scripts": {
-    "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
-    "prepublishOnly": "turbo run prepublishOnly",
-    "build": "turbo run build",
-    "test": "vitest",
-    "test:ci": "vitest run",
-    "coverage": "turbo run coverage",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
     "prepare": "husky",
-    "latest": "pnpm upgrade --latest && turbo run latest",
+    "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
+    "test:watch": "vitest",
+    "test:ci": "vitest run",
+    "coverage": "vitest run coverage",
+    "format": "prettier --write .",
+    "lint": "eslint --fix",
     "check-git": "if [ -n \"$(git status --porcelain)\" ]; then echo 'You have uncommitted changes or untracked files.' && exit 1; fi",
-    "bump": "pnpm check-git && bumpp",
-    "bump:next": "pnpm check-git && bumpp --preid=next",
-    "release": "turbo run release",
-    "upgrade:all": "./scripts/upgrade.sh && pnpm upgrade --latest",
-    "coverage:lcov": "pnpm coverage && ./scripts/merge-lcov.sh"
+    "build:all": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun run build' \\;",
+    "upgrade:all": "bun update --latest"
   },
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",
-  "workspaces": [
-    "packages/*",
-    "adapters/*",
-    "shared/*"
-  ],
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@testing-library/svelte": "^5.2.7",
-    "bumpp": "10.1.0",
-    "eslint": "^9.25.1",
+    "@testing-library/user-event": "^14.6.1",
+    "eslint": "^9.26.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.1",
+    "jsdom": "^26.1.0",
+    "lint-staged": "^15.5.2",
+    "pre-commit": "^1.2.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "svelte": "^5.28.2",
     "turbo": "^2.5.2",
-    "vite": "^6.2.4",
-    "vitest": "^3.1.2"
+    "vite": "^6.3.5",
+    "vitest": "^3.1.3"
   },
   "lint-staged": {
     "*.{js,svelte}": "eslint --cache --fix",
     "*.{js,svelte,md,json}": "prettier --write"
-  }
+  },
+  "dependencies": {
+    "@rokkit/ui": "^1.0.0-next.113",
+    "eslint-plugin-svelte": "^3.5.1"
+  },
+  "workspaces": [
+    "./adapters/*",
+    "./packages/*",
+    "./sites/*"
+  ]
 }

@@ -5,7 +5,7 @@ import { getLogWriter, getAdapter } from '@kavach/adapter-supabase'
 import { appConfig } from './config'
 import { routes } from './routes'
 import { goto, invalidateAll, invalidate } from '$app/navigation'
-import { page } from '$app/stores'
+import { page } from '$app/states'
 
 // export const client = createClient(appConfig.supabase.url, appConfig.supabase.anonKey)
 

@@ -1,11 +1,11 @@
 <content
-	class="flex flex-row border border-neutral-200 rounded-md shadow-lg max-w-250 mx-auto mt-10"
+	class="max-w-250 mx-auto mt-10 flex flex-row rounded-md border border-neutral-200 shadow-lg"
 >
 	<article
-		class="text-base prose prose-neutral bg-neutral-100 px-8 py-4 rounded-l-md border-r border-neutral-300"
+		class="prose prose-neutral rounded-l-md border-r border-neutral-300 bg-neutral-100 px-8 py-4 text-base"
 	>
 		<h1 class="flex items-center">
-			<img src="/kavach.svg" alt="Kavach Logo" class="w-20 h-20 cover" />Kavach Demo
+			<img src="/kavach.svg" alt="Kavach Logo" class="cover h-20 w-20" />Kavach Demo
 		</h1>
 		<!-- <Header>Kavach Demo</Header> -->
 		<p class="justify">

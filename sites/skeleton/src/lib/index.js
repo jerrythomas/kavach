@@ -1,4 +1,4 @@
-import { watchMedia } from '@rokkit/stores'
+import { watchMedia } from '@rokkit/states'
 
 const mediaqueries = {
 	small: '(max-width: 767px)',

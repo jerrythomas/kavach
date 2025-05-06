@@ -12,10 +12,10 @@
 @import '@rokkit/themes/rokkit.css';
 
 body {
-  @apply font-body bg-neutral-base text-neutral-800 font-extralight;
+  @apply font-body bg-neutral-base font-extralight text-neutral-800;
 }
 body > app {
-  @apply flex flex-col min-h-full min-w-full h-full w-full relative overflow-hidden;
+  @apply relative flex h-full min-h-full w-full min-w-full flex-col overflow-hidden;
 }
 
 button {
@@ -23,7 +23,7 @@ button {
 }
 
 input.embedded {
-  @apply w-full h-full bg-transparent border-none focus:outline-none border-box;
+  @apply border-box h-full w-full border-none bg-transparent focus:outline-none;
 }
 
 markdown-body {

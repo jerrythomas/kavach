@@ -1,6 +1,6 @@
 <script>
-	import { InputCheckbox } from '@rokkit/atoms/input'
-	import { List } from '@rokkit/organisms'
+	import { InputCheckbox } from '@rokkit/input'
+	import { List } from '@rokkit/ui'
 	import User from '$lib/User.svelte'
 
 	let todos = [
@@ -27,12 +27,12 @@
 	}
 </script>
 
-<form class="flex flex-row w-full" on:submit={add}>
+<form class="flex w-full flex-row" on:submit={add}>
 	<input type="text" name="todo" bind:value class="flex flex-grow" />
 </form>
 
 {#each todos as todo, index (index)}
-	<div class="flex flex-row w-full items-center gap-2 task">
+	<div class="task flex w-full flex-row items-center gap-2">
 		<InputCheckbox bind:value={todo.completed} />
 		<!-- <Input type="checkbox" name="completed" bind:checked={todo.completed} /> -->
 		<input type="text" bind:value={todo.task} class="flex flex-grow" readOnly={todo.completed} />
@@ -44,13 +44,13 @@
 
 <style>
 	.task {
-		@apply border-b py-2 border-neutral-200;
+		@apply border-b border-neutral-200 py-2;
 	}
 	.task input {
 		@apply border-none bg-transparent;
 	}
 	.task input[readOnly] {
-		@apply line-through italic;
+		@apply italic line-through;
 	}
 	.task input:not([readOnly]):focus {
 		@apply border;

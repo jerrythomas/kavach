@@ -1,7 +1,0 @@
-{
-  "extends": "shared-config/jsconfig.json",
-  "include": ["src/**/*.js"],
-  "compilerOptions": {
-    "outDir": "dist"
-  }
-}

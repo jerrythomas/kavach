@@ -1,9 +1,7 @@
 import { vi } from 'vitest'
 
 function mockSignIn(credentials) {
-	return credentials.provider === 'magic'
-		? { data: 'success' }
-		: { error: 'invalid data' }
+	return credentials.provider === 'magic' ? { data: 'success' } : { error: 'invalid data' }
 }
 
 export function createMockAdapter(options) {
@@ -24,8 +22,7 @@ export function createMockAdapter(options) {
 		onAuthChange: vi.fn(),
 		parseUrlError: vi.fn(),
 		signUp: vi.fn(),
-		server: vi
-			.fn()
-			.mockImplementation((schema) => ({ connection: `${schema} connection` }))
+		proxy: vi.fn(),
+		actions: vi.fn().mockImplementation((schema) => ({ connection: `${schema} connection` }))
 	}
 }

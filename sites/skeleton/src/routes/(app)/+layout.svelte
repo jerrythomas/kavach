@@ -1,6 +1,6 @@
 <script>
 	import UserProfile from '$lib/UserProfile.svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/states'
 
 	const menu = [
 		{ icon: 'home', href: '/', label: 'Home' },
@@ -17,10 +17,10 @@
 </script>
 
 <content
-	class="grid grid-cols-3 w-full my-auto border border-neutral-200 rounded-md shadow-lg max-h-screen overflow-scroll"
+	class="my-auto grid max-h-screen w-full grid-cols-3 overflow-scroll rounded-md border border-neutral-200 shadow-lg"
 >
 	<section
-		class="flex flex-col bg-neutral-zebra p-6 pt-10 gap-2 rounded-l-md border-r border-neutral-200 col-span-2"
+		class="bg-neutral-zebra col-span-2 flex flex-col gap-2 rounded-l-md border-r border-neutral-200 p-6 pt-10"
 	>
 		<slot />
 	</section>
@@ -28,7 +28,7 @@
 		{#if user}
 			<UserProfile {...user} />
 		{/if}
-		<nav class="flex flex-col leading-loose gap-2px">
+		<nav class="gap-2px flex flex-col leading-loose">
 			{#each menu as { href, icon, label }, index (index)}
 				<a {href} class:active={$page.url.pathname === href}>
 					<icon class={icon} />
@@ -41,9 +41,9 @@
 
 <style>
 	nav a {
-		@apply px-4 py-2 bg-neutral-100;
+		@apply bg-neutral-100 px-4 py-2;
 	}
 	.active {
-		@apply bg-gradient-to-r from-primary-500 to-secondary-500 text-neutral-50;
+		@apply from-primary-500 to-secondary-500 bg-gradient-to-r text-neutral-50;
 	}
 </style>

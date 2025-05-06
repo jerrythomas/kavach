@@ -1,5 +1,5 @@
 <script>
-	import { theme } from '@rokkit/stores'
+	import { theme } from '@rokkit/states'
 	import { defaultStateIcons } from '@rokkit/core'
 	import { Icon } from '@rokkit/atoms'
 

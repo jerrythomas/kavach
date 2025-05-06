@@ -1,7 +1,7 @@
 <script>
-	import { AuthProvider } from '@kavach/svelte/ui'
+	import { AuthProvider } from '@kavach/ui'
 	// import { urlHashToParams } from '@kavach/core'
-	// import { page } from '$app/stores'
+	// import { page } from '$app/states'
 	// import { onMount } from 'svelte'
 
 	// let error = {}

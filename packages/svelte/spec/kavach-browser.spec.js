@@ -41,15 +41,15 @@ describe('kavach', () => {
 			signOut: expect.any(Function),
 			onAuthChange: expect.any(Function),
 			handle: expect.any(Function),
-			// client: expect.any(Function),
-			server: expect.any(Function)
+			proxy: expect.any(Function),
+			actions: expect.any(Function)
 		})
 	})
 
 	it('should return the server actions', () => {
 		const kavach = createKavach(adapter)
-		expect(kavach.server()).toEqual(adapter.server())
-		expect(kavach.server('public')).toEqual(adapter.server('public'))
+		expect(kavach.actions()).toEqual(adapter.actions())
+		expect(kavach.actions('public')).toEqual(adapter.actions('public'))
 	})
 
 	it('should bypass the session handler', async () => {
@@ -83,10 +83,7 @@ describe('kavach', () => {
 			url: { pathname: '/api/xyz' }
 		})
 		await kavach.handle({ event, resolve })
-		expect(Response).toHaveBeenCalledWith(
-			{ error: 'Unauthorized' },
-			{ status: 401 }
-		)
+		expect(Response).toHaveBeenCalledWith({ error: 'Unauthorized' }, { status: 401 })
 	})
 
 	it('should sign out on server when session is null', async () => {
@@ -106,9 +103,7 @@ describe('kavach', () => {
 			{ error: null, session: null },
 			{
 				headers: {
-					'Set-Cookie': [
-						'session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict'
-					]
+					'Set-Cookie': ['session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict']
 				},
 				status: 200
 			}
@@ -141,9 +136,7 @@ describe('kavach', () => {
 			{ error, session: null },
 			{
 				headers: {
-					'Set-Cookie': [
-						'session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict'
-					]
+					'Set-Cookie': ['session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict']
 				},
 				status: 500
 			}
@@ -151,43 +144,40 @@ describe('kavach', () => {
 		expect(resolve).not.toHaveBeenCalled()
 	})
 
-	it.each(sessions)(
-		'should set session cookie when input is valid',
-		async (session) => {
-			const maxAge = session.expires_in ? session.expires_in : 3600
-			const cookieOptions = `Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Strict`
+	it.each(sessions)('should set session cookie when input is valid', async (session) => {
+		const maxAge = session.expires_in ? session.expires_in : 3600
+		const cookieOptions = `Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Strict`
 
-			const event = createMockEvent({
-				json: {
-					session
+		const event = createMockEvent({
+			json: {
+				session
+			},
+			url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
+		})
+		adapter.synchronize = vi.fn().mockImplementationOnce((session) => ({
+			error: null,
+			data: { session }
+		}))
+
+		const kavach = createKavach(adapter)
+		await kavach.handle({ event, resolve })
+		expect(event.locals.session).toBeFalsy()
+		expect(adapter.synchronize).toHaveBeenCalledWith(session)
+		expect(adapter.signOut).not.toHaveBeenCalled()
+
+		expect(Response).toHaveBeenCalledWith(
+			{ error: null, session },
+			{
+				headers: {
+					'Set-Cookie': [
+						`session=%7B%22refresh_token%22%3A%22zzz%22%2C%22access_token%22%3A%22xyz%22%2C%22user%22%3A%7B%22id%22%3A%22foo%22%2C%22role%22%3A%22authenticated%22%7D%7D; ${cookieOptions}`
+					]
 				},
-				url: { pathname: '/auth/session', origin: 'http://localhost:5173' }
-			})
-			adapter.synchronize = vi.fn().mockImplementationOnce((session) => ({
-				error: null,
-				data: { session }
-			}))
-
-			const kavach = createKavach(adapter)
-			await kavach.handle({ event, resolve })
-			expect(event.locals.session).toBeFalsy()
-			expect(adapter.synchronize).toHaveBeenCalledWith(session)
-			expect(adapter.signOut).not.toHaveBeenCalled()
-
-			expect(Response).toHaveBeenCalledWith(
-				{ error: null, session },
-				{
-					headers: {
-						'Set-Cookie': [
-							`session=%7B%22refresh_token%22%3A%22zzz%22%2C%22access_token%22%3A%22xyz%22%2C%22user%22%3A%7B%22id%22%3A%22foo%22%2C%22role%22%3A%22authenticated%22%7D%7D; ${cookieOptions}`
-						]
-					},
-					status: 200
-				}
-			)
-			expect(resolve).not.toHaveBeenCalled()
-		}
-	)
+				status: 200
+			}
+		)
+		expect(resolve).not.toHaveBeenCalled()
+	})
 	it('should sign in using adapter', async () => {
 		adapter.signIn = vi.fn().mockImplementation((input) => ({ input }))
 
@@ -211,23 +201,20 @@ describe('kavach', () => {
 		expect(result).toEqual({ input: credentials })
 	})
 
-	it.each([{ invalidateAll }, {}])(
-		'should sign out using adapter',
-		async (options) => {
-			const kavach = createKavach(adapter, options)
-			await kavach.signOut()
+	it.each([{ invalidateAll }, {}])('should sign out using adapter', async (options) => {
+		const kavach = createKavach(adapter, options)
+		await kavach.signOut()
 
-			expect(adapter.signOut).toHaveBeenCalledWith()
-			expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
-				body: JSON.stringify({ event: 'SIGNED_OUT', session: null }),
-				method: 'POST'
-			})
+		expect(adapter.signOut).toHaveBeenCalledWith()
+		expect(global.fetch).toHaveBeenCalledWith('/auth/session', {
+			body: JSON.stringify({ event: 'SIGNED_OUT', session: null }),
+			method: 'POST'
+		})
 
-			if (options.invalidateAll) {
-				expect(invalidateAll).toHaveBeenCalled()
-			}
+		if (options.invalidateAll) {
+			expect(invalidateAll).toHaveBeenCalled()
 		}
-	)
+	})
 
 	it('should set event.locals', () => {
 		const event = createMockEvent({
@@ -238,9 +225,7 @@ describe('kavach', () => {
 
 		const kavach = createKavach(adapter, { invalidateAll })
 		kavach.handle({ event, resolve })
-		expect(event.locals.session).toEqual(
-			JSON.parse(event.cookies.get('session'))
-		)
+		expect(event.locals.session).toEqual(JSON.parse(event.cookies.get('session')))
 	})
 
 	describe('onAuthChange', () => {

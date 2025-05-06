@@ -7,8 +7,8 @@ export const supabaseConfig = {
 
 export const appConfig = {
 	logging: {
-		level: env.PUBLIC_LOG_LEVEL,
-		table: env.PUBLIC_LOG_TABLE
+		level: env.PUBLIC_LOG_LEVEL || 'info',
+		table: env.PUBLIC_LOG_TABLE || 'logs'
 	},
 	supabase: supabaseConfig
 }

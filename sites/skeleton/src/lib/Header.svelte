@@ -1,28 +1,28 @@
 <script>
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
-	import { Icon, ProgressBar } from '@rokkit/atoms'
+	import { Icon, ProgressBar } from '@rokkit/ui'
 	import { media } from '$lib'
 	import ThemeSwitcher from './ThemeSwitcher.svelte'
 
 	let { class: className = '', version, menu = [] } = $props()
 
-	let loading = false
+	let loading = $state(false)
 	beforeNavigate(() => (loading = true))
 	afterNavigate(() => (loading = false))
 </script>
 
 <header
-	class="flex min-h-14 w-full bg-neutral-base items-center justify-between relative {className}"
+	class="bg-neutral-base relative flex min-h-14 w-full items-center justify-between {className}"
 >
 	{#if loading}
-		<ProgressBar class="absolute top-0 z-5" />
+		<ProgressBar class="z-5 absolute top-0" />
 	{/if}
 	<div class="flex items-center gap-2 px-4">
 		<a href="/" class="flex items-center">
 			<img src="/kavach.svg" alt="Kavach Logo" class="h-12" />
 		</a>
 		{#if !$media.small}
-			<small class="px-2 font-small">{version}</small>
+			<small class="font-small px-2">{version}</small>
 		{/if}
 	</div>
 	<settings class="flex items-center justify-end gap-3 pr-4">
@@ -30,7 +30,7 @@
 			{#each menu as item, index (index)}
 				<a
 					href="/{item.slug}"
-					class="border-b-2 leading-loose active:border-secondary-700 hover:text-secondary-700"
+					class="active:border-secondary-700 hover:text-secondary-700 border-b-2 leading-loose"
 					>{item.title}</a
 				>
 			{/each}
@@ -41,7 +41,7 @@
 			href="https://github.com/jerrythomas/kavach"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="outline-none border-none"
+			class="border-none outline-none"
 		>
 			<Icon
 				name="i-auth:github"

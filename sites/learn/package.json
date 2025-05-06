@@ -15,15 +15,15 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
-    "@rokkit/icons": "1.0.0-next.111",
+    "@rokkit/icons": "1.0.0-next.113",
     "@sveltejs/adapter-auto": "^6.0.0",
     "@sveltejs/kit": "^2.20.8",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/eslint": "^9.6.1",
-    "@unocss/extractor-svelte": "66.1.0-beta.13",
-    "@unocss/reset": "66.1.0-beta.13",
-    "@unocss/vite": "66.1.0-beta.13",
-    "eslint": "^9.25.1",
+    "@unocss/extractor-svelte": "66.1.0",
+    "@unocss/reset": "66.1.0",
+    "@unocss/vite": "66.1.0",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-svelte": "^3.5.1",
     "prettier": "^3.5.3",
@@ -31,16 +31,16 @@
     "svelte": "^5.28.2",
     "svelte-check": "^4.1.7",
     "typescript": "^5.8.3",
-    "unocss": "66.1.0-beta.13",
-    "vite": "^6.3.4",
-    "vitest": "^3.1.2"
+    "unocss": "66.1.0",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.3"
   },
   "type": "module",
   "dependencies": {
-    "@rokkit/actions": "1.0.0-next.111",
-    "@rokkit/core": "1.0.0-next.111",
-    "@rokkit/stores": "1.0.0-next.100",
-    "@rokkit/themes": "1.0.0-next.111",
-    "@rokkit/ui": "1.0.0-next.111"
+    "@rokkit/actions": "1.0.0-next.113",
+    "@rokkit/core": "1.0.0-next.113",
+    "@rokkit/states": "1.0.0-next.113",
+    "@rokkit/themes": "1.0.0-next.113",
+    "@rokkit/ui": "1.0.0-next.113"
   }
 }

@@ -47,8 +47,7 @@ async function handleSignIn(adapter, agents, credentials) {
 	const logger = agents.logger.getContextLogger({ method: 'handleSignIn' })
 	const result = await adapter.signIn(credentials)
 	authStatus.set(result)
-	if (result.error)
-		logger.error({ message: result.error.message, error: result.error })
+	if (result.error) logger.error({ message: result.error.message, error: result.error })
 	return result
 }
 
@@ -64,8 +63,7 @@ async function handleSignUp(adapter, agents, credentials) {
 	const logger = agents.logger.getContextLogger({ method: 'handleSignUp' })
 	const result = await adapter.signUp(credentials)
 	authStatus.set(result)
-	if (result.error)
-		logger.error({ message: result.error.message, error: result.error })
+	if (result.error) logger.error({ message: result.error.message, error: result.error })
 	return result
 }
 
@@ -89,10 +87,7 @@ function handleUnauthorizedAccess(agents, { event, resolve }) {
 				}
 			)
 		} else {
-			return new Response(
-				{ error: HTTP_STATUS_MESSAGE[result.status] },
-				{ status: result.status }
-			)
+			return new Response({ error: HTTP_STATUS_MESSAGE[result.status] }, { status: result.status })
 		}
 	}
 	return resolve(event)
@@ -160,9 +155,7 @@ async function handleSessionSync(event, adapter, deflector) {
 function parseSessionFromCookies(event) {
 	const cookieSession = event.cookies.get('session')
 
-	return cookieSession && cookieSession !== 'undefined'
-		? JSON.parse(cookieSession)
-		: null
+	return cookieSession && cookieSession !== 'undefined' ? JSON.parse(cookieSession) : null
 }
 
 /**
@@ -236,6 +229,19 @@ async function handleSignOut(adapter, agents) {
 	agents.invalidateAll()
 	authStatus.set(null)
 }
+
+function getAgents(options) {
+	const logger = options.logger ?? zeroLogger
+	return {
+		logger: logger.getContextLogger({
+			package: '@kavach/svelte',
+			module: 'kavach'
+		}),
+		deflector: createDeflector(options),
+		invalidateAll: options.invalidateAll ?? pass
+	}
+}
+
 /**
  * Create Kavach instance
  *
@@ -245,14 +251,16 @@ async function handleSignOut(adapter, agents) {
  */
 export function createKavach(adapter, options = {}) {
 	const { page } = options
-	const agents = {
-		logger: (options.logger ?? zeroLogger).getContextLogger({
-			package: '@kavach/svelte',
-			module: 'kavach'
-		}),
-		deflector: createDeflector(options),
-		invalidateAll: options.invalidateAll ?? pass
-	}
+	const agents = getAgents(options)
+	//
+	// const agents = {
+	// 	logger: logger.getContextLogger({
+	// 		package: '@kavach/svelte',
+	// 		module: 'kavach'
+	// 	}),
+	// 	deflector: createDeflector(options),
+	// 	invalidateAll: options.invalidateAll ?? pass
+	// }
 
 	if (page && RUNNING_ON === 'browser') {
 		page.subscribe(({ url }) => {
@@ -266,7 +274,7 @@ export function createKavach(adapter, options = {}) {
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
-		// client: (schema) => adapter.client(schema),
-		server: (schema) => adapter.server(schema)
+		proxy: (schema) => adapter.proxy(schema),
+		actions: (schema) => adapter.actions(schema)
 	}
 }

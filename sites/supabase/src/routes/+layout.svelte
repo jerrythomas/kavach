@@ -5,7 +5,7 @@
 	import Header from './Header.svelte'
 	import { onMount, setContext } from 'svelte'
 	import { writable } from 'svelte/store'
-	import { page } from '$app/stores'
+	import { page } from '$app/states'
 	import { media, kavach } from '$lib'
 
 	const site = writable({

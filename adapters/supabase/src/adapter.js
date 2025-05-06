@@ -193,7 +193,7 @@ export function getAdapter(options) {
 	 * @param {any} session
 	 * @returns {Promise<void>}
 	 */
-	const synchronize = async (session) => {
+	const synchronize = (session) => {
 		// await synchronizeClients(clients, session)
 		return client.auth.setSession(session)
 	}
