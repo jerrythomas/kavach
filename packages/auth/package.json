@@ -1,10 +1,9 @@
 {
-  "name": "@kavach/svelte",
-  "version": "1.0.0-next.27",
+  "name": "kavach",
+  "version": "1.0.0-next.28",
   "description": "Drop in security for web apps.",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
-  "main": "index.js",
   "module": "src/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -22,9 +21,14 @@
     "clean": "rm -rf dist",
     "build": "bun prepublishOnly"
   },
+  "files":[
+    "src/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md",
+    "package.json"
+  ],
   "exports": {
     "./package.json": "./package.json",
-    "./ui": "./src/ui/index.js",
     ".": {
       "types": "./types/index.d.ts",
       "import": "./src/index.js",
@@ -32,10 +36,10 @@
     }
   },
   "dependencies": {
-    "@kavach/core": "workspace:*",
+    "@kavach/cookie": "workspace:*",
     "@kavach/deflector": "workspace:*",
+    "@kavach/hashing": "workspace:*",
     "@kavach/logger": "workspace:*",
-    "@rokkit/ui": "1.0.0-next.113",
     "ramda": "^0.30.1"
   }
 }

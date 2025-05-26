@@ -17,10 +17,14 @@ exports[`AuthHandler.svelte > should render multiple providers 1`] = `
       class="flex flex-col gap-2"
     >
       <!---->
+      <!---->
       <button
-        aria-label="Sign in with Google"
+        data-button-root="true"
+        tabindex="0"
         type="button"
       >
+        <!---->
+        <!---->
         <rk-icon
           aria-label="i-auth-google"
           data-tag="icon"
@@ -34,13 +38,13 @@ exports[`AuthHandler.svelte > should render multiple providers 1`] = `
         </rk-icon>
         <!---->
          
-        Sign in with Google
-        <!---->
-         
-        <!---->
+        <span>
+          Sign in with Google
+        </span>
         
-        <!---->
+        
       </button>
+      
       
       
     </auth-body>

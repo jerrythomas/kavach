@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { cleanup, render } from '@testing-library/svelte'
-import { flushSync, tick } from 'svelte'
+import { flushSync } from 'svelte'
 import AuthError from '../src/AuthError.svelte'
 
 describe('AuthError.svelte', () => {
@@ -8,7 +8,7 @@ describe('AuthError.svelte', () => {
 		cleanup()
 	})
 
-	it('should render with changes', async () => {
+	it('should render with changes', () => {
 		const props = $state({ message: 'An error occurred' })
 		const { container } = render(AuthError, { props })
 		expect(container).toMatchSnapshot()

@@ -2,10 +2,14 @@
 
 exports[`AuthButton.svelte > should render using provider 1`] = `
 <div>
+  <!---->
   <button
-    aria-label="Sign in with Google"
+    data-button-root="true"
+    tabindex="0"
     type="button"
   >
+    <!---->
+    <!---->
     <rk-icon
       aria-label="logo-google"
       data-tag="icon"
@@ -19,13 +23,13 @@ exports[`AuthButton.svelte > should render using provider 1`] = `
     </rk-icon>
     <!---->
      
-    Sign in with Google
-    <!---->
-     
-    <!---->
+    <span>
+      Sign in with Google
+    </span>
     
-    <!---->
+    
   </button>
+  
   
 </div>
 `;

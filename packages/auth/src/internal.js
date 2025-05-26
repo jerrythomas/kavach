@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { defaultCookieOptions } from './constants'
+import { DEFAULT_COOKIE_OPTIONS } from './constants'
 import { serialize } from '@kavach/cookie'
 
 /**
@@ -63,7 +63,7 @@ export function hasAuthParams(url) {
  * @returns {object} cookie header
  */
 export function setHeaderCookies(cookies, options = {}) {
-	const serializeOptions = { ...defaultCookieOptions, ...options }
+	const serializeOptions = { ...DEFAULT_COOKIE_OPTIONS, ...options }
 	const serializedCookies = Object.entries(cookies).map(([key, value]) => {
 		value = typeof value === 'string' ? value : JSON.stringify(value)
 		return serialize(key, value, serializeOptions)

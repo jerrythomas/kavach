@@ -23,13 +23,13 @@ function getSupabaseSchemaClient(config, schema = null) {
  *
  * @param {import('./types').SupabaseConfig} config
  * @param {import('./types').SupabaseLogWriterOptions} options
- * @returns {import('@kavach/core').LogWriter}
+ * @returns {import('kavach').LogWriter}
  */
 export function getLogWriter(config, options = {}) {
 	const { schema, table } = getTableAndSchema(options?.table ?? 'logs')
 	const schemaClient = getSupabaseSchemaClient(config, schema)
 
-	/** @type {import('@kavach/core').LogWriter} */
+	/** @type {import('kavach').LogWriter} */
 	const adapter = {
 		write: async (data) => {
 			await schemaClient.from(table).insert(data)

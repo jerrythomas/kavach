@@ -1,10 +1,11 @@
 /* eslint-disable no-undef */
-import { getUserInfo, setHeaderCookies } from '@kavach/core'
 import { createDeflector } from '@kavach/deflector'
 import { zeroLogger } from '@kavach/logger'
 import { pick } from 'ramda'
 import { writable } from 'svelte/store'
 import { HTTP_STATUS_MESSAGE, RUNNING_ON } from './constants'
+import { setHeaderCookies } from './internal'
+import { getUserInfo } from './provider'
 import { getRequestData } from './request'
 
 const pass = async () => {
@@ -15,7 +16,7 @@ export const authStatus = writable()
 /**
   * Parse auth errors from url, log them and provide error to callback
   *
-  * @param {import('@kavach/core').AuthAdapter} adapter
+  * @param {import('kavach').AuthAdapter} adapter
   * @param {import('./types').KavachAgents}     agents
   * @param {import('./types').CompositeURL}     url
 
@@ -38,10 +39,10 @@ function handleAuthUrlError(adapter, agents, url) {
 /**
  * Handle sign in using adapter
  *
- * @param {import('@kavach/core').AuthAdapter}     adapter
+ * @param {import('kavach').AuthAdapter}     adapter
  * @param {import('./types').KavachAgents}         agents
- * @param {import('@kavach/core').AuthCredentials} credentials
- * @returns {Promise<import('@kavach/core').AuthResponse>}
+ * @param {import('kavach').AuthCredentials} credentials
+ * @returns {Promise<import('kavach').AuthResponse>}
  */
 async function handleSignIn(adapter, agents, credentials) {
 	const logger = agents.logger.getContextLogger({ method: 'handleSignIn' })
@@ -54,10 +55,10 @@ async function handleSignIn(adapter, agents, credentials) {
 /**
  * Handle sign up using adapter
  *
- * @param {import('@kavach/core').AuthAdapter}     adapter
+ * @param {import('kavach').AuthAdapter}     adapter
  * @param {import('./types').KavachAgents}         agents
- * @param {import('@kavach/core').AuthCredentials} credentials
- * @returns {Promise<import('@kavach/core').AuthResponse>}
+ * @param {import('kavach').AuthCredentials} credentials
+ * @returns {Promise<import('kavach').AuthResponse>}
  */
 async function handleSignUp(adapter, agents, credentials) {
 	const logger = agents.logger.getContextLogger({ method: 'handleSignUp' })
@@ -70,7 +71,7 @@ async function handleSignUp(adapter, agents, credentials) {
 /**
  * Handle unauthorized access
  *
- * @param {import('@kavach/core').Deflector} deflector
+ * @param {import('kavach').Deflector} deflector
  * @param {object}                           request
  * @returns {Response}
  */
@@ -118,8 +119,8 @@ export function setCookieFromSession(session) {
  * Synchronize session with the server
  *
  * @param {object} event
- * @param {import('@kavach/core').AuthAdapter} adapter
- * @param {import('@kavach/core').Deflector}   deflector
+ * @param {import('kavach').AuthAdapter} adapter
+ * @param {import('kavach').Deflector}   deflector
  * @returns {object} response
  */
 async function handleSessionSync(event, adapter, deflector) {
@@ -161,7 +162,7 @@ function parseSessionFromCookies(event) {
 /**
  * Send sign in status and session to server
  *
- * @param {import('@kavach/core').Deflector} deflector
+ * @param {import('kavach').Deflector} deflector
  * @param {object} event
  * @param {object} session
  */
@@ -176,7 +177,7 @@ async function syncSessionWithServer(agents, event, session = null) {
 /**
  * Handle route protection
  *
- * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('kavach').AuthAdapter} adapter
  * @param {import('./types').KavachAgents}     agents
  * @param {object}                             request
  * @returns {Promise<void>}
@@ -195,7 +196,7 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 /**
  * Handle auth change
  *
- * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('kavach').AuthAdapter} adapter
  * @param {import('./types').KavachAgents}     agents
  */
 function handleAuthChange(adapter, agents) {
@@ -219,7 +220,7 @@ function handleAuthChange(adapter, agents) {
 /**
  * Handle sign out
  *
- * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('kavach').AuthAdapter} adapter
  * @param {import('./types').KavachAgents}     agents
  * @returns {Promise<void>}
  */
@@ -245,7 +246,7 @@ function getAgents(options) {
 /**
  * Create Kavach instance
  *
- * @param {import('@kavach/core').AuthAdapter} adapter
+ * @param {import('kavach').AuthAdapter} adapter
  * @param {object} options
  * @returns {object} kavach
  */

@@ -1,6 +1,6 @@
 {
   "name": "@kavach/cookie",
-  "version": "1.0.0-next.27",
+  "version": "1.0.0-next.28",
   "description": "Cookie serialize/deserialize forked from jshttp/cookie",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
@@ -8,7 +8,6 @@
     "cookie",
     "cookies"
   ],
-  "main": "index.js",
   "module": "src/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -26,6 +25,12 @@
     "clean": "rm -rf dist",
     "build": "bun prepublishOnly"
   },
+  "files": [
+    "src/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md",
+    "package.json"
+  ],
   "exports": {
     "./package.json": "./package.json",
     ".": {

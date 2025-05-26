@@ -1,5 +1,5 @@
 <script>
-	import { gravatar } from '@kavach/core'
+	import { gravatar } from 'kavach'
 	export let user = null
 
 	$: avatar = user?.avatar_url ?? gravatar(user?.email)

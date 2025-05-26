@@ -1,6 +1,6 @@
 {
   "name": "@kavach/deflector",
-  "version": "1.0.0-next.27",
+  "version": "1.0.0-next.28",
   "description": "A deflector for role based route handling",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
@@ -10,7 +10,6 @@
     "routing",
     "role based routing"
   ],
-  "main": "index.js",
   "module": "src/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -32,6 +31,12 @@
     "@kavach/logger": "workspace:*",
     "ramda": "^0.30.1"
   },
+  "files": [
+    "src/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md",
+    "package.json"
+  ],
   "exports": {
     "./package.json": "./package.json",
     ".": {

@@ -1,9 +1,6 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { cleanup, render, fireEvent } from '@testing-library/svelte'
-// import { toHaveBeenDispatchedWith } from './validators'
 import AuthGroup from '../src/AuthGroup.svelte'
-
-// expect.extend({ toHaveBeenDispatchedWith })
 
 describe('AuthGroup.svelte', () => {
 	const handlers = {
@@ -11,9 +8,7 @@ describe('AuthGroup.svelte', () => {
 		success: vi.fn()
 	}
 	const kavach = {
-		signIn: vi
-			.fn()
-			.mockImplementation(() => Promise.resolve({ data: { token: 'token' } }))
+		signIn: vi.fn().mockImplementation(() => Promise.resolve({ data: { token: 'token' } }))
 	}
 
 	beforeEach(() => {

@@ -1,4 +1,4 @@
-import { createKavach } from '@kavach/svelte'
+import { createKavach } from 'kavach'
 import { getLogger } from '@kavach/logger'
 import { getLogWriter, getAdapter } from '@kavach/adapter-supabase'
 import { appConfig } from './config'

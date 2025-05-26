@@ -7,10 +7,13 @@ describe('utilities', () => {
 		expect(Object.keys(utilities)).toEqual([
 			'createKavach',
 			'authStatus',
+			'gravatar',
+			'deriveName',
 			'getRequestBody',
 			'getRequestData',
 			'splitAuthData',
-			'asURLWithParams'
+			'asURLWithParams',
+			'urlHashToParams'
 		])
 	})
 })

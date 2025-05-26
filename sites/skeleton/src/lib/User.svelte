@@ -1,5 +1,5 @@
 <script>
-	import { gravatar } from '@kavach/core'
+	import { gravatar } from 'kavach'
 
 	/**
 	 * @type {{ email: string; name: string; provider: string; }}

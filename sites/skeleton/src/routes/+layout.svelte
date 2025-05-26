@@ -5,7 +5,7 @@
 	import { themable } from '@rokkit/actions'
 	import { Alerts } from '@rokkit/ui'
 	import { alerts } from '@rokkit/states'
-	import { authStatus } from '@kavach/svelte'
+	import { authStatus } from 'kavach'
 	import { kavach, media } from '$lib'
 	import Header from '$lib/Header.svelte'
 

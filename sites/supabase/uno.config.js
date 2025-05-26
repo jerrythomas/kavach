@@ -9,7 +9,7 @@ import {
 } from 'unocss'
 
 import { iconShortcuts, defaultIcons, themeColors, themeRules } from '@rokkit/themes'
-import { defaultAuthIcons } from '@kavach/core'
+import { defaultAuthIcons } from 'kavach'
 
 export default defineConfig({
 	extractors: [extractorSvelte()],

@@ -12,7 +12,7 @@
  */
 
 /**
- * @typedef {(config:SupabaseConfig) => import('@kavach/core').AuthAdapter} GetSupabaseAdapter
+ * @typedef {(config:SupabaseConfig) => import('kavach').AuthAdapter} GetSupabaseAdapter
  */
 
 /**

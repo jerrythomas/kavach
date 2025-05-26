@@ -6,9 +6,9 @@ import {
 	extractKeyValuePair,
 	createResponse,
 	setHeaderCookies
-} from '../src/helper.js'
+} from '../src/internal.js'
 
-describe('Helper functions', () => {
+describe('Internal functions', () => {
 	beforeEach(() => {
 		global.Response = vi.fn().mockImplementation((...args) => args)
 	})

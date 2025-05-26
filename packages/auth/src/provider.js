@@ -26,10 +26,7 @@ export function getModeForProvider(name) {
  * @returns {Array<string|Object>}
  */
 export function getParamsForProvider(name) {
-	const params =
-		name === 'Microsoft'
-			? [{ prompt: 'consent', domain_hint: 'organizations' }]
-			: []
+	const params = name === 'Microsoft' ? [{ prompt: 'consent', domain_hint: 'organizations' }] : []
 
 	return params
 }
@@ -44,7 +41,7 @@ export function getProviderConfigFromNames(names) {
 	const providers = names.map((name) => ({
 		mode: getModeForProvider(name),
 		name: name.toLowerCase(),
-		label: name === 'Magic' ? 'email for Magic Link' : `Sign in with ${name}`,
+		label: name.toLowerCase() === 'magic' ? 'email for Magic Link' : `Sign in with ${name}`,
 		scopes: [],
 		params: getParamsForProvider(name)
 	}))

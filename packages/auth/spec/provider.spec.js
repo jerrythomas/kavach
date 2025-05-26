@@ -23,9 +23,7 @@ describe('Provider functions', () => {
 	})
 
 	it('should get the provider config for an array of provider names', () => {
-		expect(
-			getProviderConfigFromNames(['Magic', 'email', 'Google', 'Microsoft'])
-		).toEqual([
+		expect(getProviderConfigFromNames(['Magic', 'email', 'Google', 'Microsoft'])).toEqual([
 			{
 				name: 'magic',
 				mode: 'otp',

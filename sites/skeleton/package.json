@@ -1,6 +1,6 @@
 {
   "name": "skeleton",
-  "version": "1.0.0-next.27",
+  "version": "1.0.0-next.28",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -41,9 +41,8 @@
     "@fontsource/lato": "^5.2.5",
     "@fontsource/victor-mono": "^5.2.5",
     "@kavach/adapter-supabase": "workspace:*",
-    "@kavach/core": "workspace:*",
+    "kavach": "workspace:*",
     "@kavach/logger": "workspace:*",
-    "@kavach/svelte": "workspace:*",
     "@kavach/ui": "workspace:*",
     "@rokkit/actions": "1.0.0-next.113",
     "@rokkit/core": "1.0.0-next.113",

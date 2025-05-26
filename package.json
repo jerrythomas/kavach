@@ -1,9 +1,12 @@
 {
-  "name": "repro-svelte-import",
-  "version": "0.0.1",
-  "description": "Reproduction for issue with svelte import",
+  "name": "@kavach/core",
+  "version": "1.0.0-next.28",
+  "description": "Drop in security for SvelteKit Apps.",
   "type": "module",
   "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
   "scripts": {
     "prepare": "husky",
     "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
@@ -12,35 +15,42 @@
     "coverage": "vitest run coverage",
     "format": "prettier --write .",
     "lint": "eslint --fix",
-    "check-git": "if [ -n \"$(git status --porcelain)\" ]; then echo 'You have uncommitted changes or untracked files.' && exit 1; fi",
+    "lockfile": "pnpm install --lockfile-only",
     "build:all": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun run build' \\;",
-    "upgrade:all": "bun update --latest"
+    "upgrade:all": "bun update --latest",
+    "bump": "bun run lockfile && bumpp --no-push",
+    "bump:next": " bumpp --preid=next --no-push",
+    "publish:packages": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
+    "publish:adapters": "find ./adapters -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
+    "publish:all": "bun run publish:packages && bun run publish:adapters",
+    "release": "bun run publish:all"
   },
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",
   "devDependencies": {
     "@jerrythomas/prettier-config": "^1.0.2",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@testing-library/svelte": "^5.2.7",
+    "@testing-library/svelte": "^5.2.8",
     "@testing-library/user-event": "^14.6.1",
-    "eslint": "^9.26.0",
+    "bumpp": "^10.1.1",
+    "eslint": "^9.27.0",
     "husky": "^9.1.7",
     "jsdom": "^26.1.0",
-    "lint-staged": "^15.5.2",
+    "lint-staged": "^16.0.0",
     "pre-commit": "^1.2.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "svelte": "^5.28.2",
-    "turbo": "^2.5.2",
+    "svelte": "^5.33.2",
+    "turbo": "^2.5.3",
     "vite": "^6.3.5",
-    "vitest": "^3.1.3"
+    "vitest": "^3.1.4"
   },
   "lint-staged": {
     "*.{js,svelte}": "eslint --cache --fix",
     "*.{js,svelte,md,json}": "prettier --write"
   },
   "dependencies": {
-    "@rokkit/ui": "^1.0.0-next.113",
-    "eslint-plugin-svelte": "^3.5.1"
+    "@rokkit/ui": "^1.0.0-next.119",
+    "eslint-plugin-svelte": "^3.9.0"
   },
   "workspaces": [
     "./adapters/*",

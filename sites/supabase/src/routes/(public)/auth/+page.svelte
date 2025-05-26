@@ -1,6 +1,6 @@
 <script>
 	import { AuthProvider } from '@kavach/ui'
-	// import { urlHashToParams } from '@kavach/core'
+	// import { urlHashToParams } from 'kavach'
 	// import { page } from '$app/states'
 	// import { onMount } from 'svelte'
 

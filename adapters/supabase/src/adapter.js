@@ -1,5 +1,5 @@
 import { createClient, AuthApiError } from '@supabase/supabase-js'
-import { urlHashToParams } from '@kavach/core'
+import { urlHashToParams } from 'kavach'
 import { defaultOrigin } from './constants'
 import { getActions } from './actions'
 import { pick, omit } from 'ramda'
@@ -8,7 +8,7 @@ import { pick, omit } from 'ramda'
  * Transforms supabase result into a structure that can be used by kavach
  *
  * @param {*} result
- * @returns {import('@kavach/core').AuthResult}
+ * @returns {import('kavach').AuthResult}
  */
 export function transformResult({ data, error }, creds) {
 	let message = ''
@@ -48,7 +48,7 @@ export function transformResult({ data, error }, creds) {
  * Handles auth change
  *
  * @param {*} client
- * @param {import('@kavach/core').AuthChangeCallback} callback
+ * @param {import('kavach').AuthChangeCallback} callback
  * @returns {() => void} unsubscribe
  */
 function handleAuthChange(client, callback) {
@@ -80,8 +80,8 @@ function getAuthMode(credentials) {
  * Handles sign in based on the credentials provided
  *
  * @param {*} client
- * @param {import('@kavach/core').AuthCredentials} credentials
- * @returns {Promise<import('@kavach/core').AuthResult>}
+ * @param {import('kavach').AuthCredentials} credentials
+ * @returns {Promise<import('kavach').AuthResult>}
  */
 async function handleSignIn(client, credentials) {
 	const { email, phone, password, provider, scopes = [] } = credentials
@@ -127,8 +127,8 @@ async function handleSignIn(client, credentials) {
  * Handles sign up based on the credentials provided
  *
  * @param {*} client
- * @param {import('@kavach/core').AuthCredentials} credentials
- * @returns {Promise<import('@kavach/core').AuthResponse>}
+ * @param {import('kavach').AuthCredentials} credentials
+ * @returns {Promise<import('kavach').AuthResponse>}
  */
 async function handleSignUp(client, credentials) {
 	const result = await client.auth.signUp(pick(['email', 'password'], credentials))
@@ -139,7 +139,7 @@ async function handleSignUp(client, credentials) {
  * Parses the url hash to check if there is an error
  *
  * @param {URL} url
- * @returns {import('@kavach/core').AuthError}
+ * @returns {import('kavach').AuthError}
  */
 export function parseUrlError(url) {
 	const result = urlHashToParams(url?.hash)
@@ -177,7 +177,7 @@ export function parseUrlError(url) {
  * Creates an adapter for supabase
  *
  * @param {import('./types').SupabaseConfig} options
- * @returns {import('@kavach/core').AuthAdapter}
+ * @returns {import('kavach').AuthAdapter}
  */
 export function getAdapter(options) {
 	const client = createClient(options.url, options.anonKey)

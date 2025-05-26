@@ -1,5 +1,5 @@
 <script>
-	import { gravatar, deriveName } from '@kavach/core'
+	import { gravatar, deriveName } from 'kavach'
 
 	let { email, full_name, role, avatar_url, app_metadata } = $props()
 
