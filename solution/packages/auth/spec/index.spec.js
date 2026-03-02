@@ -10,6 +10,7 @@ describe('utilities', () => {
 			'gravatar',
 			'deriveName',
 			'urlHashToParams',
+			'loginCache',
 			'getRequestBody',
 			'getRequestData',
 			'splitAuthData',
