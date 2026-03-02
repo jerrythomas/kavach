@@ -36,7 +36,8 @@ export default defineConfig({
 					setupFiles: ['../../vitest-setup-client.js']
 				}
 			},
-			{ extends: true, test: { name: 'supabase', root: 'adapters/supabase' } }
+			{ extends: true, test: { name: 'supabase', root: 'adapters/supabase' } },
+			{ extends: true, test: { name: 'convex', root: 'adapters/convex' } }
 		]
 	}
 })
