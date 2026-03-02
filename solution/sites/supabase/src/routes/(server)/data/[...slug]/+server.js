@@ -48,10 +48,23 @@ export async function PUT({ params, request }) {
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
+export async function PATCH({ params, request }) {
+	const { schema, entity } = getEntity(params.slug)
+	const actions = kavach.server(schema)
+	const body = await request.json()
+	const { data, error, status } = await actions.patch(entity, body)
+
+	if (error) return json({ error }, { status })
+	return json(data)
+}
+
+/**
+ * @type {import('@sveltejs/kit').RequestHandler}
+ */
 export async function DELETE({ params, request }) {
 	const { schema, entity } = getEntity(params.slug)
 	const actions = kavach.server(schema)
-	const body = await request.json() //getRequestBody(request)
+	const body = await request.json()
 	const { data, error, status } = await actions.delete(entity, body)
 
 	if (error) return json({ error }, { status })

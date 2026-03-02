@@ -16,6 +16,7 @@ describe('actions', () => {
 			ilike: vi.fn().mockReturnThis(),
 			in: vi.fn().mockReturnThis(),
 			is: vi.fn().mockReturnThis(),
+			select: vi.fn().mockReturnThis(),
 			then: vi.fn((resolve) => resolve(result))
 		}
 		return {
@@ -23,8 +24,8 @@ describe('actions', () => {
 			select: vi.fn().mockReturnValue(query),
 			insert: vi.fn().mockReturnValue({ select: vi.fn().mockResolvedValue(result) }),
 			upsert: vi.fn().mockReturnValue({ select: vi.fn().mockResolvedValue(result) }),
-			update: vi.fn().mockReturnValue({ select: vi.fn().mockResolvedValue(result) }),
-			delete: vi.fn().mockReturnValue({ match: vi.fn().mockResolvedValue(result) }),
+			update: vi.fn().mockReturnValue(query),
+			delete: vi.fn().mockReturnValue(query),
 			rpc: vi.fn().mockResolvedValue(result),
 			schema: vi.fn().mockReturnThis(),
 			_query: query
@@ -134,23 +135,65 @@ describe('actions', () => {
 	})
 
 	describe('patch', () => {
-		it('should update data', async () => {
+		it('should update data without filter', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.patch('entity', { data: 'value' })
+			await actions.patch('entity', { data: { name: 'foo' } })
 			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.update).toHaveBeenCalledWith({ data: 'value' })
-			expect(client.update().select).toHaveBeenCalled()
+			expect(client.update).toHaveBeenCalledWith({ name: 'foo' })
+			expect(client._query.select).toHaveBeenCalled()
+		})
+
+		it('should apply eq filter', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.patch('entity', {
+				data: { enabled: true },
+				filter: { id: 'eq.123' }
+			})
+			expect(client.update).toHaveBeenCalledWith({ enabled: true })
+			expect(client._query.eq).toHaveBeenCalledWith('id', '123')
+			expect(client._query.select).toHaveBeenCalled()
+		})
+
+		it('should apply multiple filters', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.patch('entity', {
+				data: { status: 'archived' },
+				filter: { org: 'eq.acme', active: 'is.false' }
+			})
+			expect(client.update).toHaveBeenCalledWith({ status: 'archived' })
+			expect(client._query.eq).toHaveBeenCalledWith('org', 'acme')
+			expect(client._query.is).toHaveBeenCalledWith('active', false)
 		})
 	})
 
 	describe('delete', () => {
-		it('should delete data', async () => {
+		it('should delete without filter', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.delete('entity', { filter: 'value' })
+			await actions.delete('entity')
 			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.delete().match).toHaveBeenCalledWith({ filter: 'value' })
+			expect(client.delete).toHaveBeenCalled()
+		})
+
+		it('should apply eq filter', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.delete('entity', { filter: { id: 'eq.123' } })
+			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client._query.eq).toHaveBeenCalledWith('id', '123')
+		})
+
+		it('should apply multiple filters', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.delete('entity', {
+				filter: { status: 'eq.deleted', age: 'gt.90' }
+			})
+			expect(client._query.eq).toHaveBeenCalledWith('status', 'deleted')
+			expect(client._query.gt).toHaveBeenCalledWith('age', '90')
 		})
 	})
 

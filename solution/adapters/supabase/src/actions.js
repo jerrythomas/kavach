@@ -25,12 +25,34 @@ export function getActions(client, schema) {
 		return await query
 	}
 
+	async function patch(entity, input) {
+		const { data, filter = {} } = input ?? {}
+		let query = schemaClient.from(entity).update(data)
+
+		for (const { column, op, value } of parseFilter(filter)) {
+			query = query[op](column, value)
+		}
+
+		return await query.select()
+	}
+
+	async function del(entity, input) {
+		const { filter = {} } = input ?? {}
+		let query = schemaClient.from(entity).delete()
+
+		for (const { column, op, value } of parseFilter(filter)) {
+			query = query[op](column, value)
+		}
+
+		return await query
+	}
+
 	return {
 		get,
 		put: (entity, data) => schemaClient.from(entity).insert(data).select(),
 		post: (entity, data) => schemaClient.from(entity).upsert(data).select(),
-		patch: (entity, data) => schemaClient.from(entity).update(data).select(),
-		delete: (entity, data) => schemaClient.from(entity).delete().match(data),
+		patch,
+		delete: del,
 		call: (entity, data) => schemaClient.rpc(entity, data),
 		connection: schemaClient
 	}
