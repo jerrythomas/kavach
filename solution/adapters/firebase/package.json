@@ -23,9 +23,9 @@
     "build": "bun prepublishOnly"
   },
   "dependencies": {
-    "@firebase/app": "^0.11.5",
-    "@firebase/auth": "^1.10.1",
-    "kavach": "workspace:*"
+    "firebase": "^11.0.0",
+    "kavach": "workspace:*",
+    "ramda": "^0.30.1"
   },
   "exports": {
     "./package.json": "./package.json",
