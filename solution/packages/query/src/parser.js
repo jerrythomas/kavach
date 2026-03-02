@@ -1,4 +1,5 @@
 import { isValidOperator } from './operators.js'
+import { isValidColumnName } from './validation.js'
 
 /**
  * @typedef {Object} FilterDescriptor
@@ -17,6 +18,10 @@ export function parseFilter(filter) {
 	if (!filter) return []
 
 	return Object.entries(filter).map(([column, raw]) => {
+		if (!isValidColumnName(column)) {
+			throw new Error(`Invalid column name: "${column}"`)
+		}
+
 		const dotIndex = raw.indexOf('.')
 		if (dotIndex === -1) {
 			throw new Error(`Invalid filter value for "${column}": expected "op.value" format`)

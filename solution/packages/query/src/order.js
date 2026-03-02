@@ -1,3 +1,5 @@
+import { isValidColumnName } from './validation.js'
+
 /**
  * @typedef {Object} OrderDescriptor
  * @property {string} column
@@ -21,8 +23,12 @@ export function parseOrder(order) {
 		const suffix = dotIndex !== -1 ? trimmed.slice(dotIndex + 1) : null
 
 		if (suffix === 'asc' || suffix === 'desc') {
+			const columnName = trimmed.slice(0, dotIndex)
+			if (!isValidColumnName(columnName)) {
+				throw new Error(`Invalid column name: "${columnName}"`)
+			}
 			return {
-				column: trimmed.slice(0, dotIndex),
+				column: columnName,
 				ascending: suffix === 'asc'
 			}
 		}
@@ -31,6 +37,10 @@ export function parseOrder(order) {
 			if (/^[a-z]+$/.test(suffix) && suffix !== trimmed.slice(0, dotIndex)) {
 				throw new Error(`Invalid order direction: "${suffix}" (expected "asc" or "desc")`)
 			}
+		}
+
+		if (!isValidColumnName(trimmed)) {
+			throw new Error(`Invalid column name: "${trimmed}"`)
 		}
 
 		return { column: trimmed, ascending: true }

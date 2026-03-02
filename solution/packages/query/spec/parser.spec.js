@@ -105,4 +105,17 @@ describe('parseFilter', () => {
 			{ column: 'active', op: 'is', value: false }
 		])
 	})
+
+	it('should throw on invalid column name with special characters', () => {
+		expect(() => parseFilter({ 'col;DROP TABLE users': 'eq.1' })).toThrow('Invalid column name')
+	})
+
+	it('should throw on column name starting with number', () => {
+		expect(() => parseFilter({ '1col': 'eq.1' })).toThrow('Invalid column name')
+	})
+
+	it('should accept dotted column names', () => {
+		const result = parseFilter({ 'users.name': 'eq.alice' })
+		expect(result).toEqual([{ column: 'users.name', op: 'eq', value: 'alice' }])
+	})
 })

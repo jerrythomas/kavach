@@ -45,4 +45,8 @@ describe('parseOrder', () => {
 	it('should throw on invalid direction', () => {
 		expect(() => parseOrder('name.up')).toThrow('Invalid order direction')
 	})
+
+	it('should throw on invalid column name', () => {
+		expect(() => parseOrder("col;DROP.asc")).toThrow('Invalid column name')
+	})
 })
