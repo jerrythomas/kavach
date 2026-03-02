@@ -7,6 +7,6 @@ export function load({ locals }) {
 		adapter: locals.adapter,
 		adapters: locals.adapters,
 		devMode: locals.devMode,
-		...locals
+		session: locals.session ?? null
 	}
 }

@@ -1,3 +1,1 @@
-import { watchMedia } from '@rokkit/states'
-
-export const media = watchMedia()
+// Placeholder — rokkit/states watchMedia removed until linked packages are fixed
