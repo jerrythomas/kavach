@@ -41,7 +41,10 @@ describe('kavach', () => {
 			signOut: expect.any(Function),
 			onAuthChange: expect.any(Function),
 			handle: expect.any(Function),
-			actions: expect.any(Function)
+			actions: expect.any(Function),
+			getCachedLogins: expect.any(Function),
+			removeCachedLogin: expect.any(Function),
+			clearCachedLogins: expect.any(Function)
 		})
 	})
 
@@ -378,6 +381,150 @@ describe('kavach', () => {
 			await vi.runAllTimersAsync()
 			expect(adapter.parseUrlError).toHaveBeenCalledWith(url)
 			expect(logger.error).not.toHaveBeenCalledOnce()
+		})
+	})
+
+	describe('loginCache integration', () => {
+		const STORAGE_KEY = 'kavach:logins'
+
+		beforeEach(() => {
+			vi.stubGlobal('localStorage', {
+				_store: {},
+				getItem(key) { return this._store[key] ?? null },
+				setItem(key, value) { this._store[key] = String(value) },
+				removeItem(key) { delete this._store[key] },
+				clear() { this._store = {} }
+			})
+		})
+
+		afterEach(() => {
+			vi.unstubAllGlobals()
+		})
+
+		it('should cache login after successful signIn with user data', async () => {
+			const user = {
+				email: 'test@example.com',
+				user_metadata: {
+					full_name: 'Test User',
+					avatar_url: 'https://example.com/avatar.png'
+				}
+			}
+			adapter.signIn = vi.fn().mockResolvedValue({
+				type: 'success',
+				data: { user }
+			})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ email: 'test@example.com', password: 'secret' })
+
+			const cached = kavach.getCachedLogins()
+			expect(cached).toHaveLength(1)
+			expect(cached[0]).toMatchObject({
+				email: 'test@example.com',
+				name: 'Test User',
+				avatar: 'https://example.com/avatar.png',
+				provider: 'email',
+				mode: 'email'
+			})
+			expect(cached[0].lastLogin).toEqual(expect.any(Number))
+		})
+
+		it('should set provider and mode from credentials when using oauth', async () => {
+			const user = {
+				email: 'oauth@example.com',
+				user_metadata: {}
+			}
+			adapter.signIn = vi.fn().mockResolvedValue({
+				type: 'success',
+				data: { user }
+			})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ provider: 'google' })
+
+			const cached = kavach.getCachedLogins()
+			expect(cached).toHaveLength(1)
+			expect(cached[0]).toMatchObject({
+				email: 'oauth@example.com',
+				provider: 'google',
+				mode: 'oauth'
+			})
+		})
+
+		it('should derive name from email when full_name is missing', async () => {
+			const user = {
+				email: 'john.doe@example.com',
+				user_metadata: {}
+			}
+			adapter.signIn = vi.fn().mockResolvedValue({
+				type: 'success',
+				data: { user }
+			})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ email: 'john.doe@example.com', password: 'secret' })
+
+			const cached = kavach.getCachedLogins()
+			expect(cached[0].name).toBe('john.doe')
+		})
+
+		it('should not cache login on failed signIn', async () => {
+			adapter.signIn = vi.fn().mockResolvedValue({
+				type: 'error',
+				error: { message: 'Invalid credentials' }
+			})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ email: 'test@example.com', password: 'wrong' })
+
+			expect(kavach.getCachedLogins()).toEqual([])
+		})
+
+		it('should not cache login when result has no user', async () => {
+			adapter.signIn = vi.fn().mockResolvedValue({
+				type: 'success',
+				data: {}
+			})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ email: 'test@example.com', password: 'secret' })
+
+			expect(kavach.getCachedLogins()).toEqual([])
+		})
+
+		it('should remove a cached login by email', async () => {
+			const user = { email: 'test@example.com', user_metadata: {} }
+			adapter.signIn = vi.fn().mockResolvedValue({
+				type: 'success',
+				data: { user }
+			})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ email: 'test@example.com', password: 'secret' })
+			expect(kavach.getCachedLogins()).toHaveLength(1)
+
+			kavach.removeCachedLogin('test@example.com')
+			expect(kavach.getCachedLogins()).toEqual([])
+		})
+
+		it('should clear all cached logins', async () => {
+			adapter.signIn = vi.fn()
+				.mockResolvedValueOnce({
+					type: 'success',
+					data: { user: { email: 'a@test.com', user_metadata: {} } }
+				})
+				.mockResolvedValueOnce({
+					type: 'success',
+					data: { user: { email: 'b@test.com', user_metadata: {} } }
+				})
+
+			const kavach = createKavach(adapter)
+			await kavach.signIn({ email: 'a@test.com', password: '1' })
+			await kavach.signIn({ email: 'b@test.com', password: '2' })
+			expect(kavach.getCachedLogins()).toHaveLength(2)
+
+			kavach.clearCachedLogins()
+			expect(kavach.getCachedLogins()).toEqual([])
 		})
 	})
 })

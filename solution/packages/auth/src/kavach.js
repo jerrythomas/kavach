@@ -5,6 +5,7 @@ import { pick } from 'ramda'
 import { writable } from 'svelte/store'
 import { HTTP_STATUS_MESSAGE, RUNNING_ON } from './constants'
 import { setHeaderCookies } from './internal'
+import * as loginCache from './loginCache'
 import { getUserInfo } from './provider'
 import { getRequestData } from './request'
 
@@ -49,7 +50,36 @@ async function handleSignIn(adapter, agents, credentials) {
 	const result = await adapter.signIn(credentials)
 	authStatus.set(result)
 	if (result.error) logger.error({ message: result.error.message, error: result.error })
+	if (RUNNING_ON === 'browser' && result.type === 'success' && result.data?.user) {
+		cacheLogin(result.data.user, credentials)
+	}
 	return result
+}
+
+/**
+ * Cache login info after a successful sign-in.
+ *
+ * @param {object} user       - user object from auth result
+ * @param {object} credentials - the credentials passed to signIn
+ */
+function cacheLogin(user, credentials) {
+	const email = user.email
+	if (!email) return
+
+	const meta = user.user_metadata || {}
+	const name = meta.full_name || email.split('@')[0]
+	const avatar = meta.avatar_url || null
+	const provider = credentials.provider || 'email'
+	const mode = credentials.provider && credentials.provider !== 'email' ? 'oauth' : 'email'
+
+	loginCache.set({
+		email,
+		name,
+		avatar,
+		provider,
+		mode,
+		lastLogin: Date.now()
+	})
 }
 
 /**
@@ -275,6 +305,9 @@ export function createKavach(adapter, options = {}) {
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
-		actions: (schema) => options.data?.(schema)
+		actions: (schema) => options.data?.(schema),
+		getCachedLogins: () => loginCache.get(),
+		removeCachedLogin: (email) => loginCache.remove(email),
+		clearCachedLogins: () => loginCache.clear()
 	}
 }
