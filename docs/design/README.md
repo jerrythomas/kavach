@@ -9,3 +9,4 @@ These are living documents that evolve with the implementation. Each document co
 | # | Document | Description | Status |
 |---|----------|-------------|--------|
 | 01 | [01-adapters.md](01-adapters.md) | Auth adapter plugin pattern, per-adapter specs | In progress |
+| 02 | [02-auth-ui.md](02-auth-ui.md) | Cached logins, smart layout, passkey support | Draft |
