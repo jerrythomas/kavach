@@ -1,7 +1,7 @@
 import { pick, omit } from 'ramda'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getAdapter, parseUrlError, transformResult } from '../src/adapter.js'
-import { AuthApiError } from '@supabase/supabase-js'
+import { AuthApiError, createClient } from '@supabase/supabase-js'
 
 let subscription = null
 
@@ -47,66 +47,26 @@ vi.mock('@supabase/supabase-js', async (importOriginal) => ({
 	})
 }))
 
+const mockClient = createClient()
+
 describe('getAdapter', () => {
-	const options = {
-		url: 'http://localhost',
-		anonKey: 'key',
-		schemas: ['public']
-	}
-	it('should create a client and define auth functions', () => {
-		const adapter = getAdapter(options)
+	it('should define auth functions', () => {
+		const adapter = getAdapter(mockClient)
 		expect(adapter).toEqual({
 			signIn: expect.any(Function),
 			signUp: expect.any(Function),
 			signOut: expect.any(Function),
 			synchronize: expect.any(Function),
 			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function),
-			proxy: expect.any(Function),
-			actions: expect.any(Function)
+			parseUrlError: expect.any(Function)
 		})
-	})
-
-	describe('actions', () => {
-		it('should return actions for a schema', () => {
-			const adapter = getAdapter(options)
-			const actions = adapter.actions('public')
-			expect(actions).toEqual({
-				call: expect.any(Function),
-				delete: expect.any(Function),
-				get: expect.any(Function),
-				patch: expect.any(Function),
-				post: expect.any(Function),
-				put: expect.any(Function),
-				connection: expect.any(Object)
-			})
-		})
-
-		it('should return actions without schema', () => {
-			const adapter = getAdapter(options)
-			const actions = adapter.actions()
-			expect(actions).toEqual({
-				call: expect.any(Function),
-				delete: expect.any(Function),
-				get: expect.any(Function),
-				patch: expect.any(Function),
-				post: expect.any(Function),
-				put: expect.any(Function),
-				connection: expect.any(Object)
-			})
-		})
-	})
-
-	it('should create adapters without multiple clients', () => {
-		const adapter = getAdapter(omit(['schemas'], options))
-		expect(adapter.actions('public').connection).toEqual(adapter.actions().connection)
 	})
 
 	it('should handle sign in using magic link', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		const credentials = { provider: 'magic', email: 'a@b.com' }
 		const result = await adapter.signIn(credentials)
-		expect(adapter.actions().connection.auth.signInWithOtp).toHaveBeenCalledWith({
+		expect(mockClient.auth.signInWithOtp).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			options: {
 				emailRedirectTo: 'http://localhost:3000'
@@ -128,14 +88,14 @@ describe('getAdapter', () => {
 	})
 
 	it('should handle sign in using email & password', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		const credentials = {
 			provider: 'password',
 			email: 'a@b.com',
 			password: '123456'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(adapter.actions().connection.auth.signInWithPassword).toHaveBeenCalledWith({
+		expect(mockClient.auth.signInWithPassword).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			password: '123456'
 		})
@@ -148,14 +108,14 @@ describe('getAdapter', () => {
 	})
 
 	it('should handle sign in using phone & password', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		const credentials = {
 			provider: 'password',
 			phone: '1234567890',
 			password: '123456'
 		}
 		const result = await adapter.signIn(credentials)
-		expect(adapter.actions().connection.auth.signInWithPassword).toHaveBeenCalledWith({
+		expect(mockClient.auth.signInWithPassword).toHaveBeenCalledWith({
 			phone: '1234567890',
 			password: '123456'
 		})
@@ -171,7 +131,7 @@ describe('getAdapter', () => {
 	})
 
 	it('should handle sign in using oAuth', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		const credentials = {
 			provider: 'gmail'
 		}
@@ -180,7 +140,7 @@ describe('getAdapter', () => {
 			provider: 'gmail',
 			options: { scopes: '', redirectTo: 'http://localhost:3000' }
 		}
-		expect(adapter.actions().connection.auth.signInWithOAuth).toHaveBeenCalledWith(expectedCreds)
+		expect(mockClient.auth.signInWithOAuth).toHaveBeenCalledWith(expectedCreds)
 
 		expect(result).toEqual({
 			type: 'success',
@@ -190,14 +150,14 @@ describe('getAdapter', () => {
 	})
 
 	it('should handle sign up', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		const credentials = {
 			provider: 'password',
 			email: 'a@b.com',
 			password: '123456'
 		}
 		const result = await adapter.signUp(credentials)
-		expect(adapter.actions().connection.auth.signUp).toHaveBeenCalledWith({
+		expect(mockClient.auth.signUp).toHaveBeenCalledWith({
 			email: 'a@b.com',
 			password: '123456'
 		})
@@ -210,18 +170,15 @@ describe('getAdapter', () => {
 	})
 
 	it('should handle sign out', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		await adapter.signOut()
-		expect(adapter.actions().connection.auth.signOut).toHaveBeenCalled()
+		expect(mockClient.auth.signOut).toHaveBeenCalled()
 	})
 
 	it('should synchronize session', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		await adapter.synchronize({ mock: 'session' })
-		expect(adapter.actions('public').connection.auth.setSession).toHaveBeenCalledWith({
-			mock: 'session'
-		})
-		expect(adapter.actions().connection.auth.setSession).toHaveBeenCalledWith({
+		expect(mockClient.auth.setSession).toHaveBeenCalledWith({
 			mock: 'session'
 		})
 	})
@@ -296,12 +253,6 @@ describe('parseUrlError', () => {
 })
 
 describe('onAuthChange', () => {
-	const options = {
-		url: 'http://localhost',
-		anonKey: 'key',
-		schemas: ['public']
-	}
-
 	beforeEach(() => {
 		vi.useFakeTimers()
 	})
@@ -311,14 +262,14 @@ describe('onAuthChange', () => {
 	})
 
 	it('should handle auth state changes', async () => {
-		const adapter = getAdapter(options)
+		const adapter = getAdapter(mockClient)
 		const callback = vi.fn()
 
 		// Subscribe to auth changes
 		const unsubscribe = adapter.onAuthChange(callback)
 		vi.advanceTimersByTime(100)
 		await vi.runAllTimersAsync()
-		expect(adapter.actions().connection.auth.onAuthStateChange).toHaveBeenCalled()
+		expect(mockClient.auth.onAuthStateChange).toHaveBeenCalled()
 
 		// Ensure the callback was called with the expected arguments
 		expect(callback).toHaveBeenCalledWith('SIGNED_IN', { user: 'test user' })
