@@ -6,7 +6,8 @@ describe('resolveAdapterName', () => {
 		const result = resolveAdapterName({
 			url: new URL('http://localhost?adapter=firebase'),
 			cookies: { get: () => undefined },
-			env: {}
+			env: {},
+			available: ['supabase', 'firebase']
 		})
 		expect(result).toBe('firebase')
 	})
@@ -15,7 +16,8 @@ describe('resolveAdapterName', () => {
 		const result = resolveAdapterName({
 			url: new URL('http://localhost'),
 			cookies: { get: (name) => (name === 'kavach-adapter' ? 'convex' : undefined) },
-			env: {}
+			env: {},
+			available: ['supabase', 'convex']
 		})
 		expect(result).toBe('convex')
 	})
@@ -24,7 +26,8 @@ describe('resolveAdapterName', () => {
 		const result = resolveAdapterName({
 			url: new URL('http://localhost'),
 			cookies: { get: () => undefined },
-			env: { PUBLIC_AUTH_ADAPTER: 'auth0' }
+			env: { PUBLIC_AUTH_ADAPTER: 'auth0' },
+			available: ['supabase', 'firebase']
 		})
 		expect(result).toBe('auth0')
 	})
@@ -33,7 +36,8 @@ describe('resolveAdapterName', () => {
 		const result = resolveAdapterName({
 			url: new URL('http://localhost'),
 			cookies: { get: () => undefined },
-			env: {}
+			env: {},
+			available: ['supabase', 'firebase']
 		})
 		expect(result).toBe('supabase')
 	})
@@ -43,7 +47,8 @@ describe('resolveAdapterName', () => {
 			url: new URL('http://localhost?adapter=firebase'),
 			cookies: { get: () => undefined },
 			env: { PUBLIC_AUTH_ADAPTER: 'supabase' },
-			devMode: false
+			devMode: false,
+			available: ['supabase', 'firebase']
 		})
 		expect(result).toBe('supabase')
 	})
@@ -53,8 +58,39 @@ describe('resolveAdapterName', () => {
 			url: new URL('http://localhost'),
 			cookies: { get: (name) => (name === 'kavach-adapter' ? 'firebase' : undefined) },
 			env: { PUBLIC_AUTH_ADAPTER: 'supabase' },
-			devMode: false
+			devMode: false,
+			available: ['supabase', 'firebase']
 		})
 		expect(result).toBe('supabase')
+	})
+
+	it('rejects URL param adapter not in available list', () => {
+		const result = resolveAdapterName({
+			url: new URL('http://localhost?adapter=evil'),
+			cookies: { get: () => undefined },
+			env: {},
+			available: ['supabase', 'firebase']
+		})
+		expect(result).toBe('supabase')
+	})
+
+	it('rejects cookie adapter not in available list', () => {
+		const result = resolveAdapterName({
+			url: new URL('http://localhost'),
+			cookies: { get: (name) => (name === 'kavach-adapter' ? 'malicious' : undefined) },
+			env: {},
+			available: ['supabase']
+		})
+		expect(result).toBe('supabase')
+	})
+
+	it('accepts URL param adapter in available list', () => {
+		const result = resolveAdapterName({
+			url: new URL('http://localhost?adapter=firebase'),
+			cookies: { get: () => undefined },
+			env: {},
+			available: ['supabase', 'firebase']
+		})
+		expect(result).toBe('firebase')
 	})
 })

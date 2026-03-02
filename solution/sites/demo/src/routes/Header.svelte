@@ -33,8 +33,12 @@
 				<select
 					class="bg-neutral-base border border-neutral-300 rounded px-2 py-1 text-sm"
 					value={adapter}
-					onchange={(e) => {
-						document.cookie = `kavach-adapter=${e.target.value};path=/;max-age=2592000`
+					onchange={async (e) => {
+						await fetch('/api/set-adapter', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ adapter: e.target.value })
+						})
 						window.location.reload()
 					}}
 				>

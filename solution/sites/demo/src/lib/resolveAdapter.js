@@ -7,16 +7,19 @@
  * @param {object} options.cookies - SvelteKit cookies object
  * @param {object} options.env     - public env vars
  * @param {boolean} [options.devMode=true] - whether dev-mode switching is enabled
+ * @param {string[]} [options.available=[]] - list of known adapter names
  * @returns {string} adapter name
  */
-export function resolveAdapterName({ url, cookies, env, devMode = true }) {
+export function resolveAdapterName({ url, cookies, env, devMode = true, available = [] }) {
+	const fallback = env.PUBLIC_AUTH_ADAPTER || 'supabase'
+
 	if (devMode) {
 		const fromUrl = url.searchParams.get('adapter')
-		if (fromUrl) return fromUrl
+		if (fromUrl && available.includes(fromUrl)) return fromUrl
 
 		const fromCookie = cookies.get('kavach-adapter')
-		if (fromCookie) return fromCookie
+		if (fromCookie && available.includes(fromCookie)) return fromCookie
 	}
 
-	return env.PUBLIC_AUTH_ADAPTER || 'supabase'
+	return fallback
 }

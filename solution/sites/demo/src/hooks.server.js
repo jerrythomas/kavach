@@ -2,7 +2,7 @@ import { createKavach } from 'kavach'
 import { appConfig } from '$lib/config'
 import { routes } from '$lib/routes'
 import { resolveAdapterName } from '$lib/resolveAdapter'
-import { loadAdapter, getAvailableAdapters } from '$lib/adapters'
+import { loadAdapter, getAvailableAdapters, registry } from '$lib/adapters'
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
@@ -10,7 +10,8 @@ export async function handle({ event, resolve }) {
 		url: event.url,
 		cookies: event.cookies,
 		env: { PUBLIC_AUTH_ADAPTER: appConfig.defaultAdapter },
-		devMode: appConfig.devMode
+		devMode: appConfig.devMode,
+		available: Object.keys(registry)
 	})
 
 	const { adapter, data, logger } = await loadAdapter(adapterName, appConfig)
@@ -30,8 +31,8 @@ export async function handle({ event, resolve }) {
 	if (appConfig.devMode) {
 		event.cookies.set('kavach-adapter', adapterName, {
 			path: '/',
-			httpOnly: false,
-			secure: false,
+			httpOnly: true,
+			secure: event.url.hostname !== 'localhost' && event.url.hostname !== '127.0.0.1',
 			sameSite: 'lax',
 			maxAge: 60 * 60 * 24 * 30
 		})
