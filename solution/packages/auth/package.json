@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@kavach/cookie": "workspace:*",
-    "@kavach/deflector": "workspace:*",
+    "@kavach/guardian": "workspace:*",
     "@kavach/hashing": "workspace:*",
     "@kavach/logger": "workspace:*",
     "ramda": "^0.30.1"

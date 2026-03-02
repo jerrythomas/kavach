@@ -82,7 +82,7 @@
       "version": "1.0.0-next.29",
       "dependencies": {
         "@kavach/cookie": "workspace:*",
-        "@kavach/deflector": "workspace:*",
+        "@kavach/guardian": "workspace:*",
         "@kavach/hashing": "workspace:*",
         "@kavach/logger": "workspace:*",
         "ramda": "^0.30.1",
@@ -92,8 +92,8 @@
       "name": "@kavach/cookie",
       "version": "1.0.0-next.29",
     },
-    "packages/deflector": {
-      "name": "@kavach/deflector",
+    "packages/guardian": {
+      "name": "@kavach/guardian",
       "version": "1.0.0-next.29",
       "dependencies": {
         "@kavach/logger": "workspace:*",
@@ -611,7 +611,7 @@
 
     "@kavach/cookie": ["@kavach/cookie@workspace:packages/cookie"],
 
-    "@kavach/deflector": ["@kavach/deflector@workspace:packages/deflector"],
+    "@kavach/guardian": ["@kavach/guardian@workspace:packages/guardian"],
 
     "@kavach/hashing": ["@kavach/hashing@workspace:packages/hashing"],
 

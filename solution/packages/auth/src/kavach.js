@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { createDeflector } from '@kavach/deflector'
+import { createGuardian } from '@kavach/guardian'
 import { zeroLogger } from '@kavach/logger'
 import { pick } from 'ramda'
 import { writable } from 'svelte/store'
@@ -101,12 +101,12 @@ async function handleSignUp(adapter, agents, credentials) {
 /**
  * Handle unauthorized access
  *
- * @param {import('kavach').Deflector} deflector
- * @param {object}                           request
+ * @param {import('kavach').Guardian} guardian
+ * @param {object}                          request
  * @returns {Response}
  */
 function handleUnauthorizedAccess(agents, { event, resolve }) {
-	const result = agents.deflector.protect(event.url.pathname)
+	const result = agents.guardian.protect(event.url.pathname)
 
 	if (result.status !== 200) {
 		if (result.redirect) {
@@ -150,10 +150,10 @@ export function setCookieFromSession(session) {
  *
  * @param {object} event
  * @param {import('kavach').AuthAdapter} adapter
- * @param {import('kavach').Deflector}   deflector
+ * @param {import('kavach').Guardian}   guardian
  * @returns {object} response
  */
-async function handleSessionSync(event, adapter, deflector) {
+async function handleSessionSync(event, adapter, guardian) {
 	const data = await getRequestData(event)
 	let session = null
 	let status = 200
@@ -172,7 +172,7 @@ async function handleSessionSync(event, adapter, deflector) {
 		await adapter.signOut()
 	}
 
-	deflector.setSession(session)
+	guardian.setSession(session)
 	const headers = setCookieFromSession(session)
 	return new Response({ session, error }, { status, headers })
 }
@@ -192,12 +192,12 @@ function parseSessionFromCookies(event) {
 /**
  * Send sign in status and session to server
  *
- * @param {import('kavach').Deflector} deflector
+ * @param {import('kavach').Guardian} guardian
  * @param {object} event
  * @param {object} session
  */
 async function syncSessionWithServer(agents, event, session = null) {
-	const result = await fetch(agents.deflector.app.session, {
+	const result = await fetch(agents.guardian.app.session, {
 		method: 'POST',
 		body: JSON.stringify({ event, session })
 	})
@@ -213,12 +213,12 @@ async function syncSessionWithServer(agents, event, session = null) {
  * @returns {Promise<void>}
  */
 function handleRouteProtection(adapter, agents, { event, resolve }) {
-	const { deflector } = agents
+	const { guardian } = agents
 	event.locals.session = parseSessionFromCookies(event)
-	deflector.setSession(event.locals.session)
+	guardian.setSession(event.locals.session)
 
-	if (event.url.pathname.startsWith(deflector.app.session)) {
-		return handleSessionSync(event, adapter, deflector)
+	if (event.url.pathname.startsWith(guardian.app.session)) {
+		return handleSessionSync(event, adapter, guardian)
 	}
 
 	return handleUnauthorizedAccess(agents, { event, resolve })
@@ -268,7 +268,7 @@ function getAgents(options) {
 			package: '@kavach/svelte',
 			module: 'kavach'
 		}),
-		deflector: createDeflector(options),
+		guardian: createGuardian(options),
 		invalidateAll: options.invalidateAll ?? pass
 	}
 }
@@ -289,7 +289,7 @@ export function createKavach(adapter, options = {}) {
 	// 		package: '@kavach/svelte',
 	// 		module: 'kavach'
 	// 	}),
-	// 	deflector: createDeflector(options),
+	// 	guardian: createGuardian(options),
 	// 	invalidateAll: options.invalidateAll ?? pass
 	// }
 

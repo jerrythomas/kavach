@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-	createDeflector,
+	createGuardian,
 	configureRules,
 	protectRoute,
 	configureRoleRoutes
-} from '../src/deflector'
+} from '../src/guardian'
 
 describe('Router functions', () => {
 	const defaultRoutes = {
@@ -25,15 +25,15 @@ describe('Router functions', () => {
 		]
 	}
 
-	describe('createDeflector', () => {
-		const res = createDeflector(options)
+	describe('createGuardian', () => {
+		const res = createGuardian(options)
 
 		afterEach(() => {
 			res.setSession()
 		})
 
 		it('should work with defult options', () => {
-			const res = createDeflector()
+			const res = createGuardian()
 			expect(res).toEqual({
 				app: {
 					home: '/',
@@ -144,7 +144,7 @@ describe('Router functions', () => {
 			)
 			expect(logger.warn).not.toHaveBeenCalled()
 			expect(logger.error).toHaveBeenCalledWith({
-				module: 'deflector',
+				module: 'guardian',
 				method: 'configure',
 				message: 'invalid rules detected',
 				data: {
@@ -198,7 +198,7 @@ describe('Router functions', () => {
 
 			expect(logger.error).not.toHaveBeenCalled()
 			expect(logger.warn).toHaveBeenCalledWith({
-				module: 'deflector',
+				module: 'guardian',
 				method: 'configure',
 				message: 'identified redundant rules',
 				data: {

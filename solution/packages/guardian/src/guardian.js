@@ -13,12 +13,12 @@ import { findMatchingRoute, isEndpointRoute, getRedirects } from './utils'
 /**
  * Validate rules, log errors and warnings, and configure the rules.
  *
- * @param {import('./types').DeflectorOptions} options
- * @param {import('./types').Logger}           logger
+ * @param {import('./types').GuardianOptions} options
+ * @param {import('./types').Logger}          logger
  * @returns {import('./types').RoutingConfig}
  */
 export function configureRules(options, logger) {
-	const logInfo = { module: 'deflector', method: 'configure' }
+	const logInfo = { module: 'guardian', method: 'configure' }
 	let { rules = [] } = options
 	const appRoutes = processAppRoutes(options.app)
 
@@ -132,12 +132,12 @@ export function configureRoleRoutes(config, role) {
 }
 
 /**
- * Create a deflector using provided options
+ * Create a guardian using provided options
  *
- * @param {import('./types').DeflectorOptions} options
- * @returns {import('./types').Deflector}
+ * @param {import('./types').GuardianOptions} options
+ * @returns {import('./types').Guardian}
  */
-export function createDeflector(options = {}) {
+export function createGuardian(options = {}) {
 	const logger = options.logger ?? zeroLogger
 	const config = configureRules(options, logger)
 

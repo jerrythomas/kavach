@@ -18,7 +18,7 @@ export default defineConfig({
 		projects: [
 			{ extends: true, test: { name: 'auth', root: 'packages/auth' } },
 			{ extends: true, test: { name: 'cookie', root: 'packages/cookie' } },
-			{ extends: true, test: { name: 'deflector', root: 'packages/deflector' } },
+			{ extends: true, test: { name: 'guardian', root: 'packages/guardian' } },
 			{ extends: true, test: { name: 'hashing', root: 'packages/hashing' } },
 			{ extends: true, test: { name: 'logger', root: 'packages/logger' } },
 			{ extends: true, test: { name: 'query', root: 'packages/query' } },

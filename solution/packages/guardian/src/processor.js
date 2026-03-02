@@ -116,7 +116,7 @@ export function getRestrictedRoutes(config, userRole) {
 /**
  * Use provided routes or use defaults for pages
  *
- * @param {import('./types').DeflectorOptions} appRoutes
+ * @param {import('./types').GuardianOptions} appRoutes
  * @returns {import('./types').AppRoute}
  */
 export function processAppRoutes(appRoutes) {

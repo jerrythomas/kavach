@@ -13,14 +13,14 @@
  */
 
 /**
- * @typedef DeflectorOptions
+ * @typedef GuardianOptions
  * @property {AppRoute} [app]
  * @property {Object<string, RoleRoute>} [roles]
  * @property {import('@kavach/logger').Logger} [logger]
  */
 
 /**
- * @typedef Deflector
+ * @typedef Guardian
  * @property {(session?: any) => void} setSession
  * @property {(path: string) => string} redirect
  * @property {AppRoute} page
@@ -194,7 +194,7 @@
 
 /**
 @typedef KavachAgents
-@property {Deflector} deflector
+@property {Guardian} guardian
 @property {Logger}    logger
 @property {function}  invalidateAll
 */
