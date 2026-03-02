@@ -21,8 +21,6 @@ export function createMockAdapter(options) {
 		verifyOtp: vi.fn(),
 		onAuthChange: vi.fn(),
 		parseUrlError: vi.fn(),
-		signUp: vi.fn(),
-		proxy: vi.fn(),
-		actions: vi.fn().mockImplementation((schema) => ({ connection: `${schema} connection` }))
+		signUp: vi.fn()
 	}
 }
