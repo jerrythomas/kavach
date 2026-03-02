@@ -170,6 +170,10 @@
  */
 
 /**
+ * @typedef {function(Schema=): ServerActions} DataAdapter
+ */
+
+/**
  * @typedef AuthAdapter
  * @property {(credentials: AuthCredentials) => Promise<AuthResult>}     signIn
  * @property {(credentials: PasswordCredentials) => Promise<AuthResult>} signUp
@@ -179,9 +183,7 @@
  * @property {(credentials: OtpCredentials) => Promise<void>}	           [verifyOtp]
  * @property {() => Promise<void>}	                                     [resetPassword]
  * @property {(credentials: PasswordCredentials) => Promise<void>}       [updatePassword]
- * @property {(schema: Schema ) => any}                                  [proxy]
  * @property {(url: Object) => AuthResult}                               [parseUrlError]
- * @property {(schema: Schema) => ServerActions}                         [actions]
  */
 
 /**
