@@ -166,7 +166,7 @@
  * @property {Action} post
  * @property {Action} delete
  * @property {Action} patch
- * @property {Action} [call]
+ * @property {Action} call
  */
 
 /**
