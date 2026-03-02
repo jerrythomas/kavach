@@ -5,140 +5,51 @@ Reviewed and triaged between implementation phases.
 
 ---
 
-## #1 — Enhanced Query Capabilities for `get()` action
+## Done
+
+| # | Item | Status |
+|---|------|--------|
+| 1 | Enhanced Query — comparison operators (`eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `like`, `ilike`, `in`, `is`) | Done |
+| 1 | Enhanced Query — ordering, pagination, count (`order`, `limit`, `offset`, `count`) | Done |
+| 2 | PATCH action filter support (`{ data, filter }` with `parseFilter`) | Done |
+| 3 | DELETE action filter support (`{ filter }` with `parseFilter`) | Done |
+| 5 | Fix remaining adapters (Firebase, Auth0, Amplify) | Done |
+| 6 | Clean test warnings (vitest 4.x upgrade, suppress punycode) | Done |
+| 1a | Auth UI — cached login cards, smart layout, passkey contract | Done |
+
+---
+
+## Active
+
+### #7 — Unified Test Site
 
 **Priority:** High
-**Requested by:** Strategos UI (analytics, admin panels)
+**File:** `docs/backlog/07-unified-test-site.md`
 
-### Problem
-
-`get()` currently uses `.match(filter)` which only supports exact equality:
-
-```js
-actions.get('gateway_tasks', { filter: { status: 'success' } })
-// → .from('gateway_tasks').select('*').match({ status: 'success' })
-```
-
-This is insufficient for real applications that need filtering, sorting, and pagination.
-
-### Required Capabilities
-
-**Comparison operators:**
-- `eq`, `neq` — equals / not equals
-- `gt`, `gte`, `lt`, `lte` — range comparisons
-- `like`, `ilike` — pattern matching
-- `in` — value in array
-- `is` — null / not null checks
-
-**Ordering & pagination:**
-- `order` — sort by column(s), ascending/descending
-- `limit` — max rows returned
-- `offset` / `range` — pagination
-
-**Aggregation:**
-- `count` — row count (exact, planned, estimated)
-
-**Logical operators:**
-- `or` — OR conditions
-- `not` — negate a filter
-
-### Design Considerations
-
-1. **Backward-compatible** — existing `{ columns, filter }` must keep working
-2. **Adapter-agnostic** — the `ServerActions` interface is shared across adapters; the query DSL must not leak Supabase/PostgREST specifics
-3. **URL-friendly** — the generic CRUD route (`/data/[...slug]`) passes query params as filters. Need a convention for operators in URL params (e.g., `?cost=gt.0.5` or `?:order=created_at.desc` or `?:limit=50`)
-4. **Progressive** — simple cases stay simple; advanced filters opt-in
-
-### Possible API Shapes
-
-**Option A — PostgREST-style string operators in filter values:**
-
-```js
-actions.get('tasks', {
-  filter: { status: 'eq.success', cost: 'gt.0.01' },
-  order: 'created_at.desc',
-  limit: 50
-})
-```
-
-URL: `/data/public/tasks?status=eq.success&cost=gt.0.01&:order=created_at.desc&:limit=50`
-
-**Option B — Structured filter objects:**
-
-```js
-actions.get('tasks', {
-  filter: [
-    { column: 'status', op: 'eq', value: 'success' },
-    { column: 'cost', op: 'gt', value: 0.01 }
-  ],
-  order: [{ column: 'created_at', ascending: false }],
-  limit: 50
-})
-```
-
-**Option C — Chained builder (new method, keep `get` simple):**
-
-```js
-actions.query('tasks')
-  .select('id, status, cost')
-  .eq('status', 'success')
-  .gt('cost', 0.01)
-  .order('created_at', { ascending: false })
-  .limit(50)
-  .execute()
-```
-
-### Recommendation
-
-Option A is the lightest touch — backward-compatible (bare values default to `eq`), URL-friendly, and maps naturally to PostgREST. The generic CRUD route already uses `:select` as a reserved prefix; extend with `:order`, `:limit`, `:offset`.
-
-### Affected Files
-
-- `packages/auth/src/types.js` — `ServerActions`, `Action` typedefs
-- `adapters/supabase/src/actions.js` — `get()` implementation
-- Any consuming app's `[...slug]/+server.ts` — URL param parsing
+Single example site where you can switch the adapter and run e2e tests across all adapters and data plugins.
 
 ---
 
-## #2 — PATCH action needs filter support
+## Planned
 
-**Priority:** Medium
+### #8 — Enhanced Query Phase 3 — Logical Operators (`or`, `not`)
 
-Currently `patch` takes `(entity, data)` and calls `.update(data).select()` — but there's no way to specify a WHERE clause. You have to include the match criteria in the body, which Supabase doesn't support for `.update()`.
+**Priority:** Low
+**Design:** `docs/plans/2026-03-01-enhanced-query-capabilities-design.md` (Phase 3)
 
-```js
-// Current — no filter, updates ALL rows (dangerous)
-actions.patch('features', { enabled: true })
-
-// Needed — update with filter
-actions.patch('features', { enabled: true }, { id: 'some-uuid' })
-// or
-actions.patch('features', { data: { enabled: true }, filter: { id: 'some-uuid' } })
-```
-
-### Fix
-
-Add optional filter parameter to `patch()`, apply via `.match(filter)` before `.update()`.
+Add `or` and `not` logical operators to the query DSL. Deferred until there's a concrete need.
 
 ---
 
-## #3 — DELETE action uses `.match()` on body
+### #9 — `call()` (RPC) Missing from `ServerActions` Type
 
 **Priority:** Low
 
-`delete(entity, data)` passes the entire body to `.match()`. This works but is inconsistent with how `patch` and `get` handle filters. Consider aligning all write operations to accept `{ data, filter }`.
+The supabase adapter implements `call: (entity, data) => schemaClient.rpc(entity, data)` but `ServerActions` typedef only has `call` as optional. The generic CRUD route doesn't expose an RPC endpoint. Consider adding a convention like `POST /data/:schema/:fn/rpc`.
 
 ---
 
-## #4 — `call()` (RPC) missing from `ServerActions` type
-
-**Priority:** Low
-
-The supabase adapter implements `call: (entity, data) => schemaClient.rpc(entity, data)` but `ServerActions` typedef only has `call` as optional (`[call]`). The generic CRUD route doesn't expose an RPC endpoint. Consider adding a convention like `POST /data/:schema/:fn/rpc` or similar.
-
----
-
-## #5 — TypeScript Migration
+### #10 — TypeScript Migration
 
 **Priority:** Low (quality of life)
 
@@ -146,18 +57,13 @@ All kavach packages use JSDoc typedefs. Consider migrating to TypeScript for bet
 
 ---
 
-## #6 — Convex Adapter (`@kavach/adapter-convex`)
+### #11 — Convex Adapter (`@kavach/adapter-convex`)
 
 **Priority:** Medium
 
-**Context:** Strategos uses Convex as one of 4 pluggable backends. Kavach currently only has a Supabase adapter. Adding Convex support would enable Kavach-powered apps (like the Strategos UI) to use Convex for both auth and data.
+Kavach currently has Supabase, Firebase, Auth0, and Amplify adapters. Adding Convex support would enable Kavach-powered apps to use Convex for both auth and data.
 
-### What exists
-- `AuthAdapter` interface in `packages/auth/src/types.js`
-- `@kavach/adapter-supabase` as reference implementation
-- Convex Auth SDK available
-
-### What's needed
+**What's needed:**
 - [ ] `@kavach/adapter-convex` package implementing `AuthAdapter`
 - [ ] Convex `actions()` returning `ServerActions` (get/post/put/delete)
 - [ ] Convex auth: signIn, signUp, signOut, onAuthChange, synchronize
@@ -165,17 +71,13 @@ All kavach packages use JSDoc typedefs. Consider migrating to TypeScript for bet
 
 ---
 
-## #7 — Mix-and-Match Adapter Composition
+### #12 — Mix-and-Match Adapter Composition
 
 **Priority:** Medium
 
-**Context:** Some apps need one provider for auth and another for data. For example, Supabase Auth + Strategos store for data, or Supabase Auth + Convex for data.
+Some apps need one provider for auth and another for data (e.g., Supabase Auth + Convex for data).
 
-### What exists
-- `AuthAdapter` combines auth + data (`actions()`) in one interface
-- `createKavach()` takes a single adapter
-
-### What's needed
+**What's needed:**
 - [ ] `createCompositeAdapter(authAdapter, dataAdapter)` — combines two adapters
 - [ ] Auth methods delegate to `authAdapter`
 - [ ] `actions()` and `proxy()` delegate to `dataAdapter`
@@ -183,22 +85,14 @@ All kavach packages use JSDoc typedefs. Consider migrating to TypeScript for bet
 
 ---
 
-## #8 — Strategos Store Adapter (`@kavach/adapter-strategos`)
+### #13 — Storage Plugin (`@kavach/storage`)
 
 **Priority:** Low
 
-**Context:** Strategos has a pluggable repository layer (`@strategos/store`) supporting 4 backends. A kavach adapter wrapping this would let the Strategos UI use `kavach.actions()` with any Strategos backend (Supabase, Postgres, Convex, JSON).
+File upload support following the same plugin pattern as the data plugin. A storage adapter provides upload/download/delete operations, wired through kavach like `kavach.storage()`.
 
-### What exists
-- `ServerActions` interface: `{ get, put, post, delete, patch }`
-- `@strategos/store` repository with `getUiRepository()`, `getCatalogRepository()`
-- Existing `(server)/data/[...slug]` pattern in FizzBot/Strategos UI
-
-### What's needed
-- [ ] `@kavach/adapter-strategos` wrapping store repository as `ServerActions`
-- [ ] Map `actions.get(entity, opts)` → repository `.list()` / `.get()`
-- [ ] Map `actions.post(entity, body)` → repository `.create()`
-- [ ] Map `actions.put(entity, body)` → repository `.update()`
-- [ ] Map `actions.delete(entity, body)` → repository `.delete()`
-- [ ] Backend selection via env var (`BACKEND=supabase|postgres|json|convex`)
-- [ ] Would pair with mix-and-match (#7) for auth: Supabase, data: strategos/store
+**What's needed:**
+- [ ] `StorageAdapter` interface (upload, download, delete, list)
+- [ ] Supabase Storage implementation as reference
+- [ ] Plugin pattern matching `kavach.server(schema)` for data
+- [ ] Could pair with mix-and-match (#12) for separate auth/storage providers
