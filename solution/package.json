@@ -10,8 +10,8 @@
   "scripts": {
     "prepare": "husky",
     "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
-    "test:watch": "vitest",
-    "test:ci": "vitest run",
+    "test:watch": "NODE_OPTIONS='--disable-warning=DEP0040' vitest",
+    "test:ci": "NODE_OPTIONS='--disable-warning=DEP0040' vitest run",
     "coverage": "vitest run coverage",
     "format": "prettier --write .",
     "lint": "eslint --fix",
