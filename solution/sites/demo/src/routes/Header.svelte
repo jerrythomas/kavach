@@ -52,7 +52,14 @@
 		{/if}
 
 		{#if user}
-			<a href="/logout" class="text-sm text-neutral-600 hover:text-neutral-800">Logout</a>
+			<nav class="flex gap-4 text-sm">
+				<a href="/" class="text-neutral-600 hover:text-neutral-900">Home</a>
+				<a href="/data" class="text-neutral-600 hover:text-neutral-900">Data</a>
+				{#if user.role === 'admin'}
+					<a href="/admin" class="text-neutral-600 hover:text-neutral-900">Admin</a>
+				{/if}
+				<a href="/logout" class="text-neutral-600 hover:text-neutral-900">Logout</a>
+			</nav>
 		{/if}
 	</div>
 </header>
