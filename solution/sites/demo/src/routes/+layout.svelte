@@ -25,6 +25,7 @@
 			invalidateAll
 		})
 
+		if (logger) setContext('logger', logger)
 		setContext('kavach', kavach)
 		kavach.onAuthChange($page.url)
 	})

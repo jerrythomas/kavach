@@ -1,8 +1,15 @@
 <script>
+	import { getContext, onMount } from 'svelte'
+
 	let entity = 'todos'
 	let rows = []
 	let error = null
 	let loading = false
+	let logger
+
+	onMount(() => {
+		logger = getContext('logger')?.getContextLogger({ module: 'data-page' })
+	})
 
 	async function fetchData() {
 		loading = true
@@ -12,11 +19,13 @@
 			if (!res.ok) {
 				const body = await res.json()
 				error = body.error || `HTTP ${res.status}`
+				logger?.error({ message: 'Data fetch failed', data: { entity, error: body.error } })
 			} else {
 				rows = await res.json()
 			}
 		} catch (e) {
 			error = e.message
+			logger?.error({ message: 'Network error fetching data', error: { message: e.message } })
 		}
 		loading = false
 	}
