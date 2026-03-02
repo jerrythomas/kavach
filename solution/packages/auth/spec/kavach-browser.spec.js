@@ -41,15 +41,20 @@ describe('kavach', () => {
 			signOut: expect.any(Function),
 			onAuthChange: expect.any(Function),
 			handle: expect.any(Function),
-			proxy: expect.any(Function),
 			actions: expect.any(Function)
 		})
 	})
 
-	it('should return the server actions', () => {
+	it('should return the server actions using data option', () => {
+		const mockData = vi.fn().mockImplementation((schema) => ({ connection: `${schema} connection` }))
+		const kavach = createKavach(adapter, { data: mockData })
+		expect(kavach.actions('public')).toEqual({ connection: 'public connection' })
+		expect(mockData).toHaveBeenCalledWith('public')
+	})
+
+	it('should return undefined actions when no data option provided', () => {
 		const kavach = createKavach(adapter)
-		expect(kavach.actions()).toEqual(adapter.actions())
-		expect(kavach.actions('public')).toEqual(adapter.actions('public'))
+		expect(kavach.actions()).toBeUndefined()
 	})
 
 	it('should bypass the session handler', async () => {

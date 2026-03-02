@@ -275,7 +275,6 @@ export function createKavach(adapter, options = {}) {
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
-		proxy: (schema) => adapter.proxy(schema),
-		actions: (schema) => adapter.actions(schema)
+		actions: (schema) => options.data?.(schema)
 	}
 }
