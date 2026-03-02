@@ -10,7 +10,10 @@ describe('utilities', () => {
 			'AuthGroup',
 			'AuthError',
 			'AuthResponse',
-			'AuthHandler'
+			'AuthHandler',
+			'LoginCard',
+			'LoginCardList',
+			'AuthPage'
 		])
 	})
 })
