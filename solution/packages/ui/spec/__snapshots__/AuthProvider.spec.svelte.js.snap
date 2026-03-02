@@ -1,0 +1,487 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthProvider.svelte > oauth > should render oauth button 1`] = `
+<div>
+  <!---->
+  <!---->
+  <button
+    data-button-root="true"
+    tabindex="0"
+    type="button"
+  >
+    <!---->
+    <span
+      aria-hidden="true"
+      class="i-auth-google"
+      data-item-icon=""
+    />
+     
+    <span>
+      Sign in with Google
+    </span>
+    
+    
+  </button>
+  
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > oauth > should render oauth button with scopes 1`] = `
+<div>
+  <!---->
+  <!---->
+  <button
+    data-button-root="true"
+    tabindex="0"
+    type="button"
+  >
+    <!---->
+    <span
+      aria-hidden="true"
+      class="i-auth-azure"
+      data-item-icon=""
+    />
+     
+    <span>
+      Sign in with Azure
+    </span>
+    
+    
+  </button>
+  
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 "
+  >
+    <div
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="email"
+      data-has-icon="true"
+    >
+      <div
+        aria-label="magic link"
+        data-field=""
+      >
+        <label
+          for="magic"
+        >
+          magic link
+        </label>
+        <!---->
+         
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+          <!---->
+           
+          <input
+            id="magic"
+            name="magic"
+            placeholder="Sign in with Magic Link"
+            type="email"
+          />
+          <!---->
+        </div>
+        
+        <!---->
+      </div>
+       
+      <!---->
+       
+      <!---->
+    </div>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 custom"
+  >
+    <div
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="email"
+      data-has-icon="true"
+    >
+      <div
+        aria-label="magic link"
+        data-field=""
+      >
+        <label
+          for="magic"
+        >
+          magic link
+        </label>
+        <!---->
+         
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+          <!---->
+           
+          <input
+            id="magic"
+            name="magic"
+            placeholder="Sign in with Magic Link"
+            type="email"
+          />
+          <!---->
+        </div>
+        
+        <!---->
+      </div>
+       
+      <!---->
+       
+      <!---->
+    </div>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 "
+  >
+    <div
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="email"
+      data-has-icon="true"
+    >
+      <div
+        aria-label="magic link"
+        data-field=""
+      >
+        <label
+          for="magic"
+        >
+          magic link
+        </label>
+        <!---->
+         
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+          <!---->
+           
+          <input
+            id="magic"
+            name="magic"
+            placeholder="Sign in with Magic Link"
+            type="email"
+          />
+          <!---->
+        </div>
+        
+        <!---->
+      </div>
+       
+      <!---->
+       
+      <!---->
+    </div>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 custom"
+  >
+    <div
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="email"
+      data-has-icon="true"
+    >
+      <div
+        aria-label="magic link"
+        data-field=""
+      >
+        <label
+          for="magic"
+        >
+          magic link
+        </label>
+        <!---->
+         
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-otp"
+          />
+          <!---->
+           
+          <input
+            id="magic"
+            name="magic"
+            placeholder="Send me a link"
+            type="email"
+          />
+          <!---->
+        </div>
+        
+        <!---->
+      </div>
+       
+      <!---->
+       
+      <!---->
+    </div>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > password > should handle errors 1`] = `
+<div>
+  <!---->
+  <!---->
+  <div
+    data-field-empty="false"
+    data-field-root="true"
+    data-field-type="email"
+    data-has-icon="true"
+  >
+    <div
+      aria-label="email"
+      data-field=""
+    >
+      <label
+        for="email"
+      >
+        email
+      </label>
+      <!---->
+       
+      <!---->
+      <div
+        data-input-root=""
+      >
+        <span
+          aria-hidden="true"
+          class="i-auth-email"
+        />
+        <!---->
+         
+        <input
+          autocomplete="on"
+          id="email"
+          name="email"
+          type="email"
+        />
+        <!---->
+      </div>
+      
+      <!---->
+    </div>
+     
+    <!---->
+     
+    <!---->
+  </div>
+  <!---->
+   
+  <div
+    data-field-empty="false"
+    data-field-root="true"
+    data-field-type="password"
+    data-has-icon="true"
+  >
+    <div
+      aria-label="Password"
+      data-field=""
+    >
+      <label
+        for="password"
+      >
+        Password
+      </label>
+      <!---->
+       
+      <!---->
+      <div
+        data-input-root=""
+      >
+        <span
+          aria-hidden="true"
+          class="i-auth-password"
+        />
+        <!---->
+         
+        <input
+          id="password"
+          name="password"
+          type="password"
+        />
+        <!---->
+      </div>
+      
+      <!---->
+    </div>
+     
+    <!---->
+     
+    <!---->
+  </div>
+  <!---->
+   
+  <button
+    class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+  >
+    Sign in
+  </button>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > password > should render email/password auth 1`] = `
+<div>
+  <!---->
+  <!---->
+  <div
+    data-field-empty="false"
+    data-field-root="true"
+    data-field-type="email"
+    data-has-icon="true"
+  >
+    <div
+      aria-label="email"
+      data-field=""
+    >
+      <label
+        for="email"
+      >
+        email
+      </label>
+      <!---->
+       
+      <!---->
+      <div
+        data-input-root=""
+      >
+        <span
+          aria-hidden="true"
+          class="i-auth-email"
+        />
+        <!---->
+         
+        <input
+          autocomplete="on"
+          id="email"
+          name="email"
+          type="email"
+        />
+        <!---->
+      </div>
+      
+      <!---->
+    </div>
+     
+    <!---->
+     
+    <!---->
+  </div>
+  <!---->
+   
+  <div
+    data-field-empty="false"
+    data-field-root="true"
+    data-field-type="password"
+    data-has-icon="true"
+  >
+    <div
+      aria-label="Password"
+      data-field=""
+    >
+      <label
+        for="password"
+      >
+        Password
+      </label>
+      <!---->
+       
+      <!---->
+      <div
+        data-input-root=""
+      >
+        <span
+          aria-hidden="true"
+          class="i-auth-password"
+        />
+        <!---->
+         
+        <input
+          id="password"
+          name="password"
+          type="password"
+        />
+        <!---->
+      </div>
+      
+      <!---->
+    </div>
+     
+    <!---->
+     
+    <!---->
+  </div>
+  <!---->
+   
+  <button
+    class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+  >
+    Sign in
+  </button>
+  
+  
+</div>
+`;

@@ -1,5 +1,5 @@
 <script>
-	import { InputField } from '@rokkit/ui'
+	import { InputField } from '@rokkit/forms'
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()
@@ -11,12 +11,16 @@
 	 * @property {string} password - The password value.
 	 * @property {Function} onclick - The function to be called when the button is clicked.
 	 */
+	const inputTypeMap = { phone: 'tel' }
+
 	let {
 		type = 'email',
 		value = $bindable(''),
 		password = $bindable(''),
 		onclick
 	} = $props()
+
+	const inputType = $derived(inputTypeMap[type] ?? type)
 
 	function handle() {
 		onclick?.({ [type]: value, password })
@@ -25,7 +29,7 @@
 
 <InputField
 	name={type}
-	{type}
+	type={inputType}
 	icon="i-auth-{type}"
 	label={type}
 	autocomplete="on"

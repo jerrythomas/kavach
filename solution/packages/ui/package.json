@@ -35,8 +35,7 @@
     }
   },
   "dependencies": {
-    "@rokkit/ui": "1.0.0-next.113",
-    "bits-ui": "^1.4.6",
+    "@rokkit/forms": "link:@rokkit/forms",
     "kavach": "workspace:latest",
     "ramda": "^0.30.1"
   }

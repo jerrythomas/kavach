@@ -1,6 +1,6 @@
 <script>
 	import { Button } from './button'
-	import { InputField, Icon } from '@rokkit/ui'
+	import { InputField } from '@rokkit/forms'
 	import { getContext } from 'svelte'
 	import AuthPassword from './AuthPassword.svelte'
 
@@ -57,7 +57,7 @@
 
 {#if mode === 'oauth'}
 	<Button onclick={signIn} type="button" class={className}>
-		<Icon name="i-auth-{name}" />
+		<span data-item-icon class="i-auth-{name}" aria-hidden="true"></span>
 		<span>{label}</span>
 	</Button>
 {:else if mode === 'password'}

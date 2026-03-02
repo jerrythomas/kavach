@@ -1,0 +1,66 @@
+{
+  "name": "@kavach/core",
+  "version": "1.0.0-next.29",
+  "description": "Drop in security for SvelteKit Apps.",
+  "type": "module",
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
+    "test:watch": "vitest",
+    "test:ci": "vitest run",
+    "coverage": "vitest run coverage",
+    "format": "prettier --write .",
+    "lint": "eslint --fix",
+    "lockfile": "pnpm install --lockfile-only",
+    "build:all": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun run build' \\;",
+    "upgrade:all": "bun update --latest",
+    "bump": "bun run lockfile && bumpp --no-push",
+    "bump:next": " bumpp --preid=next --no-push",
+    "publish:packages": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
+    "publish:adapters": "find ./adapters -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
+    "publish:all": "bun run publish:packages && bun run publish:adapters",
+    "release": "bun run publish:all"
+  },
+  "author": "Jerry Thomas<me@jerrythomas.name",
+  "license": "MIT",
+  "devDependencies": {
+    "@jerrythomas/prettier-config": "^1.0.2",
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^5.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "bumpp": "^10.4.1",
+    "eslint": "^10.0.2",
+    "husky": "^9.1.7",
+    "jsdom": "^28.1.0",
+    "eslint-plugin-svelte": "^3.15.0",
+    "lint-staged": "^16.3.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "svelte": "^5.53.6",
+    "vite": "^7.3.1",
+    "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{js,svelte}": "eslint --cache --fix",
+    "*.{js,svelte,md,json}": "prettier --write"
+  },
+  "workspaces": [
+    "adapters/*",
+    "packages/**",
+    "sites/**"
+  ],
+  "dependencies": {
+    "@rokkit/actions": "link:@rokkit/actions",
+    "@rokkit/core": "link:@rokkit/core",
+    "@rokkit/data": "link:@rokkit/data",
+    "@rokkit/forms": "link:@rokkit/forms",
+    "@rokkit/icons": "link:@rokkit/icons",
+    "@rokkit/states": "link:@rokkit/states",
+    "@rokkit/themes": "link:@rokkit/themes",
+    "@rokkit/ui": "link:@rokkit/ui"
+  }
+}

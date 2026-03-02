@@ -1,6 +1,5 @@
 <script>
 	import { Button } from './button'
-	import { Icon } from '@rokkit/ui'
 
 	/**
 	 * @typedef {Object} Props
@@ -18,6 +17,6 @@
 </script>
 
 <Button onclick={handle} type="button">
-	<Icon name="logo-{provider}" />
+	<span data-item-icon class="logo-{provider}" aria-hidden="true"></span>
 	<span>{label}</span>
 </Button>

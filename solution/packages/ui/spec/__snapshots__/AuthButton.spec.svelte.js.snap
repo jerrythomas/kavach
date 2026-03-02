@@ -9,19 +9,11 @@ exports[`AuthButton.svelte > should render using provider 1`] = `
     type="button"
   >
     <!---->
-    <!---->
-    <rk-icon
-      aria-label="logo-google"
-      data-tag="icon"
-      role="img"
-      tabindex="-1"
-    >
-      <i
-        aria-hidden="true"
-        class="logo-google"
-      />
-    </rk-icon>
-    <!---->
+    <span
+      aria-hidden="true"
+      class="logo-google"
+      data-item-icon=""
+    />
      
     <span>
       Sign in with Google

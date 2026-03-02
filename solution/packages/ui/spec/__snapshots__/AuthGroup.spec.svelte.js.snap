@@ -13,19 +13,11 @@ exports[`AuthGroup.svelte > should render multiple providers 1`] = `
       type="button"
     >
       <!---->
-      <!---->
-      <rk-icon
-        aria-label="i-auth-google"
-        data-tag="icon"
-        role="img"
-        tabindex="-1"
-      >
-        <i
-          aria-hidden="true"
-          class="i-auth-google"
-        />
-      </rk-icon>
-      <!---->
+      <span
+        aria-hidden="true"
+        class="i-auth-google"
+        data-item-icon=""
+      />
        
       <span>
         Sign in with Google
