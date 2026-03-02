@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { getActions } from '../src/actions'
 
 describe('actions', () => {
-	const result = { status: 200 }
+	const result = { data: [{ id: 1 }], error: null, status: 200, count: undefined }
+	const normalized = { data: [{ id: 1 }], error: null, status: 200, count: undefined }
 
 	function createClient() {
 		const query = {
@@ -53,9 +54,10 @@ describe('actions', () => {
 		it('should select data without input', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.get('entity')
+			const response = await actions.get('entity')
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.select).toHaveBeenCalledWith('*', undefined)
+			expect(response).toEqual(normalized)
 		})
 
 		it('should select specific columns', async () => {
@@ -188,10 +190,11 @@ describe('actions', () => {
 		it('should insert data', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.put('entity', { data: 'value' })
+			const response = await actions.put('entity', { data: 'value' })
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.insert).toHaveBeenCalledWith({ data: 'value' })
 			expect(client.insert().select).toHaveBeenCalled()
+			expect(response).toEqual(normalized)
 		})
 	})
 
@@ -199,10 +202,11 @@ describe('actions', () => {
 		it('should upsert data', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.post('entity', { data: 'value' })
+			const response = await actions.post('entity', { data: 'value' })
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.upsert).toHaveBeenCalledWith({ data: 'value' })
 			expect(client.upsert().select).toHaveBeenCalled()
+			expect(response).toEqual(normalized)
 		})
 	})
 
@@ -210,10 +214,11 @@ describe('actions', () => {
 		it('should update data without filter', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.patch('entity', { data: { name: 'foo' } })
+			const response = await actions.patch('entity', { data: { name: 'foo' } })
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.update).toHaveBeenCalledWith({ name: 'foo' })
 			expect(client._query.select).toHaveBeenCalled()
+			expect(response).toEqual(normalized)
 		})
 
 		it('should apply eq filter', async () => {
@@ -245,9 +250,10 @@ describe('actions', () => {
 		it('should delete without filter', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.delete('entity')
+			const response = await actions.delete('entity')
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.delete).toHaveBeenCalled()
+			expect(response).toEqual(normalized)
 		})
 
 		it('should apply eq filter', async () => {
@@ -273,8 +279,67 @@ describe('actions', () => {
 		it('should call a stored procedure', async () => {
 			const client = createClient()
 			const actions = getActions(client)
-			await actions.call('entity', { data: 'value' })
+			const response = await actions.call('entity', { data: 'value' })
 			expect(client.rpc).toHaveBeenCalledWith('entity', { data: 'value' })
+			expect(response).toEqual(normalized)
+		})
+	})
+
+	describe('response normalization', () => {
+		it('should default missing fields to null', async () => {
+			const sparseResult = { status: 200 }
+			const client = createClient()
+			client.rpc = vi.fn().mockResolvedValue(sparseResult)
+			const actions = getActions(client)
+			const response = await actions.call('fn', {})
+			expect(response).toEqual({
+				data: null,
+				error: null,
+				status: 200,
+				count: undefined
+			})
+		})
+
+		it('should default status to 500 when error is present and status is missing', async () => {
+			const errorResult = { error: { message: 'fail' } }
+			const client = createClient()
+			client.rpc = vi.fn().mockResolvedValue(errorResult)
+			const actions = getActions(client)
+			const response = await actions.call('fn', {})
+			expect(response).toEqual({
+				data: null,
+				error: { message: 'fail' },
+				status: 500,
+				count: undefined
+			})
+		})
+
+		it('should default status to 200 when no error and status is missing', async () => {
+			const okResult = { data: [1] }
+			const client = createClient()
+			client.rpc = vi.fn().mockResolvedValue(okResult)
+			const actions = getActions(client)
+			const response = await actions.call('fn', {})
+			expect(response).toEqual({
+				data: [1],
+				error: null,
+				status: 200,
+				count: undefined
+			})
+		})
+
+		it('should preserve count when present', async () => {
+			const countResult = { data: [], error: null, status: 200, count: 42 }
+			const client = createClient()
+			client.rpc = vi.fn().mockResolvedValue(countResult)
+			const actions = getActions(client)
+			const response = await actions.call('fn', {})
+			expect(response).toEqual({
+				data: [],
+				error: null,
+				status: 200,
+				count: 42
+			})
 		})
 	})
 })

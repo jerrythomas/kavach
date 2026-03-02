@@ -1,6 +1,21 @@
 import { parseFilter, parseQueryParams } from '@kavach/query'
 
 /**
+ * Normalizes a Supabase query result into a consistent ActionResponse shape.
+ *
+ * @param {object} result - Raw Supabase query result
+ * @returns {import('kavach').ActionResponse}
+ */
+function normalizeResponse(result) {
+	return {
+		data: result.data ?? null,
+		error: result.error ?? null,
+		status: result.status ?? (result.error ? 500 : 200),
+		count: result.count
+	}
+}
+
+/**
  * Creates a wrapper object for various actions on an entity
  *
  * @param {import('@supabase/supabase-js').SupabaseClient} client
@@ -28,7 +43,7 @@ export function getActions(client, schema) {
 		if (limit !== undefined) query = query.limit(limit)
 		if (offset !== undefined) query = query.range(offset, offset + (limit ?? 1000) - 1)
 
-		return await query
+		return normalizeResponse(await query)
 	}
 
 	async function patch(entity, input) {
@@ -39,7 +54,7 @@ export function getActions(client, schema) {
 			query = query[op](column, value)
 		}
 
-		return await query.select()
+		return normalizeResponse(await query.select())
 	}
 
 	async function del(entity, input) {
@@ -50,16 +65,16 @@ export function getActions(client, schema) {
 			query = query[op](column, value)
 		}
 
-		return await query
+		return normalizeResponse(await query)
 	}
 
 	return {
 		get,
-		put: (entity, data) => schemaClient.from(entity).insert(data).select(),
-		post: (entity, data) => schemaClient.from(entity).upsert(data).select(),
+		put: async (entity, data) => normalizeResponse(await schemaClient.from(entity).insert(data).select()),
+		post: async (entity, data) => normalizeResponse(await schemaClient.from(entity).upsert(data).select()),
 		patch,
 		delete: del,
-		call: (entity, data) => schemaClient.rpc(entity, data),
+		call: async (entity, data) => normalizeResponse(await schemaClient.rpc(entity, data)),
 		connection: schemaClient
 	}
 }
