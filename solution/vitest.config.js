@@ -3,12 +3,6 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { svelteTesting } from '@testing-library/svelte/vite'
 
 export default defineConfig({
-	plugins: [
-		svelte({
-			hot: false
-		}),
-		svelteTesting()
-	],
 	test: {
 		globals: true,
 		environment: 'jsdom',
@@ -30,6 +24,7 @@ export default defineConfig({
 			{ extends: true, test: { name: 'query', root: 'packages/query' } },
 			{
 				extends: true,
+				plugins: [svelte({ hot: false }), svelteTesting()],
 				test: {
 					name: 'ui',
 					root: 'packages/ui',
