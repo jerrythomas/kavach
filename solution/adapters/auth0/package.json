@@ -23,7 +23,9 @@
     "build": "bun prepublishOnly"
   },
   "dependencies": {
-    "kavach": "workspace:*"
+    "@auth0/auth0-spa-js": "^2.1.3",
+    "kavach": "workspace:*",
+    "ramda": "^0.30.1"
   },
   "exports": {
     "./package.json": "./package.json",

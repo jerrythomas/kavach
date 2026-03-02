@@ -1,90 +1,189 @@
-import { pick } from 'ramda'
-import createAuth0Client from '@auth0/auth0-spa-js'
+import { omit } from 'ramda'
 
 /**
- * Handles errors that occur during authentication.
+ * Transforms an Auth0 result into kavach AuthResult format
  *
- * @param {*} error The error object.
- * @returns {{type: string, message: string, code: string, data: null}}
+ * @param {Object} result - { data, error }
+ * @param {Object} credentials
+ * @returns {import('kavach').AuthResult}
  */
-function handleError(error) {
-	return {
-		type: 'error',
-		message: error.message || 'An unknown error occurred',
-		code: error.error || error.code,
-		data: null
-	}
-}
+export function transformResult({ data, error }, credentials) {
+	const creds = omit(['password'], credentials)
 
-/**
- * Handles the authentication callback from Auth0.
- *
- * @param {Object} client The Auth0 client instance.
- */
-async function handleAuthCallback(client) {
-	// When the user returns to the app after authentication, handle the authentication tokens
-	try {
-		await client.handleRedirectCallback()
-		const isAuthenticated = await client.isAuthenticated()
-		if (isAuthenticated) {
-			// User is authenticated, you can get the user profile or tokens as needed
-			const user = await client.getUser()
-			return Promise.resolve({ type: 'success', data: user })
+	if (error) {
+		const code = error.code || undefined
+		const message = error.message || 'An error occurred'
+		return {
+			type: 'error',
+			error: { message, code },
+			message
 		}
-	} catch (error) {
-		return Promise.resolve(handleError(error))
 	}
-	return Promise.resolve({
-		type: 'error',
-		message: 'Authentication failed',
-		data: null
-	})
+
+	if (creds.provider === 'magic') {
+		const message = `Magic link has been sent to "${creds.email}".`
+		return { type: 'info', data, credentials: creds, message }
+	}
+
+	return { type: 'success', data, credentials: creds }
 }
 
 /**
- * Adapts Auth0 functionality to the expected adapter interface.
+ * Gets the authentication mode based on the credentials provided
  *
- * @param {Object} options Configuration options for Auth0.
- * @returns The adapter exposing methods for signIn, signUp, signOut, and related functionalities.
+ * @param {import('kavach').AuthCredentials} credentials
+ * @returns {'magic' | 'password' | 'oauth'}
  */
-export async function getAdapter(options) {
-	const client = await createAuth0Client(
-		pick(['domain', 'clientId', 'redirectUri'], options)
-	)
+export function getAuthMode(credentials) {
+	const { password, provider } = credentials
+	if (provider === 'magic') return 'magic'
+	if (password) return 'password'
+	return 'oauth'
+}
 
-	const signIn = async () => {
-		// Redirect the user to Auth0 login page
-		await client.loginWithRedirect()
+/**
+ * Parses the URL query params to check if there is an error
+ *
+ * @param {URL} url
+ * @returns {import('kavach').AuthError | null}
+ */
+export function parseUrlError(url) {
+	try {
+		const params = new URLSearchParams(url?.search)
+		const errorCode = params.get('error')
+		const errorMessage = params.get('error_description')
+
+		if (errorCode) {
+			return {
+				code: errorCode,
+				message: errorMessage || errorCode
+			}
+		}
+	} catch {
+		// invalid URL, return null
+	}
+	return null
+}
+
+/**
+ * Creates an auth adapter for Auth0
+ *
+ * @param {import('@auth0/auth0-spa-js').Auth0Client} client - Auth0 Client instance
+ * @returns {import('kavach').AuthAdapter}
+ */
+export function getAdapter(client) {
+	/**
+	 * Handles sign in based on the credentials provided.
+	 * Auth0 SPA SDK is redirect-based for ALL flows.
+	 * Returns { data: null, error: null } before redirect.
+	 *
+	 * @param {import('kavach').AuthCredentials} credentials
+	 * @returns {Promise<import('kavach').AuthResult>}
+	 */
+	async function handleSignIn(credentials) {
+		const { email, provider } = credentials
+		const mode = getAuthMode(credentials)
+
+		try {
+			const signInActions = {
+				password: async () => {
+					await client.loginWithRedirect({
+						authorizationParams: {
+							connection: 'Username-Password-Authentication',
+							login_hint: email
+						}
+					})
+					return null
+				},
+				oauth: async () => {
+					await client.loginWithRedirect({
+						authorizationParams: {
+							connection: provider
+						}
+					})
+					return null
+				},
+				magic: async () => {
+					await client.loginWithRedirect({
+						authorizationParams: {
+							connection: 'email',
+							login_hint: email
+						}
+					})
+					return null
+				}
+			}
+
+			const data = await signInActions[mode]()
+			return transformResult({ data }, credentials)
+		} catch (error) {
+			return transformResult({ error }, credentials)
+		}
 	}
 
-	const signUp = async () => {
-		// For Auth0, signUp process can be similar, but you may want to use a different action after redirect
-		await client.loginWithRedirect({
-			screen_hint: 'signup'
-		})
+	/**
+	 * Handles sign up by redirecting to Auth0 with signup screen_hint
+	 *
+	 * @param {import('kavach').AuthCredentials} credentials
+	 * @returns {Promise<import('kavach').AuthResult>}
+	 */
+	async function handleSignUp(credentials) {
+		try {
+			await client.loginWithRedirect({
+				authorizationParams: {
+					screen_hint: 'signup'
+				}
+			})
+			return transformResult({ data: null }, credentials)
+		} catch (error) {
+			return transformResult({ error }, credentials)
+		}
 	}
 
-	const signOut = async () => {
+	/**
+	 * Signs out the current user
+	 *
+	 * @returns {Promise<void>}
+	 */
+	async function handleSignOut() {
 		await client.logout({
-			returnTo: window.location.origin
+			logoutParams: {
+				returnTo: window.location.origin
+			}
 		})
 	}
 
-	const onAuthChange = () => {
-		// For detecting authentication changes, you can periodically check isAuthenticated state
-		// or use your own logic to trigger callback upon authentication status change.
+	/**
+	 * Synchronizes the current session by refreshing the token and getting user info
+	 *
+	 * @returns {Promise<{data: {user: Object} | null, error: {message: string} | null}>}
+	 */
+	async function synchronize() {
+		try {
+			await client.getTokenSilently()
+			const user = await client.getUser()
+			return { data: { user }, error: null }
+		} catch (error) {
+			return { data: null, error: { message: error.message || 'An error occurred' } }
+		}
 	}
 
-	// Utility function for error handling
+	/**
+	 * No-op — Auth0 SPA SDK has no native auth state listener
+	 *
+	 * @param {import('kavach').AuthCallback} callback
+	 * @returns {void}
+	 */
+	function onAuthChange() {
+		// Auth0 SPA SDK has no native auth state listener
+	}
 
 	return {
-		signIn,
-		signUp,
-		signOut,
-		handleAuthCallback: () => handleAuthCallback(client),
-		parseUrlError: () => null, // Implement as needed based on your URL error handling
+		signIn: handleSignIn,
+		signUp: handleSignUp,
+		signOut: handleSignOut,
+		synchronize,
 		onAuthChange,
-		client,
-		db: () => null // Placeholder, Auth0 does not manage database directly.
+		parseUrlError
 	}
 }
