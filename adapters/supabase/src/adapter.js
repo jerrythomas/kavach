@@ -205,9 +205,7 @@ export function getAdapter(options) {
 		synchronize,
 		onAuthChange: (callback) => handleAuthChange(client, callback),
 		parseUrlError,
-		proxy: (schema) => {
-			schema ? client.schema(schema) : client
-		},
-		actions: () => getActions(client)
+		proxy: (schema) => (schema ? client.schema(schema) : client),
+		actions: (schema) => getActions(client, schema)
 	}
 }

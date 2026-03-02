@@ -72,6 +72,234 @@ exports[`AuthProvider.svelte > oauth > should render oauth button with scopes 1`
 </div>
 `;
 
+exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 "
+  >
+    <input-field
+      class="flex flex-col input-email   empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+      <!---->
+       
+      <field
+        aria-label="magic link"
+        class="flex w-full flex-row items-center"
+      >
+        <rk-icon
+          aria-label="i-auth-magic"
+          data-tag="icon"
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+        </rk-icon>
+        <!---->
+         
+        <!---->
+         
+        <!---->
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        <!---->
+         
+        <!---->
+      </field>
+       
+      <!---->
+    </input-field>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 custom"
+  >
+    <input-field
+      class="flex flex-col input-email   empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+      <!---->
+       
+      <field
+        aria-label="magic link"
+        class="flex w-full flex-row items-center"
+      >
+        <rk-icon
+          aria-label="i-auth-magic"
+          data-tag="icon"
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+        </rk-icon>
+        <!---->
+         
+        <!---->
+         
+        <!---->
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        <!---->
+         
+        <!---->
+      </field>
+       
+      <!---->
+    </input-field>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 "
+  >
+    <input-field
+      class="flex flex-col input-email   empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+      <!---->
+       
+      <field
+        aria-label="magic link"
+        class="flex w-full flex-row items-center"
+      >
+        <rk-icon
+          aria-label="i-auth-magic"
+          data-tag="icon"
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-magic"
+          />
+        </rk-icon>
+        <!---->
+         
+        <!---->
+         
+        <!---->
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        <!---->
+         
+        <!---->
+      </field>
+       
+      <!---->
+    </input-field>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2`] = `
+<div>
+  <!---->
+  <form
+    class="flex w-full p-0 custom"
+  >
+    <input-field
+      class="flex flex-col input-email   empty"
+    >
+      <label
+        for="magic"
+      >
+        magic link
+      </label>
+      <!---->
+       
+      <field
+        aria-label="magic link"
+        class="flex w-full flex-row items-center"
+      >
+        <rk-icon
+          aria-label="i-auth-otp"
+          data-tag="icon"
+          role="img"
+          tabindex="-1"
+        >
+          <i
+            aria-hidden="true"
+            class="i-auth-otp"
+          />
+        </rk-icon>
+        <!---->
+         
+        <!---->
+         
+        <!---->
+        <input
+          id="magic"
+          name="magic"
+          placeholder="Sign in with Magic Link"
+          type="email"
+        />
+        
+        <!---->
+         
+        <!---->
+      </field>
+       
+      <!---->
+    </input-field>
+    <!---->
+  </form>
+  
+  
+</div>
+`;
+
 exports[`AuthProvider.svelte > password > should handle errors 1`] = `
 <div>
   <!---->

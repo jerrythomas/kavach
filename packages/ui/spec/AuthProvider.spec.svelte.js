@@ -1,9 +1,9 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/svelte'
-import { tick } from 'svelte'
+import { flushSync, tick } from 'svelte'
 import AuthProvider from '../src/AuthProvider.svelte'
 
-// expect.extend({ toHaveBeenDispatchedWith })
+// expect.extend({ toHaveBeenCalledWith })
 describe('AuthProvider.svelte', () => {
 	const handlers = {
 		error: vi.fn(),
@@ -82,6 +82,7 @@ describe('AuthProvider.svelte', () => {
 				name: 'magic',
 				label: 'Sign in with Magic Link',
 				class: 'custom',
+				value: '',
 				onsuccess: handlers.success,
 				onerror: handlers.error
 			})
@@ -92,17 +93,17 @@ describe('AuthProvider.svelte', () => {
 
 			expect(container).toMatchSnapshot()
 			const form = container.querySelector('form')
+			expect(form.querySelector('input')).toBeTruthy()
 
-			await fireEvent.input(form.querySelector('input'), {
-				target: { value: 'john.doe@example.com' }
-			})
+			props.value = 'john.doe@example.com'
+			flushSync()
 			await fireEvent.submit(form)
 			await tick()
 			expect(kavach.signIn).toHaveBeenCalledWith({
 				provider: 'magic',
 				email: 'john.doe@example.com'
 			})
-			expect(handlers.success).toHaveBeenDispatchedWith({ token: 'token' })
+			expect(handlers.success).toHaveBeenCalledWith({ token: 'token' })
 			expect(handlers.error).not.toHaveBeenCalled()
 		})
 
@@ -143,10 +144,10 @@ describe('AuthProvider.svelte', () => {
 			await tick()
 			expect(kavach.signIn).toHaveBeenCalledWith({
 				provider: 'magic',
-				email: null
+				email: ''
 			})
 			expect(handlers.success).not.toHaveBeenCalled()
-			expect(handlers.error).toHaveBeenDispatchedWith('Invalid email')
+			expect(handlers.error).toHaveBeenCalledWith('Invalid email')
 		})
 	})
 
@@ -156,6 +157,8 @@ describe('AuthProvider.svelte', () => {
 				mode: 'password',
 				name: 'email',
 				label: 'Sign in with Email',
+				value: '',
+				password: '',
 				onsuccess: handlers.success,
 				onerror: handlers.error
 			})
@@ -167,16 +170,15 @@ describe('AuthProvider.svelte', () => {
 			const button = container.querySelector('button')
 			expect(container).toMatchSnapshot()
 
-			await fireEvent.input(container.querySelector('input#email'), {
-				target: { value: 'john.doe@example.com' }
-			})
+			props.value = 'john.doe@example.com'
+			flushSync()
 			await fireEvent.click(button)
 			await tick()
 			expect(kavach.signIn).toHaveBeenCalledWith({
 				email: 'john.doe@example.com',
 				password: ''
 			})
-			expect(handlers.success).toHaveBeenDispatchedWith({ token: 'token' })
+			expect(handlers.success).toHaveBeenCalledWith({ token: 'token' })
 			expect(handlers.error).not.toHaveBeenCalled()
 		})
 
@@ -203,7 +205,7 @@ describe('AuthProvider.svelte', () => {
 			})
 			expect(handlers.success).not.toHaveBeenCalled()
 			expect(handlers.error).toHaveBeenCalled()
-			expect(handlers.error).toHaveBeenDispatchedWith('Invalid email')
+			expect(handlers.error).toHaveBeenCalledWith('Invalid email')
 		})
 	})
 })

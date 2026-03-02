@@ -6,12 +6,8 @@
  * @param {import('@supabase/supabase-js').SupabaseClient} client
  * @returns {import('kavach').ServerAction}
  */
-export function getActions(client) {
-	// function getBaseQuery(entity) {
-	// 	const { schema, table } = getTableAndSchema(entity)
-	// 	const query = schema ? client.schema(schema).from(table) : client.from(table)
-	// 	return query
-	// }
+export function getActions(client, schema) {
+	const schemaClient = schema ? client.schema(schema) : client
 
 	/**
 	 * @param {string} entity
@@ -21,17 +17,17 @@ export function getActions(client) {
 	async function get(entity, data) {
 		const { columns = '*', filter = {} } = data ?? {}
 		// const query = getBaseQuery(entity)
-		const result = await client.from(entity).select(columns).match(filter)
+		const result = await schemaClient.from(entity).select(columns).match(filter)
 		return result
 	}
 
 	return {
 		get,
-		put: (entity, data) => client.from(entity).insert(data).select(),
-		post: (entity, data) => client.from(entity).upsert(data).select(),
-		patch: (entity, data) => client.from(entity).update(data).select(),
-		delete: (entity, data) => client.from(entity).delete().match(data),
-		call: (entity, data) => client.rpc(entity, data),
-		connection: client
+		put: (entity, data) => schemaClient.from(entity).insert(data).select(),
+		post: (entity, data) => schemaClient.from(entity).upsert(data).select(),
+		patch: (entity, data) => schemaClient.from(entity).update(data).select(),
+		delete: (entity, data) => schemaClient.from(entity).delete().match(data),
+		call: (entity, data) => schemaClient.rpc(entity, data),
+		connection: schemaClient
 	}
 }

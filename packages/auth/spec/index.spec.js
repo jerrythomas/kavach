@@ -9,11 +9,11 @@ describe('utilities', () => {
 			'authStatus',
 			'gravatar',
 			'deriveName',
+			'urlHashToParams',
 			'getRequestBody',
 			'getRequestData',
 			'splitAuthData',
-			'asURLWithParams',
-			'urlHashToParams'
+			'asURLWithParams'
 		])
 	})
 })

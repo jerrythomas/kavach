@@ -3,12 +3,12 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { svelteTesting } from '@testing-library/svelte/vite'
 
 export default defineConfig({
-	plugins: [svelteTesting()],
+	plugins: [svelte({ hot: !process.env.VITEST }), svelteTesting()],
 	test: {
 		globals: true,
 		environment: 'jsdom',
 		clearMocks: true,
-		include: ['**/*.{spec,spec.svelte}.[jt]s'],
+		include: ['**/spec/*.{spec,spec.svelte}.[jt]s'],
 		setupFiles: ['./vitest-setup-client.js'],
 		coverage: {
 			all: true,

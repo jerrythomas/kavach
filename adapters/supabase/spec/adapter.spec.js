@@ -8,7 +8,7 @@ let subscription = null
 vi.mock('@supabase/supabase-js', async (importOriginal) => ({
 	...(await importOriginal()),
 	createClient: vi.fn().mockReturnValue({
-		// schema: vi.fn(),
+		schema: vi.fn().mockReturnThis(),
 		auth: {
 			signInWithOtp: vi.fn().mockImplementation((input) => {
 				return {

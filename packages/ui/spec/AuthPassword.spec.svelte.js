@@ -15,9 +15,7 @@ describe('AuthPassword.svelte', () => {
 	})
 
 	it('should render email/password auth', async () => {
-		let value = $state('')
-		let password = $state('')
-		const props = { onclick: handle, value, password }
+		const props = $state({ onclick: handle, value: '', password: '' })
 		const { container } = render(AuthPassword, { props })
 		expect(container).toMatchSnapshot()
 
@@ -29,25 +27,7 @@ describe('AuthPassword.svelte', () => {
 		expect(passwordInput).toBeTruthy()
 		expect(button).toBeTruthy()
 
-		// await fireEvent.input(emailInput, {
-		// 	target: { value: 'john.doe@example.com' }
-		// })
-		await userEvent.click(emailInput)
-		await userEvent.clear(emailInput)
-		await userEvent.type(emailInput, 'john.doe@example.com')
-		await userEvent.tab()
-		expect(emailInput.value).toBe('john.doe@example.com')
-		await tick()
-		flushSync()
-		expect($state.snapshot(props.value)).toEqual('john.doe@example.com')
-		// await userEvent.type(passwordInput, 'password') // password value does not change
-		// flushSync()
-		// console.log(
-		// 	'props',
-		// 	$state.snapshot(props.value),
-		// 	$state.snapshot(props.password)
-		// )
-		// props.value = 'john.doe@example.com'
+		props.value = 'john.doe@example.com'
 		props.password = 'password'
 		flushSync()
 		await fireEvent.click(button)

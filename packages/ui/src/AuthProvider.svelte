@@ -1,6 +1,6 @@
 <script>
 	import { Button } from './button'
-	import { Input, Icon } from '@rokkit/ui'
+	import { InputField, Icon } from '@rokkit/ui'
 	import { getContext } from 'svelte'
 	import AuthPassword from './AuthPassword.svelte'
 
@@ -17,7 +17,7 @@
 	 * @property {string} password
 	 * @property {Object} result
 	 * @property {Function} onerror
-	 * @property {Function} onsubmit
+	 * @property {Function} onsuccess
 	 */
 	/** @type {Props} */
 	let {
@@ -26,13 +26,13 @@
 		name,
 		label,
 		scopes = [],
+		value = $bindable(''),
+		password = $bindable(''),
 		onerror,
-		onsubmit
+		onsuccess
 	} = $props()
 
 	let result
-	let value = $state(null)
-	let password = $state(null)
 
 	async function signIn() {
 		if (mode === 'password') {
@@ -49,7 +49,7 @@
 			if (result.error) {
 				onerror?.(result.error)
 			} else {
-				onsucces?.(result.data)
+				onsuccess?.(result.data)
 			}
 		}
 	}
