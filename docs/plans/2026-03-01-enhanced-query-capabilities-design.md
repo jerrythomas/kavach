@@ -29,10 +29,9 @@ Real applications need comparison operators, ordering, pagination, and aggregati
 
 | Phase | Scope | Status |
 |-------|-------|--------|
-| 1 | Comparison operators (`eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `like`, `ilike`, `in`, `is`) | Current |
-| 2 | Ordering & pagination (`order`, `limit`, `offset`) | Planned |
-| 3 | Aggregation (`count`) | Planned |
-| 4 | Logical operators (`or`, `not`) | Planned |
+| 1 | Comparison operators (`eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `like`, `ilike`, `in`, `is`) | Done |
+| 2 | Ordering, pagination & count (`order`, `limit`, `offset`, `count`) | Current |
+| 3 | Logical operators (`or`, `not`) | Planned |
 
 ## API Shape
 
@@ -162,6 +161,98 @@ The route passes `{ status: 'eq.success', cost: 'gt.0.01' }` as the filter objec
 | `adapters/supabase/spec/actions.spec.js` | Updated tests for operator-based filtering |
 | `packages/auth/src/types.js` | Document filter shape in `Action` typedef |
 | `sites/supabase/.../[...slug]/+server.js` | No change needed (pass-through works as-is) |
+
+## Phase 2: Ordering, Pagination & Count
+
+### API Shape (flat options)
+
+```js
+actions.get('tasks', {
+  columns: 'id,name,status',
+  filter: { status: 'eq.active', cost: 'gt.0' },
+  order: 'created_at.desc',
+  limit: 50,
+  offset: 100,
+  count: 'exact'
+})
+```
+
+All options are additive and backward-compatible — existing `{ columns, filter }` calls work unchanged.
+
+### Order Syntax
+
+String format: `'column.direction'`, comma-separated for multi-column:
+- `'created_at.desc'` — single column descending
+- `'status.asc,created_at.desc'` — multi-column
+- `'name'` — direction defaults to `asc` if omitted
+
+### New parsers in `@kavach/query`
+
+**`parseOrder(string)`** — parses order string into descriptors:
+```js
+parseOrder('created_at.desc,status.asc')
+// → [{ column: 'created_at', ascending: false }, { column: 'status', ascending: true }]
+```
+
+**`parseQueryParams(data)`** — extracts and parses all query options from the flat input:
+```js
+parseQueryParams({ columns: 'id,name', filter: { status: 'eq.active' }, order: 'created_at.desc', limit: 50, offset: 100, count: 'exact' })
+// → { columns: 'id,name', filters: [...], orders: [...], limit: 50, offset: 100, count: 'exact' }
+```
+
+### Supabase adapter `get()` changes
+
+```js
+async function get(entity, data) {
+  const { columns, filters, orders, limit, offset, count } = parseQueryParams(data)
+
+  let query = schemaClient.from(entity).select(columns, count ? { count } : undefined)
+
+  for (const { column, op, value } of filters) {
+    query = query[op](column, value)
+  }
+  for (const { column, ascending } of orders) {
+    query = query.order(column, { ascending })
+  }
+  if (limit !== undefined) query = query.limit(limit)
+  if (offset !== undefined) query = query.range(offset, offset + (limit ?? 1000) - 1)
+
+  return await query
+}
+```
+
+- Supabase `.select(columns, { count: 'exact' })` returns `{ data, count }` in the response
+- `.range(from, to)` used for offset (Supabase requires both ends)
+- `patch()` and `delete()` unchanged — ordering/pagination doesn't apply to writes
+
+### URL param conventions
+
+| URL Param | Maps to | Example |
+|-----------|---------|---------|
+| `:select` | `columns` | `:select=id,name,status` |
+| `:order` | `order` | `:order=created_at.desc,status.asc` |
+| `:limit` | `limit` | `:limit=50` |
+| `:offset` | `offset` | `:offset=100` |
+| `:count` | `count` | `:count=exact` |
+
+All non-`:` prefixed params remain filters.
+
+### Type changes
+
+`ActionResponse` gains optional `count`:
+```js
+/**
+ * @typedef ActionResponse
+ * @property {any}    [data]
+ * @property {any}    [error]
+ * @property {number} [count]
+ * @property {number} status
+ */
+```
+
+### CRUD route response
+
+When count is requested, response wraps data: `{ data, count }`. Without count, returns bare `data` array (backward-compatible).
 
 ## Cross-Adapter Compatibility
 
