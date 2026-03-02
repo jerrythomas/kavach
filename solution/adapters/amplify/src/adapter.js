@@ -1,114 +1,193 @@
-import Amplify, { Auth } from 'aws-amplify'
+import {
+	signIn,
+	signUp,
+	signOut,
+	fetchAuthSession,
+	signInWithRedirect,
+	getCurrentUser
+} from 'aws-amplify/auth'
+import { Hub } from 'aws-amplify/utils'
 
 /**
- * Configures the Amplify library with the provided options.
+ * Strips specified keys from an object (simple omit without ramda)
  *
- * @param {*} options Configuration options for Amplify.
+ * @param {string[]} keys - Keys to remove
+ * @param {Object} obj - Source object
+ * @returns {Object} New object without the specified keys
  */
-function configure(options) {
-	Amplify.configure({
-		Auth: {
-			region: options.region,
-			userPoolId: options.userPoolId,
-			userPoolWebClientId: options.userPoolWebClientId,
-			authenticationFlowType: options.authenticationFlowType || 'USER_SRP_AUTH'
+function omit(keys, obj) {
+	const result = { ...obj }
+	for (const key of keys) {
+		delete result[key]
+	}
+	return result
+}
+
+/**
+ * Transforms an Amplify result into kavach AuthResult format
+ *
+ * @param {Object} result - { data, error }
+ * @param {Object} credentials
+ * @returns {import('kavach').AuthResult}
+ */
+export function transformResult({ data, error }, credentials) {
+	const creds = omit(['password'], credentials)
+
+	if (error) {
+		const code = error.code || undefined
+		const message = error.message || 'An error occurred'
+		return {
+			type: 'error',
+			error: { message, code },
+			message
 		}
-	})
-}
-
-/**
- * A helper function to format errors.
- *
- * @param {*} error The error object received from a failed operation.
- * @returns {object} The formatted error.
- */
-function handleError(error) {
-	return {
-		type: 'error',
-		message: error.message || 'An unknown error occurred',
-		code: error.code,
-		data: null
 	}
-}
 
-/**
- * Handles the sign-in process based on the provided credentials.
- *
- * @param {*} credentials Credentials for signing in.
- * @returns {Promise<object>} Response object with appropriate fields.
- */
-async function handleSignIn(credentials, authInstance) {
-	const { username, password } = credentials
-	try {
-		const user = await authInstance.signIn(username, password)
-		// Include more data manipulation as necessary.
-		return { type: 'success', data: user }
-	} catch (error) {
-		return handleError(error)
+	if (creds.provider === 'magic') {
+		const message = `Magic link has been sent to "${creds.email}".`
+		return { type: 'info', data, credentials: creds, message }
 	}
+
+	return { type: 'success', data, credentials: creds }
 }
 
 /**
- * Handles the sign-up process.
+ * Gets the authentication mode based on the credentials provided
  *
- * @param {*} credentials Credentials for signing up.
- * @returns {Promise<object>} Response object with appropriate fields.
+ * @param {import('kavach').AuthCredentials} credentials
+ * @returns {'magic' | 'password' | 'oauth'}
  */
-async function handleSignUp(credentials, authInstance) {
-	const { username, password, attributes = {} } = credentials
+export function getAuthMode(credentials) {
+	const { password, provider } = credentials
+	if (provider === 'magic') return 'magic'
+	if (password) return 'password'
+	return 'oauth'
+}
+
+/**
+ * Parses the URL query params to check if there is an error
+ *
+ * @param {URL} url
+ * @returns {import('kavach').AuthError | null}
+ */
+export function parseUrlError(url) {
 	try {
-		const newUser = await authInstance.signUp({
-			username,
-			password,
-			attributes
+		const params = new URLSearchParams(url?.search)
+		const errorCode = params.get('error')
+		const errorMessage = params.get('error_description')
+
+		if (errorCode) {
+			return {
+				code: errorCode,
+				message: errorMessage || errorCode
+			}
+		}
+	} catch {
+		// invalid URL, return null
+	}
+	return null
+}
+
+/**
+ * Creates an auth adapter for AWS Amplify v6
+ * No client parameter — Amplify v6 uses module-level configuration via Amplify.configure()
+ *
+ * @returns {import('kavach').AuthAdapter}
+ */
+export function getAdapter() {
+	/**
+	 * Handles sign in based on the credentials provided
+	 *
+	 * @param {import('kavach').AuthCredentials} credentials
+	 * @returns {Promise<import('kavach').AuthResult>}
+	 */
+	async function handleSignIn(credentials) {
+		const { email, password, provider } = credentials
+		const mode = getAuthMode(credentials)
+
+		try {
+			const signInActions = {
+				password: async () => {
+					const result = await signIn({ username: email, password })
+					return result
+				},
+				oauth: async () => {
+					await signInWithRedirect({ provider })
+					return null
+				},
+				magic: async () => {
+					await signIn({ username: email, options: { authFlowType: 'USER_AUTH' } })
+					return null
+				}
+			}
+
+			const data = await signInActions[mode]()
+			return transformResult({ data }, credentials)
+		} catch (error) {
+			return transformResult({ error }, credentials)
+		}
+	}
+
+	/**
+	 * Handles sign up with email and password
+	 *
+	 * @param {import('kavach').PasswordCredentials} credentials
+	 * @returns {Promise<import('kavach').AuthResult>}
+	 */
+	async function handleSignUp(credentials) {
+		const { email, password } = credentials
+		try {
+			const result = await signUp({ username: email, password })
+			return transformResult({ data: result }, credentials)
+		} catch (error) {
+			return transformResult({ error }, credentials)
+		}
+	}
+
+	/**
+	 * Signs out the current user
+	 *
+	 * @returns {Promise<void>}
+	 */
+	async function handleSignOut() {
+		await signOut()
+	}
+
+	/**
+	 * Synchronizes the current session by fetching session and user info
+	 *
+	 * @returns {Promise<{data: {session: Object, user: Object} | null, error: {message: string} | null}>}
+	 */
+	async function synchronize() {
+		try {
+			const session = await fetchAuthSession()
+			const user = await getCurrentUser()
+			return { data: { session, user }, error: null }
+		} catch (error) {
+			return { data: null, error: { message: error.message || 'An error occurred' } }
+		}
+	}
+
+	/**
+	 * Registers a callback for auth state changes via Amplify Hub
+	 *
+	 * @param {import('kavach').AuthCallback} callback
+	 * @returns {() => void} unsubscribe function
+	 */
+	function onAuthChange(callback) {
+		const unsubscribe = Hub.listen('auth', ({ payload }) => {
+			const event = payload.event === 'signedIn' ? 'SIGNED_IN' : 'SIGNED_OUT'
+			callback(event, payload.data)
 		})
-		return { type: 'success', data: newUser }
-	} catch (error) {
-		return handleError(error)
-	}
-}
-
-/**
- * Signs out the currently signed-in user.
- *
- * @returns {Promise<object>} Sign-out result.
- */
-async function handleSignOut(authInstance) {
-	try {
-		await authInstance.signOut()
-		return { type: 'success' }
-	} catch (error) {
-		return handleError(error)
-	}
-}
-
-/**
- * Adapts AWS Cognito functionality to the expected adapter interface.
- *
- * @param {Object} options Configuration options for AWS Amplify (Cognito).
- * @returns The adapter exposing methods for signIn, signUp, signOut, and related functionalities.
- */
-export function getAdapter(options) {
-	// Initialize AWS Amplify Auth with the provided options
-	configure(options)
-
-	// Since there's no direct "onAuthChange" equivalent in Cognito as with Supabase, you might need to handle session persistence manually.
-	// Cognito handles session management internally, but for UI updates, consider using Amplify Hub or custom event listeners.
-	const onAuthChange = () => {
-		// Not directly applicable with Cognito without using additional services like Amplify Hub
-		// eslint-disable-next-line no-console
-		console.warn(
-			'onAuthChange functionality needs custom implementation with AWS Amplify Hub or similar.'
-		)
+		return unsubscribe
 	}
 
 	return {
-		signIn: (credentials) => handleSignIn(credentials, Auth),
-		signUp: (credentials) => handleSignUp(credentials, Auth),
-		signOut: () => handleSignOut(Auth),
+		signIn: handleSignIn,
+		signUp: handleSignUp,
+		signOut: handleSignOut,
+		synchronize,
 		onAuthChange,
-		parseUrlError: () => null, // This function is specific to handling errors from URL parameters, commonly used in OAuth flows.
-		client: null, // AWS Cognito does not have a direct equivalent to a "client" in the Supabase sense.
-		db: () => null // Placeholder to maintain structural consistency. Database interactions would typically use other AWS services like DynamoDB.
+		parseUrlError
 	}
 }

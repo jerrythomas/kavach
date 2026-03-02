@@ -39,7 +39,8 @@ export default defineConfig({
 			{ extends: true, test: { name: 'supabase', root: 'adapters/supabase' } },
 			{ extends: true, test: { name: 'convex', root: 'adapters/convex' } },
 			{ extends: true, test: { name: 'firebase', root: 'adapters/firebase' } },
-			{ extends: true, test: { name: 'auth0', root: 'adapters/auth0' } }
+			{ extends: true, test: { name: 'auth0', root: 'adapters/auth0' } },
+			{ extends: true, test: { name: 'amplify', root: 'adapters/amplify' } }
 		]
 	}
 })
