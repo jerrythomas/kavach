@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit'
 import { getEntity } from '$lib/db'
+import { sanitizeError } from '@kavach/query'
 import { omit } from 'ramda'
 
 const RESERVED = [':select', ':order', ':limit', ':offset', ':count']
@@ -12,9 +13,11 @@ function getActions(locals, schema) {
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function GET({ params, url, locals }) {
+	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
+
 	const { schema, entity } = getEntity(params.slug)
 	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+	if (!actions) return json({ error: { message: 'Data operations not supported for this adapter' } }, { status: 501 })
 
 	const body = Object.fromEntries(url.searchParams.entries())
 	const { data, error, count, status } = await actions.get(entity, {
@@ -26,58 +29,66 @@ export async function GET({ params, url, locals }) {
 		filter: omit(RESERVED, body)
 	})
 
-	if (error) return json({ error }, { status })
+	if (error) return json({ error: sanitizeError(error) }, { status })
 	return json(count !== undefined ? { data, count } : data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function POST({ params, request, locals }) {
+	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
+
 	const { schema, entity } = getEntity(params.slug)
 	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+	if (!actions) return json({ error: { message: 'Data operations not supported for this adapter' } }, { status: 501 })
 
 	const body = await request.json()
 	const { data, error, status } = await actions.post(entity, body)
 
-	if (error) return json({ error }, { status })
+	if (error) return json({ error: sanitizeError(error) }, { status })
 	return json(data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function PUT({ params, request, locals }) {
+	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
+
 	const { schema, entity } = getEntity(params.slug)
 	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+	if (!actions) return json({ error: { message: 'Data operations not supported for this adapter' } }, { status: 501 })
 
 	const body = await request.json()
 	const { data, error, status } = await actions.put(entity, body)
 
-	if (error) return json({ error }, { status })
+	if (error) return json({ error: sanitizeError(error) }, { status })
 	return json(data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function PATCH({ params, request, locals }) {
+	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
+
 	const { schema, entity } = getEntity(params.slug)
 	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+	if (!actions) return json({ error: { message: 'Data operations not supported for this adapter' } }, { status: 501 })
 
 	const body = await request.json()
 	const { data, error, status } = await actions.patch(entity, body)
 
-	if (error) return json({ error }, { status })
+	if (error) return json({ error: sanitizeError(error) }, { status })
 	return json(data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function DELETE({ params, request, locals }) {
+	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
+
 	const { schema, entity } = getEntity(params.slug)
 	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+	if (!actions) return json({ error: { message: 'Data operations not supported for this adapter' } }, { status: 501 })
 
 	const body = await request.json()
 	const { data, error, status } = await actions.delete(entity, body)
 
-	if (error) return json({ error }, { status })
+	if (error) return json({ error: sanitizeError(error) }, { status })
 	return json(data)
 }
