@@ -6,17 +6,24 @@ import { omit } from 'ramda'
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
+const RESERVED = [':select', ':order', ':limit', ':offset', ':count']
+
 export async function GET({ params, url }) {
 	const { schema, entity } = getEntity(params.slug)
 	const actions = kavach.server(schema)
 	const body = Object.fromEntries(url.searchParams.entries())
-	const { data, error, status } = await actions.get(entity, {
+
+	const { data, error, count, status } = await actions.get(entity, {
 		columns: body[':select'],
-		filter: omit([':select'], body)
+		order: body[':order'],
+		limit: body[':limit'] ? Number(body[':limit']) : undefined,
+		offset: body[':offset'] ? Number(body[':offset']) : undefined,
+		count: body[':count'],
+		filter: omit(RESERVED, body)
 	})
 
 	if (error) return json({ error }, { status })
-	return json(data)
+	return json(count !== undefined ? { data, count } : data)
 }
 
 /**

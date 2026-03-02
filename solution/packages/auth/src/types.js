@@ -151,6 +151,7 @@
  * @typedef ActionResponse
  * @property {any}    [data]
  * @property {any}    [error]
+ * @property {number} [count]
  * @property {number} status
  */
 
