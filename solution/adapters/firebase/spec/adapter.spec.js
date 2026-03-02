@@ -9,7 +9,7 @@ import {
 	mockSignOut,
 	mockOnAuthStateChanged
 } from './mock.js'
-import { getAdapter, transformResult } from '../src/adapter.js'
+import { getAdapter, getAuthMode, transformResult } from '../src/adapter.js'
 
 describe('getAdapter', () => {
 	let mockAuth
@@ -21,15 +21,20 @@ describe('getAdapter', () => {
 		adapter = getAdapter(mockAuth)
 	})
 
-	it('should return an adapter with all 6 AuthAdapter methods', () => {
+	it('should return an adapter with all AuthAdapter methods and capabilities', () => {
 		expect(adapter).toEqual({
 			signIn: expect.any(Function),
 			signUp: expect.any(Function),
 			signOut: expect.any(Function),
 			synchronize: expect.any(Function),
 			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function)
+			parseUrlError: expect.any(Function),
+			capabilities: ['passkey']
 		})
+	})
+
+	it('should declare passkey in capabilities', () => {
+		expect(adapter.capabilities).toContain('passkey')
 	})
 
 	describe('signIn', () => {
@@ -105,6 +110,15 @@ describe('getAdapter', () => {
 			expect(mockSignInWithPopup).toHaveBeenCalledWith(mockAuth, expect.any(Object))
 			expect(result.type).toBe('success')
 			expect(result.data).toEqual(mockUser)
+		})
+
+		it('should return error result for passkey sign in (not yet supported)', async () => {
+			const credentials = { mode: 'passkey', email: 'a@b.com' }
+			const result = await adapter.signIn(credentials)
+
+			expect(result.type).toBe('error')
+			expect(result.error.code).toBe('auth/passkey-not-supported')
+			expect(result.error.message).toContain('not yet supported')
 		})
 	})
 
@@ -284,5 +298,23 @@ describe('transformResult', () => {
 		expect(result.type).toBe('error')
 		expect(result.error.code).toBeUndefined()
 		expect(result.error.message).toBe('Something went wrong')
+	})
+})
+
+describe('getAuthMode', () => {
+	it('should return passkey when mode is passkey', () => {
+		expect(getAuthMode({ mode: 'passkey' })).toBe('passkey')
+	})
+
+	it('should return magic when provider is magic', () => {
+		expect(getAuthMode({ provider: 'magic', email: 'a@b.com' })).toBe('magic')
+	})
+
+	it('should return password when password is provided', () => {
+		expect(getAuthMode({ email: 'a@b.com', password: 'secret' })).toBe('password')
+	})
+
+	it('should return oauth by default', () => {
+		expect(getAuthMode({ provider: 'google' })).toBe('oauth')
 	})
 })

@@ -184,6 +184,7 @@
  * @property {() => Promise<void>}	                                     [resetPassword]
  * @property {(credentials: PasswordCredentials) => Promise<void>}       [updatePassword]
  * @property {(url: Object) => AuthResult}                               [parseUrlError]
+ * @property {string[]}                                                  [capabilities]
  */
 
 /**

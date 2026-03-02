@@ -58,9 +58,10 @@ export function transformResult({ data, error }, credentials) {
  * Gets the authentication mode based on the credentials provided
  *
  * @param {import('kavach').AuthCredentials} credentials
- * @returns {'magic' | 'password' | 'oauth'}
+ * @returns {'magic' | 'password' | 'oauth' | 'passkey'}
  */
 export function getAuthMode(credentials) {
+	if (credentials.mode === 'passkey') return 'passkey'
 	const { password, provider } = credentials
 	if (provider === 'magic') return 'magic'
 	if (password) return 'password'
@@ -129,6 +130,9 @@ export function getAdapter(auth) {
 						handleCodeInApp: true
 					})
 					return null
+				},
+				passkey: async () => {
+					throw { code: 'auth/passkey-not-supported', message: 'Passkey authentication is not yet supported by this adapter' }
 				}
 			}
 
@@ -193,6 +197,7 @@ export function getAdapter(auth) {
 		signOut: handleSignOut,
 		synchronize,
 		onAuthChange,
-		parseUrlError
+		parseUrlError,
+		capabilities: ['passkey']
 	}
 }
