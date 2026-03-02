@@ -96,6 +96,20 @@ AuthHandler
 - Unit tests for localStorage caching logic (serialize/deserialize, max entries, expiry)
 - Passkey tests with mocked `navigator.credentials` API
 
+## Decision: Keep in @kavach/ui, Upgrade to Svelte 5
+
+Considered moving auth UI to `@rokkit/auth` (or `@rokkit/app`). Decision: **keep in `@kavach/ui`**.
+
+Rationale:
+- Avoids cross-repo coordination and release complexity
+- Auth icons from `@rokkit/icons` and form primitives from `@rokkit/forms` are already available as dependencies
+
+**Upgrade to Svelte 5** as part of this redesign:
+- Migrate from Svelte 4 slots/events to Svelte 5 runes (`$props`, `$derived`, `$state`)
+- Follow `@rokkit/app` component patterns (TypeScript, typed props interfaces, composition)
+- Use `$props()` destructuring with defaults
+- Replace `createEventDispatcher` with callback props (`onchange`, `onsignin`, etc.)
+
 ## Open Questions
 
 - Should cached logins expire after a configurable duration?
