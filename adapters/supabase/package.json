@@ -23,6 +23,7 @@
     "build": "bun prepublishOnly"
   },
   "dependencies": {
+    "@kavach/query": "workspace:*",
     "kavach": "workspace:*",
     "@supabase/supabase-js": "^2.49.4",
     "ramda": "^0.30.1"

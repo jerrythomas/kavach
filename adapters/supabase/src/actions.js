@@ -1,4 +1,4 @@
-// import { getTableAndSchema } from './utils'
+import { parseFilter } from '@kavach/query'
 
 /**
  * Creates a wrapper object for various actions on an entity
@@ -16,9 +16,13 @@ export function getActions(client, schema) {
 	 */
 	async function get(entity, data) {
 		const { columns = '*', filter = {} } = data ?? {}
-		// const query = getBaseQuery(entity)
-		const result = await schemaClient.from(entity).select(columns).match(filter)
-		return result
+		let query = schemaClient.from(entity).select(columns)
+
+		for (const { column, op, value } of parseFilter(filter)) {
+			query = query[op](column, value)
+		}
+
+		return await query
 	}
 
 	return {
