@@ -118,6 +118,7 @@ describe('actions', () => {
 			await actions.put('entity', { data: 'value' })
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.insert).toHaveBeenCalledWith({ data: 'value' })
+			expect(client.insert().select).toHaveBeenCalled()
 		})
 	})
 
@@ -128,6 +129,7 @@ describe('actions', () => {
 			await actions.post('entity', { data: 'value' })
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.upsert).toHaveBeenCalledWith({ data: 'value' })
+			expect(client.upsert().select).toHaveBeenCalled()
 		})
 	})
 
@@ -138,6 +140,7 @@ describe('actions', () => {
 			await actions.patch('entity', { data: 'value' })
 			expect(client.from).toHaveBeenCalledWith('entity')
 			expect(client.update).toHaveBeenCalledWith({ data: 'value' })
+			expect(client.update().select).toHaveBeenCalled()
 		})
 	})
 
@@ -147,6 +150,7 @@ describe('actions', () => {
 			const actions = getActions(client)
 			await actions.delete('entity', { filter: 'value' })
 			expect(client.from).toHaveBeenCalledWith('entity')
+			expect(client.delete().match).toHaveBeenCalledWith({ filter: 'value' })
 		})
 	})
 

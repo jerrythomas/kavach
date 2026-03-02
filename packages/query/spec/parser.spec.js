@@ -96,13 +96,13 @@ describe('parseFilter', () => {
 
 	it('should parse is.true', () => {
 		expect(parseFilter({ active: 'is.true' })).toEqual([
-			{ column: 'active', op: 'is', value: 'true' }
+			{ column: 'active', op: 'is', value: true }
 		])
 	})
 
 	it('should parse is.false', () => {
 		expect(parseFilter({ active: 'is.false' })).toEqual([
-			{ column: 'active', op: 'is', value: 'false' }
+			{ column: 'active', op: 'is', value: false }
 		])
 	})
 })

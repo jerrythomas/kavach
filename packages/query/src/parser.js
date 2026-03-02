@@ -44,7 +44,10 @@ function parseValue(op, raw) {
 		return inner.split(',').map((s) => s.trim())
 	}
 	if (op === 'is') {
-		return raw === 'null' ? null : raw
+		if (raw === 'null') return null
+		if (raw === 'true') return true
+		if (raw === 'false') return false
+		return raw
 	}
 	return raw
 }
