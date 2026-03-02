@@ -1,4 +1,4 @@
-import { parseFilter } from '@kavach/query'
+import { parseFilter, parseQueryParams } from '@kavach/query'
 
 /**
  * Creates a wrapper object for various actions on an entity
@@ -15,12 +15,18 @@ export function getActions(client, schema) {
 	 * @returns {Promise<import('kavach').ActionResponse>}
 	 */
 	async function get(entity, data) {
-		const { columns = '*', filter = {} } = data ?? {}
-		let query = schemaClient.from(entity).select(columns)
+		const { columns, filters, orders, limit, offset, count } = parseQueryParams(data)
 
-		for (const { column, op, value } of parseFilter(filter)) {
+		let query = schemaClient.from(entity).select(columns, count ? { count } : undefined)
+
+		for (const { column, op, value } of filters) {
 			query = query[op](column, value)
 		}
+		for (const { column, ascending } of orders) {
+			query = query.order(column, { ascending })
+		}
+		if (limit !== undefined) query = query.limit(limit)
+		if (offset !== undefined) query = query.range(offset, offset + (limit ?? 1000) - 1)
 
 		return await query
 	}

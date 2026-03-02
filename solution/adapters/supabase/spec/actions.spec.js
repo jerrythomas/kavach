@@ -16,6 +16,9 @@ describe('actions', () => {
 			ilike: vi.fn().mockReturnThis(),
 			in: vi.fn().mockReturnThis(),
 			is: vi.fn().mockReturnThis(),
+			order: vi.fn().mockReturnThis(),
+			limit: vi.fn().mockReturnThis(),
+			range: vi.fn().mockReturnThis(),
 			select: vi.fn().mockReturnThis(),
 			then: vi.fn((resolve) => resolve(result))
 		}
@@ -52,14 +55,14 @@ describe('actions', () => {
 			const actions = getActions(client)
 			await actions.get('entity')
 			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.select).toHaveBeenCalledWith('*')
+			expect(client.select).toHaveBeenCalledWith('*', undefined)
 		})
 
 		it('should select specific columns', async () => {
 			const client = createClient()
 			const actions = getActions(client)
 			await actions.get('entity', { columns: 'a,b' })
-			expect(client.select).toHaveBeenCalledWith('a,b')
+			expect(client.select).toHaveBeenCalledWith('a,b', undefined)
 		})
 
 		it('should apply eq filter', async () => {
@@ -107,8 +110,77 @@ describe('actions', () => {
 				columns: 'id,name',
 				filter: { status: 'eq.active' }
 			})
-			expect(client.select).toHaveBeenCalledWith('id,name')
+			expect(client.select).toHaveBeenCalledWith('id,name', undefined)
 			expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
+		})
+
+		it('should apply order', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', { order: 'created_at.desc' })
+			expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
+		})
+
+		it('should apply multiple orders', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', { order: 'status.asc,created_at.desc' })
+			expect(client._query.order).toHaveBeenCalledTimes(2)
+			expect(client._query.order).toHaveBeenCalledWith('status', { ascending: true })
+			expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
+		})
+
+		it('should apply limit', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', { limit: 50 })
+			expect(client._query.limit).toHaveBeenCalledWith(50)
+		})
+
+		it('should apply offset via range', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', { limit: 50, offset: 100 })
+			expect(client._query.range).toHaveBeenCalledWith(100, 149)
+		})
+
+		it('should apply offset with default limit', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', { offset: 100 })
+			expect(client._query.range).toHaveBeenCalledWith(100, 1099)
+		})
+
+		it('should pass count option to select', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', { count: 'exact' })
+			expect(client.select).toHaveBeenCalledWith('*', { count: 'exact' })
+		})
+
+		it('should not pass count option when not specified', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity')
+			expect(client.select).toHaveBeenCalledWith('*', undefined)
+		})
+
+		it('should apply all options together', async () => {
+			const client = createClient()
+			const actions = getActions(client)
+			await actions.get('entity', {
+				columns: 'id,name',
+				filter: { status: 'eq.active' },
+				order: 'created_at.desc',
+				limit: 25,
+				offset: 50,
+				count: 'exact'
+			})
+			expect(client.select).toHaveBeenCalledWith('id,name', { count: 'exact' })
+			expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
+			expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
+			expect(client._query.limit).toHaveBeenCalledWith(25)
+			expect(client._query.range).toHaveBeenCalledWith(50, 74)
 		})
 	})
 
