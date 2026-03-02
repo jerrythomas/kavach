@@ -25,7 +25,7 @@ describe('kavach', () => {
 	beforeEach(() => {
 		adapter = createMockAdapter()
 		global.fetch = vi.fn()
-		global.Response = vi.fn().mockImplementation((...status) => status)
+		global.Response = vi.fn().mockImplementation(function (...status) { return status })
 		global.Response.redirect = vi.fn()
 	})
 

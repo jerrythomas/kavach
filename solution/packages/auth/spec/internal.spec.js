@@ -10,7 +10,7 @@ import {
 
 describe('Internal functions', () => {
 	beforeEach(() => {
-		global.Response = vi.fn().mockImplementation((...args) => args)
+		global.Response = vi.fn().mockImplementation(function (...args) { return args })
 	})
 	afterEach(() => {
 		vi.restoreAllMocks()
