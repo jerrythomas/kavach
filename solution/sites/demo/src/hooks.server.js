@@ -38,5 +38,13 @@ export async function handle({ event, resolve }) {
 		})
 	}
 
-	return kavach.handle({ event, resolve })
+	const secureResolve = async (event) => {
+		const response = await resolve(event)
+		response.headers.set('X-Content-Type-Options', 'nosniff')
+		response.headers.set('X-Frame-Options', 'DENY')
+		response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+		return response
+	}
+
+	return kavach.handle({ event, resolve: secureResolve })
 }
