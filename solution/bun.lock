@@ -129,6 +129,7 @@
         "@fontsource/overpass": "^5.2.5",
         "@kavach/adapter-supabase": "workspace:*",
         "@kavach/logger": "workspace:*",
+        "@kavach/query": "workspace:*",
         "@kavach/ui": "workspace:*",
         "@rokkit/actions": "link:@rokkit/actions",
         "@rokkit/core": "link:@rokkit/core",

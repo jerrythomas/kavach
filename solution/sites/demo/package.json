@@ -41,6 +41,7 @@
     "@fontsource/open-sans": "^5.2.5",
     "@fontsource/overpass": "^5.2.5",
     "@kavach/adapter-supabase": "workspace:*",
+    "@kavach/query": "workspace:*",
     "kavach": "workspace:*",
     "@kavach/logger": "workspace:*",
     "@kavach/ui": "workspace:*",
