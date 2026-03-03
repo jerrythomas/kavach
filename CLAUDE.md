@@ -5,11 +5,10 @@ This file is the entry point for any AI agent working on this repo.
 ## MANDATORY: Load Workflow First
 
 Before doing any work, read these files in order:
-1. **`agents/workflow.md`** — methodology, phase pipeline, interrupt handling
-2. **`agents/memory.md`** — shared project knowledge, principles, and tooling
+1. **`agents/workflow.md`** — methodology and pipeline
+2. **`agents/memory.md`** — project knowledge, principles, tooling
 3. **`agents/journal.md`** (last ~50 lines) — recent progress
-4. **`agents/plan.md`** — check for active feature to resume
-5. **`agents/design-patterns.md`** — established patterns, project conventions, references
+4. **`docs/plans/README.md`** — check for active plan to resume
 
 These files govern how you work. Do not skip them.
 
@@ -26,25 +25,19 @@ These files govern how you work. Do not skip them.
 ```
 project-root/
   CLAUDE.md                      <-- You are here
-  agents/                        <-- Agent instructions, session tracking, patterns
-    workflow.md                  <-- Methodology and phase pipeline (READ FIRST)
+  agents/                        <-- AI operational files
+    workflow.md                  <-- Methodology and pipeline (READ FIRST)
     memory.md                   <-- Project knowledge, principles, tooling
     journal.md                  <-- Chronological progress log
-    plan.md                     <-- Pointer to active feature
-    open-questions.md           <-- Q&A tracking for design discussions
-    design-patterns.md          <-- Patterns (general + project) and references
-    sessions/                   <-- Archived completed features
-    templates/                  <-- Guided templates for specs, plans, tasks
-      spec-template.md          <-- Feature specification template
-      plan-template.md          <-- Implementation plan template
-      tasks-template.md         <-- Phased task breakdown template
   docs/
-    backlog.md                  <-- Living priority queue with triage
-    features/                   <-- Per-feature directories (spec, plan, tasks)
-    design/                     <-- Module design documents (numbered: 01-xxx.md)
-    examples/                   <-- Usage examples
-    plans/                      <-- Design decision documents
-    requirements/               <-- Feature requirements (numbered: 01-xxx.md)
+    requirements/                <-- Per-module: what and why (human audience)
+      README.md                 <-- Module summary and references
+    design/                     <-- Per-module: how and why (human audience)
+      README.md                 <-- Patterns, guidelines, module references
+    stories/                    <-- Story specs + backlog dashboard (AI audience)
+      README.md                 <-- Prioritized story dashboard
+    plans/                      <-- Active plan + archived plans
+      README.md                 <-- Current active plan
   solution/                     <-- All source code lives here
 ```
 
@@ -75,31 +68,29 @@ npm run lint                      # 0 errors expected
 
 ## Conventions
 
-### Phase pipeline for features
-For non-trivial work, follow the phase pipeline: SPECIFY → CLARIFY → PLAN → TASK → IMPLEMENT.
+### Pipeline for stories
+For non-trivial work: **Story → Plan → Implement**.
 See `agents/workflow.md` for the full process.
 
-### Two-tier communication
-Keep conversation light with summaries. Full details live in feature files (`docs/features/NNN-name/`).
-Refer users to the document for details rather than dumping full content in chat.
+### Two documentation layers
+- **Requirements + Design** — human audience, per module, what/why and how/why
+- **Stories** — AI audience, actionable specs with acceptance criteria and examples
 
-### Creating a new feature
-1. Create `docs/features/NNN-feature-name/` directory
-2. Follow the phase pipeline in `agents/workflow.md`
-3. Use templates from `agents/templates/` for spec, plan, and tasks
+### Creating a new story
+1. Create story file in `docs/stories/NNN-<story>.md` (flat, no subdirectories)
+2. If new module: create requirements and design docs first
+3. Add to `docs/stories/README.md`
+4. Follow the pipeline in `agents/workflow.md`
 
 ### When completing work
 1. Run tests and lint — both must pass
-2. Update the feature's tasks.md — mark steps complete
-3. Update `agents/journal.md` — log what was done with commit hashes
-4. Update feature status in `docs/features/README.md`
-5. On feature completion: archive to `agents/sessions/YYYY-MM-DD-<name>.md`
+2. Check requirements and design docs are still accurate
+3. Archive plan to `docs/plans/<datetime>-<story>.md`
+4. Update `agents/journal.md` with summary and commit hashes
+5. Mark story done in `docs/stories/README.md`
 
 ### Handling interrupts
-- Hot items (P1): insert into current phase
-- Lower priority: add to `docs/backlog.md`
-- Between phases: triage the backlog
-- See `agents/workflow.md` Interrupt Handling section
+All interrupts go to `docs/stories/README.md`. Pick up next.
 
 ### Lint Rules
 - Warnings are pre-existing and acceptable
@@ -109,11 +100,11 @@ Refer users to the document for details rather than dumping full content in chat
 
 | File | Purpose |
 |------|---------|
-| `agents/workflow.md` | Methodology, phase pipeline, interrupt handling |
+| `agents/workflow.md` | Methodology, pipeline, session lifecycle |
 | `agents/memory.md` | Project knowledge, principles, tooling |
-| `agents/plan.md` | Pointer to active feature |
 | `agents/journal.md` | Chronological progress log |
-| `docs/backlog.md` | Living priority queue with triage |
-| `agents/design-patterns.md` | Patterns (general + project) and references |
-| `agents/templates/` | Spec, plan, tasks templates |
-| `docs/features/` | Per-feature specs, plans, tasks |
+| `docs/requirements/` | Module requirements — what and why |
+| `docs/design/` | Module design — how and why, patterns |
+| `docs/stories/` | Story specs (flat, NNN-name.md) |
+| `docs/stories/README.md` | Prioritized story dashboard |
+| `docs/plans/README.md` | Current active plan |

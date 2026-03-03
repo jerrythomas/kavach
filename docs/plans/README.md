@@ -1,5 +1,3 @@
-# Design Decision Documents
+# Active Plan
 
-Architecture and design decision records.
-
-Files follow the naming convention: `YYYY-MM-DD-topic-name.md`
+No active plan.

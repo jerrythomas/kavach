@@ -55,7 +55,7 @@ This file is read at the start of every session.
 
 | Decision | Rationale | Date |
 |----------|-----------|------|
-| ... | ... | YYYY-MM-DD |
+| Simplified workflow structure | Replaced 5-phase pipeline with Story → Plan → Implement. Two doc layers: requirements+design (human) and stories (AI). Dropped templates, sessions, design-patterns, open-questions, features dir, examples dir. | 2026-03-02 |
 
 ## Technical Notes
 
