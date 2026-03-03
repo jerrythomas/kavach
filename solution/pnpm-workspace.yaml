@@ -1,4 +1,0 @@
-packages:
-  - "adapters/*"
-  - "packages/**"
-  - "sites/**"

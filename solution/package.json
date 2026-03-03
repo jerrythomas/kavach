@@ -15,7 +15,7 @@
     "coverage": "vitest run coverage",
     "format": "prettier --write .",
     "lint": "eslint --fix",
-    "lockfile": "pnpm install --lockfile-only",
+    "lockfile": "bun install",
     "build:all": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun run build' \\;",
     "upgrade:all": "bun update --latest",
     "bump": "bun run lockfile && bumpp --no-push",

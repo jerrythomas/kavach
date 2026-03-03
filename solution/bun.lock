@@ -88,6 +88,21 @@
         "ramda": "^0.30.1",
       },
     },
+    "packages/cli": {
+      "name": "@kavach/cli",
+      "version": "1.0.0-next.1",
+      "bin": {
+        "kavach": "src/index.js",
+      },
+      "dependencies": {
+        "@clack/prompts": "^0.9.1",
+        "magicast": "^0.3.5",
+        "picocolors": "^1.1.1",
+      },
+      "peerDependencies": {
+        "vite": ">=5.0.0",
+      },
+    },
     "packages/cookie": {
       "name": "@kavach/cookie",
       "version": "1.0.0-next.29",
@@ -378,6 +393,10 @@
 
     "@bramus/specificity": ["@bramus/specificity@2.4.2", "", { "dependencies": { "css-tree": "^3.0.0" }, "bin": { "specificity": "bin/cli.js" } }, "sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw=="],
 
+    "@clack/core": ["@clack/core@0.4.1", "", { "dependencies": { "picocolors": "^1.0.0", "sisteransi": "^1.0.5" } }, "sha512-Pxhij4UXg8KSr7rPek6Zowm+5M22rbd2g1nfojHJkxp5YkFqiZ2+YLEM/XGVIzvGOcM0nqjIFxrpDwWRZYWYjA=="],
+
+    "@clack/prompts": ["@clack/prompts@0.9.1", "", { "dependencies": { "@clack/core": "0.4.1", "picocolors": "^1.0.0", "sisteransi": "^1.0.5" } }, "sha512-JIpyaboYZeWYlyP0H+OoPPxd6nqueG/CmN6ixBiNFsIDHREevjIf0n0Ohh5gr5C8pEDknzgvz+pIJ8dMhzWIeg=="],
+
     "@convex-dev/auth": ["@convex-dev/auth@0.0.80", "", { "dependencies": { "arctic": "^1.2.0", "cookie": "^1.0.1", "jose": "^5.2.2", "jwt-decode": "^4.0.0", "lucia": "^3.2.0", "oauth4webapi": "^3.1.2", "oslo": "^1.1.2", "path-to-regexp": "^6.3.0", "server-only": "^0.0.1" }, "peerDependencies": { "@auth/core": "^0.37.0", "convex": "^1.17.0", "react": "^18.2.0 || ^19.0.0-0" }, "optionalPeers": ["react"], "bin": { "auth": "dist/bin.cjs" } }, "sha512-La/cAlmSxERWW8ekJdFysMVhlkpdD7AAIaZSWCk6mIZgoZIz2uu1XbqhodNzx/8ypLu7wyOlMJqH7ZtncHYDXA=="],
 
     "@csstools/color-helpers": ["@csstools/color-helpers@6.0.2", "", {}, "sha512-LMGQLS9EuADloEFkcTBR3BwV/CGHV7zyDxVRtVDTwdI2Ca4it0CCVTT9wCkxSgokjE5Ho41hEPgb8OEUwoXr6Q=="],
@@ -609,6 +628,8 @@
     "@kavach/adapter-firebase": ["@kavach/adapter-firebase@workspace:adapters/firebase"],
 
     "@kavach/adapter-supabase": ["@kavach/adapter-supabase@workspace:adapters/supabase"],
+
+    "@kavach/cli": ["@kavach/cli@workspace:packages/cli"],
 
     "@kavach/cookie": ["@kavach/cookie@workspace:packages/cookie"],
 
@@ -1585,6 +1606,8 @@
     "signal-exit": ["signal-exit@4.1.0", "", {}, "sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw=="],
 
     "sirv": ["sirv@3.0.1", "", { "dependencies": { "@polka/url": "1.0.0-next.29", "mrmime": "2.0.1", "totalist": "3.0.1" } }, "sha512-FoqMu0NCGBLCcAkS1qA+XJIQTR6/JHfQXl+uGteNCQ76T91DMUjPa9xfmeqMY3z80nLSg9yQmNjK0Px6RWsH/A=="],
+
+    "sisteransi": ["sisteransi@1.0.5", "", {}, "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg=="],
 
     "skeleton": ["skeleton@workspace:sites/skeleton"],
 
