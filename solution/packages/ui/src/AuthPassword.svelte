@@ -44,7 +44,7 @@
 />
 <button
 	onclick={handle}
-	class="col-start-3 text-center h-10 mt-4 bg-primary text-white"
+	class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
 >
 	Sign in
 </button>

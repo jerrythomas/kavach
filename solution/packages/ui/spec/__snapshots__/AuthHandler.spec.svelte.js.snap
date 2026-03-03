@@ -2,19 +2,22 @@
 
 exports[`AuthHandler.svelte > should render multiple providers 1`] = `
 <div>
-  <auth
+  <div
     class="flex flex-col gap-2"
+    data-auth=""
   >
-    <auth-header
+    <div
       class="flex flex-col"
+      data-auth-header=""
     >
       <!---->
       
       <!---->
-    </auth-header>
+    </div>
      
-    <auth-body
+    <div
       class="flex flex-col gap-2"
+      data-auth-body=""
     >
       <!---->
       <!---->
@@ -39,8 +42,8 @@ exports[`AuthHandler.svelte > should render multiple providers 1`] = `
       
       
       
-    </auth-body>
-  </auth>
+    </div>
+  </div>
   
 </div>
 `;

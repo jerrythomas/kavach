@@ -11,11 +11,12 @@ exports[`AuthResponse.svelte > should render response with changes 1`] = `
 exports[`AuthResponse.svelte > should render response with changes 2`] = `
 <div>
   <!---->
-  <alert
+  <div
     class="flex flex-col w-full"
+    data-alert=""
   >
     Successfully logged in
-  </alert>
+  </div>
   
   
 </div>
@@ -24,11 +25,12 @@ exports[`AuthResponse.svelte > should render response with changes 2`] = `
 exports[`AuthResponse.svelte > should render response with error 1`] = `
 <div>
   <!---->
-  <alert
+  <div
     class="flex flex-col w-full hasError"
+    data-alert=""
   >
     An error occurred
-  </alert>
+  </div>
   
   
 </div>

@@ -31,10 +31,9 @@ If you're interested in trying out Kavach for yourself, you can visit the offici
 
 ## Getting started
 
-Get started quickly using [degit](https://github.com/Rich-Harris/degit). Select the library you want to use and run "degit" to get a sample app.
-
 ```bash
-npx degit jerrythomas/kavach/sites/skeleton my-app
+sv create
+npx @kavach/cli init
 ```
 
 ### UnoCSS
@@ -43,7 +42,7 @@ This library uses UnoCSS and the components will not render properly if the requ
 
 ## Route Configuration
 
-Routes are configurable as shown in the example `config/routes.js` file. Sentry assumes that all routes are private by default. Public routes need to be listed so that they can be accessed without logging in.
+Configurations are managed in kavach.config.js. Kavach assumes that all routes are private by default. Public routes need to be listed so that they can be accessed without logging in.
 
 ## License
 

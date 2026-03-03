@@ -5,15 +5,16 @@ import * as utilities from '../src'
 describe('utilities', () => {
 	it('should contain all exported utilities', () => {
 		expect(Object.keys(utilities)).toEqual([
-			'AuthButton',
-			'AuthProvider',
-			'AuthGroup',
-			'AuthError',
-			'AuthResponse',
-			'AuthHandler',
-			'LoginCard',
-			'LoginCardList',
-			'AuthPage'
-		])
+      'AuthButton',
+      'AuthPassword',
+      'AuthProvider',
+      'AuthGroup',
+      'AuthError',
+      'AuthResponse',
+      'AuthHandler',
+      'LoginCard',
+      'LoginCardList',
+      'AuthPage'
+    ])
 	})
 })

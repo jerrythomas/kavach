@@ -1,14 +1,4 @@
-export const PROVIDER_DEFAULTS = {
-	google: { name: 'google', label: 'Continue with Google' },
-	github: { name: 'github', label: 'Continue with GitHub' },
-	azure: { name: 'azure', label: 'Continue with Azure', scopes: ['email', 'profile'] },
-	magic: { mode: 'otp', name: 'magic', label: 'Email for Magic Link' },
-	password: { mode: 'password', name: 'email', label: 'Sign in using' }
-}
-
-const ADAPTER_ENV_DEFAULTS = {
-	supabase: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' }
-}
+import { PROVIDER_DEFAULTS, ADAPTER_ENV_DEFAULTS } from './commands/constants.js'
 
 export function buildConfig(answers) {
 	const providers = (answers.providers ?? []).map(

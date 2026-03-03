@@ -2,8 +2,9 @@
 
 exports[`AuthError.svelte > should render error with name 1`] = `
 <div>
-  <error
+  <div
     class="flex flex-col"
+    data-error=""
   >
     <span>
       <!---->
@@ -12,15 +13,16 @@ exports[`AuthError.svelte > should render error with name 1`] = `
       <!---->
        An error
     </span>
-  </error>
+  </div>
   
 </div>
 `;
 
 exports[`AuthError.svelte > should render error with status & name 1`] = `
 <div>
-  <error
+  <div
     class="flex flex-col"
+    data-error=""
   >
     <span>
       400:
@@ -30,15 +32,16 @@ exports[`AuthError.svelte > should render error with status & name 1`] = `
       <!---->
        An error
     </span>
-  </error>
+  </div>
   
 </div>
 `;
 
 exports[`AuthError.svelte > should render error with status 1`] = `
 <div>
-  <error
+  <div
     class="flex flex-col"
+    data-error=""
   >
     <span>
       400:
@@ -47,15 +50,16 @@ exports[`AuthError.svelte > should render error with status 1`] = `
       <!---->
        An error
     </span>
-  </error>
+  </div>
   
 </div>
 `;
 
 exports[`AuthError.svelte > should render with changes 1`] = `
 <div>
-  <error
+  <div
     class="flex flex-col"
+    data-error=""
   >
     <span>
       <!---->
@@ -63,15 +67,16 @@ exports[`AuthError.svelte > should render with changes 1`] = `
       <!---->
        An error occurred
     </span>
-  </error>
+  </div>
   
 </div>
 `;
 
 exports[`AuthError.svelte > should render with changes 2`] = `
 <div>
-  <error
+  <div
     class="flex flex-col"
+    data-error=""
   >
     <span>
       <!---->
@@ -80,15 +85,16 @@ exports[`AuthError.svelte > should render with changes 2`] = `
       <!---->
        Something else
     </span>
-  </error>
+  </div>
   
 </div>
 `;
 
 exports[`AuthError.svelte > should render with changes 3`] = `
 <div>
-  <error
+  <div
     class="flex flex-col"
+    data-error=""
   >
     <span>
       400:
@@ -98,7 +104,7 @@ exports[`AuthError.svelte > should render with changes 3`] = `
       <!---->
        Another error
     </span>
-  </error>
+  </div>
   
 </div>
 `;

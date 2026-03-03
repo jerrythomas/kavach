@@ -1,3 +1,5 @@
+import { templates } from './templates.js'
+
 function serialize(value, indent = 1) {
 	const pad = '\t'.repeat(indent)
 	const padInner = '\t'.repeat(indent + 1)
@@ -48,25 +50,12 @@ function generateAuth(config) {
 	const { env, logging, rules } = config
 
 	if (config.adapter === 'supabase') {
-		return `import { createKavach } from 'kavach'
-import { getAdapter, getActions, getLogWriter } from '@kavach/adapter-supabase'
-import { getLogger } from '@kavach/logger'
-import { createClient } from '@supabase/supabase-js'
-import { env } from '$env/dynamic/public'
-
-const client = createClient(env.${env.url}, env.${env.anonKey})
-const adapter = getAdapter(client)
-const data = (schema) => getActions(client, schema)
-const writer = getLogWriter({ url: env.${env.url}, anonKey: env.${env.anonKey} }, { table: ${serialize(logging.table)} })
-const logger = getLogger(writer, { level: ${serialize(logging.level)} })
-
-export const kavach = createKavach(adapter, {
-	data,
-	logger,
-	rules: ${serialize(rules)}
-})
-export { adapter, logger }
-`
+		return templates.authSupabase
+			.replaceAll('{{url}}', env.url)
+			.replaceAll('{{anonKey}}', env.anonKey)
+			.replaceAll('{{logTable}}', logging.table)
+			.replaceAll('{{logLevel}}', logging.level)
+			.replaceAll('{{rules}}', serialize(rules))
 	}
 
 	throw new Error(`No auth generator for adapter: ${config.adapter}`)

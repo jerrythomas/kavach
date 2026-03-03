@@ -4,9 +4,32 @@
 
 	import Header from './Header.svelte'
 	import { onMount, setContext } from 'svelte'
-	import { page } from '$app/state'
+	import { page } from '$app/stores'
 
-	export let data
+	let { data, children } = $props()
+
+	let kavach = $state(null)
+	let logger = $state(null)
+
+	// setContext must be called synchronously during component init
+	setContext('kavach', {
+		get signIn() { return kavach?.signIn },
+		get signUp() { return kavach?.signUp },
+		get signOut() { return kavach?.signOut },
+		get onAuthChange() { return kavach?.onAuthChange },
+		get handle() { return kavach?.handle },
+		get actions() { return kavach?.actions },
+		get getCachedLogins() { return kavach?.getCachedLogins },
+		get removeCachedLogin() { return kavach?.removeCachedLogin },
+		get clearCachedLogins() { return kavach?.clearCachedLogins }
+	})
+	setContext('logger', {
+		get getContextLogger() { return logger?.getContextLogger },
+		get info() { return logger?.info },
+		get error() { return logger?.error },
+		get debug() { return logger?.debug },
+		get warn() { return logger?.warn }
+	})
 
 	onMount(async () => {
 		const { loadAdapter } = await import('$lib/adapters')
@@ -15,19 +38,19 @@
 		const { routes } = await import('$lib/routes')
 		const { goto, invalidateAll, invalidate } = await import('$app/navigation')
 
-		const { adapter, data: dataPlugin, logger } = await loadAdapter(data.adapter, appConfig)
-		const kavach = createKavach(adapter, {
+		const { adapter, data: dataPlugin, logger: adapterLogger } = await loadAdapter(data.adapter, appConfig)
+		const instance = createKavach(adapter, {
 			data: dataPlugin,
-			logger,
+			logger: adapterLogger,
 			...routes,
 			goto,
 			invalidate,
 			invalidateAll
 		})
 
-		if (logger) setContext('logger', logger)
-		setContext('kavach', kavach)
-		kavach.onAuthChange($page.url)
+		logger = adapterLogger
+		kavach = instance
+		instance.onAuthChange($page.url)
 	})
 </script>
 
@@ -38,4 +61,4 @@
 	adapters={data.adapters}
 	devMode={data.devMode}
 />
-<slot />
+{@render children()}

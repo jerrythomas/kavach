@@ -9,7 +9,7 @@
 	let { message, name = null, status = null } = $props()
 </script>
 
-<error class="flex flex-col">
+<div data-error class="flex flex-col">
 	<span>
 		{#if status}
 			{status}:
@@ -19,4 +19,4 @@
 		{/if}
 		{message}
 	</span>
-</error>
+</div>

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { buildConfig, PROVIDER_DEFAULTS } from '../src/prompts.js'
+import { PROVIDER_DEFAULTS } from '../src/commands/constants.js'
+import { buildConfig } from '../src/prompts.js'
 
 describe('buildConfig', () => {
 	it('should build config from prompt answers', () => {

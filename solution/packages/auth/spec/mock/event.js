@@ -36,19 +36,21 @@ import { createMockCookies } from './cookies'
 export function createMockRequest(options) {
 	const method = options.method ?? 'GET'
 
-	const formData = () => {
-		if (options.form) {
-			return {
-				entries: vi.fn().mockImplementation(() => Object.entries(options.form))
-			}
-		} else {
-			throw new Error('No Form data')
+	const headers = createMockHeaders({
+		'content-type': options.form ? 'application/x-www-form-urlencoded' : 'application/json',
+		...options.headers
+	})
+
+	const formData = vi.fn().mockImplementation(() => {
+		if (!options.form) throw new Error('No Form data')
+		return {
+			entries: () => Object.entries(options.form)
 		}
-	}
+	})
+
 	const json = vi.fn().mockImplementation(() => {
 		return options.json ?? {}
 	})
-	const headers = createMockHeaders(options.headers)
 
 	return { formData, json, method, headers }
 }

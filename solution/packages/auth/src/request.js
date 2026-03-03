@@ -7,16 +7,14 @@ import { pick } from 'ramda'
  * @returns {Promise<Object>}
  */
 export async function getRequestBody(request) {
-	let body = null
-	try {
-		body = await request.formData()
-		body = Object.fromEntries(body.entries())
-		// eslint-disable-next-line no-unused-vars
-	} catch (err) {
-		body = await request.json()
+	const contentType = request.headers.get('content-type') || ''
+
+	if (contentType.includes('form')) {
+		const body = await request.formData()
+		return Object.fromEntries(body.entries())
 	}
 
-	return body
+	return request.json()
 }
 
 /**

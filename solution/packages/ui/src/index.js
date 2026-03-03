@@ -1,4 +1,5 @@
 export { default as AuthButton } from './AuthButton.svelte'
+export { default as AuthPassword } from './AuthPassword.svelte'
 export { default as AuthProvider } from './AuthProvider.svelte'
 export { default as AuthGroup } from './AuthGroup.svelte'
 export { default as AuthError } from './AuthError.svelte'

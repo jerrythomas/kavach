@@ -29,7 +29,7 @@
 	}
 </script>
 
-<auth-page class="flex flex-col gap-2">
+<div data-auth-page class="flex flex-col gap-2">
 	{#if cachedLogins.length > 0}
 		<LoginCardList logins={cachedLogins} onclick={handleCardClick} onremove={handleRemove} />
 
@@ -44,4 +44,4 @@
 			<AuthProvider {...data} />
 		{/each}
 	{/if}
-</auth-page>
+</div>

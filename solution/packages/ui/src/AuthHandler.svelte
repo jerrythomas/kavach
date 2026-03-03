@@ -13,8 +13,8 @@
 	let { providers } = $props()
 </script>
 
-<auth class="flex flex-col gap-2">
-	<auth-header class="flex flex-col">
+<div data-auth class="flex flex-col gap-2">
+	<div data-auth-header class="flex flex-col">
 		{#if authStatus}
 			{#if authStatus.error}
 				<AuthError {...authStatus.error} />
@@ -22,11 +22,11 @@
 				<AuthResponse {...authStatus} />
 			{/if}
 		{/if}
-	</auth-header>
+	</div>
 
-	<auth-body class="flex flex-col gap-2">
+	<div data-auth-body class="flex flex-col gap-2">
 		{#each providers as data (data.name)}
 			<AuthProvider {...data} on:submit />
 		{/each}
-	</auth-body>
-</auth>
+	</div>
+</div>

@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-export function createMockHeaders(headers) {
+export function createMockHeaders(headers = {}) {
 	return {
 		location: headers?.location ?? '',
 		cookie: headers?.cookie ?? '',

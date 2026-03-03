@@ -7,13 +7,14 @@ export default defineConfig({
 		globals: true,
 		environment: 'jsdom',
 		clearMocks: true,
-		include: ['spec/**/*.{spec,spec.svelte}.[jt]s'],
+		include: ['**/spec/**/*.{spec,spec.svelte}.[jt]s'],
 		exclude: ['**/node_modules/**', '**/dist/**'],
 		coverage: {
+			provider: 'v8',
 			all: true,
 			reporter: ['text', 'html', 'lcov', 'json'],
 			include: ['**/src/**'],
-			exclude: ['**/spec/**', '**/node_modules/**', '**/dist/**', '**/sites/**', '**/fixtures/**']
+			exclude: ['**/spec/**', '**/node_modules/**', '**templates/**','**/dist/**', '**/sites/**', '**/fixtures/**']
 		},
 		projects: [
 			{ extends: true, test: { name: 'auth', root: 'packages/auth' } },

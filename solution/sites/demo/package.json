@@ -44,6 +44,7 @@
     "@kavach/query": "workspace:*",
     "kavach": "workspace:*",
     "@kavach/logger": "workspace:*",
+    "@kavach/cli": "workspace:*",
     "@kavach/ui": "workspace:*",
     "@rokkit/actions": "link:@rokkit/actions",
     "@rokkit/core": "link:@rokkit/core",

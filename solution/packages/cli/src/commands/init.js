@@ -1,194 +1,160 @@
-import { resolve, join } from 'path'
+import { resolve } from 'path'
 import { execSync } from 'child_process'
 import * as p from '@clack/prompts'
 import pc from 'picocolors'
-import { buildConfig, PROVIDER_DEFAULTS } from '../prompts.js'
+import { buildConfig } from '../prompts.js'
 import { parseConfig } from '../config.js'
 import { generateConfigFile, generateAuthPage, generateDataRoute } from '../generators.js'
 import { patchViteConfig, patchHooksServer, patchLayoutServer, patchEnvFile } from '../patchers.js'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
+import { DEPENDENCIES, ADAPTER_DEPS, PROMPT_CONFIG } from './constants.js'
 
-export async function init(cwd = process.cwd()) {
-	p.intro(pc.bgCyan(pc.black(' kavach init ')))
+export class InitCommand {
+	#cwd
+	#pm
+	#config
+	#parsed
 
-	// Check for SvelteKit project
-	if (!fileExists(resolve(cwd, 'svelte.config.js'))) {
-		p.cancel('No svelte.config.js found. Run this from a SvelteKit project root.')
-		process.exit(1)
+	constructor(cwd = process.cwd()) {
+		this.#cwd = cwd
 	}
 
-	// Check if already initialized
-	if (fileExists(resolve(cwd, 'kavach.config.js'))) {
+	async run() {
+		p.intro(pc.bgCyan(pc.black(' kavach init ')))
+
+		this.#validateProject()
+		await this.#checkExisting()
+		await this.#promptAndConfig()
+		this.#pm = detectPackageManager(this.#cwd)
+
+		await this.#writeConfig()
+		await this.#patchVite()
+		await this.#patchHooks()
+		await this.#patchLayout()
+		await this.#generateAuthPage()
+		await this.#generateDataRoute()
+		await this.#patchEnv()
+		await this.#installDependencies()
+
+		p.outro(pc.green('kavach initialized! Run your dev server to get started.'))
+	}
+
+	#validateProject() {
+		if (!fileExists(resolve(this.#cwd, 'svelte.config.js'))) {
+			p.cancel('No svelte.config.js found. Run this from a SvelteKit project root.')
+			process.exit(1)
+		}
+	}
+
+	async #checkExisting() {
+		if (!fileExists(resolve(this.#cwd, 'kavach.config.js'))) return
+
 		const overwrite = await p.confirm({
 			message: 'kavach.config.js already exists. Overwrite?',
 			initialValue: false
 		})
+
 		if (!overwrite || p.isCancel(overwrite)) {
 			p.cancel('Setup cancelled.')
 			process.exit(0)
 		}
 	}
 
-	const answers = await p.group(
-		{
-			adapter: () =>
-				p.select({
-					message: 'Which auth adapter?',
-					options: [{ value: 'supabase', label: 'Supabase' }]
-				}),
-			providers: () =>
-				p.multiselect({
-					message: 'Which auth providers?',
-					options: Object.entries(PROVIDER_DEFAULTS).map(([key, def]) => ({
-						value: key,
-						label: def.label
-					})),
-					required: false
-				}),
-			cachedLogins: () =>
-				p.confirm({
-					message: 'Enable cached logins?',
-					initialValue: false
-				}),
-			logLevel: () =>
-				p.select({
-					message: 'Log level?',
-					options: [
-						{ value: 'error', label: 'error' },
-						{ value: 'warn', label: 'warn' },
-						{ value: 'info', label: 'info' },
-						{ value: 'debug', label: 'debug' },
-						{ value: 'trace', label: 'trace' }
-					],
-					initialValue: 'error'
-				}),
-			logTable: () =>
-				p.text({
-					message: 'Log table name?',
-					placeholder: 'logs',
-					defaultValue: 'logs'
-				}),
-			authRoute: () =>
-				p.text({
-					message: 'Auth route path?',
-					placeholder: '(public)/auth',
-					defaultValue: '(public)/auth'
-				}),
-			dataRoute: () =>
-				p.text({
-					message: 'Data route path?',
-					placeholder: '(server)/data',
-					defaultValue: '(server)/data'
-				}),
-			logoutRoute: () =>
-				p.text({
-					message: 'Logout route path?',
-					placeholder: '/logout',
-					defaultValue: '/logout'
-				})
-		},
-		{
-			onCancel: () => {
-				p.cancel('Setup cancelled.')
-				process.exit(0)
-			}
+	async #promptAndConfig() {
+		const group = PROMPT_CONFIG.reduce((acc, { key, type, getOptions, ...opts }) => {
+			acc[key] = () => p[type]({ ...opts, options: getOptions?.() ?? opts.options })
+			return acc
+		}, {})
+
+		const answers = await p.group(group, {
+			onCancel: () => { p.cancel('Setup cancelled.'); process.exit(0) }
+		})
+
+		this.#config = buildConfig(answers)
+		this.#parsed = parseConfig(this.#config)
+	}
+
+	async #runStep(message, fn) {
+		const s = p.spinner()
+		s.start(message)
+		try {
+			await fn()
+			s.stop(`${message} — done`)
+		} catch (e) {
+			s.stop(`${message} — failed: ${e.message}`)
+			throw e
 		}
-	)
-
-	const config = buildConfig(answers)
-	const parsed = parseConfig(config)
-	const s = p.spinner()
-
-	// 1. Generate kavach.config.js
-	s.start('Writing kavach.config.js')
-	writeFile(resolve(cwd, 'kavach.config.js'), generateConfigFile(config))
-	s.stop('kavach.config.js created')
-
-	// 2. Patch vite.config.js
-	s.start('Patching vite.config.js')
-	const vitePath = resolve(cwd, 'vite.config.js')
-	const viteContent = readFile(vitePath)
-	if (viteContent) {
-		writeFile(vitePath, patchViteConfig(viteContent))
-		s.stop('vite.config.js patched')
-	} else {
-		s.stop('vite.config.js not found — skipped')
 	}
 
-	// 3. Patch hooks.server.js
-	s.start('Patching src/hooks.server.js')
-	const hooksPath = resolve(cwd, 'src/hooks.server.js')
-	const hooksContent = readFile(hooksPath)
-	writeFile(hooksPath, patchHooksServer(hooksContent))
-	s.stop('src/hooks.server.js patched')
-
-	// 4. Patch +layout.server.js
-	s.start('Patching src/routes/+layout.server.js')
-	const layoutServerPath = resolve(cwd, 'src/routes/+layout.server.js')
-	const layoutServerContent = readFile(layoutServerPath)
-	writeFile(layoutServerPath, patchLayoutServer(layoutServerContent))
-	s.stop('src/routes/+layout.server.js patched')
-
-	// 5. Generate auth page
-	const authPagePath = resolve(cwd, 'src/routes', parsed.routes.auth, '+page.svelte')
-	if (!fileExists(authPagePath)) {
-		s.start(`Creating auth page at ${parsed.routes.auth}`)
-		writeFile(authPagePath, generateAuthPage(parsed))
-		s.stop('Auth page created')
-	} else {
-		p.log.info('Auth page already exists — skipped')
+	async #writeConfig() {
+		await this.#runStep('Writing kavach.config.js', () => {
+			writeFile(resolve(this.#cwd, 'kavach.config.js'), generateConfigFile(this.#config))
+		})
 	}
 
-	// 6. Generate data route
-	const dataRoutePath = resolve(cwd, 'src/routes', parsed.routes.data, '[...slug]/+server.js')
-	if (!fileExists(dataRoutePath)) {
-		s.start(`Creating data route at ${parsed.routes.data}`)
-		writeFile(dataRoutePath, generateDataRoute())
-		s.stop('Data route created')
-	} else {
-		p.log.info('Data route already exists — skipped')
+	async #patchVite() {
+		await this.#runStep('Patching vite.config.js', () => {
+			const path = resolve(this.#cwd, 'vite.config.js')
+			const content = readFile(path)
+			if (!content) throw new Error('vite.config.js not found')
+			writeFile(path, patchViteConfig(content))
+		})
 	}
 
-	// 7. Patch .env
-	s.start('Updating .env')
-	const envPath = resolve(cwd, '.env')
-	const envContent = readFile(envPath)
-	writeFile(envPath, patchEnvFile(envContent, parsed.env))
-	s.stop('.env updated')
-
-	// 8. Install dependencies
-	const pm = detectPackageManager(cwd)
-	const deps = ['kavach', '@kavach/ui', '@kavach/query', '@kavach/logger']
-	const adapterDeps =
-		parsed.adapter === 'supabase'
-			? ['@kavach/adapter-supabase', '@supabase/supabase-js']
-			: []
-	const allDeps = [...deps, ...adapterDeps]
-
-	s.start(`Installing dependencies with ${pm}`)
-	try {
-		const installCmd =
-			pm === 'npm'
-				? `npm install ${allDeps.join(' ')}`
-				: `${pm} add ${allDeps.join(' ')}`
-		execSync(installCmd, { cwd, stdio: 'pipe' })
-		s.stop('Dependencies installed')
-	} catch {
-		s.stop(`Failed to install — run: ${pm} add ${allDeps.join(' ')}`)
+	async #patchHooks() {
+		await this.#runStep('Patching src/hooks.server.js', () => {
+			writeFile(resolve(this.#cwd, 'src/hooks.server.js'), patchHooksServer(readFile(resolve(this.#cwd, 'src/hooks.server.js'))))
+		})
 	}
 
-	// 9. Install dev dependency
-	s.start('Installing @kavach/cli as dev dependency')
-	try {
-		const devCmd =
-			pm === 'npm'
-				? 'npm install -D @kavach/cli'
-				: `${pm} add -D @kavach/cli`
-		execSync(devCmd, { cwd, stdio: 'pipe' })
-		s.stop('@kavach/cli installed')
-	} catch {
-		s.stop(`Failed — run: ${pm} add -D @kavach/cli`)
+	async #patchLayout() {
+		await this.#runStep('Patching src/routes/+layout.server.js', () => {
+			writeFile(resolve(this.#cwd, 'src/routes/+layout.server.js'), patchLayoutServer(readFile(resolve(this.#cwd, 'src/routes/+layout.server.js'))))
+		})
 	}
 
-	p.outro(pc.green('kavach initialized! Run your dev server to get started.'))
+	async #generateAuthPage() {
+		const path = resolve(this.#cwd, 'src/routes', this.#parsed.routes.auth, '+page.svelte')
+		if (fileExists(path)) {
+			p.log.info('Auth page already exists — skipped')
+			return
+		}
+		await this.#runStep(`Creating auth page at ${this.#parsed.routes.auth}`, () => {
+			writeFile(path, generateAuthPage(this.#parsed))
+		})
+	}
+
+	async #generateDataRoute() {
+		const path = resolve(this.#cwd, 'src/routes', this.#parsed.routes.data, '[...slug]/+server.js')
+		if (fileExists(path)) {
+			p.log.info('Data route already exists — skipped')
+			return
+		}
+		await this.#runStep(`Creating data route at ${this.#parsed.routes.data}`, () => {
+			writeFile(path, generateDataRoute())
+		})
+	}
+
+	async #patchEnv() {
+		await this.#runStep('Updating .env', () => {
+			writeFile(resolve(this.#cwd, '.env'), patchEnvFile(readFile(resolve(this.#cwd, '.env')), this.#parsed.env))
+		})
+	}
+
+	async #installDependencies() {
+		const deps = [...DEPENDENCIES, ...(ADAPTER_DEPS[this.#parsed.adapter] ?? [])]
+		await this.#runStep(`Installing dependencies with ${this.#pm}`, () => this.#install(deps))
+		await this.#runStep('Installing @kavach/cli as dev dependency', () => this.#install(['@kavach/cli'], true))
+	}
+
+	#install(deps, dev = false) {
+		const cmd = this.#pm === 'bun' ? 'bun add' : 'npm install'
+		const args = [...deps, dev && '--save-dev'].filter(Boolean).join(' ')
+		execSync(`${cmd} ${args}`, { cwd: this.#cwd, stdio: 'pipe' })
+	}
+}
+
+export async function init(cwd) {
+	const cmd = new InitCommand(cwd)
+	await cmd.run()
 }
