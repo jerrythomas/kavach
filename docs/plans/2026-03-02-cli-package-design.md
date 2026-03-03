@@ -28,6 +28,14 @@ export default {
     { mode: 'password', name: 'email', label: 'Sign in using' }
   ],
   cachedLogins: true,
+  logging: {
+    level: 'info',
+    table: 'audit.logs'
+  },
+  env: {
+    url: 'PUBLIC_SUPABASE_URL',
+    anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+  },
   routes: {
     auth: '(public)/auth',
     data: '(server)/data',
@@ -40,6 +48,28 @@ export default {
   ]
 }
 ```
+
+### `logging`
+
+Controls the logger setup in the `$kavach/auth` virtual module.
+
+| Field | Default | Notes |
+|-------|---------|-------|
+| `level` | `'error'` | One of: error, warn, info, debug, trace |
+| `table` | `'logs'` | Supports `schema.table` format (e.g. `'audit.logs'`) |
+
+The Vite plugin generates logger initialization code using these values. At runtime the logger writes to the adapter's log writer (e.g. Supabase table).
+
+### `env`
+
+Maps adapter config keys to environment variable names. Each adapter has sensible defaults.
+
+| Adapter | Key | Default env var |
+|---------|-----|-----------------|
+| supabase | `url` | `PUBLIC_SUPABASE_URL` |
+| supabase | `anonKey` | `PUBLIC_SUPABASE_ANON_KEY` |
+
+The CLI uses `env` to know which vars to append to `.env`. The Vite plugin uses it to generate `import { env } from '$env/dynamic/public'` lookups in `$kavach/auth`.
 
 ## Vite plugin
 
@@ -84,10 +114,12 @@ Interactive setup. Assumes SvelteKit project exists (from `sv create` or similar
 1. Which adapter? (supabase — extensible later)
 2. Which auth providers? (multi-select: Google, GitHub, Azure, Magic Link, Password)
 3. Enable cached logins? (y/n)
-4. Auth route path? (default: `(public)/auth`)
-5. Data route path? (default: `(server)/data`)
-6. Logout route path? (default: `/logout`)
-7. Route protection rules? (default: `/public` public, everything else authenticated)
+4. Log level? (default: `error`)
+5. Log table? (default: `logs`)
+6. Auth route path? (default: `(public)/auth`)
+7. Data route path? (default: `(server)/data`)
+8. Logout route path? (default: `/logout`)
+9. Route protection rules? (default: `/public` public, everything else authenticated)
 
 **Files generated/patched:**
 
