@@ -83,7 +83,7 @@ This serves as both documentation and proof that kavach works end-to-end.
 
 Review and update all files in `docs/`:
 - `docs/design/` — verify against current code
-- `docs/requirements/` — update to match implemented features
+- `docs/scenarios/` — update to match implemented features
 - Remove outdated references to pre-plugin architecture
 
 ### 7. Performance and Security

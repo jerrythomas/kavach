@@ -1,14 +1,16 @@
-# 02 — Route Protection Design
+# Sentry
 
 ## Overview
 
-The Guardian package (`@kavach/guardian`) enforces role-based access control through declarative routing rules evaluated at request time. Routes are protected by default — only explicitly public or role-matched routes are accessible.
+The Sentry package (`@kavach/sentry`) enforces role-based access control through declarative routing rules evaluated at request time. Routes are protected by default — only explicitly public or role-matched routes are accessible.
+
+> Note: Renamed from Guardian to Sentry for clearer naming.
 
 ## Internal Modules
 
 | Module | Purpose |
 |--------|---------|
-| `guardian.js` | Main API — createGuardian, configureRules, protectRoute |
+| `sentry.js` | Main API — createSentry, configureRules, protectRoute |
 | `processor.js` | Rule organization — sort by depth, group by role, encode paths |
 | `validations.js` | Rule validation — redundancy detection, path format checks |
 | `utils.js` | Path matching — depth calculation, prefix matching |
@@ -19,14 +21,14 @@ The Guardian package (`@kavach/guardian`) enforces role-based access control thr
 ### Initialization
 
 ```
-createGuardian(options)
+createSentry(options)
   ├─ configureRules(options, logger)
   │   ├─ processAppRoutes(options.app) → merge with defaults
   │   ├─ addRulesForAppRoutes() → auto-add login/logout/session as public
   │   ├─ validateRoutingRules() → detect errors and warnings
   │   ├─ processRoutingRules() → sort by depth, URL-encode paths
   │   └─ organizeRulesByRole() → separate public vs protected by role
-  └─ Returns: Guardian { app, setSession, protect }
+  └─ Returns: Sentry { app, setSession, protect }
 ```
 
 ### Route Matching Algorithm
@@ -75,7 +77,7 @@ After initialization, rules are organized into:
 }
 ```
 
-When `setSession(session)` is called, the guardian recalculates:
+When `setSession(session)` is called, sentry recalculates:
 
 ```
 sessionConfig = {
@@ -122,3 +124,16 @@ Validation issues are logged but don't prevent startup. Errors are surfaced thro
 | Immutable rule reconfiguration | `setSession()` creates new route lists rather than mutating; thread-safe |
 | Fail-secure default | Unmatched paths are denied; only explicit rules grant access |
 | Endpoint vs page distinction | API routes get status codes (for programmatic clients); pages get redirects (for browsers) |
+
+## Implementation Checklist
+
+- [ ] Rename package from `@kavach/guardian` to `@kavach/sentry`
+- [ ] Update all imports in `kavach` package
+- [ ] Update CLI code generation templates
+- [ ] Update documentation references
+- [ ] Run tests to ensure no regressions
+
+## Dependencies
+
+- `@kavach/logger` — structured logging
+- `ramda` — functional utilities

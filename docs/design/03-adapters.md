@@ -1,207 +1,94 @@
 # Adapters
 
-Module design for auth adapters — the integration layer between kavach and backend auth providers.
+Auth adapters are platform-specific implementations that wrap external auth SDKs behind a unified interface. They enable Kavach to be platform-agnostic while maintaining a consistent API for applications.
 
-## Plugin Pattern
+## BaseAdapter Pattern
 
-All adapters export `getAdapter(client)` accepting a pre-created SDK client and returning the `AuthAdapter` interface. The consumer creates and configures the SDK client externally. The adapter wraps it with kavach's auth contract.
+Every adapter extends `BaseAdapter` from the core `kavach` package:
 
-**Exception:** Amplify v6 uses module-level global configuration — `getAdapter()` takes no arguments.
+- **Response normalization** — `transformResult()` converts platform-specific responses to `AuthResult`
+- **Subscription handling** — `handleSubscription()` wraps platform auth change listeners
+- **Client/options wiring** — Standard constructor signature
 
-### AuthAdapter Interface
+## Core Interface
 
-```js
-{
-  signIn,        // (credentials: AuthCredentials) => Promise<AuthResult>
-  signUp,        // (credentials: PasswordCredentials) => Promise<AuthResult>
-  signOut,       // () => Promise<void>
-  synchronize,   // (session: AuthSession) => Promise<AuthResult>
-  onAuthChange,  // (callback: AuthCallback) => void
-  parseUrlError  // (url: Object) => AuthResult
-}
-```
+All adapters must implement:
 
-### AuthResult
+- `signIn(credentials)` — Authenticate user with provided credentials
+- `signUp(credentials)` — Create a new user account
+- `signOut()` — End the current session
+- `synchronize(session)` — Refresh tokens and update session
+- `onAuthChange(callback)` — Listen for auth state changes
+- `parseUrlError(url)` — Extract errors from OAuth redirect URLs
 
-All SDK responses normalize to:
-```js
-{ data: { user, session }, error: null }   // success
-{ data: null, error: { message, code } }   // failure
-```
+### Auth
 
-Each adapter implements a `transformResult` function mapping SDK-specific responses/errors to this shape.
+Every adapter provides user authentication via OAuth, password, magic link, or phone/OTP flows. This is the core capability that all adapters implement.
 
-### Auth Mode Routing
+### Data Layer
 
-`signIn(credentials)` inspects credentials to determine the auth mode:
+Supabase and Firebase provide built-in database services. Kavach exposes a unified Data API across these platforms, enabling quick data access without writing custom backend APIs. The Data API supports CRUD operations with filter parsing via `@kavach/query`.
 
-| Condition | Mode |
-|-----------|------|
-| `credentials.provider` | OAuth |
-| `credentials.email && !credentials.password` | Magic link / OTP |
-| `credentials.email && credentials.password` | Password |
+Typical UI projects often need quick data access for demos, prototypes, or admin panels. Instead of building custom APIs, apps can leverage Kavach's Data API for table-level access.
 
-## Supabase Adapter (reference)
+### File Layer
 
-**Status:** Complete. Plugin pattern, comprehensive tests.
+Supabase and Firebase offer object storage. Kavach provides a unified File API for upload, download, and delete operations. This enables handling user uploads, avatars, and document storage without platform-specific code.
 
-**SDK:** `@supabase/supabase-js`
+### Logging Layer
 
-```js
-import { createClient } from '@supabase/supabase-js'
-import { getAdapter } from '@kavach/adapter-supabase'
-const client = createClient(url, anonKey)
-const adapter = getAdapter(client)
-```
+Client-side console logs are not available on the server, making it difficult for support teams to debug issues reported by users. Kavach's Logging Layer solves this by supporting different writers:
 
-## Convex Adapter (reference)
+- **Console writer** — Development logging
+- **HTTP writer** — Send logs to any backend endpoint
+- **Supabase writer** — Write structured logs to a database table
 
-**Status:** Complete. Plugin pattern, 15 tests.
+Apps can configure how UI logs are processed. Logs can be sent to a backend endpoint for real-time debugging without requiring users to reproduce the issue. The Supabase writer writes directly to a database table for persistent log storage.
 
-**SDK:** `@convex-dev/auth` (convexAuth instance)
+## Supported Adapters
 
-```js
-import { getAdapter } from '@kavach/adapter-convex'
-const adapter = getAdapter(convexAuth)
-```
+### Capabilities
 
-## Firebase Adapter
+All adapters provide authentication as the primary capability. Beyond auth, Kavach offers optional layers for data, files, and logging that leverage the underlying platform's built-in services.
 
-**SDK:** `firebase` v10 (modular, tree-shakeable). Replaces old `@firebase/app` + `@firebase/auth`.
+| Provider | Auth | Data | File | Logger |
+|----------|:----:|:----:|:----:|:------:|
+| Supabase | ✓ | ✓ | ✓ | ✓ |
+| Firebase | ✓ | ✓ | ✓ | TODO |
+| Auth0 | ✓ | -NA- | -NA- | -NA- |
+| Amplify | ✓ | -NA- | -NA- | -NA- |
+| Convex | ✓ | TODO | -NA- | -NA- |
 
-**Consumer wiring:**
-```js
-import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getAdapter } from '@kavach/adapter-firebase'
+### Auth Flows
 
-const app = initializeApp(config)
-const auth = getAuth(app)
-const adapter = getAdapter(auth)
-```
+| Provider | OAuth | Password | Passwordless | Passkey |
+|----------|:-----:|:--------:|:-----------:|:-------:|
+| Supabase | ✓ | ✓ | ✓ | -NA- |
+| Firebase | ✓ | ✓ | -NA- | -NA- |
+| Auth0 | ✓ | ✓ | ✓ | -NA- |
+| Amplify | ✓ | ✓ | -NA- | -NA- |
+| Convex | ✓ | ✓ | -NA- | -NA- |
 
-**`getAdapter(auth)`** accepts a Firebase `Auth` instance. Imports modular functions:
+## Demo Mode
 
-```js
-import {
-  signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  signInWithPopup, GoogleAuthProvider, GithubAuthProvider,
-  sendSignInLinkToEmail, signOut, onAuthStateChanged
-} from 'firebase/auth'
-```
+The CLI can generate a virtual `$kavach/auth` module that supports runtime adapter switching for testing.
 
-**Auth modes:**
+## Dependencies
 
-| Mode | SDK call |
-|------|----------|
-| Password | `signInWithEmailAndPassword(auth, email, password)` |
-| OAuth | `signInWithPopup(auth, new Provider())` |
-| Magic link | `sendSignInLinkToEmail(auth, email, settings)` |
+- `kavach` — Core types and BaseAdapter
+- Platform SDK — Each adapter depends on its respective SDK
 
-**OAuth provider map:**
-```js
-const providers = { google: GoogleAuthProvider, github: GithubAuthProvider, ... }
-```
+## Design Decisions
 
-**`synchronize`:** Returns current user state from `auth.currentUser`.
+1. **Class-based adapters** — Enable extension, testing, and consistent instantiation
+2. **Factory functions** — `getAdapter()` exports for backward compatibility
+3. **Fail-secure** — Unknown platforms or errors default to auth failure
 
-**`onAuthChange`:** `onAuthStateChanged(auth, callback)` — native support.
+## References
 
-**`signUp`:** `createUserWithEmailAndPassword(auth, email, password)`
-
-## Auth0 Adapter
-
-**SDK:** `@auth0/auth0-spa-js` — current, no version upgrade needed.
-
-**Consumer wiring:**
-```js
-import { createAuth0Client } from '@auth0/auth0-spa-js'
-import { getAdapter } from '@kavach/adapter-auth0'
-
-const auth0 = await createAuth0Client({ domain, clientId })
-const adapter = getAdapter(auth0)  // synchronous
-```
-
-**`getAdapter(client)`** accepts an Auth0Client instance. Synchronous (async client creation is the consumer's responsibility).
-
-**Auth modes:**
-
-| Mode | SDK call |
-|------|----------|
-| Password | `client.loginWithRedirect({ authorizationParams: { connection: 'Username-Password-Authentication' } })` |
-| OAuth | `client.loginWithRedirect({ authorizationParams: { connection: provider } })` |
-| Magic link | `client.loginWithRedirect({ authorizationParams: { connection: 'email' } })` |
-
-**Note:** Auth0 SPA SDK is redirect-based for all flows. `signIn` returns `{ data: null, error: null }` before redirect. Auth result comes back via callback handling.
-
-**`signUp`:** `client.loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } })`
-
-**`synchronize`:** `client.getTokenSilently()` + `client.getUser()` to restore session.
-
-**`onAuthChange`:** No-op — Auth0 SPA SDK has no native auth state listener.
-
-**`parseUrlError`:** Parse `error` and `error_description` from URL query params.
-
-## Amplify Adapter
-
-**SDK:** `aws-amplify` v6 (modular imports from `aws-amplify/auth`). Replaces v5 style.
-
-**Consumer wiring:**
-```js
-import { Amplify } from 'aws-amplify'
-import { getAdapter } from '@kavach/adapter-amplify'
-
-Amplify.configure({ Auth: { Cognito: { userPoolId, userPoolClientId } } })
-const adapter = getAdapter()  // no client param — uses global config
-```
-
-**`getAdapter()`** — no client parameter. Amplify v6 uses module-level config. Imports modular functions:
-
-```js
-import {
-  signIn, signUp, signOut, fetchAuthSession,
-  signInWithRedirect
-} from 'aws-amplify/auth'
-import { Hub } from 'aws-amplify/utils'
-```
-
-**Auth modes:**
-
-| Mode | SDK call |
-|------|----------|
-| Password | `signIn({ username: email, password })` |
-| OAuth | `signInWithRedirect({ provider })` |
-| Magic link | `signIn({ username: email, options: { authFlowType: 'USER_AUTH' } })` |
-
-**`synchronize`:** `fetchAuthSession()` to get current tokens/session.
-
-**`onAuthChange`:** `Hub.listen('auth', callback)` — real event support in v6.
-
-**`parseUrlError`:** Parse Cognito error codes from URL hash/query after OAuth redirect.
-
-## Testing
-
-Mock SDK client per adapter, verify correct SDK methods called with correct args.
-
-**Structure:**
-```
-adapters/<name>/spec/
-├── adapter.spec.js    # contract + auth mode tests
-└── mock.js            # mock SDK client/module factory
-```
-
-**Coverage (~15-20 tests each):**
-- Adapter shape — returns all 6 AuthAdapter methods
-- `signIn` — password, OAuth, magic link modes
-- `signUp` — creates account, returns AuthResult
-- `signOut` — calls SDK signOut
-- `synchronize` — returns session state
-- `onAuthChange` — registers callback or no-op
-- `parseUrlError` — extracts error from URL
-- Error handling — SDK errors → `{ data: null, error }` AuthResult
-
-## Deferred
-
-- Phone OTP and anonymous auth (Firebase/Amplify)
-- Integration tests with real backends/emulators
-- Adapter capability detection (`adapter.supports('passkey')`)
+- [Supabase JS](https://supabase.com/docs/reference/javascript)
+- [Firebase Auth](https://firebase.google.com/docs/auth)
+- [Auth0 SPA SDK](https://auth0.github.io/auth0-spa-js)
+- [AWS Amplify](https://docs.amplify.aws/javascript/)
+- [Convex](https://docs.convex.dev/)
+- [@convex-dev/auth](https://docs.convex.dev/auth)

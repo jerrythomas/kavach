@@ -1,4 +1,4 @@
-# 01 — Core Authentication Design
+# Core Authentication
 
 ## Overview
 
@@ -25,12 +25,12 @@ The `kavach` package (`@kavach/auth`) orchestrates authentication through adapte
 
 ```
 createKavach(adapter, options)
-  ├─ getAgents(options) → { logger, guardian, invalidateAll }
+  ├─ getAgents(options) → { logger, sentry, invalidateAll }
   ├─ Subscribe to page changes (browser only)
   └─ Return public API: { signIn, signUp, signOut, handle, getCachedLogins, ... }
 ```
 
-Guardian and logger are created once at initialization. The adapter is passed through to every operation but never stored globally — each function receives it explicitly.
+Sentry and logger are created once at initialization. The adapter is passed through to every operation but never stored globally — each function receives it explicitly.
 
 ### Authentication Flow
 
@@ -51,13 +51,13 @@ The `handle()` method plugs into `hooks.server.js` and runs on every server requ
 ```
 handle({ event, resolve })
   1. Parse session from cookies → event.locals.session
-  2. guardian.setSession(session) → recalculate allowed routes
+  2. sentry.setSession(session) → recalculate allowed routes
   3. If session endpoint (e.g., /auth/session):
      ├─ adapter.synchronize(session) → refresh tokens
      ├─ Set updated cookies
      └─ Return session JSON
   4. Else:
-     ├─ guardian.protect(path) → { status, redirect? }
+     ├─ sentry.protect(path) → { status, redirect? }
      ├─ 200 → resolve(event)
      ├─ 302 → redirect response
      └─ 401/403 → error response
@@ -83,7 +83,7 @@ Session shape in cookies (httpOnly, secure, sameSite=strict):
 Browser-only module (`loginCache.js`) using localStorage under `kavach:logins`.
 
 - **Max entries:** 5 (oldest evicted by `lastLogin` timestamp)
-- **Deduplication:** case-insensitive email matching
+- **Deduplication:** case-insensitive email matching, bundle multiple auth flows for same email into single card and use the latest.
 - **Automatic:** cache updated after successful signIn and onAuthChange events
 - **Server:** all operations no-op on server (SSR safe)
 
@@ -108,6 +108,6 @@ UI components subscribe to this store for reactive feedback. Updated after every
 |----------|-----------|
 | Stateless cookies over server sessions | No server state to manage; scales horizontally; works with SvelteKit's edge-first model |
 | Adapter receives credentials as-is | No credential transformation — preserves provider-specific options without kavach needing to know about them |
-| Guardian + logger created once at init | Avoid per-request allocation; configuration doesn't change between requests |
+| Sentry + logger created once at init | Avoid per-request allocation; configuration doesn't change between requests |
 | Login cache in localStorage | Survives page refreshes; no server round-trip; private to the browser |
 | `invalidateAll()` after auth change | SvelteKit's load functions re-run, ensuring all server data reflects the new session |

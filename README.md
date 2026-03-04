@@ -2,16 +2,6 @@
 
 > Authentication made simple with Kavach
 
-Kavach is a powerful Svelte library that helps simplify the process of implementing authentication in your Svelte-Kit app. With support for social authentication, email/password authentication, and magic link authentication, Kavach has you covered no matter how you want to authenticate your users.
-
-In addition to its robust authentication features, Kavach also provides a customizable set of components to help you build a wide variety of responsive UI for your authentication flow. This makes it easy to create a seamless and intuitive experience for your users, no matter what devices they are using.
-
-Furthermore, Kavach is fully themeable and supports a variety of design styles, so it can fit seamlessly into any application's design system and theme. Whether you want a sleek and modern look or a more traditional and classic feel, Kavach has the tools and customization options you need.
-
-Kavach also provides support for role-based route protection. This allows you to ensure that only users with the appropriate permissions can access certain routes or pages in your application.
-
-Kavach currently supports using Supabase for authentication and also includes support for row-level security. This allows you to implement fine-grained controls over which users have access to which data within your application. Support for Firebase, Auth0, and AWS Cognito is coming soon, so you'll have even more options for secure and reliable authentication in your app.
-
 [![Maintainability][maintainability_badge]][maintainability_url]
 [![Test Coverage][coverage_badge]][coverage_url]
 ![GitHub Workflow Status][workflow_status_url]
@@ -19,30 +9,104 @@ Kavach currently supports using Supabase for authentication and also includes su
 
 ![kavach](kavach.svg)
 
-## Try It out
+## What
 
-If you're interested in trying out Kavach for yourself, you can visit the official website at [Kavach](https://kavach.vercel.app). There, you'll find detailed documentation and guides to help you get started with the library, as well as a live demo that you can play around with to see how Kavach works in action. Whether you're a seasoned developer or just getting started with Svelte-Kit, Kavach is a powerful and easy-to-use library that can help you add secure and reliable authentication to your app in no time. So, give it a try and see how it can simplify the process of adding authentication to your Svelte-Kit app.
+Kavach is a drop-in authentication framework for SvelteKit. It provides:
 
-## Libraries
+- A unified API across multiple auth platforms
+- Declarative route protection
+- Pre-built UI components
 
-- [@kavach/logger](packages/logger/README.md)
-- [@kavach/svelte](packages/svelte/README.md)
-- [@kavach/adapter-supabase](adapters/supabase/README.md)
+So you can add secure authentication to your app in minutes, not days.
 
-## Getting started
+## Why
+
+- **Platform-agnostic** — Switch between Supabase, Firebase, Auth0, Amplify, or Convex by swapping one adapter
+- **Declarative route protection** — Define rules once; no scattered `if (!user)` checks
+- **Type-safe** — Full TypeScript support with centralized types
+- **Server + Client** — Unified session management across browser and server
+
+## Quick Start
 
 ```bash
-sv create
-npx @kavach/cli init
+# Create a SvelteKit project
+sv create my-app
+cd my-app
+
+# Follow the guided prompts to add Kavach to your project
+bunx @kavach/cli init
+bun run dev
 ```
 
-### UnoCSS
+## Supported Adapters
 
-This library uses UnoCSS and the components will not render properly if the required classes are not included in the final bundle.
+| Provider | Adapter Package | Capabilities | Status |
+|----------|----------------|-------------|--------|
+| Supabase | `@kavach/adapter-supabase` | Auth, Data, Storage, Logging | ✓ |
+| Firebase | `@kavach/adapter-firebase` | Auth | ✓ |
+| Auth0 | `@kavach/adapter-auth0` | Auth | ✓ |
+| AWS Amplify | `@kavach/adapter-amplify` | Auth | ✓ |
+| Convex | `@kavach/adapter-convex` | Auth | ✓ |
+
+## To Do
+
+- [ ] Data, Storage & Logging to convex and Firebase
+- [ ] External storage providers
+- [ ] External logger api
+- [ ] External data api
+- [ ] Mix and match Auth, Data, Storage & Logging (ex Amplify + S3 + Custom Backend)
+
+## Packages
+
+### Core
+
+- [`kavach`](solution/packages/kavach) — Core auth: session management, credential flows, SvelteKit hooks
+- [`@kavach/sentry`](solution/packages/sentry) — Role-based route protection (RBAC)
+
+### CLI & Vite
+
+- [`@kavach/cli`](solution/packages/cli) — CLI for scaffolding Kavach into SvelteKit projects
+- [`@kavach/vite`](solution/packages/vite) — Vite plugin for code generation
+
+### Utilities
+
+- [`@kavach/logger`](solution/packages/logger) — Structured context-scoped logging
+- [`@kavach/cookie`](solution/packages/cookie) — Cookie serialize/deserialize (ESM fork of jshttp/cookie)
+- [`@kavach/hashing`](solution/packages/hashing) — MD5 hashing for Gravatar
+- [`@kavach/query`](solution/packages/query) — Adapter-agnostic query filter parser
+
+### UI
+
+- [`@kavach/ui`](solution/packages/ui) — Pre-built auth components, cached logins, smart layout
+
+### Adapters
+
+- [`@kavach/adapter-supabase`](solution/adapters/supabase) — Supabase authentication and data operations
+- [`@kavach/adapter-firebase`](solution/adapters/firebase) — Firebase authentication
+- [`@kavach/adapter-auth0`](solution/adapters/auth0) — Auth0 authentication
+- [`@kavach/adapter-amplify`](solution/adapters/amplify) — AWS Amplify authentication
+- [`@kavach/adapter-convex`](solution/adapters/convex) — Convex authentication
 
 ## Route Configuration
 
-Configurations are managed in kavach.config.js. Kavach assumes that all routes are private by default. Public routes need to be listed so that they can be accessed without logging in.
+Routes are protected by default. Configure public routes in `kavach.config.js`:
+
+```js
+export default {
+  routes: {
+    public: ['/login', '/register'],
+    roles: {
+      admin: { home: '/admin' },
+      user: { home: '/dashboard' }
+    }
+  }
+}
+```
+
+## Learn More
+
+- [Documentation](docs/README.md)
+- [Kavach Website](https://kavach.vercel.app)
 
 ## License
 
