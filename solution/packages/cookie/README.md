@@ -202,7 +202,7 @@ http.createServer(onRequest).listen(3000)
 ## Testing
 
 ```sh
-pnpm test
+bun test
 ```
 
 ## References

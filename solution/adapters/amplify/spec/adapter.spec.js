@@ -22,7 +22,7 @@ vi.mock('aws-amplify/utils', () => ({
 	Hub: { listen: (...args) => mockHubListen(...args) }
 }))
 
-import { getAdapter, transformResult, getAuthMode, parseUrlError } from '../src/adapter.js'
+import { getAdapter, transformResult, getAuthMode, parseUrlError, AmplifyAuthAdapter } from '../src/adapter.js'
 
 describe('getAdapter', () => {
 	let adapter
@@ -54,15 +54,14 @@ describe('getAdapter', () => {
 		adapter = getAdapter()
 	})
 
-	it('should return an adapter with all 6 AuthAdapter methods', () => {
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function)
-		})
+	it('should return an instance of AmplifyAuthAdapter with all methods', () => {
+		expect(adapter).toBeInstanceOf(AmplifyAuthAdapter)
+		expect(adapter.signIn).toBeInstanceOf(Function)
+		expect(adapter.signUp).toBeInstanceOf(Function)
+		expect(adapter.signOut).toBeInstanceOf(Function)
+		expect(adapter.synchronize).toBeInstanceOf(Function)
+		expect(adapter.onAuthChange).toBeInstanceOf(Function)
+		expect(adapter.parseUrlError).toBeInstanceOf(Function)
 	})
 
 	it('should take no arguments (no client parameter)', () => {

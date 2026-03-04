@@ -9,7 +9,7 @@ import {
 	mockSignOut,
 	mockOnAuthStateChanged
 } from './mock.js'
-import { getAdapter, getAuthMode, transformResult } from '../src/adapter.js'
+import { FirebaseAuthAdapter, getAdapter, getAuthMode, transformResult } from '../src/adapter.js'
 
 describe('getAdapter', () => {
 	let mockAuth
@@ -21,16 +21,16 @@ describe('getAdapter', () => {
 		adapter = getAdapter(mockAuth)
 	})
 
-	it('should return an adapter with all AuthAdapter methods and capabilities', () => {
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function),
-			capabilities: ['passkey']
-		})
+	it('should return an instance of FirebaseAuthAdapter with all methods', () => {
+		expect(adapter).toBeInstanceOf(FirebaseAuthAdapter)
+		expect(adapter.signIn).toBeInstanceOf(Function)
+		expect(adapter.signUp).toBeInstanceOf(Function)
+		expect(adapter.signOut).toBeInstanceOf(Function)
+		expect(adapter.synchronize).toBeInstanceOf(Function)
+		expect(adapter.onAuthChange).toBeInstanceOf(Function)
+		expect(adapter.parseUrlError).toBeInstanceOf(Function)
+		expect(adapter.capabilities).toBeInstanceOf(Array)
+		expect(adapter.capabilities).toContain('passkey')
 	})
 
 	it('should declare passkey in capabilities', () => {

@@ -30,7 +30,7 @@ Explore various demo pages to see Kavach in action. Understand how to set up pro
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've created a project and installed dependencies with `npm install` (or `bun install` or `yarn`), start a development server:
 
 ```bash
 npm run dev

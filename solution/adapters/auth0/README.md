@@ -5,5 +5,5 @@ Adapter for using auth0 with kavach
 ## Usage
 
 ```bash
-pnpm add kavach @kavach/adapter-auth0
+bun add kavach @kavach/adapter-auth0
 ```

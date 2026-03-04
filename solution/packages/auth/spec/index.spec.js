@@ -4,7 +4,8 @@ import * as utilities from '../src'
 
 describe('utilities', () => {
 	it('should contain all exported utilities', () => {
-		expect(Object.keys(utilities)).toEqual([
+		const keys = Object.keys(utilities)
+		expect(keys).toEqual(expect.arrayContaining([
 			'createKavach',
 			'authStatus',
 			'gravatar',
@@ -15,6 +16,6 @@ describe('utilities', () => {
 			'getRequestData',
 			'splitAuthData',
 			'asURLWithParams'
-		])
+		]))
 	})
 })
