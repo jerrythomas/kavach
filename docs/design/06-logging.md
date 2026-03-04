@@ -1,16 +1,6 @@
-# 06 — Logging Design
-
-## Overview
+# Logging
 
 The logger package (`@kavach/logger`) provides structured, context-scoped logging with pluggable writers. It separates log creation from log output — the logger builds structured data, the writer decides where it goes.
-
-## Internal Modules
-
-| Module | Purpose |
-|--------|---------|
-| `logger.js` | Logger factory, context scoping, level filtering, log dispatch |
-| `constants.js` | Log level definitions, numeric hierarchy, zeroLogger |
-| `types.js` | JSDoc type definitions |
 
 ## Architecture
 

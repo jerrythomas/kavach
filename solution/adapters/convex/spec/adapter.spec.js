@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { getAdapter, transformResult } from '../src/adapter.js'
+import { getAdapter, transformResult, ConvexAuthAdapter } from '../src/adapter.js'
 import { createMockConvexAuth } from './mock.js'
 
 describe('getAdapter', () => {
@@ -11,13 +11,12 @@ describe('getAdapter', () => {
 
 	it('should create an adapter with auth functions', () => {
 		const adapter = getAdapter(mockAuth)
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function)
-		})
+		expect(adapter).toBeInstanceOf(ConvexAuthAdapter)
+		expect(adapter.signIn).toBeInstanceOf(Function)
+		expect(adapter.signUp).toBeInstanceOf(Function)
+		expect(adapter.signOut).toBeInstanceOf(Function)
+		expect(adapter.synchronize).toBeInstanceOf(Function)
+		expect(adapter.onAuthChange).toBeInstanceOf(Function)
 	})
 
 	describe('signIn', () => {

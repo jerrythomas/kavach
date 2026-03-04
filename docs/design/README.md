@@ -1,56 +1,128 @@
-# Design
+# Architecture Overview
 
-Module-level design documents — the **how** and **why**.
+Kavach is organized into core packages, utilities, and platform-specific adapters. The architecture separates authentication logic from platform implementations, allowing you to switch auth platforms without changing application code.
 
-Written for human audience. Each module gets a numbered file describing the design approach, patterns used, and reasoning. Numbered 1:1 with [requirements](../requirements/).
+## How Auth Works
 
-## Modules
+The authentication flow starts when a user enters credentials in the browser. The adapter normalizes these credentials for the specific platform SDK, handles the response, and synchronizes the session between client and server using httpOnly cookies.
 
-| # | Module | Description | Status |
-|---|--------|-------------|--------|
-| 01 | [Auth](01-auth.md) | Core auth orchestration — createKavach, session cookies, SvelteKit hook | Current |
-| 02 | [Route Protection](02-route-protection.md) | Guardian — depth-first matching, role grouping, fail-secure | Current |
-| 03 | [Adapters](03-adapters.md) | Adapter plugin pattern, per-provider specs, auth mode routing | Current |
-| 04 | [Query](04-query.md) | Filter parsing pipeline, two-tier operators, IR structure | Current |
-| 05 | [UI](05-ui.md) | Svelte components — cached logins, smart layout, passkey contract | Current |
-| 06 | [Logging](06-logging.md) | Context-scoped logging, writer abstraction, zero-cost filtering | Current |
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    participant SvelteKit
+    participant Adapter
+    participant Platform
 
-## Common Patterns & Guidelines
+    User->>Browser: Enter credentials
+    Browser->>Adapter: signIn(credentials)
+    Adapter->>Platform: Platform SDK signIn
+    Platform-->>Adapter: AuthResult
+    Adapter-->>Browser: AuthResult
+    
+    Note over Browser: Update authStatus store
+    Note over Browser: Cache login
+    
+    Browser->>SvelteKit: POST /auth/session
+    SvelteKit->>Adapter: synchronize(session)
+    Adapter-->>SvelteKit: Updated session
+    
+    Note over SvelteKit: Set httpOnly cookie
+    SvelteKit-->>Browser: Session JSON
+    
+    Note over Browser,Platform: onAuthChange listener active
+```
 
-Established patterns used across the project. Check here before implementing to ensure consistency. Update when new reusable patterns emerge.
+## Module Interactions
+
+The UI components interact with the core auth module, which delegates to adapters. The SvelteKit handle hook integrates with sentry for route protection on every request.
+
+```mermaid
+flowchart TB
+    subgraph Client["Browser"]
+        UI["@kavach/ui"]
+        Store["authStatus store"]
+        Cache["Login Cache"]
+    end
+    
+    subgraph Core["kavach"]
+        Auth["Auth Module"]
+        Hook["handle() hook"]
+    end
+    
+    subgraph Sentry["@kavach/sentry"]
+        Protect["Route Protection"]
+    end
+    
+    subgraph Adapters["Adapters"]
+        Base["BaseAdapter"]
+        Supabase["Supabase"]
+        Firebase["Firebase"]
+        Auth0["Auth0"]
+    end
+    
+    UI --> Auth
+    Store --> Auth
+    Cache --> Auth
+    Auth --> Hook
+    Hook --> Protect
+    
+    Auth --> Base
+    Base --> Supabase
+    Base --> Firebase
+    Base --> Auth0
+```
+
+## Common Patterns
 
 ### Adapter Pattern
-**When:** Integrating an external service (auth provider, log output, data backend).
-**Pattern:** Define an interface. Consumer creates the SDK client. Adapter wraps it. No global state.
-**Used in:** Auth adapters, log writers
+
+The adapter pattern provides a unified interface across different auth platforms. Each adapter wraps a platform-specific SDK.
+
+**Attributes**
+- `client` — The platform SDK instance
+- `options` — Configuration options for the adapter
+
+**Methods**
+- `signIn(credentials)` — Authenticate user with provided credentials
+- `signUp(credentials)` — Create a new user account
+- `signOut()` — End the current session
+- `synchronize(session)` — Refresh tokens and update session
+- `onAuthChange(callback)` — Listen for auth state changes
+- `parseUrlError(url)` — Extract errors from OAuth redirect URLs
+
+**Types**
+- `AuthCredentials` — Input for signIn/signUp: provider (OAuth provider name), email, password, redirectTo, scopes
+- `AuthResult` — Response envelope: type (success/error/info), message, data, error
+- `AuthSession` — Session data: user, access_token, refresh_token, expires_in
+- `AuthUser` — User identity: id, role, email, name
+
+**Purpose**
+Allows Kavach to work with any auth platform by normalizing the interface. Applications call `kavach.signIn()` without knowing which platform is configured.
 
 ### Result Normalization
-**When:** Wrapping SDK calls that return different shapes.
-**Pattern:** `transformResult()` maps provider responses to `{ data, error }` or `AuthResult`.
-**Used in:** All auth adapters
+
+Maps platform-specific responses to a consistent format.
+
+**Purpose**
+Converts SDK-specific success/error shapes into `{ type, message, data, error }` so application code handles errors uniformly.
 
 ### Context Scoping
-**When:** Logging or tracing needs to carry identity through call chains.
-**Pattern:** Create scoped child instances via `getContextLogger(context)`. Children inherit + extend parent context. Parent is never mutated.
-**Used in:** Logger, auth orchestration
+
+Creates child loggers with additional context.
+
+**Purpose**
+Enables tracing auth operations through call chains by attaching package, module, and method context to log entries.
 
 ### Zero/No-op Defaults
-**When:** A dependency is optional (logger, cache, etc.).
-**Pattern:** Provide a no-op implementation (e.g., `zeroLogger`) so consumers don't need null checks.
-**Used in:** Logger (zeroLogger), login cache (server no-ops)
+
+Provides no-op implementations for optional dependencies.
+
+**Purpose**
+Eliminates null checks in consumer code when optional features like logging are not configured.
 
 ## References
 
-| Reference | URL | Notes |
-|-----------|-----|-------|
-| SvelteKit Hooks | https://svelte.dev/docs/kit/hooks | handle() integration point |
-| PostgREST Operators | https://postgrest.org/en/stable/references/api/tables_views.html | Filter syntax inspiration |
-| Supabase JS | https://supabase.com/docs/reference/javascript | Reference adapter SDK |
-
-## Conventions
-
-- One file per module: `NNN-<module>.md`
-- Numbering aligns 1:1 with requirements (e.g., `01-auth` in both)
-- Focus on **how** it's built and **why** those choices were made
-- Describe patterns and approaches in prose — code only as illustration
-- Update when implementation changes the module's design
+- [SvelteKit Hooks](https://svelte.dev/docs/kit/hooks)
+- [PostgREST Operators](https://postgrest.org/en/stable/references/api/tables_views.html)
+- [Supabase JS](https://supabase.com/docs/reference/javascript)

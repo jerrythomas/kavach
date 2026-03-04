@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { createMockAuth0Client } from './mock.js'
-import { getAdapter, transformResult, getAuthMode, parseUrlError } from '../src/adapter.js'
+import { getAdapter, transformResult, getAuthMode, parseUrlError, Auth0AuthAdapter } from '../src/adapter.js'
 
 describe('getAdapter', () => {
 	let mockClient
@@ -11,15 +11,14 @@ describe('getAdapter', () => {
 		adapter = getAdapter(mockClient)
 	})
 
-	it('should return an adapter with all 6 AuthAdapter methods', () => {
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function)
-		})
+	it('should return an instance of Auth0AuthAdapter with all methods', () => {
+		expect(adapter).toBeInstanceOf(Auth0AuthAdapter)
+		expect(adapter.signIn).toBeInstanceOf(Function)
+		expect(adapter.signUp).toBeInstanceOf(Function)
+		expect(adapter.signOut).toBeInstanceOf(Function)
+		expect(adapter.synchronize).toBeInstanceOf(Function)
+		expect(adapter.onAuthChange).toBeInstanceOf(Function)
+		expect(adapter.parseUrlError).toBeInstanceOf(Function)
 	})
 
 	it('should be synchronous (not return a promise)', () => {

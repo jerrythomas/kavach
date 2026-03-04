@@ -76,11 +76,11 @@ Add to the projects array:
 
 **Step 4: Install dependencies**
 
-Run: `cd solution && pnpm install`
+Run: `cd solution && bun install`
 
 **Step 5: Run tests to verify nothing broke**
 
-Run: `cd solution && pnpm run test:ci`
+Run: `cd solution && bun run test:ci`
 Expected: All 440+ existing tests pass, no cli tests yet.
 
 **Step 6: Commit**
@@ -170,7 +170,7 @@ describe('validateConfig', () => {
 
 **Step 2: Run test to verify it fails**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: FAIL — `parseConfig` not found.
 
 **Step 3: Write implementation**
@@ -231,7 +231,7 @@ export function parseConfig(raw) {
 
 **Step 4: Run test to verify it passes**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: PASS
 
 **Step 5: Commit**
@@ -284,7 +284,7 @@ describe('kavach vite plugin', () => {
 
 **Step 2: Run test to verify it fails**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: FAIL — `resolveId` not a function.
 
 **Step 3: Write implementation**
@@ -342,7 +342,7 @@ export function kavach(options = {}) {
 
 **Step 4: Run test to verify it passes**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: PASS
 
 **Step 5: Commit**
@@ -425,7 +425,7 @@ describe('generateModule', () => {
 
 **Step 2: Run test to verify it fails**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: FAIL — `generateModule` not found.
 
 **Step 3: Write implementation**
@@ -460,7 +460,7 @@ The env var names come from `config.env`, the logging level and table come from 
 
 **Step 4: Run test to verify it passes**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: PASS
 
 **Step 5: Wire generateModule into vite.js**
@@ -527,7 +527,7 @@ describe('buildConfig', () => {
 
 **Step 2: Run test to verify it fails**
 
-Run: `cd solution && pnpm run test:ci -- --project cli`
+Run: `cd solution && bun run test:ci -- --project cli`
 Expected: FAIL
 
 **Step 3: Write implementation**
@@ -840,8 +840,8 @@ Check that these exist and have correct content:
 **Step 4: Verify it builds**
 
 ```bash
-pnpm install
-pnpm build
+bun install
+bun run build
 ```
 
 Expected: Build succeeds with no errors.
@@ -849,7 +849,7 @@ Expected: Build succeeds with no errors.
 **Step 5: Verify dev server starts**
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 Expected: Dev server starts, auth page renders at `/auth`.
@@ -907,7 +907,7 @@ Simplify `+layout.svelte` to use `$kavach/auth` instead of manual adapter loadin
 **Step 5: Run existing tests**
 
 ```bash
-cd solution && pnpm run test:ci
+cd solution && bun run test:ci
 ```
 
 Expected: All 440+ tests pass. Demo unit tests pass.
@@ -915,7 +915,7 @@ Expected: All 440+ tests pass. Demo unit tests pass.
 **Step 6: Run demo e2e tests if available**
 
 ```bash
-cd solution/sites/demo && pnpm test
+cd solution/sites/demo && bun test
 ```
 
 **Step 7: Commit**

@@ -1,6 +1,6 @@
 import { pick, omit } from 'ramda'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getAdapter, parseUrlError, transformResult } from '../src/adapter.js'
+import { SupabaseAuthAdapter, getAdapter, parseUrlError, transformResult } from '../src/adapter.js'
 import { AuthApiError, createClient } from '@supabase/supabase-js'
 
 let subscription = null
@@ -50,16 +50,15 @@ vi.mock('@supabase/supabase-js', async (importOriginal) => ({
 const mockClient = createClient()
 
 describe('getAdapter', () => {
-	it('should define auth functions', () => {
+	it('should define auth functions and be a SupabaseAuthAdapter instance', () => {
 		const adapter = getAdapter(mockClient)
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function)
-		})
+		expect(adapter).toBeInstanceOf(SupabaseAuthAdapter)
+		expect(adapter.signIn).toBeInstanceOf(Function)
+		expect(adapter.signUp).toBeInstanceOf(Function)
+		expect(adapter.signOut).toBeInstanceOf(Function)
+		expect(adapter.synchronize).toBeInstanceOf(Function)
+		expect(adapter.onAuthChange).toBeInstanceOf(Function)
+		expect(adapter.parseUrlError).toBeInstanceOf(Function)
 	})
 
 	it('should handle sign in using magic link', async () => {

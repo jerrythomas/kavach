@@ -1,23 +1,57 @@
 # Kavach Documentation
 
-Kavach is a drop-in authentication framework for SvelteKit. It provides a unified API across auth providers (Supabase, Firebase, Auth0, Amplify, Convex), declarative route protection, and pre-built UI components.
+Kavach is a drop-in authentication framework for SvelteKit. It provides a unified API across auth platforms (Supabase, Firebase, Auth0, Amplify, Convex), declarative route protection, and pre-built UI components—so you can add secure authentication to your app in minutes.
 
-## Modules
+## What & Why
 
-| # | Module | What it does | Docs |
-|---|--------|-------------|------|
-| 01 | **Auth** | Session management, credential flows, SvelteKit hook | [requirements](requirements/01-auth.md) · [design](design/01-auth.md) |
-| 02 | **Route Protection** | RBAC, declarative routing rules, fail-secure | [requirements](requirements/02-route-protection.md) · [design](design/02-route-protection.md) |
-| 03 | **Adapters** | Provider integrations, response normalization | [requirements](requirements/03-adapters.md) · [design](design/03-adapters.md) |
-| 04 | **Query** | Filter parsing, operator validation, error sanitization | [requirements](requirements/04-query.md) · [design](design/04-query.md) |
-| 05 | **UI** | Svelte auth components, cached logins, smart layout | [requirements](requirements/05-ui.md) · [design](design/05-ui.md) |
-| 06 | **Logging** | Structured context-scoped logging, pluggable writers | [requirements](requirements/06-logging.md) · [design](design/06-logging.md) |
+Building authentication from scratch is hard. Every platform has a different API shape, session format, and error convention. Kavach normalizes all of this behind a single interface:
 
-Requirements cover **what** and **why**. Design covers **how** and **why**. Numbered 1:1 per module.
+- **Switch platforms** — Changing from Supabase to Firebase means swapping one adapter, not rewriting auth logic
+- **Declarative route protection** — Define rules once; no scattered `if (!user)` checks in every route
+- **Consistent UX** — Same login flow, error handling, and session management regardless of platform
+- **Type-safe** — Full TypeScript support with centralized types across all packages
+
+## Auth Flows
+
+Kavach supports multiple authentication flows:
+
+| Flow | Description |
+|------|-------------|
+| OAuth | Social login (Google, GitHub, etc.) |
+| Magic Link / OTP | Passwordless via email or SMS |
+| Password | Traditional email/password |
+| Passkey | WebAuthn/FIDO2 |
+
+## Features
+
+- [Authentication](docs/features/01-Authentication.md) — Sign in, sign up, password management, session handling
+- [Authorization](docs/features/02-Authorization.md) — Route protection, role-based access control
+- [Data Access](docs/features/03-DataAccess.md) — Query filters, CRUD operations, file management
+- [User Interface](docs/features/04-UserInterface.md) — Auth components, cached logins, smart layout
+- [Observability](docs/features/05-Observability.md) — Structured logging, pluggable writers
+
+Features cover **what** and **why**. Design covers **how** and **why**. See [design/](design/README.md) for implementation details.
+
+## Core Features
+
+### Route Protection
+
+- All routes are protected by default
+- Public routes must be explicitly configured
+- Role-based access control (RBAC) with per-role home pages
+- Unauthorized access redirects to login (if not authenticated) or role home (if authenticated but lacks permission)
+- API endpoints return appropriate HTTP status codes (401/403)
+
+### Session Management
+
+- Cookie-based session persistence (httpOnly, secure, sameSite)
+- Server-side session synchronized with client-side auth state
+- Svelte stores for reactive auth state
+- Login caching for returning users
 
 ## Project Tracking
 
-| Resource | Purpose |
-|----------|---------|
-| [stories/](stories/) | Story specs + [backlog dashboard](stories/README.md) |
-| [plans/](plans/) | Active plan + archived completed plans |
+- [features/](features/) — Features to be supported
+- [design/](design/) — Module-level design documents
+- [stories/](stories/) — Story specs and backlog dashboard
+- [plans/](plans/) — Active plan and archived completed plans

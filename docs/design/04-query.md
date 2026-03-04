@@ -1,4 +1,4 @@
-# 04 — Query Design
+# Query
 
 ## Overview
 

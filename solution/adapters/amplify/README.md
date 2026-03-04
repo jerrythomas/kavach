@@ -5,7 +5,7 @@ Adapter for using amplify with kavach
 ## Usage
 
 ```bash
-pnpm add kavach @kavach/adapter-amplify
+bun add kavach @kavach/adapter-amplify
 ```
 
 ```js
