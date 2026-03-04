@@ -3,7 +3,7 @@ import { execSync } from 'child_process'
 import * as p from '@clack/prompts'
 import pc from 'picocolors'
 import { buildConfig } from '../prompts.js'
-import { parseConfig } from '../config.js'
+import { parseConfig } from '@kavach/vite'
 import { generateConfigFile, generateAuthPage, generateDataRoute } from '../generators.js'
 import { patchViteConfig, patchHooksServer, patchLayoutServer, patchEnvFile } from '../patchers.js'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
@@ -143,8 +143,34 @@ export class InitCommand {
 
 	async #installDependencies() {
 		const deps = [...DEPENDENCIES, ...(ADAPTER_DEPS[this.#parsed.adapter] ?? [])]
-		await this.#runStep(`Installing dependencies with ${this.#pm}`, () => this.#install(deps))
-		await this.#runStep('Installing @kavach/cli as dev dependency', () => this.#install(['@kavach/cli'], true))
+		const depsToInstall = this.#filterExistingDeps(deps)
+		
+		if (depsToInstall.length > 0) {
+			await this.#runStep(`Installing dependencies with ${this.#pm}`, () => this.#install(depsToInstall))
+		} else {
+			p.log.info('All dependencies already installed — skipped')
+		}
+		
+		if (!this.#isDepInstalled('@kavach/cli')) {
+			await this.#runStep('Installing @kavach/cli as dev dependency', () => this.#install(['@kavach/cli'], true))
+		}
+	}
+
+	#filterExistingDeps(deps) {
+		return deps.filter(dep => !this.#isDepInstalled(dep))
+	}
+
+	#isDepInstalled(dep) {
+		const pkgJsonPath = resolve(this.#cwd, 'package.json')
+		if (!fileExists(pkgJsonPath)) return false
+		
+		const pkgJson = JSON.parse(readFile(pkgJsonPath))
+		const allDeps = {
+			...pkgJson.dependencies,
+			...pkgJson.devDependencies
+		}
+		
+		return dep in allDeps
 	}
 
 	#install(deps, dev = false) {

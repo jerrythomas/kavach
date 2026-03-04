@@ -1,11 +1,8 @@
 {
-  "name": "@kavach/cli",
+  "name": "@kavach/vite",
   "version": "1.0.0-next.30",
-  "description": "CLI for scaffolding Kavach into SvelteKit projects",
+  "description": "Vite plugin for Kavach authentication framework",
   "type": "module",
-  "bin": {
-    "kavach": "src/index.js"
-  },
   "exports": {
     ".": "./src/index.js"
   },
@@ -13,10 +10,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@clack/prompts": "^0.9.1",
-    "@kavach/vite": "workspace:*",
-    "magicast": "^0.3.5",
-    "picocolors": "^1.1.1"
+    "magicast": "^0.3.5"
+  },
+  "peerDependencies": {
+    "vite": ">=5.0.0"
   },
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",

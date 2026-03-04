@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { kavach } from '../src/vite.js'
+import { kavach } from '../src/index.js'
 
 describe('kavach vite plugin', () => {
 	it('should return a plugin with correct name', () => {

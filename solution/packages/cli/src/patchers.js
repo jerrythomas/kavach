@@ -1,12 +1,12 @@
 import { parseModule, generateCode } from 'magicast'
 
 export function patchViteConfig(content) {
-	if (content.includes("from '@kavach/cli/vite'")) return content
+	if (content.includes("from '@kavach/vite'")) return content
 
 	const mod = parseModule(content)
 	const code = generateCode(mod).code
 
-	const importLine = "import { kavach } from '@kavach/cli/vite'"
+	const importLine = "import { kavach } from '@kavach/vite'"
 	const withImport = importLine + '\n' + code
 
 	// Add kavach() to plugins array — insert before sveltekit()

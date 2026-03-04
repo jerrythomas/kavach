@@ -1,4 +1,4 @@
-import { templates } from './templates.js'
+import { templates } from '@kavach/vite'
 
 function serializeJS(value, indent = 1) {
 	const pad = '\t'.repeat(indent)

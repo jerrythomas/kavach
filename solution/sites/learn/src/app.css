@@ -1,9 +1,9 @@
 @import '@unocss/reset/tailwind.css';
-@import '@rokkit/themes/palette.css';
+@import '@rokkit/themes/base.css';
 @import '@rokkit/themes/rokkit.css';
 
 body {
-  @apply flex flex-col font-body bg-neutral-base text-neutral-800 font-extralight w-screen h-screen overflow-hidden;
+  @apply flex flex-col font-body bg-surface-z1 text-surface-z8 font-extralight w-screen h-screen overflow-hidden;
 }
 body > app {
   @apply flex flex-col h-full w-full relative overflow-hidden;

@@ -38,7 +38,8 @@ export default defineConfig({
 			{ extends: true, test: { name: 'auth0', root: 'adapters/auth0' } },
 			{ extends: true, test: { name: 'amplify', root: 'adapters/amplify' } },
 			{ extends: true, test: { name: 'demo', root: 'sites/demo' } },
-			{ extends: true, test: { name: 'cli', root: 'packages/cli' } }
+			{ extends: true, test: { name: 'cli', root: 'packages/cli' } },
+			{ extends: true, test: { name: 'vite', root: 'packages/vite' } }
 		]
 	}
 })

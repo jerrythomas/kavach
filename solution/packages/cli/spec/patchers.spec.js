@@ -10,13 +10,13 @@ describe('patchViteConfig', () => {
 	it('should add kavach plugin to existing vite config', () => {
 		const input = `import { sveltekit } from '@sveltejs/kit/vite'\nexport default { plugins: [sveltekit()] }`
 		const output = patchViteConfig(input)
-		expect(output).toContain("import { kavach } from '@kavach/cli/vite'")
+		expect(output).toContain("import { kavach } from '@kavach/vite'")
 		expect(output).toContain('kavach()')
 		expect(output).toContain('sveltekit()')
 	})
 
 	it('should not duplicate if kavach already present', () => {
-		const input = `import { kavach } from '@kavach/cli/vite'\nimport { sveltekit } from '@sveltejs/kit/vite'\nexport default { plugins: [kavach(), sveltekit()] }`
+		const input = `import { kavach } from '@kavach/vite'\nimport { sveltekit } from '@sveltejs/kit/vite'\nexport default { plugins: [kavach(), sveltekit()] }`
 		const output = patchViteConfig(input)
 		const count = (output.match(/kavach\(\)/g) || []).length
 		expect(count).toBe(1)

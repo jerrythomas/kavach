@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import * as p from '@clack/prompts'
 import pc from 'picocolors'
-import { parseConfig } from '../config.js'
+import { parseConfig } from '@kavach/vite'
 import { generateAuthPage, generateDataRoute } from '../generators.js'
 import { readFile, writeFile, fileExists } from '../fs.js'
 

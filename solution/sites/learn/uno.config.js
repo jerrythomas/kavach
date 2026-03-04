@@ -3,32 +3,28 @@ import {
 	defineConfig,
 	presetIcons,
 	presetTypography,
-	presetMini as presetUno,
+	presetWind,
 	transformerDirectives,
 	transformerVariantGroup
 } from 'unocss'
+import { Theme, DEFAULT_ICONS, iconShortcuts } from '@rokkit/core'
 
-import { iconShortcuts, defaultIcons, themeColors } from '@rokkit/themes'
-import { palette } from './src/lib/config'
+const theme = new Theme()
 
 export default defineConfig({
 	extractors: [extractorSvelte()],
-	rules: [...palette],
-	safelist: [...defaultIcons],
-	shortcuts: {
-		...iconShortcuts(defaultIcons, 'i-rokkit')
-	},
+	safelist: [...DEFAULT_ICONS],
+	shortcuts: [
+		['skin-default', theme.getPalette()],
+		...theme.getShortcuts('primary'),
+		...theme.getShortcuts('neutral'),
+		...Object.entries(iconShortcuts(DEFAULT_ICONS, 'i-rokkit'))
+	],
 	theme: {
-		// fontFamily: {
-		// 	mono: ['Victor Mono', 'monospace'],
-		// 	heading: ['Open Sans', 'sans-serif'],
-		// 	sans: ['Overpass', 'ui-serif', 'sans-serif'],
-		// 	body: ['Open Sans', '-apple-system', 'system-ui', 'Segoe-UI', 'ui-serif', 'sans-serif']
-		// },
-		colors: themeColors()
+		colors: theme.getColorRules()
 	},
 	presets: [
-		presetUno(),
+		presetWind(),
 		presetTypography(),
 		presetIcons({
 			collections: {
