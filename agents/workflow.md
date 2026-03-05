@@ -20,7 +20,7 @@ CLAUDE.md loads this file at session start — follow it.
 ### Design Work (full pipeline)
 - New features, new patterns, architectural changes
 - Anything that could be done multiple ways
-- **Process:** Story → Plan → Implement (see below)
+- **Process:** Feature → Plan → Implement (see below)
 
 ### Tactical Work (lightweight)
 - Bug fixes, small changes, clear scope
@@ -31,22 +31,22 @@ Ask. The cost of a question is low.
 
 ---
 
-## Pipeline: Story → Plan → Implement
+## Pipeline: Feature → Plan → Implement
 
-### 1. STORY
+### 1. FEATURE
 
-Write or refine a story in `docs/stories/NNN-<story>.md`. Flat directory — no subdirectories per module.
+Write or refine module level features in `docs/features/NN-<module>.md`. Flat directory — no subdirectories per module. Each module will have one or more features section. Each feature should include a gherkins code block with scenarios.
 
-- If the story touches a **new module**: create requirements (`docs/requirements/NNN-<module>.md`) and design (`docs/design/NNN-<module>.md`) first.
-- If the story touches an **existing module**: check that requirements and design docs are still current.
-- Clarifications happen inline — questions and answers are captured in the story file.
-- Add the story to `docs/stories/README.md` in the appropriate phase.
+- If the feature touches a **new module**: a new module file first.
+- If the feature touches an **existing module**: check that features and design docs are still current.
+- Clarifications happen inline — questions and answers are captured in the design file.
+- Add the feature and scenarios to `docs/features/README.md` with the status. 
 
 ### 2. PLAN
 
-Create an implementation plan in `docs/plans/README.md`.
+Create an implementation plan in `docs/plans/README.md`. Create or update a design file under `docs/design`. This can be similar modules as the features or based on implementation modules. Where relevant add mermaid flow and interaction diagrams.
 
-- Define: goal, tasks, approach, and reference to the story.
+- Define: goal, tasks, approach, and reference to the feature.
 - **Present the plan to the user for agreement.** No code until agreed.
 - One active plan at a time.
 
@@ -55,19 +55,19 @@ Create an implementation plan in `docs/plans/README.md`.
 Execute the agreed plan.
 
 - Work through tasks in order.
-- Before marking a story done, run the **completion checklist**:
+- Before marking a feature done, run the **completion checklist**:
   1. Code complete, tests pass
   2. Requirements doc still accurate? Update if not.
   3. Design doc still accurate? Update if not.
-  4. Archive plan to `docs/plans/<datetime>-<story>.md`
+  4. Archive plan to `docs/plans/<datetime>-<feature>.md`
   5. Update `agents/journal.md`
-  6. Mark story done in `docs/stories/README.md`
+  6. Mark feature done in `docs/features/README.md`
 
 ---
 
 ## Interrupts
 
-Everything goes to `docs/stories/README.md`. No inline insertion into current work. Pick it up next.
+Everything goes to `docs/design/README.md`. No inline insertion into current work. Pick it up next. If it is a big enough feature, add to features. 
 
 ---
 
@@ -94,7 +94,7 @@ Everything goes to `docs/stories/README.md`. No inline insertion into current wo
 ## Crash Recovery
 
 1. Check `docs/plans/README.md` — find active plan
-2. Check referenced story — find current state
+2. Check referenced feature — find current state
 3. Read `agents/journal.md` — last recorded progress
 4. Resume from where work stopped
 
@@ -109,6 +109,6 @@ Everything goes to `docs/stories/README.md`. No inline insertion into current wo
 | `agents/journal.md` | Progress log | Every session |
 | `docs/requirements/` | Module requirements (what/why) | When module scope changes |
 | `docs/design/` | Module design (how/why) | When design changes |
-| `docs/stories/` | Story specs (flat, NNN-name.md) | During story work |
-| `docs/stories/README.md` | Prioritized story dashboard | When stories are added/completed |
-| `docs/plans/README.md` | Active plan | When starting/finishing stories |
+| `docs/features/` | Feature specs (flat, NNN-name.md) | During feature work |
+| `docs/features/README.md` | Prioritized feature dashboard | When features are added/completed |
+| `docs/plans/README.md` | Active plan | When starting/finishing features |

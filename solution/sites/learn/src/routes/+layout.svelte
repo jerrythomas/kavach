@@ -7,9 +7,10 @@
 	import { page } from '$app/stores'
 
 	const title = 'Kavach'
-
+	let { children } = $props()
 	const navItems = [
 		{ href: '/', label: 'Home' },
+		{ href: '/docs', label: 'Docs' },
 		{ href: '/auth', label: 'Demo' }
 	]
 </script>
@@ -31,7 +32,7 @@
 			</a>
 		</h1>
 		<nav class="flex gap-6">
-			{#each navItems as item}
+			{#each navItems as item (item.href)}
 				<a
 					href={item.href}
 					class="text-sm font-medium transition-colors"
@@ -47,4 +48,4 @@
 	<ThemeSwitcherToggle />
 </header>
 
-<slot />
+{@render children()}

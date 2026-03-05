@@ -29,8 +29,9 @@ export default {
 	},
 	rules: [
 		{ path: '/', public: true },
-		{ path: '/demo', roles: '*' },
-		{ path: '/data', roles: '*' },
+		{ path: '/docs', public: true },
+		{ path: '/demo', public: true },
+		{ path: '/data', public: true },
 		{ path: '/admin', roles: ['admin'] }
 	]
 }
