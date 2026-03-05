@@ -1,6 +1,6 @@
 {
   "name": "kavach-workspace",
-  "version": "1.0.0-next.30",
+  "version": "1.0.0-next.31",
   "description": "Drop in security for SvelteKit Apps.",
   "type": "module",
   "private": true,
