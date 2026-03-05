@@ -126,17 +126,19 @@ describe('Route Processor', () => {
 	})
 
 	describe('processAppRoutes', () => {
-		it('should return default routes', () => {
-			const routes = processAppRoutes()
-			expect(routes).toEqual({
-				home: '/',
-				login: '/auth',
-				logout: '/logout',
-				session: '/auth/session',
-				unauthorized: null,
-				endpoints: ['/api', '/data', '/auth/session']
-			})
+	it('should return default routes', () => {
+		const routes = processAppRoutes()
+		expect(routes).toEqual({
+			home: '/',
+			login: '/auth',
+			logout: '/logout',
+			session: '/auth/session',
+			unauthorized: null,
+			data: '/data',
+			rpc: '/rpc',
+			endpoints: ['/api', '/data', '/auth/session']
 		})
+	})
 
 		it('should return custom routes', () => {
 			const routes = processAppRoutes({
@@ -153,6 +155,8 @@ describe('Route Processor', () => {
 				logout: '/logout',
 				session: '/session',
 				unauthorized: '/',
+				data: '/data',
+				rpc: '/rpc',
 				endpoints: ['/api', '/data', '/session']
 			})
 		})
@@ -165,6 +169,8 @@ describe('Route Processor', () => {
 				logout: '/logout',
 				session: '/auth/session',
 				unauthorized: null,
+				data: '/data',
+				rpc: '/rpc',
 				endpoints: ['/api', '/auth/session']
 			})
 		})

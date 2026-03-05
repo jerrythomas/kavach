@@ -8,7 +8,7 @@ const config = {
 		{ mode: 'otp', name: 'magic', label: 'Email for Magic Link' }
 	],
 	cachedLogins: true,
-	logging: { level: 'info', table: 'audit.logs' },
+	logging: { enabled: true, level: 'info', table: 'audit.logs' },
 	env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
 	routes: { auth: '(public)/auth', data: '(server)/data', logout: '/logout' },
 	rules: [{ path: '/public', public: true }]
@@ -45,10 +45,7 @@ describe('generateAuthPage', () => {
 describe('generateDataRoute', () => {
 	it('should generate data CRUD server endpoint', () => {
 		const content = generateDataRoute()
-		expect(content).toContain('export async function GET')
-		expect(content).toContain('export async function POST')
-		expect(content).toContain('export async function PUT')
-		expect(content).toContain('export async function DELETE')
-		expect(content).toContain('locals.kavach')
+		expect(content).toContain('export { GET, POST, PUT, PATCH, DELETE } from')
+		expect(content).toContain('kavach')
 	})
 })

@@ -25,8 +25,15 @@ describe('kavach', () => {
 	beforeEach(() => {
 		adapter = createMockAdapter()
 		global.fetch = vi.fn()
-		global.Response = vi.fn().mockImplementation(function (...status) { return status })
-		global.Response.redirect = vi.fn()
+		
+		const createMockResponse = function(body = {}, options = {}) {
+			this.body = body
+			this.status = options.status ?? 200
+			this.headers = new Map(Object.entries(options.headers ?? {}))
+		}
+		createMockResponse.redirect = vi.fn((url, status) => new createMockResponse({}, { status: status ?? 302, headers: { location: url } }))
+		
+		global.Response = vi.fn().mockImplementation(createMockResponse)
 	})
 
 	afterEach(() => {

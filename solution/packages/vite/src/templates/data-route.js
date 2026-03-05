@@ -1,93 +1,39 @@
-import { json } from '@sveltejs/kit'
-import { sanitizeError } from '@kavach/query'
+// Auto-detects language from Accept-Language header, ?lang= param, or lang cookie
+export { GET, POST, PUT, PATCH, DELETE } from 'kavach'
 
-function getActions(locals, slug) {
-	const parts = slug.split('/')
-	const schema = parts.length > 1 ? parts[0] : undefined
-	const entity = parts.length > 1 ? parts.slice(1).join('/') : slug
-	const actions = locals.kavach.actions(schema)
-	if (!actions) return { entity, actions: null }
-	return { entity, actions }
-}
+// Configure in kavach.config.js:
+//
+// Option 1: Multiple languages (auto-detected)
+// export default {
+//   adapter: 'supabase',
+//   messages: {
+//     en: {
+//       notAuthenticated: 'Not authenticated',
+//       notSupported: 'Data operations not supported'
+//     },
+//     fr: {
+//       notAuthenticated: 'Non authentifié',
+//       notSupported: 'Opérations non prises en charge'
+//     },
+//     es: {
+//       notAuthenticated: 'No autenticado',
+//       notSupported: 'Operaciones no soportadas'
+//     }
+//   }
+// }
+//
+// Option 2: Custom language detection function
+// export default {
+//   adapter: 'supabase',
+//   messages: (event) => {
+//     const lang = event.locals.user?.language || 'en'
+//     return translations[lang]
+//   }
+// }
+//
+// Language detection order:
+// 1. Query param: ?lang=fr
+// 2. Cookie: lang=fr
+// 3. Accept-Language header
+// 4. First available language or 'en'
 
-const RESERVED = [':select', ':order', ':limit', ':offset', ':count']
-
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function GET({ params, url, locals }) {
-	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
-
-	const { entity, actions } = getActions(locals, params.slug)
-	if (!actions) return json({ error: { message: 'Data operations not supported' } }, { status: 501 })
-
-	const body = Object.fromEntries(url.searchParams.entries())
-	const filter = Object.fromEntries(
-		Object.entries(body).filter(([k]) => !RESERVED.includes(k))
-	)
-	const { data, error, count, status } = await actions.get(entity, {
-		columns: body[':select'],
-		order: body[':order'],
-		limit: body[':limit'] ? Number(body[':limit']) : undefined,
-		offset: body[':offset'] ? Number(body[':offset']) : undefined,
-		count: body[':count'],
-		filter
-	})
-
-	if (error) return json({ error: sanitizeError(error) }, { status })
-	return json(count !== undefined ? { data, count } : data)
-}
-
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function POST({ params, request, locals }) {
-	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
-
-	const { entity, actions } = getActions(locals, params.slug)
-	if (!actions) return json({ error: { message: 'Data operations not supported' } }, { status: 501 })
-
-	const body = await request.json()
-	const { data, error, status } = await actions.post(entity, body)
-
-	if (error) return json({ error: sanitizeError(error) }, { status })
-	return json(data)
-}
-
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function PUT({ params, request, locals }) {
-	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
-
-	const { entity, actions } = getActions(locals, params.slug)
-	if (!actions) return json({ error: { message: 'Data operations not supported' } }, { status: 501 })
-
-	const body = await request.json()
-	const { data, error, status } = await actions.put(entity, body)
-
-	if (error) return json({ error: sanitizeError(error) }, { status })
-	return json(data)
-}
-
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function PATCH({ params, request, locals }) {
-	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
-
-	const { entity, actions } = getActions(locals, params.slug)
-	if (!actions) return json({ error: { message: 'Data operations not supported' } }, { status: 501 })
-
-	const body = await request.json()
-	const { data, error, status } = await actions.patch(entity, body)
-
-	if (error) return json({ error: sanitizeError(error) }, { status })
-	return json(data)
-}
-
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function DELETE({ params, request, locals }) {
-	if (!locals.kavach) return json({ error: { message: 'Not authenticated' } }, { status: 401 })
-
-	const { entity, actions } = getActions(locals, params.slug)
-	if (!actions) return json({ error: { message: 'Data operations not supported' } }, { status: 501 })
-
-	const body = await request.json()
-	const { data, error, status } = await actions.delete(entity, body)
-
-	if (error) return json({ error: sanitizeError(error) }, { status })
-	return json(data)
-}

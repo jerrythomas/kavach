@@ -31,7 +31,9 @@ function generateConfig(config) {
 		adapter: config.adapter,
 		cachedLogins: config.cachedLogins,
 		logging: config.logging,
-		routes: config.routes
+		routes: config.routes,
+		endpoints: config.endpoints,
+		messages: config.messages
 	})}\n`
 }
 

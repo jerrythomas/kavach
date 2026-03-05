@@ -7,7 +7,7 @@ export function patchViteConfig(content) {
 	const code = generateCode(mod).code
 
 	const importLine = "import { kavach } from '@kavach/vite'"
-	const withImport = importLine + '\n' + code
+	const withImport = `${importLine  }\n${  code}`
 
 	// Add kavach() to plugins array — insert before sveltekit()
 	return withImport.replace(/plugins:\s*\[/, 'plugins: [kavach(), ')
@@ -26,14 +26,14 @@ export const handle = kavach.handle
 
 	if (hasKavach) return content
 
-	let result = `import { kavach } from '$kavach/auth'\n` + content
+	let result = `import { kavach } from '$kavach/auth'\n${  content}`
 
 	if (hasSequence) {
 		// Add kavach.handle as first arg to existing sequence()
 		result = result.replace(/sequence\(/, 'sequence(kavach.handle, ')
 	} else {
 		// Add sequence import and wrap existing handle
-		result = `import { sequence } from '@sveltejs/kit/hooks'\n` + result
+		result = `import { sequence } from '@sveltejs/kit/hooks'\n${  result}`
 
 		// Replace `export const handle = <expr>` with sequence(kavach.handle, <expr>)
 		result = result.replace(
@@ -79,5 +79,5 @@ export function patchEnvFile(content, envConfig) {
 	if (additions.length === 0) return content
 
 	const separator = content.trim() ? '\n' : ''
-	return content.trimEnd() + separator + additions.join('\n') + '\n'
+	return `${content.trimEnd() + separator + additions.join('\n')  }\n`
 }

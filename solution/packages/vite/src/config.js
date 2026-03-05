@@ -11,7 +11,17 @@ const DEFAULTS = {
 	routes: {
 		auth: '(public)/auth',
 		data: '(server)/data',
+		rpc: '(server)/rpc',
 		logout: '/logout'
+	},
+	endpoints: {
+		data: true,
+		rpc: false
+	},
+	messages: {
+		notAuthenticated: 'Not authenticated',
+		notSupported: 'Data operations not supported',
+		rpcNotSupported: 'RPC operations not supported'
 	},
 	rules: []
 }
@@ -45,8 +55,14 @@ export function parseConfig(raw) {
 		routes: {
 			auth: raw.routes?.auth ?? DEFAULTS.routes.auth,
 			data: raw.routes?.data ?? DEFAULTS.routes.data,
+			rpc: raw.routes?.rpc ?? DEFAULTS.routes.rpc,
 			logout: raw.routes?.logout ?? DEFAULTS.routes.logout
 		},
+		endpoints: {
+			data: raw.endpoints?.data ?? DEFAULTS.endpoints.data,
+			rpc: raw.endpoints?.rpc ?? DEFAULTS.endpoints.rpc
+		},
+		messages: { ...DEFAULTS.messages, ...raw.messages },
 		rules: raw.rules ?? DEFAULTS.rules
 	}
 }

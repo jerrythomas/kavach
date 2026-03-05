@@ -21,7 +21,7 @@
     "clean": "rm -rf dist",
     "build": "bun prepublishOnly"
   },
-  "files":[
+  "files": [
     "src/**/*.js",
     "dist/**/*.d.ts",
     "README.md",
@@ -40,6 +40,9 @@
     "@kavach/guardian": "workspace:*",
     "@kavach/hashing": "workspace:*",
     "@kavach/logger": "workspace:*",
+    "@kavach/query": "link:@kavach/query",
+    "@sveltejs/kit": "^2.53.4",
+    "kit-monorepo": "sveltejs/kit",
     "ramda": "^0.30.1"
   }
 }

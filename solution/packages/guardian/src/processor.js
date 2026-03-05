@@ -7,7 +7,9 @@ const appRouteKeys = [
 	'logout',
 	'session',
 	'endpoints',
-	'unauthorized'
+	'unauthorized',
+	'data',
+	'rpc'
 ]
 
 /** @type {import('./types').AppRoute} */
@@ -17,7 +19,9 @@ const defaultAppRoutes = {
 	logout: '/logout',
 	session: '/auth/session',
 	unauthorized: null,
-	endpoints: ['/api', '/data']
+	endpoints: ['/api', '/data'],
+	data: '/data',
+	rpc: '/rpc'
 }
 
 const defaultRouteRules = {

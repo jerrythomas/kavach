@@ -11,6 +11,7 @@ Module-level features — the **what** and **why**.
 - [Observability](05-Observability.md) — Structured logging, pluggable writers
 - [Verification](07-Verification.md) — Automated checks for multi-platform reliability
 - [Publish](08-Publish.md) — Public learn site, documentation, and demo releases
+- [Platform Aware Configuration](09-PlatformAwareConfiguration.md) — CLI platform capabilities, smart prompts
 
 ## Feature Status
 
@@ -41,6 +42,7 @@ Module-level features — the **what** and **why**.
 |  | File Download | ✅ Implemented |
 |  | File Delete | ✅ Implemented |
 |  | Call RPC | ✅ Implemented |
+|  | Unified Request Handling | - IN PROGRESS - |
 | UserInterface | Auth Page | ✅ Implemented |
 |  | Provider List | ✅ Implemented |
 |  | Cached Login Cards | ✅ Implemented |
@@ -70,3 +72,7 @@ Module-level features — the **what** and **why**.
 |  | Verification Stats Display | - TO DO - |
 |  | Content Deployment Pipeline | - TO DO - |
 |  | Post-Publish Confirmation | - TO DO - |
+| Platform Aware Configuration | Platform Capabilities Detection | - TO DO - |
+|  | Capability-Aware CLI Prompts | - TO DO - |
+|  | DDL Generation for Logging | - TO DO - |
+|  | Configuration Validation | - TO DO - |

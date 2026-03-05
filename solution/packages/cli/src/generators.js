@@ -1,4 +1,5 @@
 import { templates } from '@kavach/vite'
+import { getAdapterCapabilities } from './adapters.js'
 
 function serializeJS(value, indent = 1) {
 	const pad = '\t'.repeat(indent)
@@ -27,7 +28,36 @@ function serializeJS(value, indent = 1) {
 }
 
 export function generateConfigFile(config) {
-	return `export default ${serializeJS(config, 0)}
+	const capabilities = getAdapterCapabilities(config.adapter)
+	const supportedFeatures = capabilities?.supports || {}
+
+	// Filter config based on capabilities
+	const filteredConfig = {
+		adapter: config.adapter,
+		providers: config.providers,
+		cachedLogins: config.cachedLogins,
+		env: config.env,
+		routes: config.routes,
+		rules: config.rules
+	}
+
+	// Only include if supported
+	if (supportedFeatures.data && config.dataRoute) {
+		filteredConfig.dataRoute = config.dataRoute
+	}
+
+	if (supportedFeatures.rpc && config.rpcRoute) {
+		filteredConfig.rpcRoute = config.rpcRoute
+	}
+
+	if (supportedFeatures.logging && config.logging?.enabled) {
+		filteredConfig.logging = {
+			level: config.logging.level,
+			table: config.logging.table
+		}
+	}
+
+	return `export default ${serializeJS(filteredConfig, 0)}
 `
 }
 
@@ -37,4 +67,11 @@ export function generateAuthPage(config) {
 
 export function generateDataRoute() {
 	return templates.dataRoute
+}
+
+export function generateRpcRoute() {
+	return templates.rpcRoute || `import { RPC } from 'kavach'
+
+export const { GET, POST, PUT, PATCH, DELETE } = RPC
+`
 }

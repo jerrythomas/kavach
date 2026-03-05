@@ -5,6 +5,12 @@ import { parseConfig } from '@kavach/vite'
 import { generateAuthPage, generateDataRoute } from '../generators.js'
 import { readFile, writeFile, fileExists } from '../fs.js'
 
+function detectTypeScript(cwd) {
+	const hasTsConfig = fileExists(resolve(cwd, 'tsconfig.json'))
+	const hasJsConfig = fileExists(resolve(cwd, 'jsconfig.json'))
+	return hasTsConfig && !hasJsConfig
+}
+
 async function loadConfig(cwd) {
 	const configPath = resolve(cwd, 'kavach.config.js')
 	if (!fileExists(configPath)) {
@@ -47,7 +53,9 @@ async function addRoutes(cwd) {
 	p.intro(pc.bgCyan(pc.black(' kavach add routes ')))
 
 	const config = await loadConfig(cwd)
-	const dataRoutePath = resolve(cwd, 'src/routes', config.routes.data, '[...slug]/+server.js')
+	const useTypeScript = detectTypeScript(cwd)
+	const ext = useTypeScript ? 'ts' : 'js'
+	const dataRoutePath = resolve(cwd, 'src/routes', config.routes.data, `[...slug]/+server.${ext}`)
 
 	if (!(await confirmOverwrite(dataRoutePath))) {
 		p.cancel('Skipped.')
@@ -55,7 +63,7 @@ async function addRoutes(cwd) {
 	}
 
 	writeFile(dataRoutePath, generateDataRoute())
-	p.outro(pc.green(`Data route written to src/routes/${config.routes.data}/[...slug]/+server.js`))
+	p.outro(pc.green(`Data route written to src/routes/${config.routes.data}/[...slug]/+server.${ext}`))
 }
 
 const SUBCOMMANDS = {

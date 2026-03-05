@@ -1,9 +1,11 @@
 /* eslint-disable no-undef */
 import { createGuardian } from '@kavach/guardian'
 import { zeroLogger } from '@kavach/logger'
+import { sanitizeError } from '@kavach/query'
 import { pick } from 'ramda'
 import { writable } from 'svelte/store'
-import { HTTP_STATUS_MESSAGE, RUNNING_ON } from './constants'
+import { HTTP_STATUS_MESSAGES, MESSAGES } from './messages'
+import { RUNNING_ON } from './constants'
 import { setHeaderCookies } from './internal'
 import * as loginCache from './loginCache'
 import { getUserInfo } from './provider'
@@ -118,7 +120,7 @@ function handleUnauthorizedAccess(agents, { event, resolve }) {
 				}
 			)
 		} else {
-			return new Response({ error: HTTP_STATUS_MESSAGE[result.status] }, { status: result.status })
+			return new Response({ error: HTTP_STATUS_MESSAGES[result.status] }, { status: result.status })
 		}
 	}
 	return resolve(event)
@@ -221,7 +223,47 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 		return handleSessionSync(event, adapter, guardian)
 	}
 
-	return handleUnauthorizedAccess(agents, { event, resolve })
+	const protection = handleUnauthorizedAccess(agents, { event, resolve })
+	
+	// If protection returns a Response (redirect or error), return it immediately
+	if (protection instanceof Response) {
+		// Check for data/rpc routes before returning error response
+		const { pathname } = event.url
+		const dataRoute = guardian.app.data
+		const rpcRoute = guardian.app.rpc
+		
+		// Only handle data/rpc routes if the request would otherwise be allowed
+		if (protection.status === 200 || protection.status === undefined) {
+			// Handle data route if configured
+			if (dataRoute && isDataRoute(pathname, dataRoute)) {
+				return handleDataRoute(agents, { event }, dataRoute, agents.dataFn)
+			}
+			
+			// Handle RPC route if configured
+			if (rpcRoute && isRpcRoute(pathname, rpcRoute)) {
+				return handleRpcRoute(agents, { event }, rpcRoute)
+			}
+		}
+		
+		return protection
+	}
+
+	// Route is allowed - check for data/rpc routes
+	const { pathname } = event.url
+	const dataRoute = guardian.app.data
+	const rpcRoute = guardian.app.rpc
+
+	// Handle data route if configured
+	if (dataRoute && isDataRoute(pathname, dataRoute)) {
+		return handleDataRoute(agents, { event }, dataRoute, agents.dataFn)
+	}
+
+	// Handle RPC route if configured
+	if (rpcRoute && isRpcRoute(pathname, rpcRoute)) {
+		return handleRpcRoute(agents, { event }, rpcRoute)
+	}
+
+	return resolve(event)
 }
 /**
  * Handle auth change
@@ -261,17 +303,192 @@ async function handleSignOut(adapter, agents) {
 	authStatus.set(null)
 }
 
+/**
+ * Check if request is for a data route
+ *
+ * @param {string} pathname
+ * @param {string|string[]|undefined} dataRoute
+ * @returns {boolean}
+ */
+function isDataRoute(pathname, dataRoute) {
+	if (!dataRoute) return false
+	const routes = Array.isArray(dataRoute) ? dataRoute : [dataRoute]
+	return routes.some((route) => pathname.startsWith(route))
+}
+
+/**
+ * Check if request is for an RPC route
+ *
+ * @param {string} pathname
+ * @param {string|string[]|undefined} rpcRoute
+ * @returns {boolean}
+ */
+function isRpcRoute(pathname, rpcRoute) {
+	if (!rpcRoute) return false
+	const routes = Array.isArray(rpcRoute) ? rpcRoute : [rpcRoute]
+	return routes.some((route) => pathname.startsWith(route))
+}
+
+/**
+ * Extract entity from data route path
+ *
+ * @param {string} pathname
+ * @param {string} baseRoute
+ * @returns {string}
+ */
+function getEntityFromPath(pathname, baseRoute) {
+	const entity = pathname.slice(baseRoute.length)
+	return entity.startsWith('/') ? entity.slice(1) : entity
+}
+
+/**
+ * Handle data routes - CRUD operations
+ *
+ * @param {import('./types').KavachAgents} agents
+ * @param {object} request
+ * @param {string|string[]|undefined} dataRoute
+ * @param {Function} dataFn
+ * @returns {Promise<Response>}
+ */
+async function handleDataRoute(agents, { event }, dataRoute, dataFn) {
+	const { pathname, searchParams } = event.url
+	const entity = getEntityFromPath(pathname, dataRoute)
+
+	if (!dataFn) {
+		return new Response(JSON.stringify({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }), {
+			status: 501,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+
+	const actions = dataFn()
+	if (!actions) {
+		return new Response(JSON.stringify({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }), {
+			status: 501,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+
+	const method = event.request.method
+	const RESERVED = [':select', ':order', ':limit', ':offset', ':count']
+
+	try {
+		let result
+
+		if (method === 'GET') {
+			const body = Object.fromEntries(searchParams.entries())
+			const filter = Object.fromEntries(
+				Object.entries(body).filter(([k]) => !RESERVED.includes(k))
+			)
+			result = await actions.get(entity, {
+				columns: body[':select'],
+				order: body[':order'],
+				limit: body[':limit'] ? Number(body[':limit']) : undefined,
+				offset: body[':offset'] ? Number(body[':offset']) : undefined,
+				count: body[':count'],
+				filter
+			})
+		} else {
+			const body = await event.request.json()
+			const lowerMethod = method.toLowerCase()
+			result = await actions[lowerMethod](entity, body)
+		}
+
+		const { data, error, count, status } = result
+
+		if (error) {
+			return new Response(JSON.stringify({ error: sanitizeError(error) }), {
+				status: status || 500,
+				headers: { 'Content-Type': 'application/json' }
+			})
+		}
+
+		const response = count !== undefined ? { data, count } : { data }
+		return new Response(JSON.stringify(response), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	} catch (err) {
+		return new Response(JSON.stringify({ error: sanitizeError(err) }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+}
+
+/**
+ * Handle RPC routes
+ *
+ * @param {import('./types').KavachAgents} agents
+ * @param {object} request
+ * @param {string|string[]|undefined} rpcRoute
+ * @returns {Promise<Response>}
+ */
+async function handleRpcRoute(agents, { event }, rpcRoute) {
+	const { pathname } = event.url
+
+	if (!agents.guardian.rpc) {
+		return new Response(JSON.stringify({ error: { message: MESSAGES.RPC_NOT_SUPPORTED } }), {
+			status: 501,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+
+	const rpc = agents.guardian.rpc
+	if (!rpc) {
+		return new Response(JSON.stringify({ error: { message: MESSAGES.RPC_NOT_SUPPORTED } }), {
+			status: 501,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+
+	try {
+		const body = await event.request.json()
+		const { procedure, payload } = body
+		const result = await rpc(procedure, payload)
+
+		const { data, error, status } = result
+
+		if (error) {
+			return new Response(JSON.stringify({ error: sanitizeError(error) }), {
+				status: status || 500,
+				headers: { 'Content-Type': 'application/json' }
+			})
+		}
+
+		return new Response(JSON.stringify({ data }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	} catch (err) {
+		return new Response(JSON.stringify({ error: sanitizeError(err) }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+}
+
 function getAgents(options) {
 	const logger = options.logger ?? zeroLogger
+	const guardianOptions = {
+		...options,
+		app: {
+			...options.app,
+			data: options.app?.data ?? options.dataRoute,
+			rpc: options.app?.rpc ?? options.rpcRoute
+		}
+	}
 	return {
 		logger: logger.getContextLogger({
 			package: '@kavach/svelte',
 			module: 'kavach'
 		}),
-		guardian: createGuardian(options),
-		invalidateAll: options.invalidateAll ?? pass
+		guardian: createGuardian(guardianOptions),
+		invalidateAll: options.invalidateAll ?? pass,
+		dataFn: options.data
 	}
 }
+
 
 /**
  * Create Kavach instance

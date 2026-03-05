@@ -151,6 +151,7 @@ export function createGuardian(options = {}) {
 	return {
 		app: config.app,
 		setSession,
-		protect
+		protect,
+		rpc: options.rpc
 	}
 }

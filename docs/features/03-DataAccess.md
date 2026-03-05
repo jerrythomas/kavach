@@ -4,6 +4,49 @@ Data operations are performed through a unified API that supports filtering, sor
 
 ## Features
 
+### Unified Request Handling
+
+The handle function orchestrates session sync, route protection, and data/rpc endpoint handling based on configuration.
+
+```gherkin
+Feature: Unified Request Handling
+
+  Scenario: Request flows through handle
+    Given a request arrives at the server
+    When the handle function processes it
+    Then session is synchronized
+    And route protection is applied
+
+  Scenario: Data route handled when configured
+    Given data route is configured as '/api/data'
+    When a request to /api/data/users arrives
+    And the user is authenticated
+    Then CRUD operations are performed
+    And JSON response is returned
+
+  Scenario: Data route passthrough when not configured
+    Given data route is NOT configured
+    When a request to /api/data/users arrives
+    Then the request passes through to resolve(event)
+
+  Scenario: RPC route handled when configured
+    Given RPC route is configured as '/api/rpc'
+    When a request to /api/rpc/procedure arrives
+    And the user is authenticated
+    Then the procedure is invoked
+    And response is returned
+
+  Scenario: RPC route passthrough when not configured
+    Given RPC route is NOT configured
+    When a request to /api/rpc/procedure arrives
+    Then the request passes through to resolve(event)
+
+  Scenario: Request passes through without authentication
+    Given the user is not authenticated
+    When accessing a protected route
+    Then the user is redirected to login
+```
+
 ### Filter Data
 
 Query data using operators like equals, greater than, less than, etc.

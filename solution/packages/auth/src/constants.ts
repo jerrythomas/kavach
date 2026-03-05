@@ -1,11 +1,15 @@
+enum RUN_CONTEXT {
+	SERVER = 'server',
+	BROWSER = 'browser',
+}
 export const APP_AUTH_CONTEXT = 'app:context:auth'
-export const RUNNING_ON: 'server' | 'browser' = typeof window === 'undefined' ? 'server' : 'browser'
+export const RUNNING_ON: RUN_CONTEXT = typeof window === 'undefined' ? RUN_CONTEXT.SERVER : RUN_CONTEXT.BROWSER
 
-export const HTTP_STATUS_MESSAGE: Record<number, string> = {
+export const HTTP_STATUS_MESSAGES = {
 	401: 'Unauthorized',
 	403: 'Forbidden',
 	404: 'Not Found'
-}
+} as const
 
 export const DEFAULT_COOKIE_OPTIONS = {
 	path: '/',

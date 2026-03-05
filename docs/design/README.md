@@ -126,3 +126,15 @@ Eliminates null checks in consumer code when optional features like logging are 
 - [SvelteKit Hooks](https://svelte.dev/docs/kit/hooks)
 - [PostgREST Operators](https://postgrest.org/en/stable/references/api/tables_views.html)
 - [Supabase JS](https://supabase.com/docs/reference/javascript)
+
+## Design Documents
+
+- [01 - Core Authentication](01-auth.md)
+- [02 - Sentry](02-sentry.md)
+- [03 - Adapters](03-adapters.md)
+- [04 - Query](04-query.md)
+- [05 - UI](05-ui.md)
+- [06 - Logging](06-logging.md)
+- [07 - Website](07-website.md)
+- [08 - Request Handling](08-handling.md)
+- [09 - CLI Adapter-Aware](09-cli-adapter-aware.md)

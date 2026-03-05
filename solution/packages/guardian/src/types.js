@@ -5,6 +5,8 @@
  * @property {string} logout
  * @property {string} session
  * @property {Array<string>} endpoints
+ * @property {string} [data]
+ * @property {string} [rpc]
  */
 
 /**
@@ -18,6 +20,7 @@
  * @property {AppRoute} [app]
  * @property {Object<string, RoleRoute>} [roles]
  * @property {import('@kavach/logger').Logger} [logger]
+ * @property {Function} [rpc]
  */
 
 /**
@@ -26,7 +29,8 @@
  * @property {(path: string) => string} redirect
  * @property {AppRoute}                 page
  * @property {boolean}                  isAuthenticated,
-	 @property {Array<string>}	          authorizedRoutes
+ * @property {Array<string>}	          authorizedRoutes
+ * @property {Function}                 [rpc]
  */
 
 /**

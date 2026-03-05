@@ -49,8 +49,7 @@ describe('buildConfig', () => {
 
 	it('should use default logging when not specified', () => {
 		const config = buildConfig({ adapter: 'supabase', providers: [] })
-		expect(config.logging.level).toBe('error')
-		expect(config.logging.table).toBe('logs')
+		expect(config.logging).toEqual({ enabled: false })
 	})
 })
 

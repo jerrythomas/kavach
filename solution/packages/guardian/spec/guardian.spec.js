@@ -41,6 +41,8 @@ describe('Router functions', () => {
 					logout: '/logout',
 					session: '/auth/session',
 					unauthorized: null,
+					data: '/data',
+					rpc: '/rpc',
 					endpoints: ['/api', '/data', '/auth/session']
 				},
 				protect: expect.any(Function),
@@ -122,9 +124,13 @@ describe('Router functions', () => {
 					logout: '/logout',
 					session: '/auth/session',
 					unauthorized: null,
+					data: '/data',
+					rpc: '/rpc',
 					endpoints: ['/api', '/data', '/auth/session']
 				},
-				public: [{ path: '/auth', public: true, roles: '*' }],
+				public: [
+					{ path: '/auth', public: true, roles: '*' }
+				],
 				protected: {
 					'*': [
 						{ path: '/', public: false, roles: '*' },
@@ -158,32 +164,34 @@ describe('Router functions', () => {
 					]
 				}
 			})
-			expect(config).toEqual({
-				app: {
-					home: '/home',
-					login: '/login',
-					logout: '/logout',
-					session: '/auth/session',
-					unauthorized: null,
-					endpoints: ['/api', '/data', '/auth/session']
-				},
-				public: [
-					{ path: '/auth/session', public: true, roles: '*' },
-					{ path: '/public', public: true, roles: '*' },
-					{ path: '/login', public: true, roles: '*' }
-				],
-				protected: {
-					'*': [
-						{ path: '/auth', public: false, roles: '*' },
-						{ path: '/home', public: false, roles: '*' },
-						{ path: '/logout', public: false, roles: '*' }
-						// { path: '/', public: false, roles: '*' }
-					]
-				}
-			})
+		expect(config).toEqual({
+			app: {
+				home: '/home',
+				login: '/login',
+				logout: '/logout',
+				session: '/auth/session',
+				unauthorized: null,
+				data: '/data',
+				rpc: '/rpc',
+				endpoints: ['/api', '/data', '/auth/session']
+			},
+			public: [
+				{ path: '/auth/session', public: true, roles: '*' },
+				{ path: '/public', public: true, roles: '*' },
+				{ path: '/login', public: true, roles: '*' }
+			],
+			protected: {
+				'*': [
+					{ path: '/auth', public: false, roles: '*' },
+					{ path: '/home', public: false, roles: '*' },
+					{ path: '/logout', public: false, roles: '*' }
+					// { path: '/', public: false, roles: '*' }
+				]
+			}
 		})
+	})
 
-		it('should identify and log warnings', () => {
+	it('should identify and log warnings', () => {
 			const config = configureRules(
 				{
 					app: { home: '/home', login: '/login', logout: '/logout' },
@@ -214,24 +222,26 @@ describe('Router functions', () => {
 					]
 				}
 			})
-			expect(config).toEqual({
-				app: {
-					home: '/home',
-					login: '/login',
-					logout: '/logout',
-					session: '/auth/session',
-					unauthorized: null,
-					endpoints: ['/api', '/data', '/auth/session']
-				},
-				public: [
-					{ path: '/auth/session', public: true, roles: '*' },
-					{ path: '/public', public: true, roles: '*' },
-					{ path: '/login', public: true, roles: '*' }
-				],
-				protected: {
-					'*': [
-						{
-							path: '/home/about',
+		expect(config).toEqual({
+			app: {
+				home: '/home',
+				login: '/login',
+				logout: '/logout',
+				session: '/auth/session',
+				unauthorized: null,
+				data: '/data',
+				rpc: '/rpc',
+				endpoints: ['/api', '/data', '/auth/session']
+			},
+			public: [
+				{ path: '/auth/session', public: true, roles: '*' },
+				{ path: '/public', public: true, roles: '*' },
+				{ path: '/login', public: true, roles: '*' }
+			],
+			protected: {
+				'*': [
+					{
+						path: '/home/about',
 							public: false,
 							redundant: true,
 							roles: '*',

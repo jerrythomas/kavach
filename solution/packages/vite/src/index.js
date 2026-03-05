@@ -19,7 +19,7 @@ export function kavach(options = {}) {
 		},
 
 		resolveId(id) {
-			if (VIRTUAL_MODULES.includes(id)) return '\0' + id
+			if (VIRTUAL_MODULES.includes(id)) return `\0${  id}`
 		},
 
 		async buildStart() {

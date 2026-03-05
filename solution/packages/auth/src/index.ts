@@ -1,6 +1,7 @@
 // skipcq: JS-E1004 - Needed for exposing JS Doc types
 export * from './types'
 export * from './request'
+export * from './messages'
 
 export { createKavach, authStatus } from './kavach'
 export { gravatar, deriveName } from './avatar'
