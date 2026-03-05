@@ -4,8 +4,8 @@ const config = {
 		command: 'npm run build && npm run preview',
 		port: 4173
 	},
-	testDir: 'tests',
-	testMatch: /(.+\.)?(test|spec)\.[jt]s/
+	testDir: 'e2e',
+	testMatch: /.*\.e2e\.[jt]s/
 }
 
 export default config
