@@ -1,4 +1,5 @@
 <script>
+  import { Button } from '@rokkit/ui'
 	import { InputField } from '@rokkit/forms'
 	import { createEventDispatcher } from 'svelte'
 
@@ -42,9 +43,10 @@
 	label="Password"
 	bind:value={password}
 />
-<button
+<Button
 	onclick={handle}
 	class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
+	data-auth-mode="password"
 >
 	Sign in
-</button>
+</Button>

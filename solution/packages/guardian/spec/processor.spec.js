@@ -309,13 +309,13 @@ describe('Route Processor', () => {
 			}
 			const rules = addRulesForAppRoutes([], appRoutes, config)
 			expect(rules).toEqual([
-				{ path: '/api', public: false },
-				{ path: '/data', public: false },
 				{ path: '/login', public: true },
 				{ path: '/session', public: true },
 				{ path: '/', public: false },
 				{ path: '/logout', public: false },
-				{ path: '/unauthorized', public: false }
+				{ path: '/unauthorized', public: false },
+				{ path: '/api', public: false },
+				{ path: '/data', public: false }
 			])
 		})
 	})

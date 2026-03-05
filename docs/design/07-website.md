@@ -75,6 +75,7 @@ solution/sites/learn/
 ### Layout & Components
 
 - **Global layout** for navigation, theme toggles, verification banner.
+- **Favicon**: Use `@kavach/ui` icon (shield/lock symbol) as site favicon.
 - **Section-specific layouts**:
   - Public/informational landing.
   - Documentation (left nav, right-side TOC).
@@ -178,7 +179,19 @@ solution/sites/learn/
 
 5. **Theme & Styling**
    - Continue using UnoCSS (present in existing sites).
-   - Define design tokens for colors, spacing, typography shared across sections.
+   - Use semantic color tokens from `@rokkit/ui` design system:
+     - Backgrounds: `bg-surface-z1` (darkest), `bg-surface-z2`, `bg-surface-z3`, `bg-surface-z4` (lightest)
+     - Text: `text-surface-z8` (primary), `text-surface-z7` (secondary), `text-surface-z6` (muted)
+     - Borders: `border-surface-z3`, `border-surface-z4`
+     - Interactive: `bg-primary`, `text-on-primary`, `hover:bg-primary-z6`
+   - Example page structure:
+     ```svelte
+     <main class="bg-surface-z2 text-surface-z8">
+       <h1 class="text-surface-z9">Heading</h1>
+       <p class="text-surface-z7">Body text</p>
+       <button class="bg-primary text-on-primary hover:bg-primary-z6">Action</button>
+     </main>
+     ```
    - Support light/dark mode toggles persisted per user.
 
 6. **Telemetry & Analytics**

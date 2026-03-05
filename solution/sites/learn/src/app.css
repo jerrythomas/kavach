@@ -2,9 +2,107 @@
 @import '@rokkit/themes/base.css';
 @import '@rokkit/themes/rokkit.css';
 
+html {
+  @apply bg-surface-z1 text-surface-z8;
+}
 body {
-  @apply flex flex-col font-body bg-surface-z1 text-surface-z8 font-extralight w-screen h-screen overflow-hidden;
+  @apply flex flex-col font-body font-extralight w-screen h-screen overflow-hidden;
 }
 body > app {
   @apply flex flex-col h-full w-full relative overflow-hidden;
+}
+
+/*[data-item-icon] {
+  @apply text-xl w-6 h-6;
+}*/
+[data-auth-provider] {
+  @apply pr-auto pl-4;
+}
+
+[data-auth-provider] [data-input-icon] {
+  @apply mx-2;
+}
+[data-auth-provider] [data-input-icon],
+[data-auth-provider] [data-item-icon] {
+  @apply w-5 h-5;
+}
+[data-auth-provider] [data-button] {
+  @apply w-full;
+}
+
+/* Provider button colors */
+[data-auth-provider='azure'] {
+  --provider-bg: #ffffff;
+  --provider-text: #0078D4;
+  --provider-border: #8c8c8c;
+}
+[data-auth-provider='google'] {
+  --provider-bg: #ffffff;
+  --provider-text: #3c4043;
+  --provider-border: #dadce0;
+}
+[data-auth-provider='github'] {
+  --provider-bg: #24292e;
+  --provider-text: #ffffff;
+  --provider-border: #24292e;
+}
+[data-auth-provider='facebook'] {
+  --provider-bg: #1877F2;
+  --provider-text: #ffffff;
+  --provider-border: #1877F2;
+}
+[data-auth-provider='twitter'],
+[data-auth-provider='x'] {
+  --provider-bg: #000000;
+  --provider-text: #ffffff;
+  --provider-border: #000000;
+}
+[data-auth-provider='apple'] {
+  --provider-bg: #000000;
+  --provider-text: #ffffff;
+  --provider-border: #000000;
+}
+[data-auth-provider='magic'],
+[data-auth-provider='email'] {
+  --provider-bg: var(--color-primary-600, #f97316);
+  --provider-text: #ffffff;
+  --provider-border: var(--color-primary-600, #f97316);
+}
+
+/* Light mode provider styles */
+[data-mode='light'] [data-auth] > [data-button][data-style='none'] {
+  background-color: var(--provider-bg);
+  color: var(--provider-text);
+  border-color: var(--provider-border);
+}
+
+/* Dark mode provider styles */
+[data-mode='dark'] [data-auth-provider] [data-button] {
+  background-color: var(--provider-bg);
+  color: var(--provider-text);
+  border-color: var(--provider-border);
+}
+
+[data-mode='dark'] [data-auth-provider='github'] {
+  --provider-bg: #f6f8fa;
+  --provider-text: #24292e;
+  --provider-border: #d0d7de;
+}
+
+[data-mode='dark'] [data-auth-provider='google'] {
+  --provider-bg: #ffffff;
+  --provider-text: #5f6368;
+  --provider-border: #3c4043;
+}
+
+[data-mode='dark'] [data-auth-provider='azure'] {
+  --provider-bg: #0078D4;
+  --provider-text: #ffffff;
+  --provider-border: #0078D4;
+}
+
+/* Hover states */
+[data-auth-provider] [data-button]:hover {
+  @apply opacity-90;
+  filter: brightness(1.1);
 }

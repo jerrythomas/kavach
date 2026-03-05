@@ -31,9 +31,10 @@
     "./package.json": "./package.json",
     ".": {
       "types": "./types/index.d.ts",
-      "import": "./src/index.js",
-      "svelte": "./src/index.js"
+      "import": "./src/index.ts",
+      "svelte": "./src/index.ts"
     }
+
   },
   "dependencies": {
     "@kavach/cookie": "workspace:*",

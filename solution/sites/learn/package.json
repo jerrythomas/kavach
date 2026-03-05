@@ -45,6 +45,7 @@
     "@rokkit/states": "link:@rokkit/states",
     "@rokkit/themes": "link:@rokkit/themes",
     "@rokkit/ui": "link:@rokkit/ui",
+    "@rokkit/unocss": "link:@rokkit/unocss",
     "@supabase/supabase-js": "^2.98.0",
     "kavach": "link:kavach"
   }

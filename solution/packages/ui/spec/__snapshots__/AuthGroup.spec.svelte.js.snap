@@ -5,28 +5,39 @@ exports[`AuthGroup.svelte > should render multiple providers 1`] = `
   <div
     class="flex flex-col gap-2"
   >
-    <!---->
-    <!---->
-    <button
-      data-button-root="true"
-      tabindex="0"
-      type="button"
+    <div
+      class="flex flex-col gap-2"
+      data-auth=""
+      data-auth-mode="oauth"
+      data-auth-provider="google"
     >
       <!---->
-      <span
-        aria-hidden="true"
-        class="i-auth-google"
-        data-item-icon=""
-      />
-       
-      <span>
-        Sign in with Google
-      </span>
+      <button
+        data-auth-provider="google"
+        data-button="true"
+        data-size="md"
+        data-style="none"
+        data-variant="default"
+        type="button"
+      >
+        <!---->
+        <span
+          aria-hidden="true"
+          class="i-auth-google"
+          data-item-icon=""
+        />
+         
+        <span
+          data-item-label=""
+        >
+          Sign in with Google
+        </span>
+        
+        <!---->
+      </button>
       
-      
-    </button>
-    
-    
+      <!---->
+    </div>
     
   </div>
   

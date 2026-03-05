@@ -2,234 +2,343 @@
 
 exports[`AuthProvider.svelte > oauth > should render oauth button 1`] = `
 <div>
-  <!---->
-  <!---->
-  <button
-    data-button-root="true"
-    tabindex="0"
-    type="button"
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="oauth"
+    data-auth-provider="google"
   >
     <!---->
-    <span
-      aria-hidden="true"
-      class="i-auth-google"
-      data-item-icon=""
-    />
-     
-    <span>
-      Sign in with Google
-    </span>
+    <button
+      data-auth-provider="google"
+      data-button="true"
+      data-size="md"
+      data-style="none"
+      data-variant="default"
+      type="button"
+    >
+      <!---->
+      <span
+        aria-hidden="true"
+        class="i-auth-google"
+        data-item-icon=""
+      />
+       
+      <span
+        data-item-label=""
+      >
+        Sign in with Google
+      </span>
+      
+      <!---->
+    </button>
     
-    
-  </button>
-  
-  
+    <!---->
+  </div>
   
 </div>
 `;
 
 exports[`AuthProvider.svelte > oauth > should render oauth button with scopes 1`] = `
 <div>
-  <!---->
-  <!---->
-  <button
-    data-button-root="true"
-    tabindex="0"
-    type="button"
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="oauth"
+    data-auth-provider="azure"
   >
     <!---->
-    <span
-      aria-hidden="true"
-      class="i-auth-azure"
-      data-item-icon=""
-    />
-     
-    <span>
-      Sign in with Azure
-    </span>
+    <button
+      data-auth-provider="azure"
+      data-button="true"
+      data-size="md"
+      data-style="none"
+      data-variant="default"
+      type="button"
+    >
+      <!---->
+      <span
+        aria-hidden="true"
+        class="i-auth-azure"
+        data-item-icon=""
+      />
+       
+      <span
+        data-item-label=""
+      >
+        Sign in with Azure
+      </span>
+      
+      <!---->
+    </button>
     
-    
-  </button>
-  
-  
+    <!---->
+  </div>
   
 </div>
 `;
 
 exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
 <div>
-  <!---->
-  <form
-    class="flex w-full p-0 "
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="otp"
+    data-auth-provider="magic"
   >
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="email"
-      data-has-icon="true"
+    <form
+      class="flex w-full p-0 gap-2 "
     >
       <div
-        aria-label="magic link"
-        data-field=""
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="email"
+        data-has-icon="true"
       >
-        <label
-          for="magic"
+        <div
+          aria-label="magic link"
+          data-field=""
         >
-          magic link
-        </label>
+          <label
+            for="magic"
+          >
+            magic link
+          </label>
+          <!---->
+           
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-magic"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              id="magic"
+              name="magic"
+              placeholder="Sign in with Magic Link"
+              type="email"
+            />
+            <!---->
+          </div>
+          
+          <!---->
+        </div>
+         
         <!---->
          
         <!---->
-        <div
-          data-input-root=""
-        >
-          <span
-            aria-hidden="true"
-            class="i-auth-magic"
-          />
-          <!---->
-           
-          <input
-            id="magic"
-            name="magic"
-            placeholder="Sign in with Magic Link"
-            type="email"
-          />
-          <!---->
-        </div>
-        
-        <!---->
       </div>
-       
       <!---->
-       
-      <!---->
-    </div>
+    </form>
     <!---->
-  </form>
-  
+  </div>
   
 </div>
 `;
 
 exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
 <div>
-  <!---->
-  <form
-    class="flex w-full p-0 custom"
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="otp"
+    data-auth-provider="magic"
   >
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="email"
-      data-has-icon="true"
+    <form
+      class="flex w-full p-0 gap-2 custom"
     >
       <div
-        aria-label="magic link"
-        data-field=""
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="email"
+        data-has-icon="true"
       >
-        <label
-          for="magic"
+        <div
+          aria-label="magic link"
+          data-field=""
         >
-          magic link
-        </label>
+          <label
+            for="magic"
+          >
+            magic link
+          </label>
+          <!---->
+           
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-magic"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              id="magic"
+              name="magic"
+              placeholder="Sign in with Magic Link"
+              type="email"
+            />
+            <!---->
+          </div>
+          
+          <!---->
+        </div>
+         
         <!---->
          
         <!---->
-        <div
-          data-input-root=""
-        >
-          <span
-            aria-hidden="true"
-            class="i-auth-magic"
-          />
-          <!---->
-           
-          <input
-            id="magic"
-            name="magic"
-            placeholder="Sign in with Magic Link"
-            type="email"
-          />
-          <!---->
-        </div>
-        
-        <!---->
       </div>
-       
       <!---->
-       
-      <!---->
-    </div>
+    </form>
     <!---->
-  </form>
-  
+  </div>
   
 </div>
 `;
 
 exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1`] = `
 <div>
-  <!---->
-  <form
-    class="flex w-full p-0 "
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="otp"
+    data-auth-provider="magic"
   >
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="email"
-      data-has-icon="true"
+    <form
+      class="flex w-full p-0 gap-2 "
     >
       <div
-        aria-label="magic link"
-        data-field=""
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="email"
+        data-has-icon="true"
       >
-        <label
-          for="magic"
+        <div
+          aria-label="magic link"
+          data-field=""
         >
-          magic link
-        </label>
+          <label
+            for="magic"
+          >
+            magic link
+          </label>
+          <!---->
+           
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-magic"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              id="magic"
+              name="magic"
+              placeholder="Sign in with Magic Link"
+              type="email"
+            />
+            <!---->
+          </div>
+          
+          <!---->
+        </div>
+         
         <!---->
          
         <!---->
-        <div
-          data-input-root=""
-        >
-          <span
-            aria-hidden="true"
-            class="i-auth-magic"
-          />
-          <!---->
-           
-          <input
-            id="magic"
-            name="magic"
-            placeholder="Sign in with Magic Link"
-            type="email"
-          />
-          <!---->
-        </div>
-        
-        <!---->
       </div>
-       
       <!---->
-       
-      <!---->
-    </div>
+    </form>
     <!---->
-  </form>
-  
+  </div>
   
 </div>
 `;
 
 exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2`] = `
 <div>
-  <!---->
-  <form
-    class="flex w-full p-0 custom"
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="otp"
+    data-auth-provider="otp"
   >
+    <form
+      class="flex w-full p-0 gap-2 custom"
+    >
+      <div
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="email"
+        data-has-icon="true"
+      >
+        <div
+          aria-label="magic link"
+          data-field=""
+        >
+          <label
+            for="magic"
+          >
+            magic link
+          </label>
+          <!---->
+           
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-otp"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              id="magic"
+              name="magic"
+              placeholder="Send me a link"
+              type="email"
+            />
+            <!---->
+          </div>
+          
+          <!---->
+        </div>
+         
+        <!---->
+         
+        <!---->
+      </div>
+      <!---->
+    </form>
+    <!---->
+  </div>
+  
+</div>
+`;
+
+exports[`AuthProvider.svelte > password > should handle errors 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="password"
+    data-auth-provider="email"
+  >
+    <!---->
     <div
       data-field-empty="false"
       data-field-root="true"
@@ -237,13 +346,13 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2
       data-has-icon="true"
     >
       <div
-        aria-label="magic link"
+        aria-label="email"
         data-field=""
       >
         <label
-          for="magic"
+          for="email"
         >
-          magic link
+          email
         </label>
         <!---->
          
@@ -253,14 +362,15 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2
         >
           <span
             aria-hidden="true"
-            class="i-auth-otp"
+            class="i-auth-email"
+            data-input-icon=""
           />
           <!---->
            
           <input
-            id="magic"
-            name="magic"
-            placeholder="Send me a link"
+            autocomplete="on"
+            id="email"
+            name="email"
             type="email"
           />
           <!---->
@@ -274,214 +384,194 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2
       <!---->
     </div>
     <!---->
-  </form>
-  
-  
-</div>
-`;
-
-exports[`AuthProvider.svelte > password > should handle errors 1`] = `
-<div>
-  <!---->
-  <!---->
-  <div
-    data-field-empty="false"
-    data-field-root="true"
-    data-field-type="email"
-    data-has-icon="true"
-  >
+     
     <div
-      aria-label="email"
-      data-field=""
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="password"
+      data-has-icon="true"
     >
-      <label
-        for="email"
+      <div
+        aria-label="Password"
+        data-field=""
       >
-        email
-      </label>
+        <label
+          for="password"
+        >
+          Password
+        </label>
+        <!---->
+         
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-password"
+            data-input-icon=""
+          />
+          <!---->
+           
+          <input
+            id="password"
+            name="password"
+            type="password"
+          />
+          <!---->
+        </div>
+        
+        <!---->
+      </div>
+       
       <!---->
        
       <!---->
-      <div
-        data-input-root=""
-      >
-        <span
-          aria-hidden="true"
-          class="i-auth-email"
-        />
-        <!---->
-         
-        <input
-          autocomplete="on"
-          id="email"
-          name="email"
-          type="email"
-        />
-        <!---->
-      </div>
-      
-      <!---->
     </div>
-     
     <!---->
      
     <!---->
-  </div>
-  <!---->
-   
-  <div
-    data-field-empty="false"
-    data-field-root="true"
-    data-field-type="password"
-    data-has-icon="true"
-  >
-    <div
-      aria-label="Password"
-      data-field=""
+    <button
+      class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
+      data-auth-mode="password"
+      data-button="true"
+      data-size="md"
+      data-style="default"
+      data-variant="default"
+      type="button"
     >
-      <label
-        for="password"
-      >
-        Password
-      </label>
       <!---->
-       
-      <!---->
-      <div
-        data-input-root=""
-      >
-        <span
-          aria-hidden="true"
-          class="i-auth-password"
-        />
-        <!---->
-         
-        <input
-          id="password"
-          name="password"
-          type="password"
-        />
-        <!---->
-      </div>
+      Sign in
       
       <!---->
-    </div>
-     
+    </button>
+    
     <!---->
-     
     <!---->
   </div>
-  <!---->
-   
-  <button
-    class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
-  >
-    Sign in
-  </button>
-  
   
 </div>
 `;
 
 exports[`AuthProvider.svelte > password > should render email/password auth 1`] = `
 <div>
-  <!---->
-  <!---->
   <div
-    data-field-empty="false"
-    data-field-root="true"
-    data-field-type="email"
-    data-has-icon="true"
+    class="flex flex-col gap-2"
+    data-auth=""
+    data-auth-mode="password"
+    data-auth-provider="email"
   >
+    <!---->
     <div
-      aria-label="email"
-      data-field=""
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="email"
+      data-has-icon="true"
     >
-      <label
-        for="email"
+      <div
+        aria-label="email"
+        data-field=""
       >
-        email
-      </label>
+        <label
+          for="email"
+        >
+          email
+        </label>
+        <!---->
+         
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-email"
+            data-input-icon=""
+          />
+          <!---->
+           
+          <input
+            autocomplete="on"
+            id="email"
+            name="email"
+            type="email"
+          />
+          <!---->
+        </div>
+        
+        <!---->
+      </div>
+       
       <!---->
        
       <!---->
+    </div>
+    <!---->
+     
+    <div
+      data-field-empty="false"
+      data-field-root="true"
+      data-field-type="password"
+      data-has-icon="true"
+    >
       <div
-        data-input-root=""
+        aria-label="Password"
+        data-field=""
       >
-        <span
-          aria-hidden="true"
-          class="i-auth-email"
-        />
+        <label
+          for="password"
+        >
+          Password
+        </label>
         <!---->
          
-        <input
-          autocomplete="on"
-          id="email"
-          name="email"
-          type="email"
-        />
+        <!---->
+        <div
+          data-input-root=""
+        >
+          <span
+            aria-hidden="true"
+            class="i-auth-password"
+            data-input-icon=""
+          />
+          <!---->
+           
+          <input
+            id="password"
+            name="password"
+            type="password"
+          />
+          <!---->
+        </div>
+        
         <!---->
       </div>
-      
-      <!---->
-    </div>
-     
-    <!---->
-     
-    <!---->
-  </div>
-  <!---->
-   
-  <div
-    data-field-empty="false"
-    data-field-root="true"
-    data-field-type="password"
-    data-has-icon="true"
-  >
-    <div
-      aria-label="Password"
-      data-field=""
-    >
-      <label
-        for="password"
-      >
-        Password
-      </label>
+       
       <!---->
        
       <!---->
-      <div
-        data-input-root=""
-      >
-        <span
-          aria-hidden="true"
-          class="i-auth-password"
-        />
-        <!---->
-         
-        <input
-          id="password"
-          name="password"
-          type="password"
-        />
-        <!---->
-      </div>
+    </div>
+    <!---->
+     
+    <!---->
+    <button
+      class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
+      data-auth-mode="password"
+      data-button="true"
+      data-size="md"
+      data-style="default"
+      data-variant="default"
+      type="button"
+    >
+      <!---->
+      Sign in
       
       <!---->
-    </div>
-     
+    </button>
+    
     <!---->
-     
     <!---->
   </div>
-  <!---->
-   
-  <button
-    class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
-  >
-    Sign in
-  </button>
-  
   
 </div>
 `;

@@ -148,7 +148,7 @@ export function processAppRoutes(appRoutes) {
  * @returns {import('./types').RoutingRules}
  */
 export function addRulesForAppRoutes(rules, appRoutes, options = {}) {
-	options = { ...options, ...defaultRouteRules }
+	options = { ...defaultRouteRules, ...options }
 
 	Object.entries(options).forEach(([route, config]) => {
 		const paths = Array.isArray(appRoutes[route])
@@ -158,7 +158,10 @@ export function addRulesForAppRoutes(rules, appRoutes, options = {}) {
 		paths
 			.filter((path) => path)
 			.forEach((path) => {
-				rules = rules.filter((rule) => rule.path !== path)
+				// Don't override user's explicit rules - skip if already defined
+				const existingRule = rules.find((rule) => rule.path === path)
+				if (existingRule) return
+
 				const matchChild = rules.find(
 					(rule) =>
 						path.startsWith(`${rule.path}/`) && rule.public === config.public

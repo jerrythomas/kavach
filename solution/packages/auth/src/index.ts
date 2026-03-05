@@ -2,7 +2,7 @@
 export * from './types'
 export * from './request'
 export * from './messages'
-
+export { DEFAULT_AUTH_ICONS } from './constants'
 export { createKavach, authStatus } from './kavach'
 export { gravatar, deriveName } from './avatar'
 export { urlHashToParams } from './internal'

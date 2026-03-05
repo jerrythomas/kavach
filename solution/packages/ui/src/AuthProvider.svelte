@@ -1,5 +1,5 @@
 <script>
-	import { Button } from './button'
+	import { Button } from '@rokkit/ui'
 	import { InputField } from '@rokkit/forms'
 	import { getContext } from 'svelte'
 	import AuthPassword from './AuthPassword.svelte'
@@ -55,15 +55,16 @@
 	}
 </script>
 
+<div data-auth data-auth-provider={name} data-auth-mode={mode} class="flex flex-col gap-2">
 {#if mode === 'oauth'}
-	<Button onclick={signIn} type="button" class={className}>
+	<Button onclick={signIn} data-auth-provider={name} style="none">
 		<span data-item-icon class="i-auth-{name}" aria-hidden="true"></span>
-		<span>{label}</span>
+		<span data-item-label>{label}</span>
 	</Button>
 {:else if mode === 'password'}
 	<AuthPassword bind:value bind:password onclick={signIn} />
 {:else}
-	<form onsubmit={signIn} class="flex w-full p-0 {className}">
+	<form onsubmit={signIn} class="flex w-full p-0 gap-2 {className}">
 		<InputField
 			type="email"
 			name="magic"
@@ -74,3 +75,4 @@
 		/>
 	</form>
 {/if}
+</div>

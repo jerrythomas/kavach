@@ -1,14 +1,27 @@
 export default {
-  "colors": {
-    "primary": "orange",
-    "secondary": "pink",
-    "accent": "sky",
-    "surface": "slate",
-    "success": "green",
-    "warning": "yellow",
-    "danger": "red",
-    "error": "red",
-    "info": "cyan"
-  },
-  "storageKey": "rokkit-theme"
+	colors: {
+		surface: 'shark'
+	},
+	skins: {
+		default: { surface: 'shark' },
+		vibrant: { primary: 'blue', secondary: 'purple' },
+		seaweed: {
+			primary: 'sky',
+			secondary: 'green',
+			accent: 'blue',
+			danger: 'rose',
+			error: 'rose',
+			success: 'lime',
+			surface: 'zinc',
+			warning: 'amber',
+			info: 'indigo'
+		}
+	},
+	themes: ['rokkit'],
+	icons: {
+		app: '@rokkit/icons/app.json',
+		auth: '@rokkit/icons/auth.json'
+	},
+	switcher: 'full',
+	storageKey: 'kavach-theme'
 }

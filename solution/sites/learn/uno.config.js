@@ -1,36 +1,12 @@
 import extractorSvelte from '@unocss/extractor-svelte'
-import {
-	defineConfig,
-	presetIcons,
-	presetTypography,
-	presetWind,
-	transformerDirectives,
-	transformerVariantGroup
-} from 'unocss'
-import { Theme, DEFAULT_ICONS, iconShortcuts } from '@rokkit/core'
-
-const theme = new Theme()
+import { defineConfig, transformerDirectives, transformerVariantGroup } from 'unocss'
+import { presetRokkit } from '@rokkit/unocss'
+import config from './rokkit.config.js'
+import { DEFAULT_AUTH_ICONS } from 'kavach'
 
 export default defineConfig({
 	extractors: [extractorSvelte()],
-	safelist: [...DEFAULT_ICONS],
-	shortcuts: [
-		['skin-default', theme.getPalette()],
-		...theme.getShortcuts('primary'),
-		...theme.getShortcuts('neutral'),
-		...Object.entries(iconShortcuts(DEFAULT_ICONS, 'i-rokkit'))
-	],
-	theme: {
-		colors: theme.getColorRules()
-	},
-	presets: [
-		presetWind(),
-		presetTypography(),
-		presetIcons({
-			collections: {
-				rokkit: () => import('@rokkit/icons/ui.json').then((i) => i.default)
-			}
-		})
-	],
+	presets: [presetRokkit(config)],
+	safelist: [...DEFAULT_AUTH_ICONS],
 	transformers: [transformerDirectives(), transformerVariantGroup()]
 })
