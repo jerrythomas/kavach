@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "rootDir": "src"
+  },
+  "exclude": ["**/spec/**/*", "**/fixtures/**/*"]
+}
