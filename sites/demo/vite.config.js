@@ -8,6 +8,9 @@ const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
 /** @type {import('vite').UserConfig} */
 const config = {
 	plugins: [kavach(), unocss(), sveltekit()],
+	resolve: {
+		dedupe: ['svelte']
+	},
 	define: {
 		__APP_VERSION__: JSON.stringify(pkg.version)
 	}
