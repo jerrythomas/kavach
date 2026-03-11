@@ -46,11 +46,11 @@
     "@kavach/logger": "workspace:*",
     "@kavach/cli": "workspace:*",
     "@kavach/ui": "workspace:*",
-    "@rokkit/actions": "link:@rokkit/actions",
-    "@rokkit/core": "link:@rokkit/core",
-    "@rokkit/icons": "link:@rokkit/icons",
-    "@rokkit/states": "link:@rokkit/states",
-    "@rokkit/themes": "link:@rokkit/themes",
+    "@rokkit/actions": "latest",
+    "@rokkit/core": "latest",
+    "@rokkit/icons": "latest",
+    "@rokkit/states": "latest",
+    "@rokkit/themes": "latest",
     "@supabase/supabase-js": "^2.49.4",
     "ramda": "^0.30.1"
   }

@@ -60,13 +60,13 @@
     "sites/**"
   ],
   "dependencies": {
-    "@rokkit/actions": "link:@rokkit/actions",
-    "@rokkit/core": "link:@rokkit/core",
-    "@rokkit/data": "link:@rokkit/data",
-    "@rokkit/forms": "link:@rokkit/forms",
-    "@rokkit/icons": "link:@rokkit/icons",
-    "@rokkit/states": "link:@rokkit/states",
-    "@rokkit/themes": "link:@rokkit/themes",
-    "@rokkit/ui": "link:@rokkit/ui"
+    "@rokkit/actions": "latest",
+    "@rokkit/core": "latest",
+    "@rokkit/data": "latest",
+    "@rokkit/forms": "latest",
+    "@rokkit/icons": "latest",
+    "@rokkit/states": "latest",
+    "@rokkit/themes": "latest",
+    "@rokkit/ui": "latest"
   }
 }
