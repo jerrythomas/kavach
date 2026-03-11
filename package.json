@@ -9,11 +9,11 @@
     "access": "restricted"
   },
   "scripts": {
-    "prepare": "cd .. && husky",
+    "prepare": "husky",
     "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
-    "test:watch": "bunx --bun vitest",
-    "test:ci": "bunx --bun vitest run",
-    "coverage": "npx vitest run --coverage",
+    "test:watch": "vitest",
+    "test:ci": "vitest run",
+    "coverage": "vitest run --coverage",
     "format": "prettier --write .",
     "lint": "eslint --fix",
     "lockfile": "bun install",
