@@ -21,10 +21,6 @@ export function validateConfig(config, capabilities) {
 	}
 
 	// Check unsupported providers
-	const supportedProviderNames = Object.keys(capabilities.supports).filter(
-		(k) => capabilities.supports[k] && ['oauth', 'magic', 'password', 'passkey'].includes(k)
-	)
-
 	const configuredProviders = config.providers || []
 	for (const provider of configuredProviders) {
 		const name = provider.name || provider

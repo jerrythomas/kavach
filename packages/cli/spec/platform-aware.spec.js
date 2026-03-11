@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import {
 	getAdapterCapabilities,
 	getAdapterList,
@@ -6,7 +6,7 @@ import {
 	isFeatureSupported,
 	ADAPTER_REGISTRY
 } from '../src/adapters.js'
-import { generateDDLInstructions, formatDDLOutput, getUnsupportedFeaturesMessage } from '../src/ddl.js'
+import { generateDDLInstructions, formatDDLOutput } from '../src/ddl.js'
 import { validateConfig, formatValidationOutput } from '../src/validation.js'
 
 describe('Adapter Registry', () => {

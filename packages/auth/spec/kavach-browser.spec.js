@@ -25,14 +25,17 @@ describe('kavach', () => {
 	beforeEach(() => {
 		adapter = createMockAdapter()
 		global.fetch = vi.fn()
-		
-		const createMockResponse = function(body = {}, options = {}) {
+
+		const createMockResponse = function (body = {}, options = {}) {
 			this.body = body
 			this.status = options.status ?? 200
 			this.headers = new Map(Object.entries(options.headers ?? {}))
 		}
-		createMockResponse.redirect = vi.fn((url, status) => new createMockResponse({}, { status: status ?? 302, headers: { location: url } }))
-		
+		createMockResponse.redirect = vi.fn(
+			(url, status) =>
+				new createMockResponse({}, { status: status ?? 302, headers: { location: url } })
+		)
+
 		global.Response = vi.fn().mockImplementation(createMockResponse)
 	})
 
@@ -56,7 +59,9 @@ describe('kavach', () => {
 	})
 
 	it('should return the server actions using data option', () => {
-		const mockData = vi.fn().mockImplementation((schema) => ({ connection: `${schema} connection` }))
+		const mockData = vi
+			.fn()
+			.mockImplementation((schema) => ({ connection: `${schema} connection` }))
 		const kavach = createKavach(adapter, { data: mockData })
 		expect(kavach.actions('public')).toEqual({ connection: 'public connection' })
 		expect(mockData).toHaveBeenCalledWith('public')
@@ -392,15 +397,21 @@ describe('kavach', () => {
 	})
 
 	describe('loginCache integration', () => {
-		const STORAGE_KEY = 'kavach:logins'
-
 		beforeEach(() => {
 			vi.stubGlobal('localStorage', {
 				_store: {},
-				getItem(key) { return this._store[key] ?? null },
-				setItem(key, value) { this._store[key] = String(value) },
-				removeItem(key) { delete this._store[key] },
-				clear() { this._store = {} }
+				getItem(key) {
+					return this._store[key] ?? null
+				},
+				setItem(key, value) {
+					this._store[key] = String(value)
+				},
+				removeItem(key) {
+					delete this._store[key]
+				},
+				clear() {
+					this._store = {}
+				}
 			})
 		})
 
@@ -515,7 +526,8 @@ describe('kavach', () => {
 		})
 
 		it('should clear all cached logins', async () => {
-			adapter.signIn = vi.fn()
+			adapter.signIn = vi
+				.fn()
 				.mockResolvedValueOnce({
 					type: 'success',
 					data: { user: { email: 'a@test.com', user_metadata: {} } }

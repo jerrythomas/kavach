@@ -22,7 +22,7 @@ vi.mock('aws-amplify/utils', () => ({
 	Hub: { listen: (...args) => mockHubListen(...args) }
 }))
 
-import { getAdapter, transformResult, getAuthMode, parseUrlError, AmplifyAuthAdapter } from '../src/adapter.js'
+import { getAdapter, transformResult, getAuthMode, AmplifyAuthAdapter } from '../src/adapter.js'
 
 describe('getAdapter', () => {
 	let adapter
@@ -304,7 +304,10 @@ describe('transformResult', () => {
 
 	it('should transform an error result with code', () => {
 		const error = { code: 'NotAuthorizedException', message: 'Invalid credentials' }
-		const result = transformResult({ error }, { provider: 'password', email: 'a@b.com', password: 'wrong' })
+		const result = transformResult(
+			{ error },
+			{ provider: 'password', email: 'a@b.com', password: 'wrong' }
+		)
 
 		expect(result).toEqual({
 			type: 'error',

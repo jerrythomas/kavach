@@ -23,7 +23,6 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div data-login-card onclick={handleClick} role="button" tabindex="0">
 	<img src={avatar} alt={name} />

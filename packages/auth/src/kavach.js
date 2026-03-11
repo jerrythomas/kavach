@@ -224,27 +224,27 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 	}
 
 	const protection = handleUnauthorizedAccess(agents, { event, resolve })
-	
+
 	// If protection returns a Response (redirect or error), return it immediately
 	if (protection instanceof Response) {
 		// Check for data/rpc routes before returning error response
 		const { pathname } = event.url
 		const dataRoute = guardian.app.data
 		const rpcRoute = guardian.app.rpc
-		
+
 		// Only handle data/rpc routes if the request would otherwise be allowed
 		if (protection.status === 200 || protection.status === undefined) {
 			// Handle data route if configured
 			if (dataRoute && isDataRoute(pathname, dataRoute)) {
 				return handleDataRoute(agents, { event }, dataRoute, agents.dataFn)
 			}
-			
+
 			// Handle RPC route if configured
 			if (rpcRoute && isRpcRoute(pathname, rpcRoute)) {
 				return handleRpcRoute(agents, { event }, rpcRoute)
 			}
 		}
-		
+
 		return protection
 	}
 
@@ -377,9 +377,7 @@ async function handleDataRoute(agents, { event }, dataRoute, dataFn) {
 
 		if (method === 'GET') {
 			const body = Object.fromEntries(searchParams.entries())
-			const filter = Object.fromEntries(
-				Object.entries(body).filter(([k]) => !RESERVED.includes(k))
-			)
+			const filter = Object.fromEntries(Object.entries(body).filter(([k]) => !RESERVED.includes(k)))
 			result = await actions.get(entity, {
 				columns: body[':select'],
 				order: body[':order'],
@@ -424,9 +422,7 @@ async function handleDataRoute(agents, { event }, dataRoute, dataFn) {
  * @param {string|string[]|undefined} rpcRoute
  * @returns {Promise<Response>}
  */
-async function handleRpcRoute(agents, { event }, rpcRoute) {
-	const { pathname } = event.url
-
+async function handleRpcRoute(agents, { event }, _rpcRoute) {
 	if (!agents.guardian.rpc) {
 		return new Response(JSON.stringify({ error: { message: MESSAGES.RPC_NOT_SUPPORTED } }), {
 			status: 501,
@@ -488,7 +484,6 @@ function getAgents(options) {
 		dataFn: options.data
 	}
 }
-
 
 /**
  * Create Kavach instance

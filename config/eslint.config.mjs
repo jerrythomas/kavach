@@ -15,7 +15,11 @@ export default [
       '**/.vercel/**',
       'packages/archive',
       'packages/icons/lib',
-      '**/app.d.ts'
+      '**/app.d.ts',
+      '.worktrees/**',
+      'sites/learn/**',
+      'packages/vite/src/templates/**',
+      'sites/demo/playwright.config.js'
     ]
   },
   {
@@ -23,7 +27,6 @@ export default [
       sourceType: 'module',
       ecmaVersion: 'latest',
       globals: {
-        // Correctly define globals as individual entries
         TouchEvent: 'readonly',
         CustomEvent: 'readonly',
         Touch: 'readonly',
@@ -38,19 +41,19 @@ export default [
         console: 'readonly',
         process: 'readonly',
         global: 'readonly',
-        __APP_VERSION__: 'readonly'
-        // Add any other specific globals you need
+        __APP_VERSION__: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        Buffer: 'readonly'
       },
-      // You can use parserOptions to specify environments
       parserOptions: {
         ecmaFeatures: {
           jsx: true
         }
       }
     },
-    // Setting environments in flat config
     linterOptions: {
-      reportUnusedDisableDirectives: true
+      reportUnusedDisableDirectives: 'warn'
     },
     rules: {
       complexity: ['warn', 5],
@@ -62,8 +65,8 @@ export default [
       eqeqeq: 'error',
       'no-eq-null': 'error',
       'no-implicit-coercion': 'error',
-      'no-use-before-define': 'error',
-      'no-unused-vars': 'error',
+      'no-use-before-define': ['error', { functions: false }],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-undef': 'error',
       'max-lines-per-function': [
         'warn',
@@ -76,12 +79,38 @@ export default [
       'no-return-await': 'error',
       'require-await': 'error'
     },
-    files: ['**/*.js', '**/*.ts']
+    files: ['**/*.js']
+  },
+  {
+    files: ['packages/cli/**/*.js'],
+    rules: {
+      'no-console': 'off'
+    }
   },
   {
     files: ['**/*.spec.js', '**/*.spec.svelte.js', '**/spec/mocks/**'],
+    languageOptions: {
+      globals: {
+        vi: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        test: 'readonly',
+        suite: 'readonly'
+      }
+    },
     rules: {
       'max-lines-per-function': 'off'
+    }
+  },
+  {
+    files: ['**/*.svelte'],
+    rules: {
+      'svelte/no-navigation-without-resolve': 'off'
     }
   }
 ]

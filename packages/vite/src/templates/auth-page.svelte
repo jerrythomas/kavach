@@ -5,6 +5,6 @@
 	let { data } = $props()
 </script>
 
-{#each providers as provider}
+{#each providers as provider (provider)}
 	<AuthProvider {provider} />
 {/each}

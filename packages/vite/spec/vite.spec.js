@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { kavach } from '../src/index.js'
 
 describe('kavach vite plugin', () => {
@@ -80,12 +80,12 @@ describe('kavach vite plugin', () => {
 			)
 		})
 
-		it('should generate module for valid virtual id', async () => {
+		it('should generate module for valid virtual id', () => {
 			const plugin = kavach()
 			plugin.configResolved({ root: '/test' })
 
 			// Mock buildStart to set config
-			plugin.buildStart = async () => {
+			plugin.buildStart = () => {
 				// Config is already loaded from file
 			}
 
@@ -94,7 +94,6 @@ describe('kavach vite plugin', () => {
 		})
 
 		it('should extract module name from virtual id', () => {
-			const plugin = kavach()
 			// Test that it tries to extract the right name
 			const id = '\0$kavach/auth'
 			const name = id.slice('\0$kavach/'.length)

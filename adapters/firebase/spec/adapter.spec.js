@@ -66,7 +66,11 @@ describe('getAdapter', () => {
 		it('should handle magic link sign in via sendSignInLinkToEmail', async () => {
 			mockSendSignInLinkToEmail.mockResolvedValue(undefined)
 
-			const credentials = { provider: 'magic', email: 'a@b.com', redirectTo: 'http://localhost:3000' }
+			const credentials = {
+				provider: 'magic',
+				email: 'a@b.com',
+				redirectTo: 'http://localhost:3000'
+			}
 			const result = await adapter.signIn(credentials)
 
 			expect(mockSendSignInLinkToEmail).toHaveBeenCalledWith(mockAuth, 'a@b.com', {
@@ -130,7 +134,11 @@ describe('getAdapter', () => {
 			const credentials = { email: 'new@b.com', password: 'newpass123' }
 			const result = await adapter.signUp(credentials)
 
-			expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(mockAuth, 'new@b.com', 'newpass123')
+			expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(
+				mockAuth,
+				'new@b.com',
+				'newpass123'
+			)
 			expect(result.type).toBe('success')
 			expect(result.data).toEqual(mockUser)
 			expect(result.credentials).not.toHaveProperty('password')
@@ -198,7 +206,7 @@ describe('getAdapter', () => {
 			expect(result).toBe(unsubFn)
 		})
 
-		it('should call callback with SIGNED_IN when user exists', async () => {
+		it('should call callback with SIGNED_IN when user exists', () => {
 			const callback = vi.fn()
 			const mockUser = { uid: 'user-1', email: 'a@b.com' }
 
@@ -212,7 +220,7 @@ describe('getAdapter', () => {
 			expect(callback).toHaveBeenCalledWith('SIGNED_IN', mockUser)
 		})
 
-		it('should call callback with SIGNED_OUT when user is null', async () => {
+		it('should call callback with SIGNED_OUT when user is null', () => {
 			const callback = vi.fn()
 
 			mockOnAuthStateChanged.mockImplementation((auth, cb) => {
@@ -234,7 +242,9 @@ describe('getAdapter', () => {
 		})
 
 		it('should parse error params from URL query string', () => {
-			const url = new URL('http://localhost:3000/callback?error=access_denied&error_description=User+denied+access')
+			const url = new URL(
+				'http://localhost:3000/callback?error=access_denied&error_description=User+denied+access'
+			)
 			const result = adapter.parseUrlError(url)
 			expect(result).toEqual({
 				code: 'access_denied',
@@ -263,7 +273,10 @@ describe('transformResult', () => {
 
 	it('should transform an error result with code', () => {
 		const error = { code: 'auth/invalid-credential', message: 'Invalid credentials' }
-		const result = transformResult({ error }, { provider: 'password', email: 'a@b.com', password: 'wrong' })
+		const result = transformResult(
+			{ error },
+			{ provider: 'password', email: 'a@b.com', password: 'wrong' }
+		)
 
 		expect(result).toEqual({
 			type: 'error',

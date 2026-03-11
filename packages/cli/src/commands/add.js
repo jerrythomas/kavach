@@ -3,7 +3,7 @@ import * as p from '@clack/prompts'
 import pc from 'picocolors'
 import { parseConfig } from '@kavach/vite'
 import { generateAuthPage, generateDataRoute } from '../generators.js'
-import { readFile, writeFile, fileExists } from '../fs.js'
+import { writeFile, fileExists } from '../fs.js'
 
 function detectTypeScript(cwd) {
 	const hasTsConfig = fileExists(resolve(cwd, 'tsconfig.json'))
@@ -63,7 +63,9 @@ async function addRoutes(cwd) {
 	}
 
 	writeFile(dataRoutePath, generateDataRoute())
-	p.outro(pc.green(`Data route written to src/routes/${config.routes.data}/[...slug]/+server.${ext}`))
+	p.outro(
+		pc.green(`Data route written to src/routes/${config.routes.data}/[...slug]/+server.${ext}`)
+	)
 }
 
 const SUBCOMMANDS = {

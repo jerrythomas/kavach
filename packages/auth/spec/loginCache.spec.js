@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import * as loginCache from '../src/loginCache.js'
 
 const STORAGE_KEY = 'kavach:logins'

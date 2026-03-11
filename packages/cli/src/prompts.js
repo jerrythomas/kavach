@@ -146,24 +146,24 @@ export async function promptLoggingConfig(adapterName) {
 	return { enabled: true, table, level }
 }
 
-export async function promptAuthRoute() {
-	return await p.text({
+export function promptAuthRoute() {
+	return p.text({
 		message: 'Auth route path?',
 		placeholder: '(public)/auth',
 		defaultValue: '(public)/auth'
 	})
 }
 
-export async function promptLogoutRoute() {
-	return await p.text({
+export function promptLogoutRoute() {
+	return p.text({
 		message: 'Logout route path?',
 		placeholder: '/logout',
 		defaultValue: '/logout'
 	})
 }
 
-export async function promptCachedLogins() {
-	return await p.confirm({
+export function promptCachedLogins() {
+	return p.confirm({
 		message: 'Enable cached logins?',
 		initialValue: false
 	})
@@ -184,7 +184,7 @@ export async function promptRules() {
 	return rules
 }
 
-export async function showValidationWarnings(config, adapterName) {
+export function showValidationWarnings(config, adapterName) {
 	const capabilities = getAdapterCapabilities(adapterName)
 	const validation = validateConfig(config, capabilities)
 
@@ -193,7 +193,7 @@ export async function showValidationWarnings(config, adapterName) {
 	}
 }
 
-export async function showDDLInstructions(config, adapterName) {
+export function showDDLInstructions(config, adapterName) {
 	const capabilities = getAdapterCapabilities(adapterName)
 	const ddl = generateDDLInstructions(capabilities, config)
 

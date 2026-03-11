@@ -14,10 +14,10 @@
 </script>
 
 <header
-	class="flex min-h-14 w-full bg-neutral-base items-center justify-between relative border-b border-neutral-inset"
+	class="bg-neutral-base border-neutral-inset relative flex min-h-14 w-full items-center justify-between border-b"
 >
 	{#if loading}
-		<div class="absolute top-0 left-0 w-full h-1 bg-primary animate-pulse"></div>
+		<div class="bg-primary absolute top-0 left-0 h-1 w-full animate-pulse"></div>
 	{/if}
 	<div class="flex items-center gap-2 px-4">
 		<a href="/" class="flex items-center">
@@ -31,7 +31,7 @@
 			<div class="flex items-center gap-2 text-sm">
 				<span class="text-neutral-500">Adapter:</span>
 				<select
-					class="bg-neutral-base border border-neutral-300 rounded px-2 py-1 text-sm"
+					class="bg-neutral-base rounded border border-neutral-300 px-2 py-1 text-sm"
 					value={adapter}
 					onchange={async (e) => {
 						await fetch('/api/set-adapter', {
@@ -42,13 +42,13 @@
 						window.location.reload()
 					}}
 				>
-					{#each adapters as name}
+					{#each adapters as name (name)}
 						<option value={name} selected={name === adapter}>{name}</option>
 					{/each}
 				</select>
 			</div>
 		{:else}
-			<span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">{adapter}</span>
+			<span class="rounded bg-neutral-100 px-2 py-1 text-xs text-neutral-400">{adapter}</span>
 		{/if}
 
 		{#if user}

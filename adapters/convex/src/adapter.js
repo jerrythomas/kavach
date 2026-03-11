@@ -75,17 +75,17 @@ export class ConvexAuthAdapter {
 		const mode = getAuthMode(credentials)
 		try {
 			const signInActions = {
-				magic: async () =>
+				magic: () =>
 					this.client.signIn('resend-otp', {
 						email: credentials.email
 					}),
-				password: async () =>
+				password: () =>
 					this.client.signIn('password', {
 						email: credentials.email,
 						password: credentials.password,
 						flow: 'signIn'
 					}),
-				oauth: async () => this.client.signIn(credentials.provider)
+				oauth: () => this.client.signIn(credentials.provider)
 			}
 			const data = await signInActions[mode]()
 			return transformResult({ data }, credentials)
@@ -128,7 +128,7 @@ export class ConvexAuthAdapter {
 	 * @param {unknown} session
 	 * @returns {Promise<{data: {session: unknown}, error: null}>}
 	 */
-	async synchronize(session) {
+	synchronize(session) {
 		// Convex adapter currently doesn't need to set session; return session back.
 		return { data: { session }, error: null }
 	}

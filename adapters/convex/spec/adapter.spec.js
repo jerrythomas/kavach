@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { getAdapter, transformResult, ConvexAuthAdapter } from '../src/adapter.js'
 import { createMockConvexAuth } from './mock.js'
 

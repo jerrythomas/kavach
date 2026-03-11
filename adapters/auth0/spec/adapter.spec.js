@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { createMockAuth0Client } from './mock.js'
-import { getAdapter, transformResult, getAuthMode, parseUrlError, Auth0AuthAdapter } from '../src/adapter.js'
+import { getAdapter, transformResult, getAuthMode, Auth0AuthAdapter } from '../src/adapter.js'
 
 describe('getAdapter', () => {
 	let mockClient
@@ -225,7 +225,10 @@ describe('transformResult', () => {
 
 	it('should transform an error result with code', () => {
 		const error = { code: 'auth/invalid-credential', message: 'Invalid credentials' }
-		const result = transformResult({ error }, { provider: 'password', email: 'a@b.com', password: 'wrong' })
+		const result = transformResult(
+			{ error },
+			{ provider: 'password', email: 'a@b.com', password: 'wrong' }
+		)
 
 		expect(result).toEqual({
 			type: 'error',

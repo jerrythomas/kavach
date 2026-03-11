@@ -11,16 +11,16 @@
   "scripts": {
     "prepare": "husky",
     "clean": "find . -name node_modules -type d -prune -exec rm -rf '{}' +",
-    "test:watch": "vitest",
-    "test:ci": "vitest run",
-    "coverage": "vitest run --coverage",
-    "format": "prettier --write .",
-    "lint": "eslint --fix",
+    "test:watch": "vitest --config config/vitest.config.js",
+    "test:ci": "vitest run --config config/vitest.config.js",
+    "coverage": "vitest run --coverage --config config/vitest.config.js",
+    "format": "prettier --config config/.prettierrc --ignore-path config/.prettierignore --write .",
+    "lint": "eslint --config config/eslint.config.mjs --fix",
     "lockfile": "bun install",
     "build:all": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun run build' \\;",
     "upgrade:all": "bun update --latest",
-    "bump": "bun run lockfile && bumpp --no-push",
-    "bump:next": " bumpp --preid=next --no-push",
+    "bump": "bun run lockfile && bumpp --configFilePath config/bump.config.js --no-push",
+    "bump:next": "bumpp --configFilePath config/bump.config.js --preid=next --no-push",
     "publish:packages": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
     "publish:adapters": "find ./adapters -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
     "publish:all": "bun run publish:packages && bun run publish:adapters",
@@ -42,6 +42,8 @@
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "lint-staged": "^16.3.2",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "svelte": "^5.53.7",
     "typescript": "^5.9.3",
@@ -49,8 +51,8 @@
     "vitest": "^4.0.18"
   },
   "lint-staged": {
-    "*.{js,svelte}": "eslint --cache --fix",
-    "*.{js,svelte,md,json}": "prettier --write"
+    "*.{js,svelte}": "eslint --config config/eslint.config.mjs --cache --fix",
+    "*.{js,svelte,md,json}": "prettier --config config/.prettierrc --write"
   },
   "workspaces": [
     "adapters/*",

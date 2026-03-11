@@ -7,7 +7,7 @@ import {
 	transformerDirectives,
 	transformerVariantGroup
 } from 'unocss'
-import { shades, defaultPalette, DEFAULT_ICONS, iconShortcuts } from '@rokkit/core'
+import { DEFAULT_ICONS, iconShortcuts } from '@rokkit/core'
 import { Theme } from '@rokkit/core'
 
 const theme = new Theme()
@@ -23,10 +23,7 @@ export default defineConfig({
 			]
 		}
 	},
-	safelist: [
-		...DEFAULT_ICONS,
-		'-translate-x-full'
-	],
+	safelist: [...DEFAULT_ICONS, '-translate-x-full'],
 	shortcuts: [
 		['skin-default', theme.getPalette()],
 		...theme.getShortcuts('surface'),

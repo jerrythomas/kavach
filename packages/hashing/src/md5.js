@@ -13,9 +13,8 @@ const hex_chr = '0123456789abcdef'.split('')
  */
 // eslint-disable-next-line max-params
 function cmn(q, a, b, x, s, t) {
-	// eslint-disable-next-line no-use-before-define
 	a = add32(add32(a, q), add32(x, t))
-	// eslint-disable-next-line no-use-before-define
+
 	return add32((a << s) | (a >>> (32 - s)), b)
 }
 
@@ -126,8 +125,7 @@ function md5blk(s) {
 function rhex(n) {
 	let s = '',
 		j = 0
-	for (; j < 4; j++)
-		s += hex_chr[(n >> (j * 8 + 4)) & 0x0f] + hex_chr[(n >> (j * 8)) & 0x0f]
+	for (; j < 4; j++) s += hex_chr[(n >> (j * 8 + 4)) & 0x0f] + hex_chr[(n >> (j * 8)) & 0x0f]
 	return s
 }
 

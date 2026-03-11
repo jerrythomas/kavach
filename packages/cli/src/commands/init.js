@@ -16,7 +16,12 @@ import {
 	showDDLInstructions
 } from '../prompts.js'
 import { parseConfig } from '@kavach/vite'
-import { generateConfigFile, generateAuthPage, generateDataRoute, generateRpcRoute } from '../generators.js'
+import {
+	generateConfigFile,
+	generateAuthPage,
+	generateDataRoute,
+	generateRpcRoute
+} from '../generators.js'
 import { patchViteConfig, patchHooksServer, patchLayoutServer, patchEnvFile } from '../patchers.js'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS, ADAPTER_ENV_DEFAULTS } from './constants.js'
@@ -156,7 +161,6 @@ export class InitCommand {
 	}
 
 	#buildConfig(answers) {
-		const { PROVIDER_DEFAULTS } = require('../prompts.js')
 		const providers = (answers.providers || []).map((key) => {
 			const defaults = {
 				google: { name: 'google', label: 'Continue with Google' },
@@ -245,7 +249,12 @@ export class InitCommand {
 		if (!this.#parsed.routes.data) return
 
 		const ext = this.#useTypeScript ? 'ts' : 'js'
-		const path = resolve(this.#cwd, 'src/routes', this.#parsed.routes.data, `[...slug]/+server.${ext}`)
+		const path = resolve(
+			this.#cwd,
+			'src/routes',
+			this.#parsed.routes.data,
+			`[...slug]/+server.${ext}`
+		)
 
 		if (fileExists(path)) {
 			p.log.info('Data route already exists — skipped')
@@ -260,7 +269,12 @@ export class InitCommand {
 		if (!this.#parsed.routes.rpc) return
 
 		const ext = this.#useTypeScript ? 'ts' : 'js'
-		const path = resolve(this.#cwd, 'src/routes', this.#parsed.routes.rpc, `[...slug]/+server.${ext}`)
+		const path = resolve(
+			this.#cwd,
+			'src/routes',
+			this.#parsed.routes.rpc,
+			`[...slug]/+server.${ext}`
+		)
 
 		if (fileExists(path)) {
 			p.log.info('RPC route already exists — skipped')
@@ -273,7 +287,10 @@ export class InitCommand {
 
 	async #patchEnv() {
 		await this.#runStep('Updating .env', () => {
-			writeFile(resolve(this.#cwd, '.env'), patchEnvFile(readFile(resolve(this.#cwd, '.env')), this.#parsed.env))
+			writeFile(
+				resolve(this.#cwd, '.env'),
+				patchEnvFile(readFile(resolve(this.#cwd, '.env')), this.#parsed.env)
+			)
 		})
 	}
 
@@ -282,13 +299,17 @@ export class InitCommand {
 		const depsToInstall = this.#filterExistingDeps(deps)
 
 		if (depsToInstall.length > 0) {
-			await this.#runStep(`Installing dependencies with ${this.#pm}`, () => this.#install(depsToInstall))
+			await this.#runStep(`Installing dependencies with ${this.#pm}`, () =>
+				this.#install(depsToInstall)
+			)
 		} else {
 			p.log.info('All dependencies already installed — skipped')
 		}
 
 		if (!this.#isDepInstalled('@kavach/cli')) {
-			await this.#runStep('Installing @kavach/cli as dev dependency', () => this.#install(['@kavach/cli'], true))
+			await this.#runStep('Installing @kavach/cli as dev dependency', () =>
+				this.#install(['@kavach/cli'], true)
+			)
 		}
 	}
 

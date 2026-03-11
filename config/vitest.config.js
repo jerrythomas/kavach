@@ -14,10 +14,24 @@ export default defineConfig({
 			all: true,
 			reporter: ['text', 'html', 'lcov', 'json'],
 			include: ['**/src/**'],
-			exclude: ['**/spec/**', '**/node_modules/**', '**templates/**','**/dist/**', '**/sites/**', '**/fixtures/**']
+			exclude: [
+				'**/spec/**',
+				'**/node_modules/**',
+				'**templates/**',
+				'**/dist/**',
+				'**/sites/**',
+				'**/fixtures/**'
+			]
 		},
 		projects: [
-			{ extends: true, test: { name: 'auth', root: 'packages/auth' } },
+			{
+				extends: true,
+				test: {
+					name: 'auth',
+					root: 'packages/auth',
+					setupFiles: ['../../config/vitest-setup-auth.js']
+				}
+			},
 			{ extends: true, test: { name: 'cookie', root: 'packages/cookie' } },
 			{ extends: true, test: { name: 'guardian', root: 'packages/guardian' } },
 			{ extends: true, test: { name: 'hashing', root: 'packages/hashing' } },
@@ -29,7 +43,7 @@ export default defineConfig({
 				test: {
 					name: 'ui',
 					root: 'packages/ui',
-					setupFiles: ['../../vitest-setup-client.js']
+					setupFiles: ['../../config/vitest-setup-client.js']
 				}
 			},
 			{ extends: true, test: { name: 'supabase', root: 'adapters/supabase' } },
