@@ -5,14 +5,51 @@
 	import { themable } from '@rokkit/actions'
 	import { ThemeSwitcherToggle } from '@rokkit/app'
 	import { page } from '$app/stores'
+	import { onMount, setContext } from 'svelte'
 
 	const title = 'Kavach'
-	let { children } = $props()
+	let { children, data } = $props()
 	const navItems = [
 		{ href: '/', label: 'Home' },
 		{ href: '/docs', label: 'Docs' },
-		{ href: '/auth', label: 'Demo' }
+		{ href: '/demo/supabase', label: 'Demo' }
 	]
+
+	let kavachInstance = $state<any>(null)
+
+	setContext('kavach', {
+		get signIn() {
+			return kavachInstance?.signIn
+		},
+		get signUp() {
+			return kavachInstance?.signUp
+		},
+		get signOut() {
+			return kavachInstance?.signOut
+		},
+		get onAuthChange() {
+			return kavachInstance?.onAuthChange
+		},
+		get getCachedLogins() {
+			return kavachInstance?.getCachedLogins
+		},
+		get removeCachedLogin() {
+			return kavachInstance?.removeCachedLogin
+		},
+		get clearCachedLogins() {
+			return kavachInstance?.clearCachedLogins
+		}
+	})
+
+	onMount(async () => {
+		const { createKavach } = await import('kavach')
+		const { adapter, logger } = await import('$kavach/auth')
+		const { invalidateAll } = await import('$app/navigation')
+
+		const instance = createKavach(adapter, { logger, invalidateAll })
+		kavachInstance = instance
+		instance.onAuthChange($page.url)
+	})
 </script>
 
 <svelte:head>
@@ -22,12 +59,12 @@
 <svelte:body use:themable={{ theme: vibe, storageKey: 'kavach-theme' }} />
 
 <header
-	class="flex w-full justify-between px-8 py-4 border-b border-surface-z1 bg-surface-z1 text-surface-z8 items-center"
+	class="border-surface-z1 bg-surface-z1 text-surface-z8 flex w-full items-center justify-between border-b px-8 py-4"
 >
 	<div class="flex items-center gap-8">
 		<h1 class="text-xl font-bold">
-			<a href="/" class="hover:text-primary transition-colors flex flex-row items-center gap-2">
-				<img src="/brand/kavach.svg" alt="Kavach Logo" class="w-6 h-6" />
+			<a href="/" class="hover:text-primary flex flex-row items-center gap-2 transition-colors">
+				<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-6 w-6" />
 				{title}
 			</a>
 		</h1>

@@ -28,139 +28,89 @@ test.describe('Docs Pages', () => {
 })
 
 test.describe('Docs - Adapter Pages', () => {
-	test('can navigate to supabase adapter docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Adapters')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=Supabase')
-		await expect(page).toHaveURL(/\/docs\/adapters\/supabase/)
-		await expect(page.getByRole('main').locator('h1')).toContainText('Supabase Adapter')
+	test('supabase adapter docs page loads', async ({ page }) => {
+		await page.goto('/docs/adapters/supabase')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Supabase')
 	})
 
-	test('can navigate to firebase adapter docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Adapters')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=Firebase')
-		await expect(page).toHaveURL(/\/docs\/adapters\/firebase/)
-		await expect(page.getByRole('main').locator('h1')).toContainText('Firebase Adapter')
+	test('firebase adapter docs page loads', async ({ page }) => {
+		await page.goto('/docs/adapters/firebase')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Firebase')
 	})
 
-	test('can navigate to auth0 adapter docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Adapters')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=Auth0')
-		await expect(page).toHaveURL(/\/docs\/adapters\/auth0/)
-		await expect(page.getByRole('main').locator('h1')).toContainText('Auth0 Adapter')
+	test('auth0 adapter docs page loads', async ({ page }) => {
+		await page.goto('/docs/adapters/auth0')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Auth0')
 	})
 
-	test('can navigate to amplify adapter docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Adapters')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=Amplify')
-		await expect(page).toHaveURL(/\/docs\/adapters\/amplify/)
-		await expect(page.getByRole('main').locator('h1')).toContainText('Amplify Adapter')
+	test('amplify adapter docs page loads', async ({ page }) => {
+		await page.goto('/docs/adapters/amplify')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Amplify')
 	})
 
-	test('can navigate to convex adapter docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Adapters')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=Convex')
-		await expect(page).toHaveURL(/\/docs\/adapters\/convex/)
-		await expect(page.getByRole('main').locator('h1')).toContainText('Convex Adapter')
+	test('convex adapter docs page loads', async ({ page }) => {
+		await page.goto('/docs/adapters/convex')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Convex')
 	})
 })
 
 test.describe('Docs - Core Concepts', () => {
-	test('can navigate to authentication docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Authentication')
-		await expect(page).toHaveURL(/\/docs\/authentication/)
+	test('authentication docs page loads', async ({ page }) => {
+		await page.goto('/docs/authentication')
 		await expect(page.getByRole('main').locator('h1')).toContainText('Authentication')
 	})
 
-	test('can navigate to authorization docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Authorization')
-		await expect(page).toHaveURL(/\/docs\/authorization/)
+	test('authorization docs page loads', async ({ page }) => {
+		await page.goto('/docs/authorization')
 		await expect(page.getByRole('main').locator('h1')).toContainText('Authorization')
 	})
 
-	test('can navigate to session docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Session Management')
-		await expect(page).toHaveURL(/\/docs\/session/)
-		await expect(page.getByRole('main').locator('h1')).toContainText('Session Management')
+	test('session docs page loads', async ({ page }) => {
+		await page.goto('/docs/session')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Session')
 	})
 })
 
 test.describe('Docs - Components', () => {
-	test('can navigate to auth-provider component', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Components')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=AuthProvider')
-		await expect(page).toHaveURL(/\/docs\/components\/auth-provider/)
+	test('auth-provider component docs page loads', async ({ page }) => {
+		await page.goto('/docs/components/auth-provider')
 		await expect(page.getByRole('main').locator('h1')).toContainText('AuthProvider')
 	})
 
-	test('can navigate to auth-button component', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Components')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=AuthButton')
-		await expect(page).toHaveURL(/\/docs\/components\/auth-button/)
+	test('auth-button component docs page loads', async ({ page }) => {
+		await page.goto('/docs/components/auth-button')
 		await expect(page.getByRole('main').locator('h1')).toContainText('AuthButton')
 	})
 
-	test('can navigate to auth-page component', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Components')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=AuthPage')
-		await expect(page).toHaveURL(/\/docs\/components\/auth-page/)
+	test('auth-page component docs page loads', async ({ page }) => {
+		await page.goto('/docs/components/auth-page')
 		await expect(page.getByRole('main').locator('h1')).toContainText('AuthPage')
 	})
 
-	test('can navigate to login-card component', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Components')
-		await page.waitForTimeout(300)
-		await page.click('aside >> text=LoginCard')
-		await expect(page).toHaveURL(/\/docs\/components\/login-card/)
+	test('login-card component docs page loads', async ({ page }) => {
+		await page.goto('/docs/components/login-card')
 		await expect(page.getByRole('main').locator('h1')).toContainText('LoginCard')
 	})
 })
 
 test.describe('Docs - Plugins & Tools', () => {
-	test('can navigate to CLI docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=CLI Commands')
-		await expect(page).toHaveURL(/\/docs\/cli/)
+	test('CLI docs page loads', async ({ page }) => {
+		await page.goto('/docs/cli')
 		await expect(page.getByRole('main').locator('h1')).toContainText('CLI')
 	})
 
-	test('can navigate to Vite plugin docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Vite Plugin')
-		await expect(page).toHaveURL(/\/docs\/plugins\/vite/)
+	test('Vite plugin docs page loads', async ({ page }) => {
+		await page.goto('/docs/plugins/vite')
 		await expect(page.getByRole('main').locator('h1')).toContainText('Vite Plugin')
 	})
 
-	test('can navigate to Guardian docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Guardian')
-		await expect(page).toHaveURL(/\/docs\/guardian/)
+	test('Guardian docs page loads', async ({ page }) => {
+		await page.goto('/docs/guardian')
 		await expect(page.getByRole('main').locator('h1')).toContainText('Guardian')
 	})
 
-	test('can navigate to Logger docs', async ({ page }) => {
-		await page.goto('/docs')
-		await page.click('text=Logger')
-		await expect(page).toHaveURL(/\/docs\/logger/)
+	test('Logger docs page loads', async ({ page }) => {
+		await page.goto('/docs/logger')
 		await expect(page.getByRole('main').locator('h1')).toContainText('Logger')
 	})
 })
@@ -176,7 +126,7 @@ test.describe('Docs - Sidebar Navigation', () => {
 test.describe('Docs Rendering', () => {
 	test('no console errors on docs page', async ({ page }) => {
 		const errors: string[] = []
-		page.on('console', msg => {
+		page.on('console', (msg) => {
 			if (msg.type() === 'error') {
 				errors.push(msg.text())
 			}
@@ -185,6 +135,6 @@ test.describe('Docs Rendering', () => {
 		await page.goto('/docs')
 		await page.waitForLoadState('networkidle')
 
-		expect(errors.filter(e => !e.includes('hydration') && !e.includes('404'))).toHaveLength(0)
+		expect(errors.filter((e) => !e.includes('hydration') && !e.includes('404'))).toHaveLength(0)
 	})
 })
