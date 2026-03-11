@@ -201,6 +201,9 @@
       "name": "learn-kavach",
       "version": "1.0.0-next.31",
       "dependencies": {
+        "@kavach/adapter-supabase": "workspace:*",
+        "@kavach/logger": "workspace:*",
+        "@kavach/ui": "workspace:*",
         "@rokkit/actions": "link:@rokkit/actions",
         "@rokkit/app": "link:@rokkit/app",
         "@rokkit/core": "link:@rokkit/core",
@@ -212,6 +215,7 @@
         "kavach": "link:kavach",
       },
       "devDependencies": {
+        "@kavach/vite": "workspace:*",
         "@playwright/test": "^1.49.1",
         "@rokkit/icons": "link:@rokkit/icons",
         "@sveltejs/adapter-auto": "^6.0.0",
@@ -1423,7 +1427,7 @@
 
     "keyv": ["keyv@4.5.4", "", { "dependencies": { "json-buffer": "3.0.1" } }, "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw=="],
 
-    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#3ec6110", {}, "sveltejs-kit-3ec6110", "sha512-We2AXtq0Oqix8wA/e/k07x095/7LxVap6PePYa7gu7UzmIu9IL0Equ6Do46fpLR7ZYK2AH/voXdUqJAgJxlrzg=="],
+    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#54dadc1", {}, "sveltejs-kit-54dadc1", "sha512-Y/f07H+lY9oKLZu61W4SSUoFBpHFOjx/PxZXFVrUC071vDZxa1zYpK1lyhtVaWYB6yQukspOAPMHngaB+d8x+w=="],
 
     "kleur": ["kleur@4.1.5", "", {}, "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ=="],
 
@@ -2042,8 +2046,6 @@
     "learn-kavach/eslint": ["eslint@9.27.0", "", { "dependencies": { "@eslint-community/eslint-utils": "4.7.0", "@eslint-community/regexpp": "4.12.1", "@eslint/config-array": "0.20.0", "@eslint/config-helpers": "0.2.2", "@eslint/core": "0.14.0", "@eslint/eslintrc": "3.3.1", "@eslint/js": "9.27.0", "@eslint/plugin-kit": "0.3.1", "@humanfs/node": "0.16.6", "@humanwhocodes/module-importer": "1.0.1", "@humanwhocodes/retry": "0.4.3", "@types/estree": "1.0.7", "@types/json-schema": "7.0.15", "ajv": "6.12.6", "chalk": "4.1.2", "cross-spawn": "7.0.6", "debug": "4.4.1", "escape-string-regexp": "4.0.0", "eslint-scope": "8.3.0", "eslint-visitor-keys": "4.2.0", "espree": "10.3.0", "esquery": "1.6.0", "esutils": "2.0.3", "fast-deep-equal": "3.1.3", "file-entry-cache": "8.0.0", "find-up": "5.0.0", "glob-parent": "6.0.2", "ignore": "5.3.2", "imurmurhash": "0.1.4", "is-glob": "4.0.3", "json-stable-stringify-without-jsonify": "1.0.1", "lodash.merge": "4.6.2", "minimatch": "3.1.2", "natural-compare": "1.4.0", "optionator": "0.9.4" }, "optionalDependencies": { "jiti": "2.4.2" }, "bin": { "eslint": "bin/eslint.js" } }, "sha512-ixRawFQuMB9DZ7fjU3iGGganFDp3+45bPOdaRurcFHSXO1e/sYwUX/FtQZpLZJR6SjMoJH8hR2pPEAfDyCoU2Q=="],
 
     "learn-kavach/kavach": ["kavach@link:kavach", {}],
-
-    "learn-kavach/prettier-plugin-svelte": ["prettier-plugin-svelte@3.4.0", "", { "peerDependencies": { "prettier": "3.5.3", "svelte": "5.33.2" } }, "sha512-pn1ra/0mPObzqoIQn/vUTR3ZZI6UuZ0sHqMK5x2jMLGrs53h0sXhkVuDcrlssHwIMk7FYrMjHBPoUSyyEEDlBQ=="],
 
     "learn-kavach/vite": ["vite@6.3.5", "", { "dependencies": { "esbuild": "0.25.4", "fdir": "6.4.4", "picomatch": "4.0.2", "postcss": "8.5.3", "rollup": "4.41.1", "tinyglobby": "0.2.14" }, "optionalDependencies": { "@types/node": "22.15.21", "fsevents": "2.3.3", "jiti": "2.4.2", "yaml": "2.8.0" }, "bin": { "vite": "bin/vite.js" } }, "sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ=="],
 

@@ -16,6 +16,7 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
+    "@kavach/vite": "workspace:*",
     "@playwright/test": "^1.49.1",
     "@rokkit/icons": "link:@rokkit/icons",
     "@sveltejs/adapter-auto": "^6.0.0",
@@ -39,6 +40,9 @@
   },
   "type": "module",
   "dependencies": {
+    "@kavach/ui": "workspace:*",
+    "@kavach/adapter-supabase": "workspace:*",
+    "@kavach/logger": "workspace:*",
     "@rokkit/actions": "link:@rokkit/actions",
     "@rokkit/app": "link:@rokkit/app",
     "@rokkit/core": "link:@rokkit/core",
