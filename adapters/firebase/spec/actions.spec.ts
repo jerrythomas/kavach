@@ -154,6 +154,16 @@ describe('getActions (firebase)', async () => {
       expect(response.error).toEqual({ message: 'Firestore does not support the "like" operator. Use eq, neq, gt, gte, lt, lte, in, or is.' })
       expect(response.status).toBe(500)
     })
+
+    it('should return error response when getDocs throws', async () => {
+      const { getDocs } = await import('firebase/firestore')
+      vi.mocked(getDocs).mockRejectedValueOnce(new Error('Network error'))
+      const actions = getActions(db)
+      const response = await actions.get('users')
+      expect(response.status).toBe(500)
+      expect(response.error).toEqual({ message: 'Network error' })
+      expect(response.data).toBeNull()
+    })
   })
 
   describe('put', () => {
@@ -229,11 +239,11 @@ describe('getActions (firebase)', async () => {
       expect(response.status).toBe(200)
     })
 
-    it('should throw if functions client is not provided', async () => {
+    it('should return error if functions client is not provided', async () => {
       const actions = getActions(db)
-      await expect(actions.call('sendWelcomeEmail', {})).rejects.toThrow(
-        'call requires a Firebase Functions instance'
-      )
+      const response = await actions.call('sendWelcomeEmail', {})
+      expect(response.status).toBe(500)
+      expect(response.error).toEqual({ message: 'call requires a Firebase Functions instance — pass it as the second argument to getActions(db, functions)' })
     })
   })
 })

@@ -135,10 +135,10 @@ export function getActions(db: any, functions?: any) {
   }
 
   async function call(entity: string, data: Record<string, unknown>): Promise<ActionResponse> {
-    if (!functions) {
-      throw new Error('call requires a Firebase Functions instance — pass it as the second argument to getActions(db, functions)')
-    }
     try {
+      if (!functions) {
+        throw new Error('call requires a Firebase Functions instance — pass it as the second argument to getActions(db, functions)')
+      }
       const fn = httpsCallable(functions, entity)
       const result = await fn(data)
       return normalizeResponse(result.data)

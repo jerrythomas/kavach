@@ -171,6 +171,15 @@ describe('getActions (convex)', () => {
 			const actions = getActions(client, api)
 			await expect(actions.call('actions.missing', {})).rejects.toThrow('api.actions.missing')
 		})
+
+		it('should return error response when action throws', async () => {
+			client.action = vi.fn().mockRejectedValue(new Error('Action failed'))
+			const actions = getActions(client, api)
+			const response = await actions.call('actions.sendWelcome', { userId: 'u1' })
+			expect(response.status).toBe(500)
+			expect(response.error).toEqual({ message: 'Action failed' })
+			expect(response.data).toBeNull()
+		})
 	})
 
 	describe('error handling', () => {

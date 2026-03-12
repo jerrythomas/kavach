@@ -68,16 +68,16 @@ await actions.call('sendWelcomeEmail', { userId: 'user-1' })
 
 ### Supported filter operators
 
-| Kavach operator | Firestore operator |
-| --------------- | ------------------ |
-| `eq`            | `==`               |
-| `neq`           | `!=`               |
-| `gt`            | `>`                |
-| `gte`           | `>=`               |
-| `lt`            | `<`                |
-| `lte`           | `<=`               |
-| `in`            | `in`               |
-| `is`            | `==` (null checks) |
+| Kavach operator | Firestore operator       |
+| --------------- | ------------------------ |
+| `eq`            | `==`                     |
+| `neq`           | `!=`                     |
+| `gt`            | `>`                      |
+| `gte`           | `>=`                     |
+| `lt`            | `<`                      |
+| `lte`           | `<=`                     |
+| `in`            | `in`                     |
+| `is`            | `==` (null, true, false) |
 
 > `like`, `ilike`, and array operators are not supported by Firestore.
 
