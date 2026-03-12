@@ -89,13 +89,10 @@ describe('kavach', () => {
 		await kavach.handle({ event, resolve })
 
 		expect(resolve).not.toHaveBeenCalledWith(event)
-		expect(Response).toHaveBeenCalledWith(
-			{},
-			{
-				headers: { location: 'http://localhost/auth' },
-				status: 303
-			}
-		)
+		expect(Response).toHaveBeenCalledWith('', {
+			headers: { location: 'http://localhost/auth' },
+			status: 303
+		})
 	})
 	it('should return json response for unauthorized endpoint access', async () => {
 		const kavach = createKavach(adapter)
@@ -103,7 +100,10 @@ describe('kavach', () => {
 			url: { pathname: '/api/xyz' }
 		})
 		await kavach.handle({ event, resolve })
-		expect(Response).toHaveBeenCalledWith({ error: 'Unauthorized' }, { status: 401 })
+		expect(Response).toHaveBeenCalledWith(JSON.stringify({ error: 'Unauthorized' }), {
+			status: 401,
+			headers: { 'Content-Type': 'application/json' }
+		})
 	})
 
 	it('should sign out on server when session is null', async () => {
@@ -119,15 +119,13 @@ describe('kavach', () => {
 		expect(adapter.synchronize).not.toHaveBeenCalled()
 		expect(adapter.signOut).toHaveBeenCalled()
 
-		expect(Response).toHaveBeenCalledWith(
-			{ error: null, session: null },
-			{
-				headers: {
-					'Set-Cookie': ['session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict']
-				},
-				status: 200
-			}
-		)
+		expect(Response).toHaveBeenCalledWith(JSON.stringify({ session: null, error: null }), {
+			headers: {
+				'Set-Cookie': ['session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict'],
+				'Content-Type': 'application/json'
+			},
+			status: 200
+		})
 		expect(resolve).not.toHaveBeenCalled()
 	})
 
@@ -152,15 +150,13 @@ describe('kavach', () => {
 		expect(adapter.synchronize).toHaveBeenCalledWith(session)
 		expect(adapter.signOut).not.toHaveBeenCalled()
 		// expect(Response).
-		expect(Response).toHaveBeenCalledWith(
-			{ error, session: null },
-			{
-				headers: {
-					'Set-Cookie': ['session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict']
-				},
-				status: 500
-			}
-		)
+		expect(Response).toHaveBeenCalledWith(JSON.stringify({ session: null, error }), {
+			headers: {
+				'Set-Cookie': ['session=null; Max-Age=86400; Path=/; HttpOnly; Secure; SameSite=Strict'],
+				'Content-Type': 'application/json'
+			},
+			status: 500
+		})
 		expect(resolve).not.toHaveBeenCalled()
 	})
 
@@ -185,17 +181,15 @@ describe('kavach', () => {
 		expect(adapter.synchronize).toHaveBeenCalledWith(session)
 		expect(adapter.signOut).not.toHaveBeenCalled()
 
-		expect(Response).toHaveBeenCalledWith(
-			{ error: null, session },
-			{
-				headers: {
-					'Set-Cookie': [
-						`session=%7B%22refresh_token%22%3A%22zzz%22%2C%22access_token%22%3A%22xyz%22%2C%22user%22%3A%7B%22id%22%3A%22foo%22%2C%22role%22%3A%22authenticated%22%7D%7D; ${cookieOptions}`
-					]
-				},
-				status: 200
-			}
-		)
+		expect(Response).toHaveBeenCalledWith(JSON.stringify({ session, error: null }), {
+			headers: {
+				'Set-Cookie': [
+					`session=%7B%22refresh_token%22%3A%22zzz%22%2C%22access_token%22%3A%22xyz%22%2C%22user%22%3A%7B%22id%22%3A%22foo%22%2C%22role%22%3A%22authenticated%22%7D%7D; ${cookieOptions}`
+				],
+				'Content-Type': 'application/json'
+			},
+			status: 200
+		})
 		expect(resolve).not.toHaveBeenCalled()
 	})
 	it('should sign in using adapter', async () => {

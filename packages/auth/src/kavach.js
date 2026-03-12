@@ -112,15 +112,15 @@ function handleUnauthorizedAccess(agents, { event, resolve }) {
 
 	if (result.status !== 200) {
 		if (result.redirect) {
-			return new Response(
-				{},
-				{
-					status: 303,
-					headers: { location: event.url.origin + result.redirect }
-				}
-			)
+			return new Response('', {
+				status: 303,
+				headers: { location: event.url.origin + result.redirect }
+			})
 		} else {
-			return new Response({ error: HTTP_STATUS_MESSAGES[result.status] }, { status: result.status })
+			return new Response(JSON.stringify({ error: HTTP_STATUS_MESSAGES[result.status] }), {
+				status: result.status,
+				headers: { 'Content-Type': 'application/json' }
+			})
 		}
 	}
 	return resolve(event)
@@ -176,7 +176,10 @@ async function handleSessionSync(event, adapter, guardian) {
 
 	guardian.setSession(session)
 	const headers = setCookieFromSession(session)
-	return new Response({ session, error }, { status, headers })
+	return new Response(JSON.stringify({ session, error }), {
+		status,
+		headers: { ...headers, 'Content-Type': 'application/json' }
+	})
 }
 
 /**
