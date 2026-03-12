@@ -10,13 +10,13 @@ export interface RoleRoute {
 	routes: Array<string>
 }
 
-export interface GuardianOptions {
+export interface SentryOptions {
 	app?: AppRoute
 	roles?: Record<string, RoleRoute>
 	logger?: import('@kavach/logger').Logger
 }
 
-export interface Guardian {
+export interface Sentry {
 	setSession: (session?: unknown) => void
 	redirect: (path: string) => string
 	page: AppRoute
@@ -157,7 +157,7 @@ export interface AuthAdapter {
 export type GetAdapter = (config: object) => AuthAdapter
 
 export interface KavachAgents {
-	guardian: Guardian
+	sentry: Sentry
 	logger: unknown
 	invalidateAll: () => void
 }

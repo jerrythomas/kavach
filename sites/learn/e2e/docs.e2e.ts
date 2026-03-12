@@ -104,9 +104,9 @@ test.describe('Docs - Plugins & Tools', () => {
 		await expect(page.getByRole('main').locator('h1')).toContainText('Vite Plugin')
 	})
 
-	test('Guardian docs page loads', async ({ page }) => {
-		await page.goto('/docs/guardian')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Guardian')
+	test('Sentry docs page loads', async ({ page }) => {
+		await page.goto('/docs/sentry')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Sentry')
 	})
 
 	test('Logger docs page loads', async ({ page }) => {

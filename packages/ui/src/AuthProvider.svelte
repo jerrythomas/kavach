@@ -56,23 +56,30 @@
 </script>
 
 <div data-auth data-auth-provider={name} data-auth-mode={mode} class="flex flex-col gap-2">
-{#if mode === 'oauth'}
-	<Button onclick={signIn} data-auth-provider={name} style="none">
-		<span data-item-icon class="i-auth-{name}" aria-hidden="true"></span>
-		<span data-item-label>{label}</span>
-	</Button>
-{:else if mode === 'password'}
-	<AuthPassword bind:value bind:password onclick={signIn} />
-{:else}
-	<form onsubmit={signIn} class="flex w-full p-0 gap-2 {className}">
-		<InputField
-			type="email"
-			name="magic"
-			label="magic link"
-			icon="i-auth-{name}"
-			placeholder={label}
-			bind:value
-		/>
-	</form>
-{/if}
+	{#if mode === 'oauth'}
+		<Button onclick={signIn} data-auth-provider={name} style="none">
+			<span data-item-icon class="i-auth-{name}" aria-hidden="true"></span>
+			<span data-item-label>{label}</span>
+		</Button>
+	{:else if mode === 'password'}
+		<AuthPassword bind:value bind:password onclick={signIn} />
+	{:else}
+		<form
+			onsubmit={(e) => {
+				e.preventDefault()
+				signIn()
+			}}
+			class="flex w-full flex-col gap-2 {className}"
+		>
+			<InputField
+				type="email"
+				name="magic"
+				label="magic link"
+				icon="i-auth-{name}"
+				placeholder={label}
+				bind:value
+			/>
+			<Button type="submit" data-auth-provider={name}>{label}</Button>
+		</form>
+	{/if}
 </div>

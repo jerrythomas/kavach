@@ -1,8 +1,8 @@
 <script>
 	import { Code } from '@rokkit/ui'
-	const guardianSetup = `import { createGuardian } from '@kavach/guardian'
+	const sentrySetup = `import { createSentry } from '@kavach/sentry'
 
-const guardian = createGuardian({
+const sentry = createSentry({
   rules: [
     { path: '/', public: true },
     { path: '/auth', public: true },
@@ -20,13 +20,13 @@ const guardian = createGuardian({
   }
 })`
 
-	const guardianProtect = `// In your hooks.server.js
+	const sentryProtect = `// In your hooks.server.js
 export const handle = async ({ event, resolve }) => {
   // Set session from cookie
-  guardian.setSession(event.locals.session)
+  sentry.setSession(event.locals.session)
 
   // Protect route
-  const protection = guardian.protect(event.url.pathname)
+  const protection = sentry.protect(event.url.pathname)
 
   if (protection.redirect) {
     return new Response(null, {
@@ -51,19 +51,19 @@ export const handle = kavach.handle`
 </script>
 
 <div class="max-w-4xl">
-	<h1 class="mb-4 text-3xl font-bold">Guardian</h1>
+	<h1 class="mb-4 text-3xl font-bold">Sentry</h1>
 
 	<p class="text-surface-z7 mb-8 text-lg">Route protection and role-based access control.</p>
 
 	<section class="mb-8">
 		<h2 class="mb-4 text-xl font-semibold">Installation</h2>
-		<Code code={`npm install @kavach/guardian`} language="bash" />
+		<Code code={`npm install @kavach/sentry`} language="bash" />
 	</section>
 
 	<section class="mb-8">
 		<h2 class="mb-4 text-xl font-semibold">Recommended Usage</h2>
 		<p class="mb-4">
-			When using Kavach, the guardian is managed automatically via <code>kavach.handle</code>:
+			When using Kavach, the sentry is managed automatically via <code>kavach.handle</code>:
 		</p>
 		<Code code={kavachHandle} language="js" />
 		<p class="text-surface-z7 mt-4">
@@ -73,13 +73,13 @@ export const handle = kavach.handle`
 
 	<section class="mb-8">
 		<h2 class="mb-4 text-xl font-semibold">Standalone Setup</h2>
-		<p class="mb-4">You can also use the guardian independently:</p>
-		<Code code={guardianSetup} language="js" />
+		<p class="mb-4">You can also use the sentry independently:</p>
+		<Code code={sentrySetup} language="js" />
 	</section>
 
 	<section class="mb-8">
 		<h2 class="mb-4 text-xl font-semibold">Protect Routes</h2>
-		<Code code={guardianProtect} language="js" />
+		<Code code={sentryProtect} language="js" />
 	</section>
 
 	<section class="mb-8">
@@ -114,15 +114,15 @@ export const handle = kavach.handle`
 		<h2 class="mb-4 text-xl font-semibold">API</h2>
 		<div class="space-y-4">
 			<div>
-				<h3 class="mb-2 font-semibold">createGuardian(options)</h3>
-				<p class="text-surface-z7">Create a Guardian instance with rules.</p>
+				<h3 class="mb-2 font-semibold">createSentry(options)</h3>
+				<p class="text-surface-z7">Create a Sentry instance with rules.</p>
 			</div>
 			<div>
-				<h3 class="mb-2 font-semibold">guardian.setSession(session)</h3>
+				<h3 class="mb-2 font-semibold">sentry.setSession(session)</h3>
 				<p class="text-surface-z7">Set current session for protection checks.</p>
 			</div>
 			<div>
-				<h3 class="mb-2 font-semibold">guardian.protect(path)</h3>
+				<h3 class="mb-2 font-semibold">sentry.protect(path)</h3>
 				<p class="text-surface-z7">
 					Check if path is accessible. Returns {'{ status, redirect? }'}.
 				</p>

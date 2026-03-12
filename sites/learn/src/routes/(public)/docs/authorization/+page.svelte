@@ -14,7 +14,7 @@
   user: '/dashboard'
 }`
 
-	const guardianCode = `import { createSentry } from '@kavach/sentry'
+	const sentryCode = `import { createSentry } from '@kavach/sentry'
 
 const sentry = createSentry({
   rules: [
@@ -71,7 +71,7 @@ const sentry = createSentry({
 	<section class="mb-8">
 		<h2 class="mb-4 text-xl font-semibold">Using Sentry</h2>
 		<p class="mb-4">For fine-grained control, use Sentry directly:</p>
-		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{guardianCode}</code></pre>
+		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{sentryCode}</code></pre>
 	</section>
 
 	<section class="mb-8">
@@ -114,7 +114,7 @@ const sentry = createSentry({
 			</li>
 			<li><a href="/docs/session" class="text-primary hover:underline">Session management</a></li>
 			<li>
-				<a href="/docs/guardian" class="text-primary hover:underline">Sentry documentation</a>
+				<a href="/docs/sentry" class="text-primary hover:underline">Sentry documentation</a>
 			</li>
 		</ul>
 	</section>

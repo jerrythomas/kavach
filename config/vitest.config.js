@@ -33,7 +33,7 @@ export default defineConfig({
 				}
 			},
 			{ extends: true, test: { name: 'cookie', root: 'packages/cookie' } },
-			{ extends: true, test: { name: 'guardian', root: 'packages/guardian' } },
+			{ extends: true, test: { name: 'sentry', root: 'packages/sentry' } },
 			{ extends: true, test: { name: 'hashing', root: 'packages/hashing' } },
 			{ extends: true, test: { name: 'logger', root: 'packages/logger' } },
 			{ extends: true, test: { name: 'query', root: 'packages/query' } },

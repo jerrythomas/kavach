@@ -43,7 +43,7 @@
 			children: [
 				{ label: 'Vite Plugin', value: '/docs/plugins/vite' },
 				{ label: 'CLI Commands', value: '/docs/cli' },
-				{ label: 'Guardian', value: '/docs/guardian' },
+				{ label: 'Sentry', value: '/docs/sentry' },
 				{ label: 'Logger', value: '/docs/logger' }
 			]
 		}

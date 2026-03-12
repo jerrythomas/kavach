@@ -7,7 +7,7 @@ Kavach provides a single authentication abstraction for SvelteKit apps. Swap bet
 ## Packages
 
 - `kavach` — Core client. Use `createKavach(adapter, options)` to instantiate.
-- `@kavach/guardian` — Route protection engine. Use `createGuardian(options)` for standalone usage. Integrated automatically when using `kavach.handle`.
+- `@kavach/sentry` — Route protection engine. Use `createSentry(options)` for standalone usage. Integrated automatically when using `kavach.handle`.
 - `@kavach/ui` — Pre-built Svelte components: `AuthProvider`, `AuthPage`.
 - `@kavach/vite` — Vite plugin that generates the `$kavach/auth` virtual module from `kavach.config.js`.
 - `@kavach/adapter-supabase` — Supabase adapter (full capabilities).
@@ -19,7 +19,7 @@ Kavach provides a single authentication abstraction for SvelteKit apps. Swap bet
 ## Quick Start
 
 ```bash
-npm install kavach @kavach/guardian @kavach/ui @kavach/vite
+npm install kavach @kavach/sentry @kavach/ui @kavach/vite
 npm install @kavach/adapter-supabase  # or other adapter
 ```
 
@@ -136,12 +136,12 @@ Rules use prefix matching. Each rule has a `path` and one of:
 ## Guardian API (standalone)
 
 ```js
-import { createGuardian } from '@kavach/guardian'
+import { createSentry } from '@kavach/sentry'
 
-const guardian = createGuardian({ rules, roleHome, routes })
+const sentry = createSentry({ rules, roleHome, routes })
 
-guardian.setSession(session)          // set current session
-const result = guardian.protect(path) // { status: 200|401|403, redirect?: string }
+sentry.setSession(session)          // set current session
+const result = sentry.protect(path) // { status: 200|401|403, redirect?: string }
 ```
 
 ## Adapter Capabilities
@@ -159,7 +159,7 @@ const result = guardian.protect(path) // { status: 200|401|403, redirect?: strin
 - /docs — Overview
 - /docs/quick-start — Setup guide
 - /docs/configuration — Full config reference
-- /docs/guardian — Route protection
+- /docs/sentry — Route protection
 - /docs/adapters/supabase — Supabase adapter
 - /docs/adapters/firebase — Firebase adapter
 - /docs/adapters/auth0 — Auth0 adapter

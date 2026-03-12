@@ -4,6 +4,6 @@ import * as utilities from '../src'
 
 describe('utilities', () => {
 	it('should contain all exported utilities', () => {
-		expect(Object.keys(utilities)).toEqual(['createGuardian'])
+		expect(Object.keys(utilities)).toEqual(['createSentry'])
 	})
 })

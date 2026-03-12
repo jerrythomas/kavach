@@ -26,7 +26,7 @@
 	}
 
 	function onSuccess() {
-		goto('/demo/supabase')
+		goto('/demo')
 	}
 </script>
 

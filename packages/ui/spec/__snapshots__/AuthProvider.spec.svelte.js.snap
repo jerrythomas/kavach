@@ -87,7 +87,7 @@ exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
     data-auth-provider="magic"
   >
     <form
-      class="flex w-full p-0 gap-2 "
+      class="flex w-full flex-col gap-2 "
     >
       <div
         data-field-empty="false"
@@ -133,6 +133,23 @@ exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
          
         <!---->
       </div>
+      <!---->
+       
+      <!---->
+      <button
+        data-auth-provider="magic"
+        data-button="true"
+        data-size="md"
+        data-style="default"
+        data-variant="default"
+        type="submit"
+      >
+        <!---->
+        Sign in with Magic Link
+        
+        <!---->
+      </button>
+      
       <!---->
     </form>
     <!---->
@@ -150,7 +167,7 @@ exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
     data-auth-provider="magic"
   >
     <form
-      class="flex w-full p-0 gap-2 custom"
+      class="flex w-full flex-col gap-2 custom"
     >
       <div
         data-field-empty="false"
@@ -196,6 +213,23 @@ exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
          
         <!---->
       </div>
+      <!---->
+       
+      <!---->
+      <button
+        data-auth-provider="magic"
+        data-button="true"
+        data-size="md"
+        data-style="default"
+        data-variant="default"
+        type="submit"
+      >
+        <!---->
+        Sign in with Magic Link
+        
+        <!---->
+      </button>
+      
       <!---->
     </form>
     <!---->
@@ -213,7 +247,7 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1
     data-auth-provider="magic"
   >
     <form
-      class="flex w-full p-0 gap-2 "
+      class="flex w-full flex-col gap-2 "
     >
       <div
         data-field-empty="false"
@@ -260,6 +294,23 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1
         <!---->
       </div>
       <!---->
+       
+      <!---->
+      <button
+        data-auth-provider="magic"
+        data-button="true"
+        data-size="md"
+        data-style="default"
+        data-variant="default"
+        type="submit"
+      >
+        <!---->
+        Sign in with Magic Link
+        
+        <!---->
+      </button>
+      
+      <!---->
     </form>
     <!---->
   </div>
@@ -276,7 +327,7 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2
     data-auth-provider="otp"
   >
     <form
-      class="flex w-full p-0 gap-2 custom"
+      class="flex w-full flex-col gap-2 custom"
     >
       <div
         data-field-empty="false"
@@ -322,6 +373,23 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2
          
         <!---->
       </div>
+      <!---->
+       
+      <!---->
+      <button
+        data-auth-provider="otp"
+        data-button="true"
+        data-size="md"
+        data-style="default"
+        data-variant="default"
+        type="submit"
+      >
+        <!---->
+        Send me a link
+        
+        <!---->
+      </button>
+      
       <!---->
     </form>
     <!---->

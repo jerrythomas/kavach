@@ -12,39 +12,15 @@
 		{ href: '/demo', label: 'Demo' }
 	]
 
-	let kavachInstance = $state<any>(null)
-
-	setContext('kavach', {
-		get signIn() {
-			return kavachInstance?.signIn
-		},
-		get signUp() {
-			return kavachInstance?.signUp
-		},
-		get signOut() {
-			return kavachInstance?.signOut
-		},
-		get onAuthChange() {
-			return kavachInstance?.onAuthChange
-		},
-		get getCachedLogins() {
-			return kavachInstance?.getCachedLogins
-		},
-		get removeCachedLogin() {
-			return kavachInstance?.removeCachedLogin
-		},
-		get clearCachedLogins() {
-			return kavachInstance?.clearCachedLogins
-		}
-	})
+	const kavach = $state<Record<string, any>>({})
+	setContext('kavach', kavach)
 
 	onMount(async () => {
 		const { createKavach } = await import('kavach')
 		const { adapter, logger } = await import('$kavach/auth')
 		const { invalidateAll } = await import('$app/navigation')
-
 		const instance = createKavach(adapter, { logger, invalidateAll })
-		kavachInstance = instance
+		Object.assign(kavach, instance)
 		instance.onAuthChange($page.url)
 	})
 </script>

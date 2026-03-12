@@ -116,11 +116,11 @@ test.describe('Demo Pages', () => {
 		await expect(page.getByRole('main').locator('h1')).toContainText('Space Facts')
 	})
 
-	test('demo logout page redirects to auth', async ({ page }) => {
+	test('demo logout page redirects to demo', async ({ page }) => {
 		// Unroute session intercept so the real signout can clear the server-side cookie
 		await page.unroute('**/auth/session')
 		await page.goto('/demo/supabase/logout')
-		await expect(page).toHaveURL(/\/auth/)
+		await expect(page).toHaveURL(/\/demo/)
 	})
 })
 

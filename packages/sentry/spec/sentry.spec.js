@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createGuardian, configureRules, protectRoute, configureRoleRoutes } from '../src/guardian'
+import { createSentry, configureRules, protectRoute, configureRoleRoutes } from '../src/sentry'
 
 describe('Router functions', () => {
 	const defaultRoutes = {
@@ -20,15 +20,15 @@ describe('Router functions', () => {
 		]
 	}
 
-	describe('createGuardian', () => {
-		const res = createGuardian(options)
+	describe('createSentry', () => {
+		const res = createSentry(options)
 
 		afterEach(() => {
 			res.setSession()
 		})
 
 		it('should work with defult options', () => {
-			const res = createGuardian()
+			const res = createSentry()
 			expect(res).toEqual({
 				app: {
 					home: '/',
@@ -143,7 +143,7 @@ describe('Router functions', () => {
 			)
 			expect(logger.warn).not.toHaveBeenCalled()
 			expect(logger.error).toHaveBeenCalledWith({
-				module: 'guardian',
+				module: 'sentry',
 				method: 'configure',
 				message: 'invalid rules detected',
 				data: {
@@ -195,7 +195,7 @@ describe('Router functions', () => {
 
 			expect(logger.error).not.toHaveBeenCalled()
 			expect(logger.warn).toHaveBeenCalledWith({
-				module: 'guardian',
+				module: 'sentry',
 				method: 'configure',
 				message: 'identified redundant rules',
 				data: {
@@ -270,7 +270,7 @@ describe('Router functions', () => {
 				role: null,
 				routes: {
 					allowed: ['/public', '/auth'],
-					restricted: ['/admin', '/data']
+					restricted: ['/api', '/shared', '/', '/logout', '/admin', '/data']
 				}
 			})
 		})

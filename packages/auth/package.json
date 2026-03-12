@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@kavach/cookie": "workspace:*",
-    "@kavach/guardian": "workspace:*",
+    "@kavach/sentry": "workspace:*",
     "@kavach/hashing": "workspace:*",
     "@kavach/logger": "workspace:*",
     "@kavach/query": "workspace:*",

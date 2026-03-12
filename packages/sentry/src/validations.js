@@ -14,8 +14,7 @@ export function validateNonEmptyParts(rule) {
 		.slice(1)
 		.some((section) => !section.trim())
 
-	if (somePartsEmpty)
-		rule.errors = [...(rule.errors ?? []), 'Path sections must not be empty']
+	if (somePartsEmpty) rule.errors = [...(rule.errors ?? []), 'Path sections must not be empty']
 	return rule
 }
 
@@ -26,8 +25,7 @@ export function validateNonEmptyParts(rule) {
  * @returns {import('./types').RoutingRule}
  */
 export function validatePathStartsWithSlash(rule) {
-	if (!rule.path.startsWith('/'))
-		rule.errors = [...(rule.errors ?? []), 'Path must start with /']
+	if (!rule.path.startsWith('/')) rule.errors = [...(rule.errors ?? []), 'Path must start with /']
 	return rule
 }
 
@@ -68,11 +66,7 @@ export function validateRoutingRule(rule) {
  */
 export function markRedundant(rule, rules) {
 	const parentRule = rules.find((r) => rule.path.startsWith(`${r.path}/`))
-	if (
-		parentRule &&
-		rule.public === parentRule.public &&
-		rule.roles === parentRule.roles
-	) {
+	if (parentRule && rule.public === parentRule.public && rule.roles === parentRule.roles) {
 		rule.redundant = true
 		rule.warnings = [
 			...(rule.warnings ?? []),

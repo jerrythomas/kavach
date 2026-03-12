@@ -1,4 +1,4 @@
 'use strict'
 // skipcq: JS-E1004 - Needed for exposing JS Doc types
 export * from './types'
-export { createGuardian } from './guardian'
+export { createSentry } from './sentry'

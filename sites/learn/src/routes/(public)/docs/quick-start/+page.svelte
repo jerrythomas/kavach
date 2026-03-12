@@ -33,7 +33,7 @@ export const handle = kavach.handle`
 
 	<section class="mb-8">
 		<h2 class="mb-4 text-xl font-semibold">1. Install Packages</h2>
-		<Code code={`npm install kavach @kavach/guardian @kavach/ui @kavach/vite`} language="bash" />
+		<Code code={`npm install kavach @kavach/sentry @kavach/ui @kavach/vite`} language="bash" />
 	</section>
 
 	<section class="mb-8">
@@ -68,7 +68,7 @@ export const handle = kavach.handle`
 				>
 			</li>
 			<li>
-				<a href="/docs/guardian" class="text-primary hover:underline">Configure route protection</a>
+				<a href="/docs/sentry" class="text-primary hover:underline">Configure route protection</a>
 			</li>
 		</ul>
 	</section>

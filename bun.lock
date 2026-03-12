@@ -87,10 +87,10 @@
       "version": "1.0.0-next.31",
       "dependencies": {
         "@kavach/cookie": "workspace:*",
-        "@kavach/guardian": "workspace:*",
         "@kavach/hashing": "workspace:*",
         "@kavach/logger": "workspace:*",
         "@kavach/query": "workspace:*",
+        "@kavach/sentry": "workspace:*",
         "@sveltejs/kit": "^2.53.4",
         "kit-monorepo": "sveltejs/kit",
         "ramda": "^0.30.1",
@@ -113,14 +113,6 @@
       "name": "@kavach/cookie",
       "version": "1.0.0-next.31",
     },
-    "packages/guardian": {
-      "name": "@kavach/guardian",
-      "version": "1.0.0-next.31",
-      "dependencies": {
-        "@kavach/logger": "workspace:*",
-        "ramda": "^0.30.1",
-      },
-    },
     "packages/hashing": {
       "name": "@kavach/hashing",
       "version": "1.0.0-next.31",
@@ -132,6 +124,14 @@
     "packages/query": {
       "name": "@kavach/query",
       "version": "1.0.0-next.31",
+    },
+    "packages/sentry": {
+      "name": "@kavach/sentry",
+      "version": "1.0.0-next.31",
+      "dependencies": {
+        "@kavach/logger": "workspace:*",
+        "ramda": "^0.30.1",
+      },
     },
     "packages/ui": {
       "name": "@kavach/ui",
@@ -537,13 +537,13 @@
 
     "@kavach/cookie": ["@kavach/cookie@workspace:packages/cookie"],
 
-    "@kavach/guardian": ["@kavach/guardian@workspace:packages/guardian"],
-
     "@kavach/hashing": ["@kavach/hashing@workspace:packages/hashing"],
 
     "@kavach/logger": ["@kavach/logger@workspace:packages/logger"],
 
     "@kavach/query": ["@kavach/query@workspace:packages/query"],
+
+    "@kavach/sentry": ["@kavach/sentry@workspace:packages/sentry"],
 
     "@kavach/ui": ["@kavach/ui@workspace:packages/ui"],
 
@@ -1349,7 +1349,7 @@
 
     "keyv": ["keyv@4.5.4", "", { "dependencies": { "json-buffer": "3.0.1" } }, "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw=="],
 
-    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#54dadc1", {}, "sveltejs-kit-54dadc1", "sha512-Y/f07H+lY9oKLZu61W4SSUoFBpHFOjx/PxZXFVrUC071vDZxa1zYpK1lyhtVaWYB6yQukspOAPMHngaB+d8x+w=="],
+    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#d703f9a", {}, "sveltejs-kit-d703f9a", "sha512-ouDQscDxujWYl+4R8rBQP8OGOBbx1a+3W4xnTqBHbRwTWRGphqtOm9YXJxehDJrNUhX3rHscRXw0dX5sllzm4g=="],
 
     "kleur": ["kleur@4.1.5", "", {}, "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ=="],
 

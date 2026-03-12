@@ -82,11 +82,7 @@ const config = {
     login: '/login',
     logout: '/logout'
   },
-  rules: [
-    { path: '/auth' },
-    { path: '/home/about' },
-    { path: '/public', public: true }
-  ]
+  rules: [{ path: '/auth' }, { path: '/home/about' }, { path: '/public', public: true }]
 }
 
 const deflector = createDeflector(options)

@@ -16,7 +16,7 @@
  */
 
 /**
- * @typedef GuardianOptions
+ * @typedef SentryOptions
  * @property {AppRoute} [app]
  * @property {Object<string, RoleRoute>} [roles]
  * @property {import('@kavach/logger').Logger} [logger]
@@ -24,7 +24,7 @@
  */
 
 /**
- * @typedef Guardian
+ * @typedef Sentry
  * @property {(session?: any) => void}  setSession
  * @property {(path: string) => string} redirect
  * @property {AppRoute}                 page

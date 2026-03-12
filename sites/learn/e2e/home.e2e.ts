@@ -23,14 +23,14 @@ test.describe('Home Page', () => {
 
 	test('demo nav link points to demo', async ({ page }) => {
 		await page.goto('/')
-		await expect(page.locator('nav >> a:has-text("Demo")')).toHaveAttribute('href', '/demo/supabase')
+		await expect(page.locator('nav >> a:has-text("Demo")')).toHaveAttribute('href', '/demo')
 	})
 })
 
 test.describe('Home Page Links', () => {
 	test('Try Demo button links to demo', async ({ page }) => {
 		await page.goto('/')
-		await expect(page.locator('a:has-text("Try Demo")')).toHaveAttribute('href', '/demo/supabase')
+		await expect(page.locator('a:has-text("Try Demo")')).toHaveAttribute('href', '/demo')
 	})
 
 	test('View on GitHub link is correct', async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('Home Page Links', () => {
 		await page.goto('/')
 		await expect(page.locator('nav >> a:has-text("Home")')).toHaveAttribute('href', '/')
 		await expect(page.locator('nav >> a:has-text("Docs")')).toHaveAttribute('href', '/docs')
-		await expect(page.locator('nav >> a:has-text("Demo")')).toHaveAttribute('href', '/demo/supabase')
+		await expect(page.locator('nav >> a:has-text("Demo")')).toHaveAttribute('href', '/demo')
 	})
 })
 

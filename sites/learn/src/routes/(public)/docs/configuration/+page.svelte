@@ -117,9 +117,7 @@ PUBLIC_SUPABASE_ANON_KEY=your-anon-key`
 				>
 			</li>
 			<li>
-				<a href="/docs/guardian" class="text-primary hover:underline"
-					>Learn about route protection</a
-				>
+				<a href="/docs/sentry" class="text-primary hover:underline">Learn about route protection</a>
 			</li>
 		</ul>
 	</section>

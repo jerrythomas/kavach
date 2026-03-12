@@ -58,6 +58,6 @@
 
 	<section>
 		<h2 class="mb-4 text-xl font-semibold">Installation</h2>
-		<Code code={`npm install kavach @kavach/guardian @kavach/ui`} language="bash" />
+		<Code code={`npm install kavach @kavach/sentry @kavach/ui`} language="bash" />
 	</section>
 </div>

@@ -13,12 +13,12 @@ import { findMatchingRoute, isEndpointRoute, getRedirects } from './utils'
 /**
  * Validate rules, log errors and warnings, and configure the rules.
  *
- * @param {import('./types').GuardianOptions} options
+ * @param {import('./types').SentryOptions} options
  * @param {import('./types').Logger}          logger
  * @returns {import('./types').RoutingConfig}
  */
 export function configureRules(options, logger) {
-	const logInfo = { module: 'guardian', method: 'configure' }
+	const logInfo = { module: 'sentry', method: 'configure' }
 	let { rules = [] } = options
 	const appRoutes = processAppRoutes(options.app)
 
@@ -128,12 +128,12 @@ export function configureRoleRoutes(config, role) {
 }
 
 /**
- * Create a guardian using provided options
+ * Create a sentry using provided options
  *
- * @param {import('./types').GuardianOptions} options
- * @returns {import('./types').Guardian}
+ * @param {import('./types').SentryOptions} options
+ * @returns {import('./types').Sentry}
  */
-export function createGuardian(options = {}) {
+export function createSentry(options = {}) {
 	const logger = options.logger ?? zeroLogger
 	const config = configureRules(options, logger)
 

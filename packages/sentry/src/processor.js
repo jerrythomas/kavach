@@ -85,11 +85,9 @@ export function getAuthorizedRoutes(config, userRole) {
 	let routes = [...config.public]
 
 	if (userRole) {
-		routes = [
-			...routes,
-			...(config.protected[userRole] || []),
-			...config.protected['*']
-		].sort((a, b) => routeDepth(b.path) - routeDepth(a.path))
+		routes = [...routes, ...(config.protected[userRole] || []), ...config.protected['*']].sort(
+			(a, b) => routeDepth(b.path) - routeDepth(a.path)
+		)
 	}
 
 	return routes
@@ -105,12 +103,11 @@ export function getRestrictedRoutes(config, userRole) {
 	const restricted = []
 
 	Object.keys(config.protected)
-		.filter((role) => role !== '*' && role !== userRole)
+		.filter((role) => (role !== '*' || !userRole) && role !== userRole)
 		.forEach((role) => {
 			config.protected[role].forEach((route) => {
 				if (!Array.isArray(route.roles) || !route.roles.includes(userRole)) {
-					if (!restricted.find((x) => x.path === route.path))
-						restricted.push(route)
+					if (!restricted.find((x) => x.path === route.path)) restricted.push(route)
 				}
 			})
 		})
@@ -120,7 +117,7 @@ export function getRestrictedRoutes(config, userRole) {
 /**
  * Use provided routes or use defaults for pages
  *
- * @param {import('./types').GuardianOptions} appRoutes
+ * @param {import('./types').SentryOptions} appRoutes
  * @returns {import('./types').AppRoute}
  */
 export function processAppRoutes(appRoutes) {
@@ -151,9 +148,7 @@ export function addRulesForAppRoutes(rules, appRoutes, options = {}) {
 	options = { ...defaultRouteRules, ...options }
 
 	Object.entries(options).forEach(([route, config]) => {
-		const paths = Array.isArray(appRoutes[route])
-			? appRoutes[route]
-			: [appRoutes[route]]
+		const paths = Array.isArray(appRoutes[route]) ? appRoutes[route] : [appRoutes[route]]
 
 		paths
 			.filter((path) => path)
@@ -163,8 +158,7 @@ export function addRulesForAppRoutes(rules, appRoutes, options = {}) {
 				if (existingRule) return
 
 				const matchChild = rules.find(
-					(rule) =>
-						path.startsWith(`${rule.path}/`) && rule.public === config.public
+					(rule) => path.startsWith(`${rule.path}/`) && rule.public === config.public
 				)
 				if (!matchChild) rules.push({ path, ...config })
 			})

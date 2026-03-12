@@ -68,11 +68,7 @@ describe('validations', () => {
 
 	describe('validateRedundantRules', () => {
 		it('should identify redundant rules', () => {
-			const input = [
-				{ path: '/api/data' },
-				{ path: '/api' },
-				{ path: '/' }
-			].map(fillMissingProps)
+			const input = [{ path: '/api/data' }, { path: '/api' }, { path: '/' }].map(fillMissingProps)
 			expect(validateRedundantRules(clone(input))).toEqual([
 				{
 					...input[0],
@@ -137,22 +133,14 @@ describe('validations', () => {
 		})
 
 		it('should not mark rule as redundant when paths are different', () => {
-			const input = [{ path: '/' }, { path: '/api' }, { path: '/data' }].map(
-				fillMissingProps
-			)
+			const input = [{ path: '/' }, { path: '/api' }, { path: '/data' }].map(fillMissingProps)
 			expect(validateRedundantRules(clone(input))).toEqual(input)
 		})
 	})
 
 	describe('validateRoutingRule', () => {
 		it('should identify multiple issues', () => {
-			const input = [
-				{},
-				{ path: 123 },
-				{ path: '#/' },
-				{ path: '#//x' },
-				{ path: '/' }
-			]
+			const input = [{}, { path: 123 }, { path: '#/' }, { path: '#//x' }, { path: '/' }]
 			expect(validateRoutingRule(clone(input[0]))).toEqual({
 				errors: ['Path must be a non-empty string']
 			})

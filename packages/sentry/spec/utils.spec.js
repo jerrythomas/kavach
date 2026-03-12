@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-	findMatchingRoute,
-	fillMissingProps,
-	isEndpointRoute,
-	routeDepth
-} from '../src/utils'
+import { findMatchingRoute, fillMissingProps, isEndpointRoute, routeDepth } from '../src/utils'
 
 describe('utils', () => {
 	describe('routeDepth', () => {
@@ -35,9 +30,12 @@ describe('utils', () => {
 			})
 		})
 		it('should retain roles property if provided', () => {
-			expect(
-				fillMissingProps({ path: '/api', public: true, roles: 'admin' })
-			).toEqual({ path: '/api', public: true, roles: 'admin', depth: 1 })
+			expect(fillMissingProps({ path: '/api', public: true, roles: 'admin' })).toEqual({
+				path: '/api',
+				public: true,
+				roles: 'admin',
+				depth: 1
+			})
 		})
 		it('should override depth property if provided', () => {
 			expect(

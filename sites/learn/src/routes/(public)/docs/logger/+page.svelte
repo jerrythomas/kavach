@@ -131,7 +131,7 @@ logger.trace('Trace')            // ✗ Not logged`
 	<section>
 		<h2 class="mb-4 text-xl font-semibold">Next Steps</h2>
 		<ul class="space-y-2">
-			<li><a href="/docs/guardian" class="text-primary hover:underline">Guardian (Sentry)</a></li>
+			<li><a href="/docs/sentry" class="text-primary hover:underline">Sentry</a></li>
 			<li><a href="/docs/plugins/vite" class="text-primary hover:underline">Vite Plugin</a></li>
 			<li><a href="/docs/configuration" class="text-primary hover:underline">Configuration</a></li>
 		</ul>

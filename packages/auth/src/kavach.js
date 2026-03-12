@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { createGuardian } from '@kavach/guardian'
+import { createSentry } from '@kavach/sentry'
 import { zeroLogger } from '@kavach/logger'
 import { sanitizeError } from '@kavach/query'
 import { pick } from 'ramda'
@@ -103,12 +103,12 @@ async function handleSignUp(adapter, agents, credentials) {
 /**
  * Handle unauthorized access
  *
- * @param {import('kavach').Guardian} guardian
+ * @param {import('kavach').Sentry} sentry
  * @param {object}                          request
  * @returns {Response}
  */
 function handleUnauthorizedAccess(agents, { event, resolve }) {
-	const result = agents.guardian.protect(event.url.pathname)
+	const result = agents.sentry.protect(event.url.pathname)
 
 	if (result.status !== 200) {
 		if (result.redirect) {
@@ -152,10 +152,10 @@ export function setCookieFromSession(session) {
  *
  * @param {object} event
  * @param {import('kavach').AuthAdapter} adapter
- * @param {import('kavach').Guardian}   guardian
+ * @param {import('kavach').Sentry}   sentry
  * @returns {object} response
  */
-async function handleSessionSync(event, adapter, guardian) {
+async function handleSessionSync(event, adapter, sentry) {
 	const data = await getRequestData(event)
 	let session = null
 	let status = 200
@@ -174,7 +174,7 @@ async function handleSessionSync(event, adapter, guardian) {
 		await adapter.signOut()
 	}
 
-	guardian.setSession(session)
+	sentry.setSession(session)
 	const headers = setCookieFromSession(session)
 	return new Response(JSON.stringify({ session, error }), {
 		status,
@@ -197,12 +197,12 @@ function parseSessionFromCookies(event) {
 /**
  * Send sign in status and session to server
  *
- * @param {import('kavach').Guardian} guardian
+ * @param {import('kavach').Sentry} sentry
  * @param {object} event
  * @param {object} session
  */
 async function syncSessionWithServer(agents, event, session = null) {
-	const result = await fetch(agents.guardian.app.session, {
+	const result = await fetch(agents.sentry.app.session, {
 		method: 'POST',
 		body: JSON.stringify({ event, session })
 	})
@@ -218,12 +218,12 @@ async function syncSessionWithServer(agents, event, session = null) {
  * @returns {Promise<void>}
  */
 function handleRouteProtection(adapter, agents, { event, resolve }) {
-	const { guardian } = agents
+	const { sentry } = agents
 	event.locals.session = parseSessionFromCookies(event)
-	guardian.setSession(event.locals.session)
+	sentry.setSession(event.locals.session)
 
-	if (event.url.pathname.startsWith(guardian.app.session)) {
-		return handleSessionSync(event, adapter, guardian)
+	if (event.url.pathname.startsWith(sentry.app.session)) {
+		return handleSessionSync(event, adapter, sentry)
 	}
 
 	const protection = handleUnauthorizedAccess(agents, { event, resolve })
@@ -232,8 +232,8 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 	if (protection instanceof Response) {
 		// Check for data/rpc routes before returning error response
 		const { pathname } = event.url
-		const dataRoute = guardian.app.data
-		const rpcRoute = guardian.app.rpc
+		const dataRoute = sentry.app.data
+		const rpcRoute = sentry.app.rpc
 
 		// Only handle data/rpc routes if the request would otherwise be allowed
 		if (protection.status === 200 || protection.status === undefined) {
@@ -253,8 +253,8 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 
 	// Route is allowed - check for data/rpc routes
 	const { pathname } = event.url
-	const dataRoute = guardian.app.data
-	const rpcRoute = guardian.app.rpc
+	const dataRoute = sentry.app.data
+	const rpcRoute = sentry.app.rpc
 
 	// Handle data route if configured
 	if (dataRoute && isDataRoute(pathname, dataRoute)) {
@@ -426,14 +426,14 @@ async function handleDataRoute(agents, { event }, dataRoute, dataFn) {
  * @returns {Promise<Response>}
  */
 async function handleRpcRoute(agents, { event }, _rpcRoute) {
-	if (!agents.guardian.rpc) {
+	if (!agents.sentry.rpc) {
 		return new Response(JSON.stringify({ error: { message: MESSAGES.RPC_NOT_SUPPORTED } }), {
 			status: 501,
 			headers: { 'Content-Type': 'application/json' }
 		})
 	}
 
-	const rpc = agents.guardian.rpc
+	const rpc = agents.sentry.rpc
 	if (!rpc) {
 		return new Response(JSON.stringify({ error: { message: MESSAGES.RPC_NOT_SUPPORTED } }), {
 			status: 501,
@@ -469,7 +469,7 @@ async function handleRpcRoute(agents, { event }, _rpcRoute) {
 
 function getAgents(options) {
 	const logger = options.logger ?? zeroLogger
-	const guardianOptions = {
+	const sentryOptions = {
 		...options,
 		app: {
 			...options.app,
@@ -482,7 +482,7 @@ function getAgents(options) {
 			package: '@kavach/svelte',
 			module: 'kavach'
 		}),
-		guardian: createGuardian(guardianOptions),
+		sentry: createSentry(sentryOptions),
 		invalidateAll: options.invalidateAll ?? pass,
 		dataFn: options.data
 	}
@@ -504,7 +504,7 @@ export function createKavach(adapter, options = {}) {
 	// 		package: '@kavach/svelte',
 	// 		module: 'kavach'
 	// 	}),
-	// 	guardian: createGuardian(options),
+	// 	sentry: createSentry(options),
 	// 	invalidateAll: options.invalidateAll ?? pass
 	// }
 

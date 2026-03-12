@@ -1,11 +1,11 @@
 {
-  "name": "@kavach/guardian",
+  "name": "@kavach/sentry",
   "version": "1.0.0-next.31",
-  "description": "A guardian for role based route handling",
+  "description": "A sentry for role based route handling",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
   "keywords": [
-    "guardian",
+    "sentry",
     "routes",
     "routing",
     "role based routing"
@@ -16,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/jerrythomas/kavach",
-    "directory": "packages/guardian"
+    "directory": "packages/sentry"
   },
   "prettier": "@jerrythomas/prettier-config",
   "publishConfig": {

@@ -30,10 +30,7 @@ describe('Route Processor', () => {
 		})
 
 		it('should prioritize deeper paths over less specific paths in organization', () => {
-			const inputRoutes = validateRoutingRules([
-				{ path: '/home' },
-				{ path: '/about' }
-			])
+			const inputRoutes = validateRoutingRules([{ path: '/home' }, { path: '/about' }])
 			const processedRoutes = processRoutingRules(inputRoutes)
 			expect(processedRoutes).toEqual([
 				{
@@ -126,19 +123,19 @@ describe('Route Processor', () => {
 	})
 
 	describe('processAppRoutes', () => {
-	it('should return default routes', () => {
-		const routes = processAppRoutes()
-		expect(routes).toEqual({
-			home: '/',
-			login: '/auth',
-			logout: '/logout',
-			session: '/auth/session',
-			unauthorized: null,
-			data: '/data',
-			rpc: '/rpc',
-			endpoints: ['/api', '/data', '/auth/session']
+		it('should return default routes', () => {
+			const routes = processAppRoutes()
+			expect(routes).toEqual({
+				home: '/',
+				login: '/auth',
+				logout: '/logout',
+				session: '/auth/session',
+				unauthorized: null,
+				data: '/data',
+				rpc: '/rpc',
+				endpoints: ['/api', '/data', '/auth/session']
+			})
 		})
-	})
 
 		it('should return custom routes', () => {
 			const routes = processAppRoutes({
