@@ -1,11 +1,18 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+	import SentryAnnotation from '$lib/demo/SentryAnnotation.svelte'
 
 	let { data }: { data: PageData } = $props()
 </script>
 
 <div class="flex flex-col gap-4 p-8">
 	<h1 class="text-2xl font-bold">Admin Panel</h1>
+
+	<SentryAnnotation
+		title="Admin Panel — requires admin role"
+		body="Sentry enforces { path: '/demo/[platform]/admin', roles: ['admin'] }. Non-admin users are redirected to dashboard in App Mode. In Hacker Mode, the redirect is bypassed and Sentry's enforcement is shown here."
+		rule="roles: ['admin']"
+	/>
 
 	<div class="bg-warning-100 border-warning-300 rounded-lg border p-4">
 		<p class="text-warning-900">

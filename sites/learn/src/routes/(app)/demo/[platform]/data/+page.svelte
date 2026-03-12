@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+	import { hackerMode } from '$lib/demo/hacker.svelte'
+	import SentryAnnotation from '$lib/demo/SentryAnnotation.svelte'
 
 	let { data }: { data: PageData } = $props()
 
@@ -20,6 +22,21 @@
 	let newCategory = $state('')
 	let newTier = $state<'general' | 'classified'>('general')
 	let submitting = $state(false)
+	let loadingAdminStats = $state(false)
+	let adminStatsResult = $state<any>(null)
+
+	async function tryAdminStats() {
+		loadingAdminStats = true
+		adminStatsResult = null
+		try {
+			const res = await fetch('/data/admin-stats')
+			const body = await res.json()
+			adminStatsResult = { status: res.status, statusText: res.statusText, body }
+		} catch (e: any) {
+			adminStatsResult = { error: e.message }
+		}
+		loadingAdminStats = false
+	}
 
 	async function fetchFacts() {
 		loading = true
@@ -85,6 +102,12 @@
 			Role-gated astronomy data — general facts for all users, classified briefings for admins.
 		</p>
 	</div>
+
+	<SentryAnnotation
+		title="Data filtered by role server-side"
+		body="The /data/facts endpoint returns all rows for admin (including classified), and general-only rows for authenticated users. PostgREST row-level security enforces this — no client-side filtering."
+		rule="roles: *"
+	/>
 
 	<div class="flex items-center gap-3">
 		<button
@@ -188,6 +211,30 @@
 		<div class="border-error-300 bg-error-50 rounded-lg border p-4">
 			<p class="text-error-800 text-sm font-medium">403 Forbidden</p>
 			<p class="text-error-700 text-sm">{writeError}</p>
+		</div>
+	{/if}
+
+	{#if hackerMode.value}
+		<div class="border-warning-300 bg-warning-50 rounded-xl border p-4">
+			<p class="text-warning-800 mb-3 text-sm font-semibold">
+				💀 Hacker Mode — Test /data/admin-stats
+			</p>
+			<p class="text-warning-700 mb-3 text-xs">
+				This endpoint requires admin role. Kavach will return 403 for non-admin users, even if you
+				call it directly.
+			</p>
+			<button
+				onclick={tryAdminStats}
+				disabled={loadingAdminStats}
+				class="bg-warning-600 hover:bg-warning-700 rounded px-3 py-1.5 text-xs text-white transition-colors disabled:opacity-50"
+			>
+				{loadingAdminStats ? 'Trying…' : 'Try /data/admin-stats'}
+			</button>
+			{#if adminStatsResult}
+				<pre
+					class="border-warning-300 mt-3 overflow-auto rounded-lg border bg-black/10 p-3 font-mono text-xs"
+				>{JSON.stringify(adminStatsResult, null, 2)}</pre>
+			{/if}
 		</div>
 	{/if}
 </div>
