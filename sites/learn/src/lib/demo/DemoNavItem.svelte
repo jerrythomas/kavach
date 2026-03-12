@@ -44,8 +44,8 @@
 	{#if locked}
 		<span
 			class="h-3 w-3 shrink-0 {hackerMode.value
-				? 'i-app:code-visible text-warning-500'
-				: 'i-app:shield text-surface-z4'}"
+				? 'i-app-code-visible text-warning-500'
+				: 'i-app-shield text-surface-z4'}"
 			title={hackerMode.value ? 'Hacker Mode: navigation enabled' : 'Admin only'}
 			aria-hidden="true"
 		></span>

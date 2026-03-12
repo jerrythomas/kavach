@@ -55,7 +55,7 @@
 			class="text-surface-z5 hover:text-primary flex items-center gap-1 transition-colors"
 			title="All platforms"
 		>
-			<span class="i-app:list h-5 w-5" aria-hidden="true"></span>
+			<span class="i-app-list h-5 w-5" aria-hidden="true"></span>
 			<span class="text-sm">All</span>
 		</a>
 		<span class="text-surface-z3">/</span>
@@ -132,8 +132,8 @@
 							<li class="flex items-center gap-3 text-sm">
 								<span
 									class="h-4 w-4 shrink-0 {cap.kavachHandles
-										? 'i-app:shield text-success-600'
-										: 'i-app:shield text-surface-z4'}"
+										? 'i-app-shield text-success-600'
+										: 'i-app-shield text-surface-z4'}"
 									aria-hidden="true"
 								></span>
 								<span
@@ -163,7 +163,7 @@
 							<li
 								class="border-surface-z2 bg-surface-z1 flex items-center gap-3 rounded-xl border p-3 text-sm"
 							>
-								<span class="i-app:shield text-primary h-4 w-4 shrink-0" aria-hidden="true"></span>
+								<span class="i-app-shield text-primary h-4 w-4 shrink-0" aria-hidden="true"></span>
 								<div>
 									<span class="text-surface-z8 font-semibold">{tab.label}</span>
 									{#if 'description' in tab}

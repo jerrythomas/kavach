@@ -44,19 +44,19 @@
 
 <svelte:body use:themable={{ theme: vibe, storageKey: 'kavach-theme' }} />
 
-<div class="demo-grid-bg bg-surface-z0 text-surface-z9 flex min-h-screen flex-col">
-	<!-- Theme switcher -->
-	<div class="absolute top-4 right-4 z-10">
+<div class="demo-grid-bg bg-surface-z0 text-surface-z9 flex h-screen flex-col overflow-hidden">
+	<!-- Theme switcher — fixed so it doesn't scroll away -->
+	<div class="fixed top-4 right-4 z-10">
 		<ThemeSwitcherToggle />
 	</div>
 
-	<!-- Page content -->
-	<div class="flex-1">
+	<!-- Page content — scrolls independently -->
+	<div class="flex-1 overflow-y-auto">
 		{@render children()}
 	</div>
 
 	<!-- Footer -->
-	<footer class="border-surface-z2 text-surface-z5 border-t px-8 py-4 text-center text-sm">
+	<footer class="border-surface-z2 text-surface-z5 shrink-0 border-t px-8 py-4 text-center text-sm">
 		<a href="/" class="hover:text-primary transition-colors">← Back to Kavach</a>
 	</footer>
 </div>

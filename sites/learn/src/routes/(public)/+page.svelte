@@ -10,11 +10,10 @@
 			<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-20 w-20" />
 			Kavach
 		</h1>
-		<p class="text-surface-z8 text-2xl">Authentication made simple</p>
-
 		<p class="text-surface-z7 mx-auto max-w-2xl text-lg">
-			A drop-in authentication framework for SvelteKit with unified API across multiple platforms,
-			declarative route protection, and pre-built UI components.
+			Focus on what truly matters: crafting exceptional applications. Kavach provides a set of
+			components and utility functions that effortlessly integrate authentication and role-based
+			route protection into your app, without compromising its performance or flexibility.
 		</p>
 
 		<div class="flex justify-center gap-4 pt-4">

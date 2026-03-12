@@ -18,7 +18,7 @@
 				<p class="text-surface-z6 mt-1 text-sm">{user?.email ?? 'Unknown user'}</p>
 			</div>
 			<span
-				class="font-mono text-sm font-bold rounded-full px-3 py-1 {role === 'admin'
+				class="rounded-full px-3 py-1 font-mono text-sm font-bold {role === 'admin'
 					? 'bg-warning-100 text-warning-700'
 					: 'bg-primary/10 text-primary'}"
 			>
@@ -33,7 +33,7 @@
 			href="{base}/data"
 			class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow"
 		>
-			<span class="i-app:list text-primary h-6 w-6" aria-hidden="true"></span>
+			<span class="i-app-list text-primary h-6 w-6" aria-hidden="true"></span>
 			<span class="text-surface-z8 font-semibold">Space Facts</span>
 			<span class="text-surface-z6 text-xs">Role-gated data — see what you can access</span>
 			<span class="text-success-600 text-xs">✓ Open to all authenticated users</span>
@@ -44,7 +44,7 @@
 			class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow
 				{role !== 'admin' ? 'opacity-60' : ''}"
 		>
-			<span class="i-app:shield text-primary h-6 w-6" aria-hidden="true"></span>
+			<span class="i-app-shield text-primary h-6 w-6" aria-hidden="true"></span>
 			<span class="text-surface-z8 font-semibold">Admin Panel</span>
 			<span class="text-surface-z6 text-xs">Session info, user management, settings</span>
 			{#if role === 'admin'}
@@ -58,7 +58,7 @@
 			href="{base}/logout"
 			class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow"
 		>
-			<span class="i-app:logout text-primary h-6 w-6" aria-hidden="true"></span>
+			<span class="i-app-logout text-primary h-6 w-6" aria-hidden="true"></span>
 			<span class="text-surface-z8 font-semibold">Sign Out</span>
 			<span class="text-surface-z6 text-xs">End the session and return to platform page</span>
 		</a>
@@ -67,7 +67,9 @@
 	<!-- Sentry annotation -->
 	<SentryAnnotation
 		title="This page is protected by Sentry"
-		body={"The rule { path: '/demo/" + platformId + "/dashboard', roles: '*' } allows any authenticated user to reach this page. Unauthenticated visitors are redirected to the platform page automatically."}
+		body={"The rule { path: '/demo/" +
+			platformId +
+			"/dashboard', roles: '*' } allows any authenticated user to reach this page. Unauthenticated visitors are redirected to the platform page automatically."}
 		rule="roles: *"
 	/>
 </div>

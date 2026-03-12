@@ -10,7 +10,7 @@
 
 	<SentryAnnotation
 		title="Admin Panel — requires admin role"
-		body="Sentry enforces { path: '/demo/[platform]/admin', roles: ['admin'] }. Non-admin users are redirected to dashboard in App Mode. In Hacker Mode, the redirect is bypassed and Sentry's enforcement is shown here."
+		body="Sentry enforces path: '/demo/[platform]/admin', roles: ['admin']. Non-admin users are redirected to dashboard in App Mode. In Hacker Mode, the redirect is bypassed and Sentry's enforcement is shown here."
 		rule="roles: ['admin']"
 	/>
 

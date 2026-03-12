@@ -2,7 +2,7 @@
 	import { PLATFORMS } from '$lib/demo/platforms'
 </script>
 
-<div class="flex min-h-screen flex-col items-center justify-center px-6 py-16 sm:px-8">
+<div class="flex min-h-full flex-col items-center justify-center px-6 py-16 sm:px-8">
 	<!-- Hero -->
 	<div class="mb-12 text-center">
 		<h1 class="text-surface-z9 mb-3 text-4xl font-black tracking-tight sm:text-5xl">Kavach Demo</h1>
@@ -45,15 +45,36 @@
 					<p class="text-surface-z6 text-sm">{platform.description}</p>
 				</div>
 
-				<!-- What you'll explore -->
-				<ul class="flex flex-col gap-1">
-					{#each platform.features as feature}
-						<li class="flex items-center gap-2 text-xs">
-							<span class="i-app:shield text-primary h-3 w-3 shrink-0" aria-hidden="true"></span>
-							<span class="text-surface-z7">{feature}</span>
-						</li>
-					{/each}
-				</ul>
+				<!-- Feature split -->
+				<div class="flex flex-col gap-2">
+					<div>
+						<p class="text-surface-z4 mb-1 text-xs font-semibold tracking-wider uppercase">
+							Kavach
+						</p>
+						<ul class="flex flex-col gap-1">
+							{#each platform.kavachFeatures as feature}
+								<li class="flex items-center gap-2 text-xs">
+									<span class="i-app-shield text-primary h-3 w-3 shrink-0" aria-hidden="true"
+									></span>
+									<span class="text-surface-z7">{feature}</span>
+								</li>
+							{/each}
+						</ul>
+					</div>
+					<div>
+						<p class="text-surface-z4 mb-1 text-xs font-semibold tracking-wider uppercase">
+							{platform.name}
+						</p>
+						<ul class="flex flex-col gap-1">
+							{#each platform.adapterFeatures as feature}
+								<li class="flex items-center gap-2 text-xs">
+									<span class="text-surface-z4 shrink-0">·</span>
+									<span class="text-surface-z6">{feature}</span>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				</div>
 			</a>
 		{/each}
 	</div>

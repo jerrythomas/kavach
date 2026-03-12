@@ -1,6 +1,6 @@
 # Kavach
 
-> Authentication made simple with Kavach
+> Focus on what truly matters: crafting exceptional applications. Kavach provides a set of components and utility functions that effortlessly integrate authentication and role-based route protection into your app, without compromising its performance or flexibility.
 
 [![Maintainability][maintainability_badge]][maintainability_url]
 [![Test Coverage][coverage_badge]][coverage_url]
@@ -40,13 +40,13 @@ bun run dev
 
 ## Supported Adapters
 
-| Provider | Adapter Package | Capabilities | Status |
-|----------|----------------|-------------|--------|
-| Supabase | `@kavach/adapter-supabase` | Auth, Data, Storage, Logging | ✓ |
-| Firebase | `@kavach/adapter-firebase` | Auth | ✓ |
-| Auth0 | `@kavach/adapter-auth0` | Auth | ✓ |
-| AWS Amplify | `@kavach/adapter-amplify` | Auth | ✓ |
-| Convex | `@kavach/adapter-convex` | Auth | ✓ |
+| Provider    | Adapter Package            | Capabilities                 | Status |
+| ----------- | -------------------------- | ---------------------------- | ------ |
+| Supabase    | `@kavach/adapter-supabase` | Auth, Data, Storage, Logging | ✓      |
+| Firebase    | `@kavach/adapter-firebase` | Auth                         | ✓      |
+| Auth0       | `@kavach/adapter-auth0`    | Auth                         | ✓      |
+| AWS Amplify | `@kavach/adapter-amplify`  | Auth                         | ✓      |
+| Convex      | `@kavach/adapter-convex`   | Auth                         | ✓      |
 
 ## To Do
 

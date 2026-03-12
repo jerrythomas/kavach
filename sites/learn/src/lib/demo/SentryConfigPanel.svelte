@@ -15,7 +15,7 @@
 		class="text-surface-z5 hover:text-surface-z8 flex items-center justify-between text-xs font-semibold tracking-wider uppercase transition-colors"
 	>
 		<span>Sentry Config</span>
-		<span class="i-app:list h-3 w-3 transition-transform {open ? 'rotate-90' : ''}"></span>
+		<span class="i-app-list h-3 w-3 transition-transform {open ? 'rotate-90' : ''}"></span>
 	</button>
 
 	{#if open}

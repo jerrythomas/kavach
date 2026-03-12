@@ -37,10 +37,10 @@
 	<div class="flex flex-col gap-1">
 		<span class="text-surface-z5 mb-1 text-xs font-semibold tracking-wider uppercase">Navigate</span
 		>
-		<DemoNavItem href="{base}/dashboard" label="Dashboard" icon="i-app:login" />
-		<DemoNavItem href="{base}/data" label="Space Facts" icon="i-app:list" />
-		<DemoNavItem href="{base}/admin" label="Admin" icon="i-app:shield" locked={role !== 'admin'} />
-		<DemoNavItem href="{base}/logout" label="Sign Out" icon="i-app:logout" />
+		<DemoNavItem href="{base}/dashboard" label="Dashboard" icon="i-app-login" />
+		<DemoNavItem href="{base}/data" label="Space Facts" icon="i-app-list" />
+		<DemoNavItem href="{base}/admin" label="Admin" icon="i-app-shield" locked={role !== 'admin'} />
+		<DemoNavItem href="{base}/logout" label="Sign Out" icon="i-app-logout" />
 	</div>
 
 	<div class="border-surface-z2 border-t pt-4">

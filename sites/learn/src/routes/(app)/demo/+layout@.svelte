@@ -1,6 +1,6 @@
 <script lang="ts">
 	import 'uno.css'
-	import '../../../../app.css'
+	import '../../../app.css'
 	import { vibe } from '@rokkit/states'
 	import { themable } from '@rokkit/actions'
 	import { ThemeSwitcherToggle } from '@rokkit/app'
@@ -67,7 +67,7 @@
 			onclick={() => (sidebarOpen = !sidebarOpen)}
 			aria-label="Toggle sidebar"
 		>
-			<span class="i-app:list h-5 w-5" aria-hidden="true"></span>
+			<span class="i-app-list h-5 w-5" aria-hidden="true"></span>
 		</button>
 
 		<!-- App name -->

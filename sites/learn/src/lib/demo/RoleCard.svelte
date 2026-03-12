@@ -31,8 +31,8 @@
 			<div class="flex items-center gap-2 text-xs">
 				<span
 					class="h-3 w-3 shrink-0 {route.allowed
-						? 'i-app:shield text-success-600'
-						: 'i-app:shield text-error-400'}"
+						? 'i-app-shield text-success-600'
+						: 'i-app-shield text-error-400'}"
 					aria-hidden="true"
 				></span>
 				<span
