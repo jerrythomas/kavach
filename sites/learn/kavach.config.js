@@ -31,6 +31,8 @@ export default {
 		{ path: '/', public: true },
 		{ path: '/docs', public: true },
 		{ path: '/auth', public: true },
-		{ path: '/demo', roles: '*' }
+		{ path: '/demo', roles: '*' },
+		{ path: '/data/facts', roles: '*' },
+		{ path: '/data/admin-stats', roles: ['admin'] }
 	]
 }
