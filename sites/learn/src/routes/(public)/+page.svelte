@@ -18,7 +18,7 @@
 		</p>
 
 		<div class="flex justify-center gap-4 pt-4">
-			<Button href="/demo/supabase" variant="primary" size="lg" target="_blank">Try Demo</Button>
+			<Button href="/demo" variant="primary" size="lg">Try Demo</Button>
 			<Button href="https://github.com/jerrythomas/kavach" style="outline" size="lg"
 				>View on GitHub</Button
 			>
