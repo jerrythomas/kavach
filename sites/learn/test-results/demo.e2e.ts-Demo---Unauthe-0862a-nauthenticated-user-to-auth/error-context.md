@@ -1,0 +1,77 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+    - generic [ref=e3]:
+        - banner [ref=e4]:
+            - generic [ref=e5]:
+                - generic [ref=e6]: DemoApp
+                - generic [ref=e7]: ·
+                - generic [ref=e10]: Supabase
+            - radiogroup "Selection" [ref=e12]:
+                - radio [checked] [ref=e13] [cursor=pointer]
+                - radio [ref=e15] [cursor=pointer]
+                - radio [ref=e17] [cursor=pointer]
+        - generic [ref=e19]:
+            - complementary [ref=e20]:
+                - navigation [ref=e21]:
+                    - generic [ref=e22]:
+                        - generic [ref=e23]: Navigate
+                        - link "Dashboard" [ref=e24] [cursor=pointer]:
+                            - /url: /demo/supabase/dashboard
+                            - generic [ref=e26]: Dashboard
+                        - link "Space Facts" [ref=e27] [cursor=pointer]:
+                            - /url: /demo/supabase/data
+                            - generic [ref=e29]: Space Facts
+                        - link "Admin" [ref=e30]:
+                            - /url: /demo/supabase/admin
+                            - generic [ref=e32]: Admin
+                        - link "Sign Out" [ref=e34] [cursor=pointer]:
+                            - /url: /demo/supabase/logout
+                            - generic [ref=e36]: Sign Out
+                    - generic [ref=e38]:
+                        - generic [ref=e39]: Your Role
+                        - generic [ref=e40]: unauthenticated
+                        - generic [ref=e41]:
+                            - generic [ref=e44]: /demo/supabase/dashboard
+                            - generic [ref=e47]: /demo/supabase/data
+                            - generic [ref=e50]: /demo/supabase/admin
+                    - button "Sentry Config" [ref=e53] [cursor=pointer]:
+                        - generic [ref=e54]: Sentry Config
+                    - generic [ref=e57]:
+                        - generic [ref=e58]: Mode
+                        - button "✅ App Mode off" [ref=e59] [cursor=pointer]:
+                            - generic [ref=e60]: ✅ App Mode
+                            - generic [ref=e61]: 'off'
+            - main [ref=e62]:
+                - generic [ref=e63]:
+                    - generic [ref=e65]:
+                        - generic [ref=e66]:
+                            - heading "Welcome back" [level=1] [ref=e67]
+                            - paragraph [ref=e68]: Unknown user
+                        - generic [ref=e69]: authenticated
+                    - generic [ref=e70]:
+                        - link "Space Facts Role-gated data — see what you can access ✓ Open to all authenticated users" [ref=e71] [cursor=pointer]:
+                            - /url: /demo/supabase/data
+                            - generic [ref=e73]: Space Facts
+                            - generic [ref=e74]: Role-gated data — see what you can access
+                            - generic [ref=e75]: ✓ Open to all authenticated users
+                        - link "Admin Panel Session info, user management, settings ✗ Requires admin role" [ref=e76] [cursor=pointer]:
+                            - /url: /demo/supabase/admin
+                            - generic [ref=e78]: Admin Panel
+                            - generic [ref=e79]: Session info, user management, settings
+                            - generic [ref=e80]: ✗ Requires admin role
+                        - link "Sign Out End the session and return to platform page" [ref=e81] [cursor=pointer]:
+                            - /url: /demo/supabase/logout
+                            - generic [ref=e83]: Sign Out
+                            - generic [ref=e84]: End the session and return to platform page
+                    - note "Kavach Sentry explanation" [ref=e85]:
+                        - generic [ref=e86]:
+                            - generic [ref=e88]: Sentry
+                            - code [ref=e89]: 'roles: *'
+                        - paragraph [ref=e90]: This page is protected by Sentry
+                        - paragraph [ref=e91]: "The rule { path: '/demo/supabase/dashboard', roles: '*' } allows any authenticated user to reach this page. Unauthenticated visitors are redirected to the platform page automatically."
+        - status "Powered by Kavach" [ref=e92]:
+            - generic [ref=e95]: ⬡
+    - generic [ref=e98]: Kavach
+```
