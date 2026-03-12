@@ -15,6 +15,8 @@ All interrupts, adhoc items, and deferred work go here.
 | [Fix remaining adapters](001-fix-remaining-adapters.md)                     | adapters | 2026-03-02 |
 | [Clean test warnings](004-clean-test-warnings.md)                           | testing  | 2026-03-02 |
 | [Auth UI — cached login cards, smart layout, passkey](007-auth-ui-ideas.md) | ui       | 2026-03-02 |
+| [Per-route fallback config](012-per-route-fallback.md)                      | guardian | 2026-03-12 |
+| [Demo site enhancements](013-demo-enhancements.md)                          | sites    | 2026-03-12 |
 
 ## Active
 
@@ -28,8 +30,6 @@ All interrupts, adhoc items, and deferred work go here.
 | --------------------------------------------------------------- | -------- | -------- | ------ |
 | [CLI package](006-cli-package.md)                               | tooling  | Medium   |        |
 | [Learn site](002-learn-site.md)                                 | sites    | Medium   |        |
-| [Per-route fallback config](012-per-route-fallback.md)          | guardian | Medium   |        |
-| [Demo site enhancements](013-demo-enhancements.md)              | sites    | Medium   |        |
 | [Deprecate supabase example](003-deprecate-supabase-example.md) | sites    | Low      |        |
 | Enhanced Query Phase 3 — Logical Operators (`or`, `not`)        | query    | Low      |        |
 | `call()` (RPC) missing from `ServerActions` type                | adapters | Low      |        |

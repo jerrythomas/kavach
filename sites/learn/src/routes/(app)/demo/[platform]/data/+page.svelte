@@ -3,86 +3,191 @@
 
 	let { data }: { data: PageData } = $props()
 
-	type Row = Record<string, unknown>
-	let entity = $state('posts')
-	let rows = $state<Row[]>([])
+	interface Fact {
+		id: number
+		tier: 'general' | 'classified'
+		category: string
+		fact: string
+	}
+
+	const isAdmin = $derived((data as any).user?.role === 'admin')
+
+	let facts = $state<Fact[]>([])
 	let error = $state<string | null>(null)
 	let loading = $state(false)
+	let writeError = $state<string | null>(null)
+	let newFact = $state('')
+	let newCategory = $state('')
+	let newTier = $state<'general' | 'classified'>('general')
+	let submitting = $state(false)
 
-	async function fetchData() {
+	async function fetchFacts() {
 		loading = true
 		error = null
 		try {
-			const res = await fetch(`/data/${entity}`)
+			const res = await fetch('/data/facts')
 			if (!res.ok) {
 				const body = await res.json()
 				error = body.error ?? `HTTP ${res.status}`
 			} else {
-				rows = await res.json()
+				facts = await res.json()
 			}
 		} catch (e: any) {
 			error = e.message
 		}
 		loading = false
 	}
+
+	async function addFact() {
+		if (!newFact.trim()) return
+		submitting = true
+		writeError = null
+		try {
+			const res = await fetch('/data/facts', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ fact: newFact, category: newCategory || 'Custom', tier: newTier })
+			})
+			const body = await res.json()
+			if (!res.ok) {
+				writeError = body.error ?? `HTTP ${res.status}`
+			} else {
+				newFact = ''
+				newCategory = ''
+				await fetchFacts()
+			}
+		} catch (e: any) {
+			writeError = e.message
+		}
+		submitting = false
+	}
+
+	async function deleteFact(id: number) {
+		writeError = null
+		try {
+			const res = await fetch(`/data/facts?id=${id}`, { method: 'DELETE' })
+			const body = await res.json()
+			if (!res.ok) {
+				writeError = body.error ?? `HTTP ${res.status}`
+			} else {
+				await fetchFacts()
+			}
+		} catch (e: any) {
+			writeError = e.message
+		}
+	}
 </script>
 
-<div class="flex flex-col gap-4 p-8">
-	<h1 class="text-2xl font-bold">Data Operations</h1>
-
-	<div class="bg-surface-z2 border-surface-z3 rounded-lg border p-4">
-		<p class="text-surface-z8">
-			Demonstrates data fetching with role-based access control. Admin users can see admin-only
-			records; others see only public records.
+<div class="flex flex-col gap-6 p-8">
+	<div>
+		<h1 class="text-2xl font-bold">Space Facts</h1>
+		<p class="text-surface-z7 mt-1 text-sm">
+			Role-gated astronomy data — general facts for all users, classified briefings for admins.
 		</p>
 	</div>
 
-	<div class="flex items-center gap-2">
-		<select
-			bind:value={entity}
-			class="border-surface-z3 bg-surface-z0 rounded border px-3 py-2 text-sm"
-		>
-			<option value="posts">posts</option>
-			<option value="users">users</option>
-		</select>
+	<div class="flex items-center gap-3">
 		<button
-			onclick={fetchData}
-			class="bg-primary rounded px-4 py-2 text-sm text-white transition-opacity hover:opacity-90"
+			onclick={fetchFacts}
+			disabled={loading}
+			class="bg-primary rounded px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
 		>
-			Fetch
+			{loading ? 'Loading…' : 'Load Facts'}
 		</button>
+
+		{#if isAdmin}
+			<span class="bg-warning-100 text-warning-800 rounded px-2 py-1 text-xs font-semibold">
+				👑 Admin — you can see classified facts and write
+			</span>
+		{:else}
+			<span class="rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">
+				🔑 Authenticated — general facts only
+			</span>
+		{/if}
 	</div>
 
-	{#if loading}
-		<p class="text-surface-z6">Loading...</p>
-	{:else if error}
-		<p class="text-error-600">{error}</p>
-	{:else if rows.length > 0}
-		<div class="border-surface-z3 overflow-hidden rounded-lg border">
-			<table class="w-full text-sm">
-				<thead class="bg-surface-z1 border-surface-z3 border-b">
-					<tr>
-						{#each Object.keys(rows[0]) as col (col)}
-							<th class="text-surface-z6 px-4 py-2 text-left text-xs font-semibold uppercase"
-								>{col}</th
-							>
-						{/each}
-					</tr>
-				</thead>
-				<tbody>
-					{#each rows as row, i (i)}
-						<tr
-							class="border-surface-z2 hover:bg-surface-z1 border-b transition-colors last:border-0"
+	{#if error}
+		<p class="text-error-600 text-sm">{error}</p>
+	{/if}
+
+	{#if facts.length > 0}
+		<div class="flex flex-col gap-3">
+			{#each facts as item (item.id)}
+				<div
+					class="border-surface-z3 flex items-start justify-between gap-4 rounded-lg border p-4"
+					class:bg-warning-50={item.tier === 'classified'}
+					class:border-warning-300={item.tier === 'classified'}
+				>
+					<div class="flex flex-col gap-1">
+						<div class="flex items-center gap-2">
+							<span class="text-surface-z6 text-xs font-semibold uppercase">{item.category}</span>
+							{#if item.tier === 'classified'}
+								<span class="bg-warning-200 text-warning-800 rounded px-1.5 text-xs font-bold"
+									>CLASSIFIED</span
+								>
+							{/if}
+						</div>
+						<p class="text-sm leading-relaxed">{item.fact}</p>
+					</div>
+
+					{#if isAdmin && item.id >= 100}
+						<button
+							onclick={() => deleteFact(item.id)}
+							class="text-error-600 hover:text-error-800 shrink-0 text-xs transition-colors"
+							title="Delete fact"
 						>
-							{#each Object.values(row) as val}
-								<td class="text-surface-z8 px-4 py-2">{val}</td>
-							{/each}
-						</tr>
-					{/each}
-				</tbody>
-			</table>
+							Delete
+						</button>
+					{/if}
+				</div>
+			{/each}
 		</div>
-	{:else if rows.length === 0 && !loading}
-		<p class="text-surface-z6">Select an entity and click Fetch to load data.</p>
+	{/if}
+
+	{#if isAdmin}
+		<div class="border-surface-z3 rounded-lg border p-4">
+			<h2 class="mb-3 text-sm font-semibold">Add New Fact</h2>
+
+			{#if writeError}
+				<p class="text-error-600 mb-2 text-sm">{writeError}</p>
+			{/if}
+
+			<div class="flex flex-col gap-2">
+				<textarea
+					bind:value={newFact}
+					placeholder="Enter a space fact…"
+					rows="2"
+					class="border-surface-z3 bg-surface-z0 w-full rounded border px-3 py-2 text-sm"
+				></textarea>
+				<div class="flex gap-2">
+					<input
+						bind:value={newCategory}
+						placeholder="Category (optional)"
+						class="border-surface-z3 bg-surface-z0 flex-1 rounded border px-3 py-2 text-sm"
+					/>
+					<select
+						bind:value={newTier}
+						class="border-surface-z3 bg-surface-z0 rounded border px-3 py-2 text-sm"
+					>
+						<option value="general">General</option>
+						<option value="classified">Classified</option>
+					</select>
+					<button
+						onclick={addFact}
+						disabled={submitting || !newFact.trim()}
+						class="bg-primary rounded px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+					>
+						{submitting ? 'Adding…' : 'Add'}
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	{#if !isAdmin && writeError}
+		<div class="border-error-300 bg-error-50 rounded-lg border p-4">
+			<p class="text-error-800 text-sm font-medium">403 Forbidden</p>
+			<p class="text-error-700 text-sm">{writeError}</p>
+		</div>
 	{/if}
 </div>

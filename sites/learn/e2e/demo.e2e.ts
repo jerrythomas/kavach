@@ -102,12 +102,12 @@ test.describe('Demo Pages', () => {
 	})
 
 	test('demo index page loads', async ({ page }) => {
-		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome to Kavach Demo')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
 	})
 
 	test('demo data page loads', async ({ page }) => {
 		await page.goto('/demo/supabase/data')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Data Operations')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Space Facts')
 	})
 
 	test('demo logout page redirects to auth', async ({ page }) => {
@@ -125,22 +125,22 @@ test.describe('Demo - Platform Variations', () => {
 
 	test('demo firebase platform loads', async ({ page }) => {
 		await page.goto('/demo/firebase')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome to Kavach Demo')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
 	})
 
 	test('demo auth0 platform loads', async ({ page }) => {
 		await page.goto('/demo/auth0')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome to Kavach Demo')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
 	})
 
 	test('demo amplify platform loads', async ({ page }) => {
 		await page.goto('/demo/amplify')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome to Kavach Demo')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
 	})
 
 	test('demo convex platform loads', async ({ page }) => {
 		await page.goto('/demo/convex')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome to Kavach Demo')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
 	})
 })
 
@@ -162,7 +162,7 @@ test.describe('Demo Navigation', () => {
 	})
 
 	test('platform switcher changes platform', async ({ page }) => {
-		await page.selectOption('select', 'firebase')
+		await page.locator('nav a[href="/demo/firebase"]').click()
 		await page.waitForLoadState('domcontentloaded')
 		await expect(page).toHaveURL(/\/demo\/firebase/)
 	})
@@ -175,7 +175,6 @@ test.describe('Demo - Data Page', () => {
 
 	test('data page has fetch controls', async ({ page }) => {
 		await page.goto('/demo/supabase/data')
-		await expect(page.getByRole('main').locator('select')).toBeVisible()
-		await expect(page.locator('button:has-text("Fetch")')).toBeVisible()
+		await expect(page.locator('button:has-text("Load Facts")')).toBeVisible()
 	})
 })
