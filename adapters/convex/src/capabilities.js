@@ -2,8 +2,8 @@ export const capabilities = {
 	name: 'convex',
 	displayName: 'Convex',
 	supports: {
-		data: false, // Data managed directly via Convex functions
-		rpc: false,
+		data: true,
+		rpc: true,
 		logging: false,
 		magic: false,
 		oauth: true,

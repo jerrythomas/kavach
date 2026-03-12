@@ -59,6 +59,7 @@
       "version": "1.0.0-next.32",
       "dependencies": {
         "@convex-dev/auth": "^0.0.80",
+        "@kavach/query": "workspace:*",
         "convex": "^1.21.0",
         "kavach": "workspace:*",
       },

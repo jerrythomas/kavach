@@ -16,6 +16,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@kavach/query": "workspace:*",
     "kavach": "workspace:*",
     "@convex-dev/auth": "^0.0.80",
     "convex": "^1.21.0"
