@@ -118,6 +118,18 @@ describe('getActions (firebase)', async () => {
       expect(where).toHaveBeenCalledWith('deleted_at', '==', null)
     })
 
+    it('should apply is.true filter', async () => {
+      const actions = getActions(db)
+      await actions.get('users', { filter: { verified: 'is.true' } })
+      expect(where).toHaveBeenCalledWith('verified', '==', true)
+    })
+
+    it('should apply is.false filter', async () => {
+      const actions = getActions(db)
+      await actions.get('users', { filter: { deleted: 'is.false' } })
+      expect(where).toHaveBeenCalledWith('deleted', '==', false)
+    })
+
     it('should apply orderBy', async () => {
       const actions = getActions(db)
       await actions.get('users', { order: 'name.asc' })
@@ -136,11 +148,11 @@ describe('getActions (firebase)', async () => {
       expect(limit).toHaveBeenCalledWith(10)
     })
 
-    it('should throw on unsupported like operator', async () => {
+    it('should return error response on unsupported like operator', async () => {
       const actions = getActions(db)
-      await expect(actions.get('users', { filter: { name: 'like.%Alice%' } })).rejects.toThrow(
-        'Firestore does not support the "like" operator'
-      )
+      const response = await actions.get('users', { filter: { name: 'like.%Alice%' } })
+      expect(response.error).toEqual({ message: 'Firestore does not support the "like" operator. Use eq, neq, gt, gte, lt, lte, in, or is.' })
+      expect(response.status).toBe(500)
     })
   })
 
@@ -165,11 +177,11 @@ describe('getActions (firebase)', async () => {
       expect(response.status).toBe(200)
     })
 
-    it('should throw if id is missing', async () => {
+    it('should return error response if id is missing', async () => {
       const actions = getActions(db)
-      await expect(actions.post('users', { name: 'Carol' })).rejects.toThrow(
-        'post (upsert) requires an id field'
-      )
+      const response = await actions.post('users', { name: 'Carol' })
+      expect(response.error).toEqual({ message: 'post (upsert) requires an id field' })
+      expect(response.status).toBe(500)
     })
   })
 
@@ -183,11 +195,11 @@ describe('getActions (firebase)', async () => {
       expect(response.status).toBe(200)
     })
 
-    it('should throw if id filter is missing', async () => {
+    it('should return error response if id filter is missing', async () => {
       const actions = getActions(db)
-      await expect(actions.patch('users', { data: { name: 'x' } })).rejects.toThrow(
-        'patch requires filter.id eq.<docId>'
-      )
+      const response = await actions.patch('users', { data: { name: 'x' } })
+      expect(response.error).toEqual({ message: 'patch requires filter.id eq.<docId> — Firestore needs a document reference' })
+      expect(response.status).toBe(500)
     })
   })
 
@@ -200,11 +212,11 @@ describe('getActions (firebase)', async () => {
       expect(response.status).toBe(200)
     })
 
-    it('should throw if id filter is missing', async () => {
+    it('should return error response if id filter is missing', async () => {
       const actions = getActions(db)
-      await expect(actions.delete('users')).rejects.toThrow(
-        'delete requires filter.id eq.<docId>'
-      )
+      const response = await actions.delete('users')
+      expect(response.error).toEqual({ message: 'delete requires filter.id eq.<docId> — Firestore needs a document reference' })
+      expect(response.status).toBe(500)
     })
   })
 

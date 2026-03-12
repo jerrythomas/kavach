@@ -29,10 +29,6 @@ const adapter = getAdapter(auth)
 | Password   | `signInWithEmailAndPassword`             |
 | Magic link | `sendSignInLinkToEmail`                  |
 
-## Capabilities
-
-This adapter advertises `capabilities: ['passkey']` — passkey support is available via Firebase's WebAuthn integration.
-
 ## Data access
 
 Pass your Firestore `db` instance (and optionally a `functions` instance for RPC calls):
