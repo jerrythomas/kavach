@@ -1,97 +1,77 @@
-# @rokkit/deflector
+# @kavach/sentry
 
-A simple and lightweight route deflector.
+Role-based route protection for SvelteKit apps.
 
 ## Installation
 
 ```bash
-npm install @rokkit/deflector
+bun add @kavach/sentry
 ```
 
 ## Usage
 
 ```js
-import { createDeflector } from '@rokkit/deflector'
+import { createSentry } from '@kavach/sentry'
 
-const config = {
-  rules: [
-    { path: '/public', public: true },
-    { path: '/private' },
-    { path: '/admin', roles: 'admin' }
-  ]
-}
-
-const deflector = createDeflector(config)
-
-deflector.protect('/public') // returns {statusCode: 200}
-deflector.protect('/private') // returns {statusCode: 401, redirect: '/auth'}
-
-deflector.setSession({ user: { role: 'authenticated' } })
-deflector.protect('/public') // returns {statusCode: 200}
-deflector.protect('/private') // returns {statusCode: 200}
-
-deflector.setSession({ user: { role: 'admin' } })
-deflector.protect('/public') // returns {statusCode: 200}
-deflector.protect('/private') // returns {status: 200}
-deflector.protect('/admin') // returns {status: 200}
-```
-
-## Features
-
-### Default Configuration
-
-Out-of-the-box support for common routes:
-
-- home: '/'
-- login: '/auth'
-- logout: '/logout'
-- session: '/auth/session'
-- unauthorized: defaults to null
-- endpoints: ['/api', '/data']
-
-### Configuration driven Role-Based Access
-
-- All routes are protected by default.
-- Define custom routes and rules.
-- Define rules for different paths and roles.
-- Nest specific role access under more generic access. For example, 'user' role access can be nested under a generic `'*'`.
-- Logs and excludes rules with errors.
-- Identifies and logs redundant rules.
-
-## Examples
-
-### Configuring Rules
-
-```js
-const options = {
-  rules: [
-    { path: '/blog', public: true },
-    { path: '/user', roles: ['authenticated'] },
-    { path: '/other', roles: 'other' }
-  ]
-}
-const deflector = createDeflector(options)
-```
-
-### Customizing App routes
-
-```js
-const config = {
+const sentry = createSentry({
   app: {
-    home: '/home',
-    login: '/login',
-    logout: '/logout'
+    home: '/',
+    login: '/auth',
+    logout: '/logout',
+    session: '/auth/session'
   },
-  rules: [{ path: '/auth' }, { path: '/home/about' }, { path: '/public', public: true }]
-}
+  roles: {
+    '*': { routes: ['/dashboard', '/profile'] },
+    admin: { home: '/admin', routes: ['/admin', '/data/admin'] }
+  }
+})
 
-const deflector = createDeflector(options)
+// Update on sign in/out
+sentry.setSession(session)
+
+// Check a route
+const result = sentry.protect('/dashboard')
+// => { status: 200 }
+// => { status: 401, redirect: '/auth' }
+// => { status: 403, redirect: '/' }
 ```
 
-## Caveats
+## Configuration
 
-- It does not handle actual redirection or session management.
-- It only returns the status code and the redirect path for page routes.
-- It only checks if the session includes a user role which is used for access control.
+### `SentryOptions`
 
-This is used internally under the hood by [@kavach/svelte](../svelte)
+| Option   | Type                        | Description                                                  |
+| -------- | --------------------------- | ------------------------------------------------------------ |
+| `app`    | `AppRoute`                  | App routes: `home`, `login`, `logout`, `session`             |
+| `roles`  | `Record<string, RoleRoute>` | Role-based route rules. Use `'*'` for any authenticated user |
+| `logger` | `Logger`                    | Optional `@kavach/logger` instance                           |
+
+### Role configuration
+
+```js
+roles: {
+  '*': {
+    home: '/dashboard',    // optional: override home for authenticated users
+    routes: ['/dashboard'] // routes accessible to any authenticated user
+  },
+  admin: {
+    routes: ['/admin']     // routes restricted to the 'admin' role
+  }
+}
+```
+
+All routes are protected by default. Unauthenticated users are redirected to `app.login`. Authenticated users without the required role receive a 403.
+
+## API
+
+### `createSentry(options): Sentry`
+
+Returns a sentry instance:
+
+| Method                       | Description                                            |
+| ---------------------------- | ------------------------------------------------------ |
+| `sentry.setSession(session)` | Update the current session (call on auth state change) |
+| `sentry.protect(path)`       | Returns `{ status: 200 }` or `{ status, redirect }`    |
+| `sentry.app`                 | The resolved `AppRoute` config                         |
+
+Used internally by the `kavach` package — you generally won't use this directly.

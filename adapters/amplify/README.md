@@ -1,22 +1,48 @@
 # @kavach/adapter-amplify
 
-Adapter for using amplify with kavach
+Kavach adapter for [AWS Amplify](https://docs.amplify.aws) / Cognito.
 
-## Usage
+## Installation
 
 ```bash
 bun add kavach @kavach/adapter-amplify
 ```
 
+## Usage
+
 ```js
-{
-  // The region where Amazon Cognito was created
-  region: 'YOUR_COGNITO_REGION',
-  // The Amazon Cognito User Pool ID
-  userPoolId: 'YOUR_USER_POOL_ID',
-  // The Web Client ID (found in the App clients section of the user pool)
-  userPoolWebClientId: 'YOUR_APP_CLIENT_ID',
-  // OPTIONAL - Manually set the authentication flow type. Default is 'USER_SRP_AUTH'
-  authenticationFlowType: 'USER_SRP_AUTH'
+import { Amplify } from 'aws-amplify'
+import { getAdapter } from '@kavach/adapter-amplify'
+
+Amplify.configure({
+  Auth: {
+    Cognito: {
+      userPoolId: 'YOUR_USER_POOL_ID',
+      userPoolClientId: 'YOUR_APP_CLIENT_ID',
+      loginWith: {
+        oauth: {
+          domain: 'YOUR_COGNITO_DOMAIN',
+          scopes: ['email', 'openid', 'profile'],
+          redirectSignIn: ['http://localhost:5173'],
+          redirectSignOut: ['http://localhost:5173'],
+          responseType: 'code'
+        }
+      }
+    }
   }
+})
+
+const adapter = getAdapter()
 ```
+
+## Auth modes
+
+| Mode       | Mechanism                      |
+| ---------- | ------------------------------ |
+| OAuth      | `signInWithRedirect`           |
+| Password   | `signIn` with email + password |
+| Magic link | `signIn` with `USER_AUTH` flow |
+
+## Notes
+
+Auth state changes are broadcast via Amplify's `Hub`. The adapter listens on the `auth` channel and normalizes `signedIn`/`signedOut` events to the Kavach `AuthCallback` contract.
