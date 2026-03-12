@@ -1,10 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import {
-	createGuardian,
-	configureRules,
-	protectRoute,
-	configureRoleRoutes
-} from '../src/guardian'
+import { createGuardian, configureRules, protectRoute, configureRoleRoutes } from '../src/guardian'
 
 describe('Router functions', () => {
 	const defaultRoutes = {
@@ -128,9 +123,7 @@ describe('Router functions', () => {
 					rpc: '/rpc',
 					endpoints: ['/api', '/data', '/auth/session']
 				},
-				public: [
-					{ path: '/auth', public: true, roles: '*' }
-				],
+				public: [{ path: '/auth', public: true, roles: '*' }],
 				protected: {
 					'*': [
 						{ path: '/', public: false, roles: '*' },
@@ -164,42 +157,38 @@ describe('Router functions', () => {
 					]
 				}
 			})
-		expect(config).toEqual({
-			app: {
-				home: '/home',
-				login: '/login',
-				logout: '/logout',
-				session: '/auth/session',
-				unauthorized: null,
-				data: '/data',
-				rpc: '/rpc',
-				endpoints: ['/api', '/data', '/auth/session']
-			},
-			public: [
-				{ path: '/auth/session', public: true, roles: '*' },
-				{ path: '/public', public: true, roles: '*' },
-				{ path: '/login', public: true, roles: '*' }
-			],
-			protected: {
-				'*': [
-					{ path: '/auth', public: false, roles: '*' },
-					{ path: '/home', public: false, roles: '*' },
-					{ path: '/logout', public: false, roles: '*' }
-					// { path: '/', public: false, roles: '*' }
-				]
-			}
+			expect(config).toEqual({
+				app: {
+					home: '/home',
+					login: '/login',
+					logout: '/logout',
+					session: '/auth/session',
+					unauthorized: null,
+					data: '/data',
+					rpc: '/rpc',
+					endpoints: ['/api', '/data', '/auth/session']
+				},
+				public: [
+					{ path: '/auth/session', public: true, roles: '*' },
+					{ path: '/public', public: true, roles: '*' },
+					{ path: '/login', public: true, roles: '*' }
+				],
+				protected: {
+					'*': [
+						{ path: '/auth', public: false, roles: '*' },
+						{ path: '/home', public: false, roles: '*' },
+						{ path: '/logout', public: false, roles: '*' }
+						// { path: '/', public: false, roles: '*' }
+					]
+				}
+			})
 		})
-	})
 
-	it('should identify and log warnings', () => {
+		it('should identify and log warnings', () => {
 			const config = configureRules(
 				{
 					app: { home: '/home', login: '/login', logout: '/logout' },
-					rules: [
-						{ path: '/auth' },
-						{ path: '/home/about' },
-						{ path: '/public', public: true }
-					]
+					rules: [{ path: '/auth' }, { path: '/home/about' }, { path: '/public', public: true }]
 				},
 				logger
 			)
@@ -222,26 +211,26 @@ describe('Router functions', () => {
 					]
 				}
 			})
-		expect(config).toEqual({
-			app: {
-				home: '/home',
-				login: '/login',
-				logout: '/logout',
-				session: '/auth/session',
-				unauthorized: null,
-				data: '/data',
-				rpc: '/rpc',
-				endpoints: ['/api', '/data', '/auth/session']
-			},
-			public: [
-				{ path: '/auth/session', public: true, roles: '*' },
-				{ path: '/public', public: true, roles: '*' },
-				{ path: '/login', public: true, roles: '*' }
-			],
-			protected: {
-				'*': [
-					{
-						path: '/home/about',
+			expect(config).toEqual({
+				app: {
+					home: '/home',
+					login: '/login',
+					logout: '/logout',
+					session: '/auth/session',
+					unauthorized: null,
+					data: '/data',
+					rpc: '/rpc',
+					endpoints: ['/api', '/data', '/auth/session']
+				},
+				public: [
+					{ path: '/auth/session', public: true, roles: '*' },
+					{ path: '/public', public: true, roles: '*' },
+					{ path: '/login', public: true, roles: '*' }
+				],
+				protected: {
+					'*': [
+						{
+							path: '/home/about',
 							public: false,
 							redundant: true,
 							roles: '*',
@@ -325,26 +314,20 @@ describe('Router functions', () => {
 			expect(outcome).toEqual({ status: 200 })
 		})
 
-		it.each(roles.slice(1))(
-			'should allow shared routes when role is [%s]',
-			(role) => {
-				const allowedRoutes = configureRoleRoutes(config, role)
-				const outcome = protectRoute(allowedRoutes, '/shared', role)
-				expect(outcome).toEqual({ status: 200 })
-			}
-		)
+		it.each(roles.slice(1))('should allow shared routes when role is [%s]', (role) => {
+			const allowedRoutes = configureRoleRoutes(config, role)
+			const outcome = protectRoute(allowedRoutes, '/shared', role)
+			expect(outcome).toEqual({ status: 200 })
+		})
 
-		it.each(roles.slice(1))(
-			'should redirect login to home role is [%s]',
-			(role) => {
-				const allowedRoutes = configureRoleRoutes(config, role)
-				const outcome = protectRoute(allowedRoutes, config.app.login, role)
-				expect(outcome).toEqual({
-					status: 302,
-					redirect: '/'
-				})
-			}
-		)
+		it.each(roles.slice(1))('should redirect login to home role is [%s]', (role) => {
+			const allowedRoutes = configureRoleRoutes(config, role)
+			const outcome = protectRoute(allowedRoutes, config.app.login, role)
+			expect(outcome).toEqual({
+				status: 302,
+				redirect: '/'
+			})
+		})
 
 		it('should allow protected routes for role', () => {
 			const role = 'admin'
@@ -378,16 +361,56 @@ describe('Router functions', () => {
 			})
 		})
 
-		it.each([null, 'user'])(
-			'should block endpoints without redirect ',
-			(role) => {
-				const allowedRoutes = configureRoleRoutes(config, role)
+		it.each([null, 'user'])('should block endpoints without redirect ', (role) => {
+			const allowedRoutes = configureRoleRoutes(config, role)
 
-				const outcome = protectRoute(allowedRoutes, '/data', role)
-				expect(outcome).toEqual({
-					status: role === null ? 401 : 403
+			const outcome = protectRoute(allowedRoutes, '/data', role)
+			expect(outcome).toEqual({
+				status: role === null ? 401 : 403
+			})
+		})
+
+		describe('fallback', () => {
+			const configWithFallback = configureRules(
+				{
+					rules: [
+						{ path: '/public', public: true },
+						{ path: '/shared', roles: '*' },
+						{ path: '/admin', roles: ['admin'], fallback: '/forbidden' },
+						{ path: '/api/data', roles: ['admin'], fallback: 403 }
+					]
+				},
+				logger
+			)
+
+			it('uses per-route string fallback for wrong role', () => {
+				const allowedRoutes = configureRoleRoutes(configWithFallback, 'user')
+				expect(protectRoute(allowedRoutes, '/admin')).toEqual({
+					status: 403,
+					redirect: '/forbidden'
 				})
-			}
-		)
+			})
+
+			it('uses per-route string fallback for unauthenticated user', () => {
+				const allowedRoutes = configureRoleRoutes(configWithFallback, null)
+				expect(protectRoute(allowedRoutes, '/admin')).toEqual({
+					status: 401,
+					redirect: '/forbidden'
+				})
+			})
+
+			it('uses per-route numeric fallback as status-only response', () => {
+				const allowedRoutes = configureRoleRoutes(configWithFallback, 'user')
+				expect(protectRoute(allowedRoutes, '/api/data')).toEqual({ status: 403 })
+			})
+
+			it('falls back to global default when no per-route fallback', () => {
+				const allowedRoutes = configureRoleRoutes(configWithFallback, null)
+				expect(protectRoute(allowedRoutes, '/shared')).toEqual({
+					status: 401,
+					redirect: '/auth'
+				})
+			})
+		})
 	})
 })

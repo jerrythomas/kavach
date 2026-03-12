@@ -60,34 +60,23 @@ function checkLoginRedirect(role, path, app) {
 }
 
 /**
- * Find a matching route for the given path
- *
- * @param {import('./types').RoutingRules} rules
- * @param {string}                         path
- */
-function findMatch(rules, path) {
-	const { allowed, restricted } = rules
-	let match = findMatchingRoute(restricted, path)
-	if (!match) {
-		match = findMatchingRoute(allowed, path)
-		if (match) return { status: 200 }
-	}
-
-	return null
-}
-
-/**
  * Get the status code for the given role and path
  *
  * @param {string} role
  * @param {import('./types').AppRoutes} app
  * @param {string} path
+ * @param {string|number|undefined} fallback
  */
-function getRedirectResponse(role, app, path) {
+function getRedirectResponse(role, app, path, fallback) {
 	const redirects = getRedirects(app)
 	const status = role ? 403 : 401
 
 	if (isEndpointRoute(app.endpoints, path)) return { status }
+
+	if (fallback !== undefined) {
+		if (typeof fallback === 'number') return { status: fallback }
+		return { redirect: fallback, status }
+	}
 
 	return { redirect: redirects[status], status }
 }
@@ -105,12 +94,17 @@ export function protectRoute(allowedRoutes, path) {
 	const loginRedirect = checkLoginRedirect(role, path, app)
 	if (loginRedirect) return loginRedirect
 
-	// Check for route match
-	const match = findMatch(routes, path)
-	if (match) return match
+	const restrictedMatch = findMatchingRoute(routes.restricted, path)
+	if (!restrictedMatch) {
+		const allowedMatch = findMatchingRoute(routes.allowed, path)
+		if (allowedMatch) return { status: 200 }
+	}
+
+	const fallback =
+		restrictedMatch && typeof restrictedMatch === 'object' ? restrictedMatch.fallback : undefined
 
 	// Get status code and return final result
-	return getRedirectResponse(role, app, path)
+	return getRedirectResponse(role, app, path, fallback)
 }
 
 /**
@@ -125,7 +119,9 @@ export function configureRoleRoutes(config, role) {
 		app: config.app,
 		routes: {
 			allowed: getAuthorizedRoutes(config, role).map((rule) => rule.path),
-			restricted: getRestrictedRoutes(config, role).map((rule) => rule.path)
+			restricted: getRestrictedRoutes(config, role).map((rule) =>
+				rule.fallback !== undefined ? { path: rule.path, fallback: rule.fallback } : rule.path
+			)
 		},
 		role
 	}

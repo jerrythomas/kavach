@@ -31,7 +31,10 @@ export function fillMissingProps(route) {
  * @returns {string}
  */
 export function findMatchingRoute(routes, path) {
-	return routes.find((route) => path === route || path.startsWith(`${route}/`))
+	return routes.find((route) => {
+		const routePath = typeof route === 'string' ? route : route.path
+		return path === routePath || path.startsWith(`${routePath}/`)
+	})
 }
 
 /**
