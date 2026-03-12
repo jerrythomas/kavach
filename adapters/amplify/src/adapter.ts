@@ -59,6 +59,7 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 
 		if (errorCode) {
 			return {
+				type: 'error' as const,
 				code: errorCode,
 				message: errorMessage || errorCode
 			}
@@ -141,15 +142,13 @@ export class AmplifyAuthAdapter extends BaseAdapter implements AuthAdapter {
 		return undefined
 	}
 
-	public async synchronize(): Promise<{ data: unknown; error: null } | { data: null; error: { message: string } }> {
+	public async synchronize(): Promise<AuthResult> {
 		try {
 			const session = await fetchAuthSession()
 			const user = await getCurrentUser()
-			// Tests and consumers expect { data: { session, user }, error: null }
-			return { data: { session, user }, error: null } as unknown as AuthResult
+			return { type: 'success', data: { session, user } }
 		} catch (error) {
-			// Return the { data: null, error: { message } } shape to match consumers/tests
-			return { data: null, error: { message: (error as Error).message || 'An error occurred' } } as unknown as AuthResult
+			return { type: 'error', message: (error as Error).message || 'An error occurred' }
 		}
 	}
 
@@ -169,7 +168,7 @@ export class AmplifyAuthAdapter extends BaseAdapter implements AuthAdapter {
 	}
 
 	// optional capabilities property left undefined by default
-	public capabilities?: string[]
+	declare public capabilities?: string[]
 }
 
 /**

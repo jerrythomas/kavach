@@ -98,12 +98,13 @@ export type Schema = string | undefined
 
 export type AuthCallback = (event: string, session: unknown) => Promise<void>
 
-export type ResultType = 'error' | 'success' | 'warning'
+export type ResultType = 'error' | 'success' | 'warning' | 'info'
 
 export interface AuthError {
 	status?: number | string
 	name?: string
 	message?: string
+	code?: string
 }
 
 export type AuthResponseType = 'info' | 'success' | 'error'
@@ -118,10 +119,13 @@ export interface AuthResponse {
 
 export interface AuthResult {
 	type: ResultType
-	status?: number
+	status?: number | string
 	name?: string
 	message?: string
 	data?: unknown
+	error?: AuthError
+	credentials?: Record<string, unknown>
+	code?: string
 }
 
 export interface ActionResponse {

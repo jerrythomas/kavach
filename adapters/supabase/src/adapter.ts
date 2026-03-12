@@ -34,6 +34,7 @@ export function parseUrlError(url: string | { hash?: string } | undefined) {
 	if (result && result.error) {
 		// Normalize status as a string and make the error name human-friendly
 		return {
+			type: 'error' as const,
 			status: result.error_code ? String(result.error_code) : undefined,
 			name: typeof result.error === 'string' ? (result.error as string).replace(/_/g, ' ').toLowerCase() : result.error,
 			message: result.error_description
@@ -123,7 +124,7 @@ export class SupabaseAuthAdapter extends BaseAdapter implements AuthAdapter {
 		return parseUrlError(url)
 	}
 
-	public capabilities?: string[]
+	declare public capabilities?: string[]
 }
 
 /**

@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@rokkit/forms": "latest",
-    "kavach": "workspace:latest",
+    "kavach": "workspace:*",
     "ramda": "^0.30.1"
   }
 }

@@ -1,7 +1,10 @@
 import { md5 } from '@kavach/hashing'
 
-export function toDataURL(buffer: Buffer, contentType = 'image/jpeg'): string {
-	return `data:${contentType};base64,${buffer.toString('base64')}`
+export function toDataURL(buffer: Uint8Array, contentType = 'image/jpeg'): string {
+	const binary = Array.from(buffer)
+		.map((b) => String.fromCharCode(b))
+		.join('')
+	return `data:${contentType};base64,${btoa(binary)}`
 }
 
 export interface MicrosoftPhotoResponse {

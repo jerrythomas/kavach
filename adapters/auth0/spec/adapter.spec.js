@@ -153,14 +153,14 @@ describe('getAdapter', () => {
 			expect(mockClient.getTokenSilently).toHaveBeenCalled()
 			expect(mockClient.getUser).toHaveBeenCalled()
 			expect(result).toEqual({
+				type: 'success',
 				data: {
 					user: {
 						sub: 'auth0|123',
 						email: 'test@example.com',
 						name: 'Test User'
 					}
-				},
-				error: null
+				}
 			})
 		})
 
@@ -170,8 +170,8 @@ describe('getAdapter', () => {
 			const result = await adapter.synchronize()
 
 			expect(result).toEqual({
-				data: null,
-				error: { message: 'Login required' }
+				type: 'error',
+				message: 'Login required'
 			})
 		})
 	})
@@ -199,6 +199,7 @@ describe('getAdapter', () => {
 			)
 			const result = adapter.parseUrlError(url)
 			expect(result).toEqual({
+				type: 'error',
 				code: 'access_denied',
 				message: 'User denied access'
 			})

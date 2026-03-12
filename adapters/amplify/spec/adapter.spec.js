@@ -189,6 +189,7 @@ describe('getAdapter', () => {
 			expect(mockFetchAuthSession).toHaveBeenCalled()
 			expect(mockGetCurrentUser).toHaveBeenCalled()
 			expect(result).toEqual({
+				type: 'success',
 				data: {
 					session: {
 						tokens: {
@@ -200,8 +201,7 @@ describe('getAdapter', () => {
 						userId: 'mock-user-id',
 						username: 'test@example.com'
 					}
-				},
-				error: null
+				}
 			})
 		})
 
@@ -211,8 +211,8 @@ describe('getAdapter', () => {
 			const result = await adapter.synchronize()
 
 			expect(result).toEqual({
-				data: null,
-				error: { message: 'No current user' }
+				type: 'error',
+				message: 'No current user'
 			})
 		})
 	})
@@ -278,6 +278,7 @@ describe('getAdapter', () => {
 			)
 			const result = adapter.parseUrlError(url)
 			expect(result).toEqual({
+				type: 'error',
 				code: 'access_denied',
 				message: 'User denied access'
 			})

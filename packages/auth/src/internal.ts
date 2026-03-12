@@ -57,7 +57,7 @@ export function redirect(
 	const headers = {
 		location,
 		...setHeaderCookies(cookies, options)
-	}
+	} as unknown as HeadersInit
 	return new Response(null, {
 		status,
 		headers

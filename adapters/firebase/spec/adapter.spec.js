@@ -247,6 +247,7 @@ describe('getAdapter', () => {
 			)
 			const result = adapter.parseUrlError(url)
 			expect(result).toEqual({
+				type: 'error',
 				code: 'access_denied',
 				message: 'User denied access'
 			})

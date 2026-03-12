@@ -105,7 +105,7 @@ export function getAuthMode(credentials: Record<string, unknown>): 'magic' | 'pa
  *
  * Tests expect a simple object { code, message } (or null).
  */
-export function parseUrlError(url: string | { search?: string } | undefined): { code: string; message: string } | null {
+export function parseUrlError(url: string | { search?: string } | undefined): AuthResult | null {
 	try {
 		const search = typeof url === 'string' ? url : url?.search ?? ''
 		const params = new URLSearchParams(search)
@@ -113,6 +113,7 @@ export function parseUrlError(url: string | { search?: string } | undefined): { 
 		const errorMessage = params.get('error_description') || params.get('error_message')
 		if (errorCode) {
 			return {
+				type: 'error',
 				code: errorCode,
 				message: errorMessage ? decodeURIComponent(errorMessage) : errorCode
 			}
@@ -127,6 +128,7 @@ export function parseUrlError(url: string | { search?: string } | undefined): { 
  export class FirebaseAuthAdapter extends BaseAdapter implements AuthAdapter {
  	constructor(auth: any, options?: any) {
  		super(auth, options)
+		this.capabilities = ['passkey']
  	}
 
 	// Ensure the adapter uses the exported normalizer so class-based flows and the
@@ -232,11 +234,10 @@ export function parseUrlError(url: string | { search?: string } | undefined): { 
 		return this.handleSubscription((cb) => onAuthStateChanged(this.client, (user) => cb(user ? 'SIGNED_IN' : 'SIGNED_OUT', user)), callback)
 	}
 
-	public parseUrlError(url: string | { search?: string } | undefined): { code: string; message: string } | null {
+	public parseUrlError(url: string | { search?: string } | undefined): AuthResult | null {
 		return parseUrlError(url)
 	}
 
-	public capabilities?: string[] = ['passkey']
 }
 
 /**

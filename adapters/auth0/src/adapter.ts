@@ -2,8 +2,6 @@ import { omit } from 'ramda'
 import { BaseAdapter } from 'kavach'
 import type { AuthAdapter, AuthCallback, AuthResult } from 'kavach'
 
-type AuthResult = { type: string; data?: unknown; error?: { message?: string; code?: string }; credentials?: Record<string, unknown>; message?: string }
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformResult(result: any, credentials: Record<string, unknown> = {}): AuthResult {
 	const creds = omit(['password'], credentials ?? {})
@@ -44,8 +42,8 @@ export function parseUrlError(url: string | { search?: string } | undefined) {
 		const errorMessage = params.get('error_description')
 
 		if (errorCode) {
-			// Tests expect a plain { code, message } shape from parseUrlError
 			return {
+				type: 'error' as const,
 				code: errorCode,
 				message: errorMessage || errorCode
 			}
@@ -136,15 +134,13 @@ export class Auth0AuthAdapter extends BaseAdapter implements AuthAdapter {
 		return undefined
 	}
 
-	public async synchronize(): Promise<{ data: unknown; error: null } | { data: null; error: { message: string } }> {
+	public async synchronize(): Promise<AuthResult> {
 		try {
 			await this.client.getTokenSilently()
 			const user = await this.client.getUser()
-			// Tests expect the shape: { data: { user }, error: null }
-			return { data: { user }, error: null }
+			return { type: 'success', data: { user } }
 		} catch (error) {
-			// Tests expect the shape: { data: null, error: { message } }
-			return { data: null, error: { message: (error as Error).message || 'An error occurred' } }
+			return { type: 'error', message: (error as Error).message || 'An error occurred' }
 		}
 	}
 

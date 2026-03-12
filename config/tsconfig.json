@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
@@ -21,5 +21,12 @@
     "declaration": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["**/spec/**", "**/fixtures/**", "**/node_modules/**", "**/dist/**", "**/templates/**", "eslint.config.mjs"]
+  "exclude": [
+    "**/spec/**",
+    "**/fixtures/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/templates/**",
+    "eslint.config.mjs"
+  ]
 }

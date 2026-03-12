@@ -244,6 +244,7 @@ describe('parseUrlError', () => {
 		}
 		const result = parseUrlError(url)
 		expect(result).toEqual({
+			type: 'error',
 			status: '400',
 			name: 'invalid request',
 			message: 'The request is missing a required parameter.'
