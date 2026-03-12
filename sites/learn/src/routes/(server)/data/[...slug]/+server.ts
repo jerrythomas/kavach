@@ -75,6 +75,18 @@ export const GET: RequestHandler = ({ params, locals }) => {
 		return json(visible)
 	}
 
+	if (entity === 'admin-stats') {
+		// admin-only — Kavach routing rule blocks non-admin before reaching here
+		const all = [...SEED_FACTS, ...customFacts]
+		return json({
+			totalFacts: all.length,
+			generalFacts: all.filter((f) => f.tier === 'general').length,
+			classifiedFacts: all.filter((f) => f.tier === 'classified').length,
+			customFacts: customFacts.length,
+			role
+		})
+	}
+
 	return json({ error: 'Not found' }, { status: 404 })
 }
 
