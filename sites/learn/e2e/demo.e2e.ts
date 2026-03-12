@@ -40,8 +40,8 @@ async function loginAsUser(page, email = 'test@test.com', password = 'password12
 		}
 	])
 
-	await page.goto('/demo/supabase')
-	await page.waitForURL(/\/demo\/supabase/, { timeout: 10000 })
+	await page.goto('/demo/supabase/dashboard')
+	await page.waitForURL(/\/demo\/supabase\/dashboard/, { timeout: 10000 })
 	await page.waitForLoadState('domcontentloaded')
 	await page.waitForSelector('main h1', { state: 'visible', timeout: 10000 })
 }
@@ -80,8 +80,14 @@ test.describe('Auth Page', () => {
 })
 
 test.describe('Demo - Unauthenticated Redirects', () => {
-	test('demo page redirects unauthenticated user to auth', async ({ page }) => {
+	test('demo landing page is public', async ({ page }) => {
 		await page.goto('/demo/supabase')
+		await expect(page).not.toHaveURL(/\/auth/)
+		await expect(page).toHaveURL(/\/demo\/supabase$/)
+	})
+
+	test('demo dashboard redirects unauthenticated user to auth', async ({ page }) => {
+		await page.goto('/demo/supabase/dashboard')
 		await expect(page).toHaveURL(/\/auth/)
 	})
 
@@ -101,8 +107,8 @@ test.describe('Demo Pages', () => {
 		await loginAsUser(page)
 	})
 
-	test('demo index page loads', async ({ page }) => {
-		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
+	test('demo dashboard page loads', async ({ page }) => {
+		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome back')
 	})
 
 	test('demo data page loads', async ({ page }) => {
@@ -124,23 +130,23 @@ test.describe('Demo - Platform Variations', () => {
 	})
 
 	test('demo firebase platform loads', async ({ page }) => {
-		await page.goto('/demo/firebase')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
+		await page.goto('/demo/firebase/dashboard')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome back')
 	})
 
 	test('demo auth0 platform loads', async ({ page }) => {
-		await page.goto('/demo/auth0')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
+		await page.goto('/demo/auth0/dashboard')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome back')
 	})
 
 	test('demo amplify platform loads', async ({ page }) => {
-		await page.goto('/demo/amplify')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
+		await page.goto('/demo/amplify/dashboard')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome back')
 	})
 
 	test('demo convex platform loads', async ({ page }) => {
-		await page.goto('/demo/convex')
-		await expect(page.getByRole('main').locator('h1')).toContainText('Kavach Demo Dashboard')
+		await page.goto('/demo/convex/dashboard')
+		await expect(page.getByRole('main').locator('h1')).toContainText('Welcome back')
 	})
 })
 
@@ -155,16 +161,10 @@ test.describe('Demo Navigation', () => {
 		await page.waitForLoadState('domcontentloaded')
 		await expect(page).toHaveURL(/\/demo\/supabase\/data/)
 
-		// Navigate to dashboard via nav link (use 'Dashboard' to avoid header nav ambiguity)
+		// Navigate back to dashboard via nav link
 		await page.getByRole('link', { name: 'Dashboard' }).click()
 		await page.waitForLoadState('domcontentloaded')
-		await expect(page).toHaveURL(/\/demo\/supabase$/)
-	})
-
-	test('platform switcher changes platform', async ({ page }) => {
-		await page.locator('nav a[href="/demo/firebase"]').click()
-		await page.waitForLoadState('domcontentloaded')
-		await expect(page).toHaveURL(/\/demo\/firebase/)
+		await expect(page).toHaveURL(/\/demo\/supabase\/dashboard/)
 	})
 })
 
@@ -176,5 +176,19 @@ test.describe('Demo - Data Page', () => {
 	test('data page has fetch controls', async ({ page }) => {
 		await page.goto('/demo/supabase/data')
 		await expect(page.locator('button:has-text("Load Facts")')).toBeVisible()
+	})
+})
+
+test.describe('Demo Landing (public)', () => {
+	test('demo landing page loads platform cards', async ({ page }) => {
+		await page.goto('/demo')
+		await expect(page.locator('h1')).toContainText('Kavach Demo')
+		await expect(page.locator('a[href="/demo/supabase"]')).toBeVisible()
+	})
+
+	test('demo platform pre-auth page is public', async ({ page }) => {
+		await page.goto('/demo/supabase')
+		await expect(page).toHaveURL(/\/demo\/supabase$/)
+		await expect(page.locator('h1')).toContainText('Supabase')
 	})
 })
