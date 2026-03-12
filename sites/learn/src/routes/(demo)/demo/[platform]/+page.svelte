@@ -21,6 +21,14 @@
 
 	const activeMode = $derived(activeTab === 'all' ? null : getMode(activeTab))
 
+	const formProps = $derived(
+		activeMode?.id === 'magic'
+			? { name: 'email', mode: 'otp' as const }
+			: activeMode?.id === 'social'
+				? { name: 'google', mode: 'oauth' as const }
+				: { name: 'email', mode: 'password' as const }
+	)
+
 	function onSuccess() {
 		goto(`/demo/${platformId}/dashboard`)
 	}
@@ -192,7 +200,19 @@
 				{/if}
 			</div>
 
-			<AuthProvider name="email" mode="password" label="Sign in with Email" onsuccess={onSuccess} />
+			{#if activeMode?.id === 'cached'}
+				<div class="border-surface-z2 bg-surface-z2 text-surface-z6 rounded-lg p-3 text-xs">
+					Cached logins appear here after your first sign-in. Sign in with email/password to see
+					them.
+				</div>
+			{/if}
+
+			<AuthProvider
+				name={formProps.name}
+				mode={formProps.mode}
+				onsuccess={onSuccess}
+				label={formProps.mode === 'oauth' ? 'Sign in with Google' : 'Sign in with Email'}
+			/>
 
 			<div class="text-surface-z5 flex items-center justify-center gap-2 text-xs">
 				<button onclick={prefillTestCredentials} class="text-primary hover:underline">

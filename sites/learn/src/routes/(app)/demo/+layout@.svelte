@@ -4,12 +4,48 @@
 	import { vibe } from '@rokkit/states'
 	import { themable } from '@rokkit/actions'
 	import { ThemeSwitcherToggle } from '@rokkit/app'
+	import { setContext, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import { getPlatform } from '$lib/demo/platforms'
 	import DemoSidebar from '$lib/demo/DemoSidebar.svelte'
 	import FloatingBadge from '$lib/demo/FloatingBadge.svelte'
 
 	let { children, data } = $props()
+
+	let kavachInstance = $state<any>(null)
+
+	setContext('kavach', {
+		get signIn() {
+			return kavachInstance?.signIn
+		},
+		get signUp() {
+			return kavachInstance?.signUp
+		},
+		get signOut() {
+			return kavachInstance?.signOut
+		},
+		get onAuthChange() {
+			return kavachInstance?.onAuthChange
+		},
+		get getCachedLogins() {
+			return kavachInstance?.getCachedLogins
+		},
+		get removeCachedLogin() {
+			return kavachInstance?.removeCachedLogin
+		},
+		get clearCachedLogins() {
+			return kavachInstance?.clearCachedLogins
+		}
+	})
+
+	onMount(async () => {
+		const { createKavach } = await import('kavach')
+		const { adapter, logger } = await import('$kavach/auth')
+		const { invalidateAll } = await import('$app/navigation')
+		const instance = createKavach(adapter, { logger, invalidateAll })
+		kavachInstance = instance
+		instance.onAuthChange($page.url)
+	})
 
 	const platformId = $derived($page.params.platform)
 	const platform = $derived(getPlatform(platformId))
