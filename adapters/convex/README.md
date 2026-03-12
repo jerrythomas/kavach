@@ -85,6 +85,8 @@ export const list = query({
     offset: v.optional(v.number())
   },
   handler: async (ctx, { filters = [], orders = [], limit, offset }) => {
+    // TODO: Apply filters, orders, limit, and offset from args for proper query support.
+    // Until then, this returns all documents (suitable for small collections).
     return await ctx.db.query('users').collect()
   }
 })

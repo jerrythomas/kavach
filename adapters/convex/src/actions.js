@@ -48,90 +48,38 @@ export function getActions(client, api) {
 	if (!client) throw new Error('getActions requires a Convex client')
 	if (!api) throw new Error('getActions requires a Convex api reference')
 
+	async function invoke(clientMethod, path, args) {
+		const ref = resolvePath(api, path)
+		if (!ref)
+			throw new Error(`No Convex function found at api.${path} — define it in your Convex backend`)
+		try {
+			return normalizeResponse(await client[clientMethod](ref, args))
+		} catch (error) {
+			return normalizeResponse(null, { message: error.message })
+		}
+	}
+
 	async function get(entity, data) {
 		const ref = resolvePath(api, `${entity}.list`)
 		if (!ref)
-			return normalizeResponse(null, {
-				message: `No Convex query found at api.${entity}.list — define it in your Convex backend`
-			})
+			throw new Error(
+				`No Convex query found at api.${entity}.list — define it in your Convex backend`
+			)
 		const { filters, orders, limit, offset } = parseQueryParams(data)
 		try {
-			const result = await client.query(ref, { filters, orders, limit, offset })
-			return normalizeResponse(result)
+			return normalizeResponse(await client.query(ref, { filters, orders, limit, offset }))
 		} catch (error) {
 			return normalizeResponse(null, { message: error.message })
 		}
 	}
 
-	async function put(entity, data) {
-		const ref = resolvePath(api, `${entity}.create`)
-		if (!ref)
-			return normalizeResponse(null, {
-				message: `No Convex mutation found at api.${entity}.create — define it in your Convex backend`
-			})
-		try {
-			const result = await client.mutation(ref, data)
-			return normalizeResponse(result)
-		} catch (error) {
-			return normalizeResponse(null, { message: error.message })
-		}
+	return {
+		get,
+		put: (entity, data) => invoke('mutation', `${entity}.create`, data),
+		post: (entity, data) => invoke('mutation', `${entity}.upsert`, data),
+		patch: (entity, input = {}) => invoke('mutation', `${entity}.update`, input),
+		delete: (entity, input = {}) => invoke('mutation', `${entity}.remove`, input),
+		call: (path, data) => invoke('action', path, data),
+		connection: client
 	}
-
-	async function post(entity, data) {
-		const ref = resolvePath(api, `${entity}.upsert`)
-		if (!ref)
-			return normalizeResponse(null, {
-				message: `No Convex mutation found at api.${entity}.upsert — define it in your Convex backend`
-			})
-		try {
-			const result = await client.mutation(ref, data)
-			return normalizeResponse(result)
-		} catch (error) {
-			return normalizeResponse(null, { message: error.message })
-		}
-	}
-
-	async function patch(entity, input = {}) {
-		const ref = resolvePath(api, `${entity}.update`)
-		if (!ref)
-			return normalizeResponse(null, {
-				message: `No Convex mutation found at api.${entity}.update — define it in your Convex backend`
-			})
-		try {
-			const result = await client.mutation(ref, input)
-			return normalizeResponse(result)
-		} catch (error) {
-			return normalizeResponse(null, { message: error.message })
-		}
-	}
-
-	async function del(entity, input = {}) {
-		const ref = resolvePath(api, `${entity}.remove`)
-		if (!ref)
-			return normalizeResponse(null, {
-				message: `No Convex mutation found at api.${entity}.remove — define it in your Convex backend`
-			})
-		try {
-			const result = await client.mutation(ref, input)
-			return normalizeResponse(result)
-		} catch (error) {
-			return normalizeResponse(null, { message: error.message })
-		}
-	}
-
-	async function call(path, data) {
-		const ref = resolvePath(api, path)
-		if (!ref)
-			return normalizeResponse(null, {
-				message: `No Convex function found at api.${path} — define it in your Convex backend`
-			})
-		try {
-			const result = await client.action(ref, data)
-			return normalizeResponse(result)
-		} catch (error) {
-			return normalizeResponse(null, { message: error.message })
-		}
-	}
-
-	return { get, put, post, patch, delete: del, call, connection: client }
 }

@@ -90,12 +90,9 @@ describe('getActions (convex)', () => {
 			})
 		})
 
-		it('should return error response if api.users.list is missing', async () => {
+		it('should throw if api.users.list is missing', async () => {
 			const actions = getActions(client, {})
-			const response = await actions.get('users')
-			expect(response.status).toBe(500)
-			expect(response.error.message).toContain('api.users.list')
-			expect(response.data).toBeNull()
+			await expect(actions.get('users')).rejects.toThrow('api.users.list')
 		})
 	})
 
@@ -108,12 +105,9 @@ describe('getActions (convex)', () => {
 			expect(response.status).toBe(200)
 		})
 
-		it('should return error response if api.users.create is missing', async () => {
+		it('should throw if api.users.create is missing', async () => {
 			const actions = getActions(client, {})
-			const response = await actions.put('users', { name: 'x' })
-			expect(response.status).toBe(500)
-			expect(response.error.message).toContain('api.users.create')
-			expect(response.data).toBeNull()
+			await expect(actions.put('users', { name: 'x' })).rejects.toThrow('api.users.create')
 		})
 	})
 
@@ -124,6 +118,11 @@ describe('getActions (convex)', () => {
 			expect(client.mutation).toHaveBeenCalledWith(api.users.upsert, { _id: 'id1', name: 'Carol' })
 			expect(response.data).toEqual(mutationResult)
 			expect(response.status).toBe(200)
+		})
+
+		it('should throw if api.users.upsert is missing', async () => {
+			const actions = getActions(client, {})
+			await expect(actions.post('users', { _id: 'id1' })).rejects.toThrow('api.users.upsert')
 		})
 	})
 
@@ -136,6 +135,11 @@ describe('getActions (convex)', () => {
 			expect(response.data).toEqual(mutationResult)
 			expect(response.status).toBe(200)
 		})
+
+		it('should throw if api.users.update is missing', async () => {
+			const actions = getActions(client, {})
+			await expect(actions.patch('users', {})).rejects.toThrow('api.users.update')
+		})
 	})
 
 	describe('delete', () => {
@@ -146,6 +150,11 @@ describe('getActions (convex)', () => {
 			expect(client.mutation).toHaveBeenCalledWith(api.users.remove, input)
 			expect(response.data).toEqual(mutationResult)
 			expect(response.status).toBe(200)
+		})
+
+		it('should throw if api.users.remove is missing', async () => {
+			const actions = getActions(client, {})
+			await expect(actions.delete('users', {})).rejects.toThrow('api.users.remove')
 		})
 	})
 
@@ -158,12 +167,9 @@ describe('getActions (convex)', () => {
 			expect(response.status).toBe(200)
 		})
 
-		it('should return error response if path cannot be resolved', async () => {
+		it('should throw if path cannot be resolved', async () => {
 			const actions = getActions(client, api)
-			const response = await actions.call('actions.missing', {})
-			expect(response.status).toBe(500)
-			expect(response.error.message).toContain('api.actions.missing')
-			expect(response.data).toBeNull()
+			await expect(actions.call('actions.missing', {})).rejects.toThrow('api.actions.missing')
 		})
 	})
 
