@@ -1,6 +1,6 @@
 {
   "name": "@kavach/cli",
-  "version": "1.0.0-next.31",
+  "version": "1.0.0-next.32",
   "description": "CLI for scaffolding Kavach into SvelteKit projects",
   "type": "module",
   "bin": {
