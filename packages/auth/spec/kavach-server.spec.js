@@ -79,6 +79,7 @@ describe('kavach.handle — Response body serialization', () => {
 		const text = await result.text()
 		expect(() => JSON.parse(text)).not.toThrow()
 		const body = JSON.parse(text)
+		expect(result.status).toBe(401)
 		expect(body).toHaveProperty('error')
 	})
 
@@ -114,5 +115,7 @@ describe('kavach.handle — Response body serialization', () => {
 
 		const text = await result.text()
 		expect(() => JSON.parse(text)).not.toThrow()
+		const body = JSON.parse(text)
+		expect(body).toHaveProperty('session')
 	})
 })
