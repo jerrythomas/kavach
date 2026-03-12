@@ -31,7 +31,24 @@ export default {
 		{ path: '/', public: true },
 		{ path: '/docs', public: true },
 		{ path: '/auth', public: true },
-		{ path: '/demo', roles: '*' },
+		{ path: '/demo', public: true },
+		// Authenticated demo routes — one set per platform
+		{ path: '/demo/supabase/dashboard', roles: '*' },
+		{ path: '/demo/supabase/data', roles: '*' },
+		{ path: '/demo/supabase/admin', roles: ['admin'] },
+		{ path: '/demo/firebase/dashboard', roles: '*' },
+		{ path: '/demo/firebase/data', roles: '*' },
+		{ path: '/demo/firebase/admin', roles: ['admin'] },
+		{ path: '/demo/auth0/dashboard', roles: '*' },
+		{ path: '/demo/auth0/data', roles: '*' },
+		{ path: '/demo/auth0/admin', roles: ['admin'] },
+		{ path: '/demo/amplify/dashboard', roles: '*' },
+		{ path: '/demo/amplify/data', roles: '*' },
+		{ path: '/demo/amplify/admin', roles: ['admin'] },
+		{ path: '/demo/convex/dashboard', roles: '*' },
+		{ path: '/demo/convex/data', roles: '*' },
+		{ path: '/demo/convex/admin', roles: ['admin'] },
+		// Data API routes
 		{ path: '/data/facts', roles: '*' },
 		{ path: '/data/admin-stats', roles: ['admin'] }
 	]

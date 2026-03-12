@@ -2,7 +2,8 @@
 const config = {
 	webServer: {
 		command: 'npm run build && npm run preview',
-		port: 4173
+		port: 4173,
+		reuseExistingServer: true
 	},
 	testDir: 'e2e',
 	testMatch: /.*\.e2e\.[jt]s/
