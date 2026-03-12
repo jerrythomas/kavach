@@ -109,6 +109,15 @@ body > app {
 
 /* Demo grid background */
 .demo-grid-bg {
-  background-image: radial-gradient(circle, var(--un-surface-z2, #d1d5db) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+@media (prefers-color-scheme: dark) {
+  .demo-grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  }
 }
