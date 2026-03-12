@@ -106,3 +106,9 @@ body > app {
   @apply opacity-90;
   filter: brightness(1.1);
 }
+
+/* Demo grid background */
+.demo-grid-bg {
+  background-image: radial-gradient(circle, var(--un-surface-z2, #d1d5db) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

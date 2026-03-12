@@ -44,22 +44,14 @@
 
 <svelte:body use:themable={{ theme: vibe, storageKey: 'kavach-theme' }} />
 
-<div class="bg-surface-z0 text-surface-z9 relative min-h-screen">
-	<!-- Kavach watermark -->
-	<div
-		class="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
-		aria-hidden="true"
-	>
-		<span class="text-surface-z2 text-[20vw] font-black tracking-tight opacity-30">KAVACH</span>
-	</div>
-
+<div class="demo-grid-bg bg-surface-z0 text-surface-z9 flex min-h-screen flex-col">
 	<!-- Theme switcher -->
 	<div class="absolute top-4 right-4 z-10">
 		<ThemeSwitcherToggle />
 	</div>
 
 	<!-- Page content -->
-	<div class="relative z-10">
+	<div class="flex-1">
 		{@render children()}
 	</div>
 
