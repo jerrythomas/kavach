@@ -5,6 +5,9 @@ import unocss from '@unocss/vite'
 
 export default defineConfig({
 	plugins: [kavach(), unocss(), sveltekit()],
+	optimizeDeps: {
+		exclude: ['@rokkit/app', '@rokkit/ui', '@rokkit/states', '@rokkit/actions']
+	},
 	build: {
 		rollupOptions: {
 			output: {

@@ -12,8 +12,8 @@ describe('parseConfig', () => {
 		logging: { level: 'info', table: 'audit.logs' },
 		env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
 		routes: {
-			auth: '(public)/auth',
-			data: '(server)/data',
+			auth: '/auth',
+			data: '/data',
 			logout: '/logout'
 		},
 		rules: [{ path: '/public', public: true }]
@@ -37,8 +37,8 @@ describe('parseConfig', () => {
 		expect(result.logging.table).toBe('logs')
 		expect(result.env.url).toBe('PUBLIC_SUPABASE_URL')
 		expect(result.env.anonKey).toBe('PUBLIC_SUPABASE_ANON_KEY')
-		expect(result.routes.auth).toBe('(public)/auth')
-		expect(result.routes.data).toBe('(server)/data')
+		expect(result.routes.auth).toBe('/auth')
+		expect(result.routes.data).toBe('/data')
 		expect(result.routes.logout).toBe('/logout')
 		expect(result.rules).toEqual([])
 	})

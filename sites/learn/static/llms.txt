@@ -1,0 +1,168 @@
+# Kavach
+
+> A drop-in authentication framework for SvelteKit with unified API across multiple platforms, declarative route protection, and pre-built UI components.
+
+Kavach provides a single authentication abstraction for SvelteKit apps. Swap between Supabase, Firebase, Auth0, AWS Amplify, or Convex by changing one config value. Route protection rules are declared once in `kavach.config.js` and enforced server-side via a SvelteKit hook.
+
+## Packages
+
+- `kavach` — Core client. Use `createKavach(adapter, options)` to instantiate.
+- `@kavach/guardian` — Route protection engine. Use `createGuardian(options)` for standalone usage. Integrated automatically when using `kavach.handle`.
+- `@kavach/ui` — Pre-built Svelte components: `AuthProvider`, `AuthPage`.
+- `@kavach/vite` — Vite plugin that generates the `$kavach/auth` virtual module from `kavach.config.js`.
+- `@kavach/adapter-supabase` — Supabase adapter (full capabilities).
+- `@kavach/adapter-firebase` — Firebase adapter.
+- `@kavach/adapter-auth0` — Auth0 adapter.
+- `@kavach/adapter-amplify` — AWS Amplify (Cognito) adapter.
+- `@kavach/adapter-convex` — Convex adapter.
+
+## Quick Start
+
+```bash
+npm install kavach @kavach/guardian @kavach/ui @kavach/vite
+npm install @kavach/adapter-supabase  # or other adapter
+```
+
+Create `kavach.config.js`:
+
+```js
+export default {
+  adapter: 'supabase',
+  providers: [
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Magic Link' },
+    { name: 'email', mode: 'password', label: 'Email' }
+  ],
+  routes: {
+    auth: '(public)/auth',
+    logout: '/logout'
+  },
+  rules: [
+    { path: '/', public: true },
+    { path: '/auth', public: true },
+    { path: '/dashboard', protected: true },
+    { path: '/admin', roles: ['admin'] }
+  ],
+  env: {
+    url: 'PUBLIC_SUPABASE_URL',
+    anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+  }
+}
+```
+
+Register the hook in `src/hooks.server.js`:
+
+```js
+import { kavach } from '$kavach/auth'
+export const handle = kavach.handle
+```
+
+## Virtual Module: $kavach/auth
+
+The `@kavach/vite` plugin reads `kavach.config.js` and generates a `$kavach/auth` virtual module that exports:
+- `kavach` — server-side kavach instance with `.handle` hook
+- `adapter` — the configured adapter instance
+- `logger` — the configured logger
+
+## Client-Side Usage
+
+Kavach requires a client-side instance for sign-in/sign-out. Create one in your root layout:
+
+```svelte
+<script>
+  import { onMount, setContext } from 'svelte'
+  import { page } from '$app/stores'
+
+  let kavachInstance = $state(null)
+
+  setContext('kavach', {
+    get signIn() { return kavachInstance?.signIn },
+    get signOut() { return kavachInstance?.signOut },
+    get onAuthChange() { return kavachInstance?.onAuthChange }
+  })
+
+  onMount(async () => {
+    const { createKavach } = await import('kavach')
+    const { adapter, logger } = await import('$kavach/auth')
+    const { invalidateAll } = await import('$app/navigation')
+    const instance = createKavach(adapter, { logger, invalidateAll })
+    kavachInstance = instance
+    instance.onAuthChange($page.url)
+  })
+</script>
+```
+
+## UI Components
+
+```svelte
+<script>
+  import { AuthProvider } from '@kavach/ui'
+</script>
+
+<!-- Email/password sign-in -->
+<AuthProvider name="email" mode="password" label="Sign in with Email" onsuccess={onSuccess} />
+
+<!-- Magic link (OTP) -->
+<AuthProvider name="magic" mode="otp" label="Email for Magic Link" />
+
+<!-- OAuth -->
+<AuthProvider name="google" label="Continue with Google" scopes={['email', 'profile']} />
+```
+
+## Session
+
+Kavach sets `event.locals.session` in the SvelteKit hook. The session shape:
+
+```ts
+{
+  user: {
+    id: string
+    email: string
+    role: string
+  }
+  // ...provider-specific fields
+}
+```
+
+Access in load functions: `locals.session?.user`.
+
+## Route Rules
+
+Rules use prefix matching. Each rule has a `path` and one of:
+- `public: true` — accessible without authentication
+- `protected: true` — requires any authenticated user
+- `roles: ['admin']` — requires one of the listed roles
+
+## Guardian API (standalone)
+
+```js
+import { createGuardian } from '@kavach/guardian'
+
+const guardian = createGuardian({ rules, roleHome, routes })
+
+guardian.setSession(session)          // set current session
+const result = guardian.protect(path) // { status: 200|401|403, redirect?: string }
+```
+
+## Adapter Capabilities
+
+| Adapter   | Auth | Data | RPC | Logging | Magic | OAuth | Password | Passkey |
+|-----------|------|------|-----|---------|-------|-------|----------|---------|
+| Supabase  | ✓    | ✓    | ✓   | ✓       | ✓     | ✓     | ✓        | ✓       |
+| Firebase  | ✓    | —    | —   | —       | ✓     | ✓     | ✓        | ✓       |
+| Auth0     | ✓    | —    | —   | —       | ✓     | ✓     | ✓        | —       |
+| Amplify   | ✓    | —    | —   | —       | —     | ✓     | ✓        | —       |
+| Convex    | ✓    | —    | —   | —       | —     | ✓     | ✓        | —       |
+
+## Docs
+
+- /docs — Overview
+- /docs/quick-start — Setup guide
+- /docs/configuration — Full config reference
+- /docs/guardian — Route protection
+- /docs/adapters/supabase — Supabase adapter
+- /docs/adapters/firebase — Firebase adapter
+- /docs/adapters/auth0 — Auth0 adapter
+- /docs/adapters/amplify — AWS Amplify adapter
+- /docs/adapters/convex — Convex adapter
+- /demo/supabase — Live demo (requires sign-in)

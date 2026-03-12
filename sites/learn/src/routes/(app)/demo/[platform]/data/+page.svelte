@@ -30,8 +30,8 @@
 <div class="flex flex-col gap-4 p-8">
 	<h1 class="text-2xl font-bold">Data Operations</h1>
 
-	<div class="bg-info-100 border-info-300 rounded-lg border p-4">
-		<p class="text-info-900">
+	<div class="bg-surface-z2 border-surface-z3 rounded-lg border p-4">
+		<p class="text-surface-z8">
 			Demonstrates data fetching with role-based access control. Admin users can see admin-only
 			records; others see only public records.
 		</p>

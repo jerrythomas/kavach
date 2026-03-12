@@ -15,11 +15,12 @@ export function kavach(options = {}) {
 		name: 'kavach',
 
 		configResolved(viteConfig) {
-			configPath = options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
+			configPath =
+				options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
 		},
 
 		resolveId(id) {
-			if (VIRTUAL_MODULES.includes(id)) return `\0${  id}`
+			if (VIRTUAL_MODULES.includes(id)) return `\0${id}`
 		},
 
 		async buildStart() {
@@ -34,6 +35,16 @@ export function kavach(options = {}) {
 			}
 		},
 
+		configureServer(server) {
+			if (!configPath) return
+			server.watcher.add(configPath)
+			server.watcher.on('change', (file) => {
+				if (file === configPath) {
+					server.restart()
+				}
+			})
+		},
+
 		load(id) {
 			if (!id.startsWith('\0$kavach/')) return
 			if (!config)
@@ -46,4 +57,3 @@ export function kavach(options = {}) {
 		}
 	}
 }
-

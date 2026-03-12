@@ -9,9 +9,9 @@ const DEFAULTS = {
 	cachedLogins: false,
 	logging: { level: 'error', table: 'logs' },
 	routes: {
-		auth: '(public)/auth',
-		data: '(server)/data',
-		rpc: '(server)/rpc',
+		auth: '/auth',
+		data: '/data',
+		rpc: '/rpc',
 		logout: '/logout'
 	},
 	endpoints: {
@@ -29,9 +29,7 @@ const DEFAULTS = {
 export function validateConfig(config) {
 	if (!config.adapter) throw new Error('adapter is required')
 	if (!KNOWN_ADAPTERS.includes(config.adapter)) {
-		throw new Error(
-			`Unknown adapter: "${config.adapter}". Available: ${KNOWN_ADAPTERS.join(', ')}`
-		)
+		throw new Error(`Unknown adapter: "${config.adapter}". Available: ${KNOWN_ADAPTERS.join(', ')}`)
 	}
 	if (config.providers) {
 		for (const p of config.providers) {

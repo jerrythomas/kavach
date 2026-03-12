@@ -22,16 +22,15 @@ export default {
 		anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
 	},
 	routes: {
-		auth: '(public)/auth',
-		data: '(server)/data',
-		rpc: '(server)/rpc',
+		auth: '/auth',
+		data: '/data',
+		rpc: '/rpc',
 		logout: '/logout'
 	},
 	rules: [
 		{ path: '/', public: true },
 		{ path: '/docs', public: true },
 		{ path: '/auth', public: true },
-		{ path: '/demo', public: true },
-		{ path: '/data', public: true }
+		{ path: '/demo', roles: '*' }
 	]
 }

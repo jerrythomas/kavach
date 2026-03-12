@@ -4,47 +4,47 @@
 
 	const docsItems = [
 		{
-			text: 'Getting Started',
+			label: 'Getting Started',
 			children: [
-				{ text: 'Introduction', value: '/docs' },
-				{ text: 'Quick Start', value: '/docs/quick-start' },
-				{ text: 'Configuration', value: '/docs/configuration' }
+				{ label: 'Introduction', value: '/docs' },
+				{ label: 'Quick Start', value: '/docs/quick-start' },
+				{ label: 'Configuration', value: '/docs/configuration' }
 			]
 		},
 		{
-			text: 'Core Concepts',
+			label: 'Core Concepts',
 			children: [
-				{ text: 'Authentication', value: '/docs/authentication' },
-				{ text: 'Authorization', value: '/docs/authorization' },
-				{ text: 'Session Management', value: '/docs/session' }
+				{ label: 'Authentication', value: '/docs/authentication' },
+				{ label: 'Authorization', value: '/docs/authorization' },
+				{ label: 'Session Management', value: '/docs/session' }
 			]
 		},
 		{
-			text: 'Components',
+			label: 'Components',
 			children: [
-				{ text: 'AuthProvider', value: '/docs/components/auth-provider' },
-				{ text: 'AuthButton', value: '/docs/components/auth-button' },
-				{ text: 'AuthPage', value: '/docs/components/auth-page' },
-				{ text: 'LoginCard', value: '/docs/components/login-card' }
+				{ label: 'AuthProvider', value: '/docs/components/auth-provider' },
+				{ label: 'AuthButton', value: '/docs/components/auth-button' },
+				{ label: 'AuthPage', value: '/docs/components/auth-page' },
+				{ label: 'LoginCard', value: '/docs/components/login-card' }
 			]
 		},
 		{
-			text: 'Adapters',
+			label: 'Adapters',
 			children: [
-				{ text: 'Supabase', value: '/docs/adapters/supabase' },
-				{ text: 'Firebase', value: '/docs/adapters/firebase' },
-				{ text: 'Auth0', value: '/docs/adapters/auth0' },
-				{ text: 'Amplify', value: '/docs/adapters/amplify' },
-				{ text: 'Convex', value: '/docs/adapters/convex' }
+				{ label: 'Supabase', value: '/docs/adapters/supabase' },
+				{ label: 'Firebase', value: '/docs/adapters/firebase' },
+				{ label: 'Auth0', value: '/docs/adapters/auth0' },
+				{ label: 'Amplify', value: '/docs/adapters/amplify' },
+				{ label: 'Convex', value: '/docs/adapters/convex' }
 			]
 		},
 		{
-			text: 'Plugins & Tools',
+			label: 'Plugins & Tools',
 			children: [
-				{ text: 'Vite Plugin', value: '/docs/plugins/vite' },
-				{ text: 'CLI Commands', value: '/docs/cli' },
-				{ text: 'Guardian', value: '/docs/guardian' },
-				{ text: 'Logger', value: '/docs/logger' }
+				{ label: 'Vite Plugin', value: '/docs/plugins/vite' },
+				{ label: 'CLI Commands', value: '/docs/cli' },
+				{ label: 'Guardian', value: '/docs/guardian' },
+				{ label: 'Logger', value: '/docs/logger' }
 			]
 		}
 	]
@@ -52,16 +52,16 @@
 	let selected = $derived($page.url.pathname)
 </script>
 
-<div class="flex h-full bg-surface-z1 text-surface-z7">
-	<aside class="w-64 border-r border-surface-z3 p-4 overflow-y-auto">
+<div class="bg-surface-z1 text-surface-z7 flex h-full">
+	<aside class="border-surface-z3 w-64 overflow-y-auto border-r p-4">
 		<List
 			items={docsItems}
 			value={selected}
-			fields={{ text: 'text', children: 'children', href: 'value' }}
+			fields={{ label: 'label', children: 'children', href: 'value' }}
 			collapsible={true}
 		/>
 	</aside>
-	<main class="flex-1 p-8 overflow-y-auto">
+	<main class="flex-1 overflow-y-auto p-8">
 		{@render children()}
 	</main>
 </div>

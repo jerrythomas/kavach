@@ -118,7 +118,9 @@ test.describe('Docs - Plugins & Tools', () => {
 test.describe('Docs - Sidebar Navigation', () => {
 	test('sidebar links navigate correctly', async ({ page }) => {
 		await page.goto('/docs')
-		await page.click('text=Quick Start')
+		// The List component starts with groups collapsed; expand "Getting Started" first
+		await page.locator('aside').getByRole('button', { name: 'Getting Started' }).click()
+		await page.locator('aside a[href="/docs/quick-start"]').click()
 		await expect(page).toHaveURL(/\/docs\/quick-start/)
 	})
 })

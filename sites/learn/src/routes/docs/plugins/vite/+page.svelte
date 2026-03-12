@@ -18,53 +18,54 @@ export default defineConfig({
     })
   ]
 })`
+	import { Code } from '@rokkit/ui'
 </script>
 
 <div class="max-w-4xl">
-	<h1 class="text-3xl font-bold mb-4">Vite Plugin</h1>
-	
-	<p class="text-lg text-surface-z7 mb-8">
+	<h1 class="mb-4 text-3xl font-bold">Vite Plugin</h1>
+
+	<p class="text-surface-z7 mb-8 text-lg">
 		The Kavach Vite plugin provides type generation and development convenience.
 	</p>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Installation</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>npm install @kavach/vite</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">Installation</h2>
+		<Code code={`npm install @kavach/vite`} language="bash" />
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Basic Usage</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{viteConfig}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">Basic Usage</h2>
+		<Code code={viteConfig} language="js" />
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Options</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{viteConfigOptions}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">Options</h2>
+		<Code code={viteConfigOptions} language="js" />
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Options Reference</h2>
+		<h2 class="mb-4 text-xl font-semibold">Options Reference</h2>
 		<div class="overflow-x-auto">
-			<table class="w-full text-left border-collapse">
+			<table class="w-full border-collapse text-left">
 				<thead>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<th class="py-2">Option</th>
 						<th class="py-2">Type</th>
 						<th class="py-2">Description</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">adapter</td>
 						<td class="py-2">string</td>
 						<td class="py-2">Auth adapter name</td>
 					</tr>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">generateTypes</td>
 						<td class="py-2">boolean</td>
 						<td class="py-2">Generate TypeScript types</td>
 					</tr>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">outputPath</td>
 						<td class="py-2">string</td>
 						<td class="py-2">Output path for generated types</td>
@@ -80,7 +81,7 @@ export default defineConfig({
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Features</h2>
+		<h2 class="mb-4 text-xl font-semibold">Features</h2>
 		<ul class="space-y-2">
 			<li><strong>Type Generation</strong> — Auto-generate TypeScript types from config</li>
 			<li><strong>Virtual Module</strong> — Provides <code>$kavach/auth</code> virtual module</li>
@@ -89,7 +90,7 @@ export default defineConfig({
 	</section>
 
 	<section>
-		<h2 class="text-xl font-semibold mb-4">Next Steps</h2>
+		<h2 class="mb-4 text-xl font-semibold">Next Steps</h2>
 		<ul class="space-y-2">
 			<li><a href="/docs/configuration" class="text-primary hover:underline">Configuration</a></li>
 			<li><a href="/docs/cli" class="text-primary hover:underline">CLI Commands</a></li>
