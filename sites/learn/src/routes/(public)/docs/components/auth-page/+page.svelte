@@ -30,29 +30,29 @@
 </script>
 
 <div class="max-w-4xl">
-	<h1 class="text-3xl font-bold mb-4">AuthPage</h1>
-	
-	<p class="text-lg text-surface-z7 mb-8">
+	<h1 class="mb-4 text-3xl font-bold">AuthPage</h1>
+
+	<p class="text-surface-z7 mb-8 text-lg">
 		Complete authentication page with cached logins, provider buttons, and credential forms.
 	</p>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Basic Usage</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{basic}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">Basic Usage</h2>
+		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{basic}</code></pre>
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">With Providers</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{withProviders}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">With Providers</h2>
+		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{withProviders}</code></pre>
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">With Callbacks</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{withCallbacks}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">With Callbacks</h2>
+		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{withCallbacks}</code></pre>
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Features</h2>
+		<h2 class="mb-4 text-xl font-semibold">Features</h2>
 		<ul class="space-y-2">
 			<li><strong>Cached Logins</strong> — Shows recent logins at top for quick access</li>
 			<li><strong>Collapsible Forms</strong> — Provider groups can collapse</li>
@@ -63,28 +63,28 @@
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Props</h2>
+		<h2 class="mb-4 text-xl font-semibold">Props</h2>
 		<div class="overflow-x-auto">
-			<table class="w-full text-left border-collapse">
+			<table class="w-full border-collapse text-left">
 				<thead>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<th class="py-2">Prop</th>
 						<th class="py-2">Type</th>
 						<th class="py-2">Description</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">providers</td>
 						<td class="py-2">Provider[]</td>
 						<td class="py-2">Auth providers to display</td>
 					</tr>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">onSuccess</td>
 						<td class="py-2">function</td>
 						<td class="py-2">Called on successful auth</td>
 					</tr>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">onError</td>
 						<td class="py-2">function</td>
 						<td class="py-2">Called on auth error</td>
@@ -100,10 +100,16 @@
 	</section>
 
 	<section>
-		<h2 class="text-xl font-semibold mb-4">Next Steps</h2>
+		<h2 class="mb-4 text-xl font-semibold">Next Steps</h2>
 		<ul class="space-y-2">
-			<li><a href="/docs/components/login-card" class="text-primary hover:underline">LoginCard</a></li>
-			<li><a href="/docs/components/auth-provider" class="text-primary hover:underline">AuthProvider</a></li>
+			<li>
+				<a href="/docs/components/login-card" class="text-primary hover:underline">LoginCard</a>
+			</li>
+			<li>
+				<a href="/docs/components/auth-provider" class="text-primary hover:underline"
+					>AuthProvider</a
+				>
+			</li>
 			<li><a href="/docs/quick-start" class="text-primary hover:underline">Quick Start</a></li>
 		</ul>
 	</section>

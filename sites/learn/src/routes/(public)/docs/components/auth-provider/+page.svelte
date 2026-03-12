@@ -29,28 +29,28 @@
 </script>
 
 <div class="max-w-4xl">
-	<h1 class="text-3xl font-bold mb-4">AuthProvider</h1>
-	
-	<p class="text-lg text-surface-z7 mb-8">
+	<h1 class="mb-4 text-3xl font-bold">AuthProvider</h1>
+
+	<p class="text-surface-z7 mb-8 text-lg">
 		Context provider that makes auth state available to child components.
 	</p>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Usage</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{usage}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">Usage</h2>
+		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{usage}</code></pre>
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">With Configuration</h2>
-		<pre class="bg-surface-z1 p-4 rounded-lg overflow-x-auto"><code>{withConfig}</code></pre>
+		<h2 class="mb-4 text-xl font-semibold">With Configuration</h2>
+		<pre class="bg-surface-z1 overflow-x-auto rounded-lg p-4"><code>{withConfig}</code></pre>
 	</section>
 
 	<section class="mb-8">
-		<h2 class="text-xl font-semibold mb-4">Props</h2>
+		<h2 class="mb-4 text-xl font-semibold">Props</h2>
 		<div class="overflow-x-auto">
-			<table class="w-full text-left border-collapse">
+			<table class="w-full border-collapse text-left">
 				<thead>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<th class="py-2">Prop</th>
 						<th class="py-2">Type</th>
 						<th class="py-2">Default</th>
@@ -58,13 +58,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">providers</td>
 						<td class="py-2">Provider[]</td>
 						<td class="py-2">[]</td>
 						<td class="py-2">Auth providers to display</td>
 					</tr>
-					<tr class="border-b border-surface-z3">
+					<tr class="border-surface-z3 border-b">
 						<td class="py-2">cachedLogins</td>
 						<td class="py-2">boolean</td>
 						<td class="py-2">false</td>
@@ -82,10 +82,14 @@
 	</section>
 
 	<section>
-		<h2 class="text-xl font-semibold mb-4">Next Steps</h2>
+		<h2 class="mb-4 text-xl font-semibold">Next Steps</h2>
 		<ul class="space-y-2">
-			<li><a href="/docs/components/auth-button" class="text-primary hover:underline">AuthButton</a></li>
-			<li><a href="/docs/components/auth-page" class="text-primary hover:underline">AuthPage</a></li>
+			<li>
+				<a href="/docs/components/auth-button" class="text-primary hover:underline">AuthButton</a>
+			</li>
+			<li>
+				<a href="/docs/components/auth-page" class="text-primary hover:underline">AuthPage</a>
+			</li>
 			<li><a href="/docs/quick-start" class="text-primary hover:underline">Quick Start</a></li>
 		</ul>
 	</section>

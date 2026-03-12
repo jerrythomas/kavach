@@ -6,10 +6,16 @@ export interface Platform {
   iconFallback: string // colour class for icon background
   live: boolean
   modes: string[] // auth mode ids this platform supports
-  kavachFeatures: string[] // features Kavach provides on top of this adapter
-  adapterFeatures: string[] // features the adapter itself provides
+  capabilities: string[] // what the platform adapter provides
   adapterPackage: string
 }
+
+/** Features Kavach provides regardless of adapter — shown once on the landing page */
+export const KAVACH_FEATURES = [
+  'Role-based route protection',
+  'Server-side session cookie',
+  'Cached login history'
+]
 
 export const PLATFORMS: Platform[] = [
   {
@@ -20,8 +26,7 @@ export const PLATFORMS: Platform[] = [
     iconFallback: 'bg-emerald-500',
     live: true,
     modes: ['password', 'magic', 'cached', 'social'],
-    kavachFeatures: ['Role-based route protection', 'Cached login history', 'Server-side session'],
-    adapterFeatures: ['Email + password', 'Magic link (OTP)', 'Social OAuth', 'PostgREST RLS'],
+    capabilities: ['Email + password', 'Magic link (OTP)', 'Social OAuth', 'PostgREST RLS'],
     adapterPackage: '@kavach/adapter-supabase'
   },
   {
@@ -32,8 +37,7 @@ export const PLATFORMS: Platform[] = [
     iconFallback: 'bg-orange-500',
     live: false,
     modes: ['password', 'social'],
-    kavachFeatures: ['Role-based route protection', 'Cached login history', 'Server-side session'],
-    adapterFeatures: ['Email + password', 'Google OAuth', 'Firestore security rules'],
+    capabilities: ['Email + password', 'Google OAuth', 'Firestore security rules'],
     adapterPackage: '@kavach/adapter-firebase'
   },
   {
@@ -44,8 +48,7 @@ export const PLATFORMS: Platform[] = [
     iconFallback: 'bg-orange-700',
     live: false,
     modes: ['password', 'social'],
-    kavachFeatures: ['Role-based route protection', 'Cached login history', 'Server-side session'],
-    adapterFeatures: ['Universal login page', 'Social providers', 'Token-based sessions'],
+    capabilities: ['Universal login page', 'Social providers', 'Token-based sessions'],
     adapterPackage: '@kavach/adapter-auth0'
   },
   {
@@ -56,8 +59,7 @@ export const PLATFORMS: Platform[] = [
     iconFallback: 'bg-yellow-600',
     live: false,
     modes: ['password', 'social'],
-    kavachFeatures: ['Role-based route protection', 'Cached login history', 'Server-side session'],
-    adapterFeatures: ['Cognito user pools', 'Social identity providers', 'AWS IAM integration'],
+    capabilities: ['Cognito user pools', 'Social identity providers', 'AWS IAM integration'],
     adapterPackage: '@kavach/adapter-amplify'
   },
   {
@@ -68,8 +70,7 @@ export const PLATFORMS: Platform[] = [
     iconFallback: 'bg-purple-600',
     live: false,
     modes: ['password'],
-    kavachFeatures: ['Role-based route protection', 'Cached login history', 'Server-side session'],
-    adapterFeatures: ['Email + password', 'Reactive data queries', 'Server-side auth functions'],
+    capabilities: ['Email + password', 'Reactive data queries', 'Server-side auth functions'],
     adapterPackage: '@kavach/adapter-convex'
   }
 ]

@@ -1,8 +1,4 @@
 <script lang="ts">
-	import 'uno.css'
-	import '../../../app.css'
-	import { vibe } from '@rokkit/states'
-	import { themable } from '@rokkit/actions'
 	import { ThemeSwitcherToggle } from '@rokkit/app'
 	import { setContext, onMount } from 'svelte'
 	import { page } from '$app/stores'
@@ -41,8 +37,6 @@
 		instance.onAuthChange($page.url)
 	})
 </script>
-
-<svelte:body use:themable={{ theme: vibe, storageKey: 'kavach-theme' }} />
 
 <div class="demo-grid-bg bg-surface-z0 text-surface-z9 flex h-screen flex-col overflow-hidden">
 	<!-- Theme switcher — fixed so it doesn't scroll away -->

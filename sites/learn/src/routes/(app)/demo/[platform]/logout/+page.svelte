@@ -5,7 +5,7 @@
 	onMount(async () => {
 		const kavach = getContext<any>('kavach')
 		if (kavach?.signOut) await kavach.signOut()
-		goto('/auth')
+		goto('/demo')
 	})
 </script>
 
