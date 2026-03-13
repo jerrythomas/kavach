@@ -27,6 +27,11 @@ const ADAPTER_CONFIGS = {
 }
 
 const adapter = process.env.KAVACH_ADAPTER ?? 'supabase'
+if (!ADAPTER_CONFIGS[adapter]) {
+	throw new Error(
+		`Unknown KAVACH_ADAPTER: "${adapter}". Valid options: ${Object.keys(ADAPTER_CONFIGS).join(', ')}`
+	)
+}
 
 export default {
 	adapter,
