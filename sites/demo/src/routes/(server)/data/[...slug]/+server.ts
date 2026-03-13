@@ -71,6 +71,7 @@ export const GET: RequestHandler = ({ params, locals }) => {
 	}
 
 	if (entity === 'admin-stats') {
+		if (role !== 'admin') return json({ error: 'Forbidden' }, { status: 403 })
 		return json({
 			totalFacts: SEED_FACTS.length,
 			generalFacts: SEED_FACTS.filter((f) => f.tier === 'general').length,
