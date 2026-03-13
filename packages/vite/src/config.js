@@ -1,7 +1,13 @@
-const KNOWN_ADAPTERS = ['supabase']
+const KNOWN_ADAPTERS = ['supabase', 'firebase', 'convex']
 
 const ADAPTER_ENV_DEFAULTS = {
-	supabase: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' }
+	supabase: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
+	firebase: {
+		apiKey: 'PUBLIC_FIREBASE_API_KEY',
+		projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
+		appId: 'PUBLIC_FIREBASE_APP_ID'
+	},
+	convex: { url: 'PUBLIC_CONVEX_URL' }
 }
 
 const DEFAULTS = {
@@ -47,7 +53,9 @@ export function parseConfig(raw) {
 		cachedLogins: raw.cachedLogins ?? DEFAULTS.cachedLogins,
 		logging: {
 			level: raw.logging?.level ?? DEFAULTS.logging.level,
-			table: raw.logging?.table ?? DEFAULTS.logging.table
+			table: raw.logging?.table ?? DEFAULTS.logging.table,
+			collection: raw.logging?.collection,
+			entity: raw.logging?.entity // reserved — consumed by Convex log writer once user wires up api
 		},
 		env: { ...envDefaults, ...raw.env },
 		routes: {

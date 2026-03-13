@@ -1,6 +1,30 @@
 import { describe, it, expect } from 'vitest'
 import { generateModule } from '../src/generate.js'
 
+const firebaseConfig = {
+	adapter: 'firebase',
+	providers: [],
+	cachedLogins: false,
+	logging: { level: 'info', collection: 'audit', table: 'logs', entity: undefined },
+	env: {
+		apiKey: 'PUBLIC_FIREBASE_API_KEY',
+		projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
+		appId: 'PUBLIC_FIREBASE_APP_ID'
+	},
+	routes: { auth: '/auth', data: '/data', rpc: '/rpc', logout: '/logout' },
+	rules: []
+}
+
+const convexConfig = {
+	adapter: 'convex',
+	providers: [],
+	cachedLogins: false,
+	logging: { level: 'warn', table: 'logs', collection: undefined, entity: 'events' },
+	env: { url: 'PUBLIC_CONVEX_URL' },
+	routes: { auth: '/auth', data: '/data', rpc: '/rpc', logout: '/logout' },
+	rules: []
+}
+
 const config = {
 	adapter: 'supabase',
 	providers: [
@@ -51,6 +75,27 @@ describe('generateModule', () => {
 		expect(code).toContain('env.PUBLIC_SUPABASE_ANON_KEY')
 		expect(code).toContain("level: 'info'")
 		expect(code).toContain("table: 'audit.logs'")
+	})
+
+	it('should generate $kavach/auth module for firebase', () => {
+		const code = generateModule('auth', firebaseConfig)
+		expect(code).toContain("from '@kavach/adapter-firebase'")
+		expect(code).toContain('initializeApp')
+		expect(code).toContain('env.PUBLIC_FIREBASE_API_KEY')
+		expect(code).toContain("collection: 'audit'")
+		expect(code).toContain("level: 'info'")
+	})
+
+	it('should generate $kavach/auth module for convex', () => {
+		const code = generateModule('auth', convexConfig)
+		expect(code).toContain("from '@kavach/adapter-convex'")
+		expect(code).toContain('ConvexReactClient')
+		expect(code).toContain('env.PUBLIC_CONVEX_URL')
+		expect(code).toContain("level: 'warn'")
+		// Convex template intentionally omits getLogWriter (requires user's api import)
+		// and uses null writer — getLogger(null) returns a safe no-op zero logger
+		expect(code).not.toContain('getLogWriter')
+		expect(code).toContain('getLogger(null')
 	})
 
 	it('should throw for unknown module', () => {

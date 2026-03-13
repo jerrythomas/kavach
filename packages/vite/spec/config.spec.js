@@ -42,6 +42,23 @@ describe('parseConfig', () => {
 		expect(result.routes.logout).toBe('/logout')
 		expect(result.rules).toEqual([])
 	})
+
+	it('should apply firebase env defaults', () => {
+		const result = parseConfig({ adapter: 'firebase' })
+		expect(result.env.apiKey).toBe('PUBLIC_FIREBASE_API_KEY')
+		expect(result.env.projectId).toBe('PUBLIC_FIREBASE_PROJECT_ID')
+		expect(result.env.appId).toBe('PUBLIC_FIREBASE_APP_ID')
+	})
+
+	it('should apply convex env defaults', () => {
+		const result = parseConfig({ adapter: 'convex' })
+		expect(result.env.url).toBe('PUBLIC_CONVEX_URL')
+	})
+
+	it('should pass through firebase logging.collection', () => {
+		const result = parseConfig({ adapter: 'firebase', logging: { collection: 'audit' } })
+		expect(result.logging.collection).toBe('audit')
+	})
 })
 
 describe('validateConfig', () => {
@@ -64,5 +81,13 @@ describe('validateConfig', () => {
 
 	it('should accept valid config', () => {
 		expect(() => validateConfig({ adapter: 'supabase' })).not.toThrow()
+	})
+
+	it('should accept firebase adapter', () => {
+		expect(() => validateConfig({ adapter: 'firebase' })).not.toThrow()
+	})
+
+	it('should accept convex adapter', () => {
+		expect(() => validateConfig({ adapter: 'convex' })).not.toThrow()
 	})
 })

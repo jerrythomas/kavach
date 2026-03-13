@@ -60,6 +60,23 @@ function generateAuth(config) {
 			.replaceAll('{{rules}}', serialize(rules))
 	}
 
+	if (config.adapter === 'firebase') {
+		return templates.authFirebase
+			.replaceAll('{{apiKey}}', env.apiKey)
+			.replaceAll('{{projectId}}', env.projectId)
+			.replaceAll('{{appId}}', env.appId)
+			.replaceAll('{{logCollection}}', logging.collection ?? 'logs')
+			.replaceAll('{{logLevel}}', logging.level)
+			.replaceAll('{{rules}}', serialize(rules))
+	}
+
+	if (config.adapter === 'convex') {
+		return templates.authConvex
+			.replaceAll('{{url}}', env.url)
+			.replaceAll('{{logLevel}}', logging.level)
+			.replaceAll('{{rules}}', serialize(rules))
+	}
+
 	throw new Error(`No auth generator for adapter: ${config.adapter}`)
 }
 
