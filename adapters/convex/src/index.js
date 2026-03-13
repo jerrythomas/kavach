@@ -2,3 +2,4 @@
 export * from './types'
 export { getAdapter } from './adapter'
 export { getActions } from './actions'
+export { getLogWriter } from './writer'
