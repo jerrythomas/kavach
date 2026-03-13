@@ -199,6 +199,16 @@
 					>
 				{/if}
 			</div>
+			{#if platform?.live && platform?.url}
+				<a
+					href={platform.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="bg-primary mt-2 inline-block rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+				>
+					Launch demo →
+				</a>
+			{/if}
 
 			{#if activeMode?.id === 'cached'}
 				<div class="border-surface-z2 bg-surface-z2 text-surface-z6 rounded-lg p-3 text-xs">

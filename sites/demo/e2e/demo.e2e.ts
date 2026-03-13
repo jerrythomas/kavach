@@ -13,6 +13,7 @@ async function loginAsUser(page, email = 'test@test.com', password = 'password12
 		}
 	)
 	const token = await response.json()
+	if (!token.access_token) throw new Error(`Auth failed: ${JSON.stringify(token)}`)
 
 	// Intercept the kavach session-sync endpoint so that when Supabase JS fires
 	// SIGNED_OUT on init (no localStorage session), the server-side cookie is

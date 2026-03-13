@@ -5,6 +5,7 @@ export interface Platform {
   icon: string // UnoCSS class, e.g. 'i-auth-supabase'
   iconFallback: string // colour class for icon background
   live: boolean
+  url?: string // external demo URL for live platforms
   modes: string[] // auth mode ids this platform supports
   capabilities: string[] // what the platform adapter provides
   adapterPackage: string
@@ -25,6 +26,7 @@ export const PLATFORMS: Platform[] = [
     icon: 'i-auth-supabase',
     iconFallback: 'bg-emerald-500',
     live: true,
+    // url intentionally omitted — Supabase runs as the embedded in-site demo, not a standalone deployment
     modes: ['password', 'magic', 'cached', 'social'],
     capabilities: ['Email + password', 'Magic link (OTP)', 'Social OAuth', 'PostgREST RLS'],
     adapterPackage: '@kavach/adapter-supabase'
@@ -35,9 +37,10 @@ export const PLATFORMS: Platform[] = [
     description: 'Google cloud auth with Firestore security rules',
     icon: 'i-auth-firebase',
     iconFallback: 'bg-orange-500',
-    live: false,
-    modes: ['password', 'social'],
-    capabilities: ['Email + password', 'Google OAuth', 'Firestore security rules'],
+    live: true,
+    url: 'https://firebase.demo.kavach.dev',
+    modes: ['password', 'magic', 'social'],
+    capabilities: ['Email + password', 'Magic link (OTP)', 'Google OAuth', 'Firestore security rules', 'Structured logging'],
     adapterPackage: '@kavach/adapter-firebase'
   },
   {
@@ -68,9 +71,10 @@ export const PLATFORMS: Platform[] = [
     description: 'Reactive database with built-in auth',
     icon: 'i-app-shield',
     iconFallback: 'bg-purple-600',
-    live: false,
-    modes: ['password'],
-    capabilities: ['Email + password', 'Reactive data queries', 'Server-side auth functions'],
+    live: true,
+    url: 'https://convex.demo.kavach.dev',
+    modes: ['social'],
+    capabilities: ['Google OAuth', 'Reactive data queries', 'Server-side auth functions', 'Structured logging'],
     adapterPackage: '@kavach/adapter-convex'
   }
 ]
