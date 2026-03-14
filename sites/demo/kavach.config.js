@@ -11,7 +11,8 @@ const ADAPTER_CONFIGS = {
 		env: {
 			apiKey: 'PUBLIC_FIREBASE_API_KEY',
 			projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
-			appId: 'PUBLIC_FIREBASE_APP_ID'
+			appId: 'PUBLIC_FIREBASE_APP_ID',
+			authEmulatorHost: 'PUBLIC_FIREBASE_AUTH_EMULATOR_HOST'
 		},
 		providers: [
 			{ name: 'google', label: 'Continue with Google' },
