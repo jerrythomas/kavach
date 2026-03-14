@@ -1,0 +1,161 @@
+# Kavach — Auth (kavach)
+
+> Core authentication client for SvelteKit. Wraps platform adapters with a unified
+> interface for sign-in, sign-out, and session management.
+
+## Install
+
+```bash
+npm install kavach @kavach/vite
+npm install @kavach/adapter-supabase  # choose your adapter
+```
+
+## Setup
+
+Create `kavach.config.js` in your project root:
+
+```js
+export default {
+  adapter: 'supabase',
+  providers: [
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Magic Link' },
+    { name: 'email', mode: 'password', label: 'Email' }
+  ],
+  routes: {
+    auth: '(public)/auth',
+    logout: '/logout'
+  },
+  rules: [
+    { path: '/', public: true },
+    { path: '/auth', public: true },
+    { path: '/dashboard', protected: true },
+    { path: '/admin', roles: ['admin'] }
+  ],
+  env: {
+    url: 'PUBLIC_SUPABASE_URL',
+    anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+  }
+}
+```
+
+Register the server hook in `src/hooks.server.js`:
+
+```js
+import { kavach } from '$kavach/auth'
+export const handle = kavach.handle
+```
+
+## Client-Side Usage
+
+Create a kavach client instance in your root layout (`src/routes/+layout.svelte`):
+
+```svelte
+<script>
+  import { onMount, setContext } from 'svelte'
+  import { page } from '$app/stores'
+
+  const kavach = $state({})
+  setContext('kavach', kavach)
+
+  onMount(async () => {
+    const { createKavach } = await import('kavach')
+    const { adapter, logger } = await import('$kavach/auth')
+    const { invalidateAll } = await import('$app/navigation')
+    const instance = createKavach(adapter, { logger, invalidateAll })
+    Object.assign(kavach, instance)
+    instance.onAuthChange($page.url)
+  })
+</script>
+```
+
+## API
+
+### createKavach(adapter, options)
+
+Creates a browser-side kavach instance.
+
+```ts
+const kavach = createKavach(adapter, {
+  logger?,       // optional logger instance
+  invalidateAll? // SvelteKit invalidateAll for session refresh
+})
+```
+
+Returns: `{ signIn, signOut, onAuthChange }`
+
+### kavach.signIn(provider, credentials)
+
+```ts
+await kavach.signIn('email', { email, password })
+await kavach.signIn('google')
+await kavach.signIn('magic', { email })
+```
+
+### kavach.signOut()
+
+```ts
+await kavach.signOut()
+```
+
+### kavach.onAuthChange(url)
+
+Call on page navigation to sync auth state.
+
+## Session
+
+Kavach sets `event.locals.session` in the SvelteKit hook. Access in load functions:
+
+```ts
+export async function load({ locals }) {
+  return { user: locals.session?.user }
+}
+```
+
+Session shape:
+
+```ts
+{
+  user: {
+    id: string
+    email: string
+    role: string
+  }
+}
+```
+
+## Virtual Module: $kavach/auth
+
+The `@kavach/vite` plugin generates `$kavach/auth` from `kavach.config.js`. Exports:
+
+- `kavach` — server-side instance with `.handle` hook
+- `adapter` — configured adapter instance
+- `logger` — configured logger instance
+
+## Providers
+
+| name        | modes      | description                              |
+| ----------- | ---------- | ---------------------------------------- |
+| `email`     | `password` | Email + password sign-in                 |
+| `magic`     | `otp`      | Magic link / OTP via email               |
+| `google`    | —          | Google OAuth                             |
+| `github`    | —          | GitHub OAuth                             |
+| (any OAuth) | —          | Any OAuth provider your adapter supports |
+
+## Route Rules
+
+Rules use prefix matching. Defined in `kavach.config.js`:
+
+```js
+rules: [
+  { path: '/', public: true }, // no auth needed
+  { path: '/dashboard', protected: true }, // any authenticated user
+  { path: '/admin', roles: ['admin'] } // specific role required
+]
+```
+
+## Related
+
+- [Sentry](./sentry.txt) — standalone route protection engine
+- [UI](./ui.txt) — pre-built sign-in components
+- [Vite Plugin](./vite.txt) — virtual module generation

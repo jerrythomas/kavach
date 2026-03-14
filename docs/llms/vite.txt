@@ -1,0 +1,87 @@
+# Kavach — Vite Plugin (@kavach/vite)
+
+> Vite plugin that reads `kavach.config.js` and generates the `$kavach/auth`
+> virtual module at build time. Required for SvelteKit integration.
+
+## Install
+
+```bash
+npm install @kavach/vite
+```
+
+## Setup
+
+Add to `vite.config.js`:
+
+```js
+import { kavach } from '@kavach/vite'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [kavach(), sveltekit()]
+})
+```
+
+## What It Does
+
+Reads `kavach.config.js` from the project root and generates the `$kavach/auth`
+virtual module, which exports:
+
+- `kavach` — configured server-side kavach instance with `.handle` hook
+- `adapter` — instantiated adapter (e.g. SupabaseAdapter)
+- `logger` — configured logger instance
+
+## Virtual Module Usage
+
+Server hook (`src/hooks.server.js`):
+
+```js
+import { kavach } from '$kavach/auth'
+export const handle = kavach.handle
+```
+
+Client layout (`src/routes/+layout.svelte`):
+
+```js
+const { adapter, logger } = await import('$kavach/auth')
+```
+
+## kavach.config.js Reference
+
+Full configuration shape:
+
+```js
+export default {
+  adapter: 'supabase', // 'supabase' | 'firebase' | 'auth0' | 'amplify' | 'convex'
+  providers: [
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Magic Link' },
+    { name: 'email', mode: 'password', label: 'Email & Password' }
+  ],
+  routes: {
+    auth: '(public)/auth', // SvelteKit route group path for auth page
+    logout: '/logout'
+  },
+  rules: [
+    { path: '/', public: true },
+    { path: '/auth', public: true },
+    { path: '/dashboard', protected: true },
+    { path: '/admin', roles: ['admin'] }
+  ],
+  env: {
+    // environment variable names for the adapter
+    url: 'PUBLIC_SUPABASE_URL',
+    anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+  },
+  logger: {
+    // optional logger config
+    level: 'info'
+  }
+}
+```
+
+## Related
+
+- [Auth](./auth.txt) — how to use the generated virtual module
+- [Supabase adapter](./adapter-supabase.txt) — adapter-specific env vars

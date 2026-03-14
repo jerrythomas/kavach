@@ -1,0 +1,79 @@
+# Kavach — UI (@kavach/ui)
+
+> Pre-built Svelte 5 components for authentication flows. Drop-in sign-in UI
+> supporting email/password, magic link (OTP), and OAuth providers.
+
+## Install
+
+```bash
+npm install @kavach/ui
+```
+
+Requires kavach client in Svelte context (see [Auth](./auth.txt) setup).
+
+## Components
+
+### AuthProvider
+
+Single sign-in button/form for one provider.
+
+```svelte
+<script>
+  import { AuthProvider } from '@kavach/ui'
+</script>
+
+<!-- Email + password -->
+<AuthProvider
+  name="email"
+  mode="password"
+  label="Sign in with Email"
+  onsuccess={onSuccess}
+  onerror={onError}
+/>
+
+<!-- Magic link (OTP) -->
+<AuthProvider name="magic" mode="otp" label="Email me a link" />
+
+<!-- OAuth -->
+<AuthProvider name="google" label="Continue with Google" scopes={['email', 'profile']} />
+```
+
+Props:
+
+- `name: string` — provider name matching `kavach.config.js` providers
+- `mode?: 'password' | 'otp'` — auth mode
+- `label?: string` — button/form label
+- `scopes?: string[]` — OAuth scopes
+- `onsuccess?: () => void` — callback on successful sign-in
+- `onerror?: (error) => void` — callback on error
+
+### AuthPage
+
+Full sign-in page combining all configured providers.
+
+```svelte
+<script>
+  import { AuthPage } from '@kavach/ui'
+</script>
+
+<AuthPage onsuccess={() => goto('/dashboard')} />
+```
+
+Renders all providers from `kavach.config.js` with appropriate UI for each mode.
+
+## Kavach Context
+
+Components read the kavach client from Svelte context. Set it up in your root layout:
+
+```svelte
+<script>
+  import { setContext } from 'svelte'
+  // ... createKavach setup (see auth.txt)
+  setContext('kavach', kavachInstance)
+</script>
+```
+
+## Related
+
+- [Auth](./auth.txt) — kavach client and context setup
+- [Vite Plugin](./vite.txt) — required for $kavach/auth virtual module

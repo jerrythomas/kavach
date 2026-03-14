@@ -1,0 +1,96 @@
+# Kavach — Sentry (@kavach/sentry)
+
+> Route protection engine. Evaluates route rules against the current session and
+> returns allow/redirect decisions. Used automatically by kavach.handle; also
+> available standalone.
+
+## Install
+
+```bash
+npm install @kavach/sentry
+```
+
+## Standalone Usage
+
+```js
+import { createSentry } from '@kavach/sentry'
+
+const sentry = createSentry({
+  rules: [
+    { path: '/', public: true },
+    { path: '/dashboard', protected: true },
+    { path: '/admin', roles: ['admin'] }
+  ],
+  roleHome: { admin: '/admin', user: '/dashboard' },
+  routes: { auth: '/auth', logout: '/logout' }
+})
+
+sentry.setSession(session)
+
+const result = sentry.protect('/dashboard')
+// { status: 200 } — allowed
+// { status: 401, redirect: '/auth' } — not authenticated
+// { status: 403, redirect: '/dashboard' } — wrong role
+```
+
+## API
+
+### createSentry(options)
+
+```ts
+createSentry({
+  rules: RouteRule[]     // prefix-matched rules, evaluated in order
+  roleHome?: Record<string, string>  // role → home path mapping
+  routes?: {
+    auth?: string        // sign-in page path (default: '/auth')
+    logout?: string      // logout path (default: '/logout')
+  }
+})
+```
+
+### sentry.setSession(session)
+
+Set current user session. Call before `protect()`.
+
+```ts
+sentry.setSession(null) // unauthenticated
+sentry.setSession({ user: { id, email, role: 'admin' } })
+```
+
+### sentry.protect(path)
+
+Evaluate route access for the current session.
+
+```ts
+const result = sentry.protect('/admin')
+// Returns:
+// { status: 200 }                              — allow
+// { status: 401, redirect: '/auth' }           — unauthenticated
+// { status: 403, redirect: roleHome[role] }    — insufficient role
+```
+
+## Rule Matching
+
+Rules are prefix-matched in order. The first matching rule wins.
+
+```js
+rules: [
+  { path: '/admin', roles: ['admin'] }, // matches /admin, /admin/users etc.
+  { path: '/auth', public: true },
+  { path: '/', protected: true } // catch-all: require auth
+]
+```
+
+Rule types:
+
+- `public: true` — accessible without authentication
+- `protected: true` — requires any authenticated session
+- `roles: string[]` — requires one of the listed roles
+
+## Integration with kavach.handle
+
+When using the full kavach package, Sentry is wired in automatically via `kavach.handle`. You do not need to call `createSentry` directly unless you want standalone route protection without the rest of kavach.
+
+## Related
+
+- [Auth](./auth.txt) — full kavach client with kavach.handle
