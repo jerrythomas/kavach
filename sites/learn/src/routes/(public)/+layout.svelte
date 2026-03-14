@@ -61,6 +61,13 @@
 		class="border-surface-z3 text-surface-z6 flex shrink-0 items-center justify-between border-t px-8 py-3 text-xs"
 	>
 		<span>Kavach — Authentication made simple</span>
-		<a href="/llms.txt" class="hover:text-primary transition-colors">llms.txt</a>
+		<a
+			href="/llms/llms.txt"
+			class="border-surface-z4 bg-surface-z2 hover:bg-primary hover:text-on-primary flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium transition-colors"
+			title="LLM-friendly docs"
+		>
+			<span class="i-app-code-visible h-3.5 w-3.5" aria-hidden="true"></span>
+			llms.txt
+		</a>
 	</footer>
 </div>
