@@ -102,3 +102,37 @@ describe('generateModule', () => {
 		expect(() => generateModule('unknown', config)).toThrow('Unknown virtual module')
 	})
 })
+
+describe('generateAuth - firebase emulator', () => {
+	it('includes connectAuthEmulator call when authEmulatorHost is configured', () => {
+		const config = {
+			adapter: 'firebase',
+			env: {
+				apiKey: 'PUBLIC_FIREBASE_API_KEY',
+				projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
+				appId: 'PUBLIC_FIREBASE_APP_ID',
+				authEmulatorHost: 'PUBLIC_FIREBASE_AUTH_EMULATOR_HOST'
+			},
+			logging: { level: 'error', collection: 'logs' },
+			rules: []
+		}
+		const output = generateModule('auth', config)
+		expect(output).toContain('connectAuthEmulator')
+		expect(output).toContain('PUBLIC_FIREBASE_AUTH_EMULATOR_HOST')
+	})
+
+	it('omits connectAuthEmulator when authEmulatorHost is not configured', () => {
+		const config = {
+			adapter: 'firebase',
+			env: {
+				apiKey: 'PUBLIC_FIREBASE_API_KEY',
+				projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
+				appId: 'PUBLIC_FIREBASE_APP_ID'
+			},
+			logging: { level: 'error', collection: 'logs' },
+			rules: []
+		}
+		const output = generateModule('auth', config)
+		expect(output).not.toContain('connectAuthEmulator')
+	})
+})

@@ -61,10 +61,18 @@ function generateAuth(config) {
 	}
 
 	if (config.adapter === 'firebase') {
+		const hasEmulator = Boolean(env.authEmulatorHost)
+		const emulatorImport = hasEmulator ? ', connectAuthEmulator' : ''
+		const emulatorBlock = hasEmulator
+			? `if (env.${env.authEmulatorHost}) {\n\tconnectAuthEmulator(auth, env.${env.authEmulatorHost}, { disableWarnings: true })\n}`
+			: ''
+
 		return templates.authFirebase
 			.replaceAll('{{apiKey}}', env.apiKey)
 			.replaceAll('{{projectId}}', env.projectId)
 			.replaceAll('{{appId}}', env.appId)
+			.replaceAll('{{emulatorImport}}', emulatorImport)
+			.replaceAll('{{emulatorBlock}}', emulatorBlock)
 			.replaceAll('{{logCollection}}', logging.collection ?? 'logs')
 			.replaceAll('{{logLevel}}', logging.level)
 			.replaceAll('{{rules}}', serialize(rules))

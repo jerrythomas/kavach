@@ -3,7 +3,7 @@ import { getAdapter, getActions, getLogWriter } from '@kavach/adapter-firebase'
 import { getLogger } from '@kavach/logger'
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'
+import { getAuth{{emulatorImport}} } from 'firebase/auth'
 import { env } from '$env/dynamic/public'
 
 const app = initializeApp({
@@ -13,6 +13,7 @@ const app = initializeApp({
 })
 const db = getFirestore(app)
 const auth = getAuth(app)
+{{emulatorBlock}}
 const adapter = getAdapter(auth)
 const data = () => getActions(db)
 const writer = getLogWriter(db, { collection: '{{logCollection}}' })
