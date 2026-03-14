@@ -1,0 +1,76 @@
+# Kavach — Query (@kavach/query)
+
+> Declarative query parameter helpers for building type-safe data access patterns
+> in SvelteKit server routes and load functions.
+
+## Install
+
+```bash
+npm install @kavach/query
+```
+
+## Usage
+
+Parse and validate URL query parameters for data access endpoints:
+
+```js
+import { parseQuery, sanitizeQuery } from '@kavach/query'
+
+// In a +server.ts or load function
+export async function GET({ url, locals }) {
+  const query = parseQuery(url.searchParams)
+  const safe = sanitizeQuery(query, { allowedFields: ['name', 'status'] })
+
+  // Use with your data adapter
+  const data = await locals.db.from('items').select(safe)
+  return json(data)
+}
+```
+
+## API
+
+### parseQuery(searchParams)
+
+Parse URL search params into a structured query object:
+
+```ts
+const query = parseQuery(new URLSearchParams('?filter=status:active&sort=name:asc&limit=20'))
+// {
+//   filters: [{ field: 'status', op: 'eq', value: 'active' }],
+//   order: [{ field: 'name', dir: 'asc' }],
+//   limit: 20
+// }
+```
+
+### sanitizeQuery(query, options)
+
+Whitelist allowed fields to prevent injection:
+
+```ts
+const safe = sanitizeQuery(query, {
+  allowedFields: ['name', 'status', 'created_at']
+})
+```
+
+### buildQueryParams(query)
+
+Convert a query object back to URLSearchParams:
+
+```ts
+const params = buildQueryParams({ filters: [...], order: [...] })
+```
+
+## Filter Operators
+
+Supported in query strings as `field:operator:value` or `field:value` (defaults to `eq`):
+
+| Operator | Meaning                   |
+| -------- | ------------------------- |
+| `eq`     | equals (default)          |
+| `neq`    | not equals                |
+| `gt`     | greater than              |
+| `gte`    | greater than or equal     |
+| `lt`     | less than                 |
+| `lte`    | less than or equal        |
+| `like`   | LIKE pattern              |
+| `in`     | in list (comma-separated) |

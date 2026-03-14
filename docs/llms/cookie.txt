@@ -1,0 +1,59 @@
+# Kavach — Cookie (@kavach/cookie)
+
+> Cookie serialization and parsing utilities used internally by Kavach for
+> session management. Can be used standalone for custom cookie handling.
+
+## Install
+
+```bash
+npm install @kavach/cookie
+```
+
+## Usage
+
+```js
+import { serialize, parse } from '@kavach/cookie'
+
+// Serialize a cookie for Set-Cookie header
+const header = serialize('session', tokenValue, {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'lax',
+  path: '/',
+  maxAge: 60 * 60 * 24 * 7 // 1 week
+})
+
+// Parse Cookie header
+const cookies = parse(request.headers.get('cookie') ?? '')
+const sessionToken = cookies['session']
+```
+
+## API
+
+### serialize(name, value, options)
+
+```ts
+serialize(
+  name: string,
+  value: string,
+  options?: {
+    httpOnly?: boolean    // default: false
+    secure?: boolean      // default: false
+    sameSite?: 'strict' | 'lax' | 'none'
+    path?: string         // default: '/'
+    domain?: string
+    maxAge?: number       // seconds
+    expires?: Date
+  }
+): string
+```
+
+Returns a `Set-Cookie` header value string.
+
+### parse(cookieHeader)
+
+```ts
+parse(cookieHeader: string): Record<string, string>
+```
+
+Parses a `Cookie` request header into a key-value map.

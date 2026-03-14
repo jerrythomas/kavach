@@ -1,0 +1,72 @@
+# Kavach — Logger (@kavach/logger)
+
+> Structured audit logging with pluggable transport adapters. Used by kavach
+> to emit auth events (sign-in, sign-out, access denied) to your chosen backend.
+
+## Install
+
+```bash
+npm install @kavach/logger
+```
+
+## Usage
+
+The logger is configured automatically when using the full kavach package via
+`kavach.config.js`. For standalone usage:
+
+```js
+import { createLogger } from '@kavach/logger'
+
+const logger = createLogger({
+  level: 'info', // 'debug' | 'info' | 'warn' | 'error'
+  adapter: 'console' // transport adapter
+})
+```
+
+## API
+
+### createLogger(options)
+
+```ts
+createLogger({
+  level?: 'debug' | 'info' | 'warn' | 'error'
+  adapter?: string | LogAdapter
+})
+```
+
+### logger.info(event, data?)
+
+```ts
+logger.info('auth.signIn', { userId, email })
+logger.info('auth.signOut', { userId })
+logger.warn('auth.accessDenied', { path, role })
+logger.error('auth.error', { message, stack })
+```
+
+### logger.debug / logger.warn / logger.error
+
+Same signature as `logger.info`.
+
+## Auth Events
+
+Kavach emits these events automatically:
+
+| Event                 | When                            |
+| --------------------- | ------------------------------- |
+| `auth.signIn`         | Successful sign-in              |
+| `auth.signOut`        | Sign-out                        |
+| `auth.accessDenied`   | Route protection blocked access |
+| `auth.sessionRefresh` | Session token refreshed         |
+| `auth.error`          | Auth error occurred             |
+
+## Transports
+
+Built-in adapters:
+
+- `'console'` — logs to stdout (default in development)
+- Custom adapter: implement `{ log(level, event, data): void }`
+
+## Integration with Supabase
+
+The Supabase adapter supports writing audit logs directly to a Supabase table.
+See [Supabase adapter](./adapter-supabase.txt) for configuration.

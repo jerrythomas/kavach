@@ -1,0 +1,33 @@
+# Kavach — Hashing (@kavach/hashing)
+
+> Lightweight hashing utilities used internally by Kavach. Provides MD5 and
+> other hash functions for token generation and content fingerprinting.
+
+## Install
+
+```bash
+npm install @kavach/hashing
+```
+
+## Usage
+
+```js
+import { md5 } from '@kavach/hashing'
+
+const hash = md5('some string')
+// returns hex digest string
+```
+
+## API
+
+### md5(input)
+
+```ts
+md5(input: string): string
+```
+
+Returns the MD5 hex digest of the input string. Used for generating
+deterministic identifiers (e.g. avatar URLs from email, cache keys).
+
+Note: MD5 is not suitable for password hashing. For passwords, use your
+platform adapter's built-in hashing (e.g. Supabase handles this server-side).

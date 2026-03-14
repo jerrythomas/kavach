@@ -1,0 +1,88 @@
+# Kavach — CLI (kavach)
+
+> Scaffolding CLI for adding Kavach to a SvelteKit project. Generates config
+> files, hooks, and auth page structure.
+
+## Install
+
+```bash
+npm install -g kavach
+# or use with npx/bunx
+npx kavach init
+```
+
+## Commands
+
+### kavach init
+
+Scaffolds a new Kavach setup in the current SvelteKit project.
+
+```bash
+kavach init
+```
+
+Interactive prompts:
+
+1. Choose adapter: supabase | firebase | auth0 | amplify | convex
+2. Choose providers: email, magic link, Google, GitHub, etc.
+3. Configure protected routes
+
+Generates:
+
+- `kavach.config.js` — main config with adapter, providers, and route rules
+- `src/hooks.server.js` (or updates existing) — registers `kavach.handle`
+- `src/routes/(public)/auth/+page.svelte` — auth page using `@kavach/ui`
+- `src/routes/+layout.svelte` (or updates existing) — kavach client setup
+
+### kavach add auth-page
+
+Adds an auth page to an existing Kavach setup.
+
+```bash
+kavach add auth-page
+```
+
+Generates `src/routes/(public)/auth/+page.svelte` with `AuthPage` component.
+
+### kavach add routes
+
+Adds example protected route scaffolding.
+
+```bash
+kavach add routes
+```
+
+Generates:
+
+- `src/routes/(public)/+page.svelte` — public home page
+- `src/routes/(protected)/dashboard/+page.svelte` — protected dashboard
+- Updates `kavach.config.js` rules if needed
+
+## Usage Without Global Install
+
+```bash
+# npm
+npx kavach init
+
+# bun
+bunx kavach init
+```
+
+## Platform-Aware Config Generation
+
+`kavach init` generates adapter-specific environment variable configs. For example,
+choosing Supabase generates:
+
+```js
+env: {
+  url: 'PUBLIC_SUPABASE_URL',
+  anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+}
+```
+
+And creates a `.env.example` with the required variables.
+
+## Related
+
+- [Auth](./auth.txt) — manual setup without CLI
+- [Vite Plugin](./vite.txt) — kavach.config.js reference
