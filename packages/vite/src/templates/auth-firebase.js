@@ -4,7 +4,7 @@ import { getLogger } from '@kavach/logger'
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth{{emulatorImport}} } from 'firebase/auth'
-import { env } from '$env/dynamic/public'
+import { env } from '$env/static/public'
 
 const app = initializeApp({
 	apiKey: env.{{apiKey}},
