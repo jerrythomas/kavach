@@ -81,7 +81,7 @@ describe('generateModule', () => {
 		const code = generateModule('auth', firebaseConfig)
 		expect(code).toContain("from '@kavach/adapter-firebase'")
 		expect(code).toContain('initializeApp')
-		expect(code).toContain('env.PUBLIC_FIREBASE_API_KEY')
+		expect(code).toContain('PUBLIC_FIREBASE_API_KEY')
 		expect(code).toContain("collection: 'audit'")
 		expect(code).toContain("level: 'info'")
 	})
@@ -119,6 +119,8 @@ describe('generateAuth - firebase emulator', () => {
 		const output = generateModule('auth', config)
 		expect(output).toContain('connectAuthEmulator')
 		expect(output).toContain('PUBLIC_FIREBASE_AUTH_EMULATOR_HOST')
+		expect(output).toContain("from '$env/static/public'")
+		expect(output).toContain(', PUBLIC_FIREBASE_AUTH_EMULATOR_HOST }')
 	})
 
 	it('omits connectAuthEmulator when authEmulatorHost is not configured', () => {
