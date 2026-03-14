@@ -1,0 +1,56 @@
+# Kavach — AWS Amplify Adapter (@kavach/adapter-amplify)
+
+> AWS Amplify (Cognito) adapter for Kavach. Supports authentication via
+> AWS Cognito User Pools including email/password and OAuth providers.
+
+## Install
+
+```bash
+npm install @kavach/adapter-amplify aws-amplify
+```
+
+## Setup in kavach.config.js
+
+```js
+export default {
+  adapter: 'amplify',
+  env: {
+    userPoolId: 'PUBLIC_COGNITO_USER_POOL_ID',
+    userPoolClientId: 'PUBLIC_COGNITO_CLIENT_ID',
+    region: 'PUBLIC_AWS_REGION'
+  },
+  providers: [
+    { name: 'email', mode: 'password', label: 'Email' },
+    { name: 'google', label: 'Continue with Google' }
+  ]
+}
+```
+
+Required environment variables:
+
+- `PUBLIC_COGNITO_USER_POOL_ID` — e.g. `us-east-1_AbCdEfGhI`
+- `PUBLIC_COGNITO_CLIENT_ID`
+- `PUBLIC_AWS_REGION` — e.g. `us-east-1`
+
+## Capabilities
+
+| Feature              | Supported |
+| -------------------- | --------- |
+| Email + password     | ✓         |
+| Magic link (OTP)     | —         |
+| OAuth (Google, etc.) | ✓         |
+| Passkey              | —         |
+| Data access          | —         |
+| RPC calls            | —         |
+| Audit logging        | —         |
+
+## AWS Setup
+
+1. Create a Cognito User Pool in AWS Console
+2. Create an App Client (no client secret for SPA)
+3. Enable Hosted UI if using OAuth providers
+4. Configure callback URLs for your domain
+
+## Related
+
+- [Auth](./auth.txt) — kavach client setup

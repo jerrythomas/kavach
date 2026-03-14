@@ -1,0 +1,61 @@
+# Kavach — Firebase Adapter (@kavach/adapter-firebase)
+
+> Firebase adapter for Kavach. Supports authentication via Firebase Auth including
+> email/password, magic link (OTP), OAuth, and passkey.
+
+## Install
+
+```bash
+npm install @kavach/adapter-firebase firebase
+```
+
+## Setup in kavach.config.js
+
+```js
+export default {
+  adapter: 'firebase',
+  env: {
+    apiKey: 'PUBLIC_FIREBASE_API_KEY',
+    authDomain: 'PUBLIC_FIREBASE_AUTH_DOMAIN',
+    projectId: 'PUBLIC_FIREBASE_PROJECT_ID'
+  },
+  providers: [
+    { name: 'email', mode: 'password', label: 'Email' },
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Magic Link' }
+  ]
+}
+```
+
+Required environment variables:
+
+- `PUBLIC_FIREBASE_API_KEY`
+- `PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `PUBLIC_FIREBASE_PROJECT_ID`
+
+## Capabilities
+
+| Feature                      | Supported |
+| ---------------------------- | --------- |
+| Email + password             | ✓         |
+| Magic link (OTP)             | ✓         |
+| OAuth (Google, GitHub, etc.) | ✓         |
+| Passkey                      | ✓         |
+| Data access                  | —         |
+| RPC calls                    | —         |
+| Audit logging                | —         |
+
+## Firebase Console Setup
+
+1. Create a Firebase project at console.firebase.google.com
+2. Enable Authentication → Sign-in methods for chosen providers
+3. Add your domain to Authorized domains
+4. Copy config values to your `.env` file
+
+## OAuth with Firebase
+
+Google OAuth example — enable in Firebase Console → Authentication → Sign-in method → Google. Kavach handles the OAuth flow automatically via `signIn('google')`.
+
+## Related
+
+- [Auth](./auth.txt) — kavach client setup

@@ -1,0 +1,55 @@
+# Kavach — Auth0 Adapter (@kavach/adapter-auth0)
+
+> Auth0 adapter for Kavach. Supports authentication via Auth0 including
+> email/password, magic link (OTP), and OAuth providers.
+
+## Install
+
+```bash
+npm install @kavach/adapter-auth0
+```
+
+## Setup in kavach.config.js
+
+```js
+export default {
+  adapter: 'auth0',
+  env: {
+    domain: 'PUBLIC_AUTH0_DOMAIN',
+    clientId: 'PUBLIC_AUTH0_CLIENT_ID'
+  },
+  providers: [
+    { name: 'email', mode: 'password', label: 'Email' },
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Passwordless' }
+  ]
+}
+```
+
+Required environment variables:
+
+- `PUBLIC_AUTH0_DOMAIN` — e.g. `your-tenant.auth0.com`
+- `PUBLIC_AUTH0_CLIENT_ID`
+
+## Capabilities
+
+| Feature                      | Supported |
+| ---------------------------- | --------- |
+| Email + password             | ✓         |
+| Magic link (OTP)             | ✓         |
+| OAuth (Google, GitHub, etc.) | ✓         |
+| Passkey                      | —         |
+| Data access                  | —         |
+| RPC calls                    | —         |
+| Audit logging                | —         |
+
+## Auth0 Application Setup
+
+1. Create an Application in Auth0 Dashboard (type: Single Page Application)
+2. Add `http://localhost:5173` to Allowed Callback URLs (dev)
+3. Add your production URL to Allowed Callback URLs and Allowed Web Origins
+4. Enable desired connections (Database, Social providers)
+
+## Related
+
+- [Auth](./auth.txt) — kavach client setup

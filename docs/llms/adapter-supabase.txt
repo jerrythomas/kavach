@@ -1,0 +1,101 @@
+# Kavach — Supabase Adapter (@kavach/adapter-supabase)
+
+> Supabase adapter for Kavach. Full capabilities: authentication, data access,
+> RPC calls, and audit logging to Supabase tables.
+
+## Install
+
+```bash
+npm install @kavach/adapter-supabase @supabase/supabase-js
+```
+
+## Setup in kavach.config.js
+
+```js
+export default {
+  adapter: 'supabase',
+  env: {
+    url: 'PUBLIC_SUPABASE_URL',
+    anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+  },
+  providers: [
+    { name: 'email', mode: 'password', label: 'Email' },
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Magic Link' }
+  ]
+}
+```
+
+Required environment variables:
+
+- `PUBLIC_SUPABASE_URL` — your Supabase project URL
+- `PUBLIC_SUPABASE_ANON_KEY` — your Supabase anon key
+
+## Capabilities
+
+| Feature                      | Supported |
+| ---------------------------- | --------- |
+| Email + password             | ✓         |
+| Magic link (OTP)             | ✓         |
+| OAuth (Google, GitHub, etc.) | ✓         |
+| Passkey                      | ✓         |
+| Data access                  | ✓         |
+| RPC calls                    | ✓         |
+| Audit logging                | ✓         |
+
+## Data Access
+
+With the Supabase adapter, you can use Kavach's data access layer in server routes:
+
+```ts
+// src/routes/(protected)/data/+server.ts
+import { adapter } from '$kavach/auth'
+
+export async function GET({ locals }) {
+  const { data, error } = await adapter
+    .from('items')
+    .select('*')
+    .eq('user_id', locals.session.user.id)
+
+  return json(data)
+}
+```
+
+## RPC Calls
+
+```ts
+const result = await adapter.rpc('function_name', { param: value })
+```
+
+## Audit Logging
+
+Configure logging to a Supabase table:
+
+```js
+export default {
+  adapter: 'supabase',
+  logger: {
+    table: 'audit_logs' // logs auth events to this table
+  }
+}
+```
+
+Required table schema:
+
+```sql
+create table audit_logs (
+  id uuid default gen_random_uuid() primary key,
+  event text not null,
+  user_id uuid,
+  data jsonb,
+  created_at timestamptz default now()
+);
+```
+
+## OAuth Setup (Supabase Dashboard)
+
+Enable providers in Supabase Dashboard → Authentication → Providers. Set callback URL to `https://your-project.supabase.co/auth/v1/callback`.
+
+## Passkey Support
+
+Supabase supports passkeys via the Web Authentication API. No extra config needed — Kavach handles the credential creation and assertion flows.

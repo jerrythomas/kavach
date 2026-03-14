@@ -1,0 +1,51 @@
+# Kavach — Convex Adapter (@kavach/adapter-convex)
+
+> Convex adapter for Kavach. Supports authentication via Convex Auth including
+> email/password and OAuth providers.
+
+## Install
+
+```bash
+npm install @kavach/adapter-convex convex
+```
+
+## Setup in kavach.config.js
+
+```js
+export default {
+  adapter: 'convex',
+  env: {
+    url: 'PUBLIC_CONVEX_URL'
+  },
+  providers: [
+    { name: 'email', mode: 'password', label: 'Email' },
+    { name: 'google', label: 'Continue with Google' }
+  ]
+}
+```
+
+Required environment variables:
+
+- `PUBLIC_CONVEX_URL` — your Convex deployment URL
+
+## Capabilities
+
+| Feature                      | Supported |
+| ---------------------------- | --------- |
+| Email + password             | ✓         |
+| Magic link (OTP)             | —         |
+| OAuth (Google, GitHub, etc.) | ✓         |
+| Passkey                      | —         |
+| Data access                  | —         |
+| RPC calls                    | —         |
+| Audit logging                | —         |
+
+## Convex Setup
+
+1. Create a Convex project: `npx convex dev`
+2. Configure Convex Auth in your project (see Convex docs)
+3. Add your Convex URL to `.env`
+
+## Related
+
+- [Auth](./auth.txt) — kavach client setup
