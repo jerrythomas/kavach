@@ -16,3 +16,5 @@ lcov.info
 .vercel
 .worktrees
 .tmp
+# Generated llms docs (copied from docs/llms/ by prebuild)
+sites/learn/static/llms/
