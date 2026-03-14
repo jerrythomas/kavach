@@ -1,51 +1,4 @@
-import { expect, test } from '@playwright/test'
-
-const SUPABASE_URL = 'http://127.0.0.1:54321'
-const ANON_KEY = 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
-
-async function loginAsUser(page, email = 'test@test.com', password = 'password123') {
-	// Get token directly from Supabase (bypasses UI timing issues)
-	const response = await page.context().request.post(
-		`${SUPABASE_URL}/auth/v1/token?grant_type=password`,
-		{
-			data: { email, password },
-			headers: { 'Content-Type': 'application/json', apikey: ANON_KEY }
-		}
-	)
-	const token = await response.json()
-	if (!token.access_token) throw new Error(`Auth failed: ${JSON.stringify(token)}`)
-
-	// Intercept the kavach session-sync endpoint so that when Supabase JS fires
-	// SIGNED_OUT on init (no localStorage session), the server-side cookie is
-	// NOT cleared.  We return a 200 so invalidateAll() runs the load functions
-	// against the still-valid cookie we set below.
-	await page.route('**/auth/session', (route) =>
-		route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
-	)
-
-	// Set the kavach session cookie directly
-	const session = {
-		access_token: token.access_token,
-		refresh_token: token.refresh_token,
-		user: { id: token.user.id, role: token.user.role, email: token.user.email }
-	}
-	await page.context().addCookies([
-		{
-			name: 'session',
-			value: JSON.stringify(session),
-			domain: 'localhost',
-			path: '/',
-			httpOnly: true,
-			secure: false,
-			sameSite: 'Lax'
-		}
-	])
-
-	await page.goto('/dashboard')
-	await page.waitForURL(/\/dashboard/, { timeout: 10000 })
-	await page.waitForLoadState('domcontentloaded')
-	await page.waitForSelector('main h1', { state: 'visible', timeout: 10000 })
-}
+import { expect, test } from './fixtures.js'
 
 test.describe('Landing page', () => {
 	test('shows adapter name and sign in link', async ({ page }) => {
@@ -79,8 +32,8 @@ test.describe('Auth page', () => {
 })
 
 test.describe('Authenticated user', () => {
-	test.beforeEach(async ({ page }) => {
-		await loginAsUser(page)
+	test.beforeEach(async ({ loginAsUser }) => {
+		await loginAsUser('user')
 	})
 
 	test('dashboard shows welcome and user email', async ({ page }) => {
@@ -116,9 +69,8 @@ test.describe('Authenticated user', () => {
 })
 
 test.describe('Admin user', () => {
-	test.beforeEach(async ({ page }) => {
-		// admin user must exist in local Supabase with role='admin'
-		await loginAsUser(page, 'admin@test.com', 'password123')
+	test.beforeEach(async ({ loginAsUser }) => {
+		await loginAsUser('admin')
 	})
 
 	test('admin page shows session info with admin role', async ({ page }) => {

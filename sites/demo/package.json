@@ -11,6 +11,10 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "test:e2e": "playwright test",
+    "test:e2e:supabase": "KAVACH_ADAPTER=supabase playwright test",
+    "test:e2e:firebase": "KAVACH_ADAPTER=firebase playwright test",
+    "test:e2e:convex": "KAVACH_ADAPTER=convex playwright test",
+    "test:e2e:all": "npm run test:e2e:supabase && npm run test:e2e:firebase && npm run test:e2e:convex",
     "emulators": "firebase emulators:start",
     "convex:dev": "bunx convex dev"
   },
