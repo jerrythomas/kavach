@@ -8,7 +8,7 @@ export default defineConfig({
 		environment: 'jsdom',
 		clearMocks: true,
 		include: ['**/spec/**/*.{spec,spec.svelte}.[jt]s'],
-		exclude: ['**/node_modules/**', '**/dist/**'],
+		exclude: ['**/node_modules/**', '**/dist/**', '.worktrees/**'],
 		coverage: {
 			provider: 'v8',
 			all: true,
