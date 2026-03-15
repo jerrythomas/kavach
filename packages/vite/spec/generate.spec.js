@@ -94,7 +94,7 @@ describe('generateModule', () => {
 	it('should generate $kavach/auth module for convex', () => {
 		const code = generateModule('auth', convexConfig)
 		expect(code).toContain("from '@kavach/adapter-convex'")
-		expect(code).toContain('ConvexReactClient')
+		expect(code).toContain('ConvexClient')
 		expect(code).toContain('env.PUBLIC_CONVEX_URL')
 		expect(code).toContain("level: 'warn'")
 		// Convex template intentionally omits getLogWriter (requires user's api import)

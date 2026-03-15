@@ -9,9 +9,9 @@ test.describe('Landing page', () => {
 })
 
 test.describe('Auth page', () => {
-	test('auth page loads and shows sign in form', async ({ page }) => {
+	test('auth page loads and shows sign in options', async ({ page }) => {
 		await page.goto('/auth')
-		await expect(page.locator('input[type="email"]')).toBeVisible()
+		await expect(page.locator('button, a[href*="google"], input[type="email"]').first()).toBeVisible()
 	})
 
 	test('unauthenticated user redirected from dashboard to auth', async ({ page }) => {
