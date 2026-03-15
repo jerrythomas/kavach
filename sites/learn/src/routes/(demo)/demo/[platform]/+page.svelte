@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import { goto } from '$app/navigation'
-	import { AuthProvider } from '@kavach/ui'
-	import { getPlatform } from '$lib/demo/platforms'
+	import { getPlatformWithUrl } from '$lib/demo/platforms'
 	import { AUTH_MODES, ALL_MODES_TAB, getMode } from '$lib/demo/modes'
 
+	let { data } = $props()
+
 	const platformId = $derived($page.params.platform)
-	const platform = $derived(getPlatform(platformId))
+	const platform = $derived(getPlatformWithUrl(platformId, data.demoUrls))
 
 	let activeTab = $state('all')
 
@@ -20,31 +20,6 @@
 	)
 
 	const activeMode = $derived(activeTab === 'all' ? null : getMode(activeTab))
-
-	const formProps = $derived(
-		activeMode?.id === 'magic'
-			? { name: 'email', mode: 'otp' as const }
-			: activeMode?.id === 'social'
-				? { name: 'google', mode: 'oauth' as const }
-				: { name: 'email', mode: 'password' as const }
-	)
-
-	function onSuccess() {
-		goto(`/demo/${platformId}/dashboard`)
-	}
-
-	function prefillTestCredentials() {
-		const emailInput = document.querySelector<HTMLInputElement>('input[type="email"]')
-		const passwordInput = document.querySelector<HTMLInputElement>('input[type="password"]')
-		if (emailInput) {
-			emailInput.value = 'test@test.com'
-			emailInput.dispatchEvent(new Event('input', { bubbles: true }))
-		}
-		if (passwordInput) {
-			passwordInput.value = 'password123'
-			passwordInput.dispatchEvent(new Event('input', { bubbles: true }))
-		}
-	}
 </script>
 
 <div class="mx-auto max-w-5xl px-6 py-12 sm:px-8">
@@ -183,10 +158,10 @@
 			{/if}
 		</div>
 
-		<!-- Right: live auth form -->
+		<!-- Right: try it panel -->
 		<div class="bg-surface-z1 border-surface-z3 flex flex-col gap-4 rounded-2xl border p-6">
 			<div class="flex items-center justify-between">
-				<h3 class="text-surface-z8 font-semibold">Sign in to try it</h3>
+				<h3 class="text-surface-z8 font-semibold">Try it live</h3>
 				{#if platform?.live}
 					<span
 						class="bg-success-100 text-success-700 rounded-full px-2.5 py-0.5 text-xs font-semibold"
@@ -195,42 +170,31 @@
 				{:else}
 					<span
 						class="bg-surface-z3 text-surface-z5 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-						>MOCK</span
+						>COMING SOON</span
 					>
 				{/if}
 			</div>
+
 			{#if platform?.live && platform?.url}
+				<p class="text-surface-z6 text-sm">
+					The {platform.name} demo runs as a standalone SvelteKit app. Click below to open it.
+				</p>
 				<a
 					href={platform.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="bg-primary mt-2 inline-block rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+					class="bg-primary mt-2 inline-block rounded-lg px-4 py-2 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
 				>
-					Launch demo →
+					Launch {platform.name} demo →
 				</a>
+			{:else if platform?.live}
+				<p class="text-surface-z5 text-sm">Demo URL not configured.</p>
+			{:else}
+				<p class="text-surface-z6 text-sm">
+					This adapter demo is coming soon. The mode explainer on the left shows how Kavach would
+					wire it up.
+				</p>
 			{/if}
-
-			{#if activeMode?.id === 'cached'}
-				<div class="border-surface-z2 bg-surface-z2 text-surface-z6 rounded-lg p-3 text-xs">
-					Cached logins appear here after your first sign-in. Sign in with email/password to see
-					them.
-				</div>
-			{/if}
-
-			<AuthProvider
-				name={formProps.name}
-				mode={formProps.mode}
-				onsuccess={onSuccess}
-				label={formProps.mode === 'oauth' ? 'Sign in with Google' : 'Sign in with Email'}
-			/>
-
-			<div class="text-surface-z5 flex items-center justify-center gap-2 text-xs">
-				<button onclick={prefillTestCredentials} class="text-primary hover:underline">
-					Use test credentials
-				</button>
-				<span class="text-surface-z3">·</span>
-				<span class="font-mono">test@test.com / password123</span>
-			</div>
 		</div>
 	</div>
 </div>
