@@ -13,6 +13,7 @@ const logger = getLogger(writer, { level: '{{logLevel}}' })
 export const kavach = createKavach(adapter, {
 	data,
 	logger,
+	app: {{app}},
 	rules: {{rules}}
 })
 export { adapter, logger }

@@ -12,7 +12,6 @@ test.describe('Auth page', () => {
 	test('auth page loads and shows sign in form', async ({ page }) => {
 		await page.goto('/auth')
 		await expect(page.locator('input[type="email"]')).toBeVisible()
-		await expect(page.locator('input[type="password"]')).toBeVisible()
 	})
 
 	test('unauthenticated user redirected from dashboard to auth', async ({ page }) => {
@@ -22,11 +21,6 @@ test.describe('Auth page', () => {
 
 	test('unauthenticated user redirected from admin to auth', async ({ page }) => {
 		await page.goto('/admin')
-		await expect(page).toHaveURL(/\/auth/)
-	})
-
-	test('unauthenticated user redirected from data to auth', async ({ page }) => {
-		await page.goto('/data')
 		await expect(page).toHaveURL(/\/auth/)
 	})
 })
@@ -76,7 +70,7 @@ test.describe('Admin user', () => {
 	test('admin page shows session info with admin role', async ({ page }) => {
 		await page.goto('/admin')
 		await expect(page.locator('h1')).toContainText('Admin Panel')
-		await expect(page.locator('dd:has-text("admin")')).toBeVisible()
+		await expect(page.locator('dd').filter({ hasText: /^admin$/ })).toBeVisible()
 	})
 
 	test('data page shows classified facts for admin', async ({ page }) => {

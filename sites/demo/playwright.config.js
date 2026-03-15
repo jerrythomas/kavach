@@ -18,7 +18,7 @@ export default defineConfig({
 	projects: [{ name: adapter, use: { baseURL: `http://localhost:${port}` } }],
 
 	webServer: {
-		command: `npm run build && npm run preview -- --port ${port}`,
+		command: `set -a && . ./${envFile} && set +a && npm run build && npm run preview -- --port ${port}`,
 		port,
 		reuseExistingServer: !process.env.CI,
 		envFile

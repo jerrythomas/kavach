@@ -40,7 +40,8 @@ export default {
 	routes: {
 		auth: '/auth',
 		data: '/data',
-		logout: '/logout'
+		logout: '/logout',
+		home: '/dashboard'
 	},
 	rules: [
 		{ path: '/', public: true },

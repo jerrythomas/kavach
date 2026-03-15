@@ -49,7 +49,8 @@ function generateProviders(config) {
 }
 
 function generateAuth(config, viteEnv = {}) {
-	const { env, logging, rules } = config
+	const { env, logging, rules, routes } = config
+	const app = routes?.home ? { home: routes.home } : {}
 
 	if (config.adapter === 'supabase') {
 		return templates.authSupabase
@@ -57,6 +58,7 @@ function generateAuth(config, viteEnv = {}) {
 			.replaceAll('{{anonKey}}', env.anonKey)
 			.replaceAll('{{logTable}}', logging.table)
 			.replaceAll('{{logLevel}}', logging.level)
+			.replaceAll('{{app}}', serialize(app))
 			.replaceAll('{{rules}}', serialize(rules))
 	}
 
@@ -81,6 +83,7 @@ function generateAuth(config, viteEnv = {}) {
 			.replaceAll('{{emulatorBlock}}', emulatorBlock)
 			.replaceAll('{{logCollection}}', logging.collection ?? 'logs')
 			.replaceAll('{{logLevel}}', logging.level)
+			.replaceAll('{{app}}', serialize(app))
 			.replaceAll('{{rules}}', serialize(rules))
 	}
 
@@ -88,6 +91,7 @@ function generateAuth(config, viteEnv = {}) {
 		return templates.authConvex
 			.replaceAll('{{url}}', env.url)
 			.replaceAll('{{logLevel}}', logging.level)
+			.replaceAll('{{app}}', serialize(app))
 			.replaceAll('{{rules}}', serialize(rules))
 	}
 

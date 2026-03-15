@@ -62,7 +62,8 @@ export function parseConfig(raw) {
 			auth: raw.routes?.auth ?? DEFAULTS.routes.auth,
 			data: raw.routes?.data ?? DEFAULTS.routes.data,
 			rpc: raw.routes?.rpc ?? DEFAULTS.routes.rpc,
-			logout: raw.routes?.logout ?? DEFAULTS.routes.logout
+			logout: raw.routes?.logout ?? DEFAULTS.routes.logout,
+			home: raw.routes?.home ?? null
 		},
 		endpoints: {
 			data: raw.endpoints?.data ?? DEFAULTS.endpoints.data,

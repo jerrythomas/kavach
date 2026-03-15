@@ -11,7 +11,7 @@ const firebaseConfig = {
 		projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
 		appId: 'PUBLIC_FIREBASE_APP_ID'
 	},
-	routes: { auth: '/auth', data: '/data', rpc: '/rpc', logout: '/logout' },
+	routes: { auth: '/auth', data: '/data', rpc: '/rpc', logout: '/logout', home: null },
 	rules: []
 }
 
@@ -21,7 +21,7 @@ const convexConfig = {
 	cachedLogins: false,
 	logging: { level: 'warn', table: 'logs', collection: undefined, entity: 'events' },
 	env: { url: 'PUBLIC_CONVEX_URL' },
-	routes: { auth: '/auth', data: '/data', rpc: '/rpc', logout: '/logout' },
+	routes: { auth: '/auth', data: '/data', rpc: '/rpc', logout: '/logout', home: null },
 	rules: []
 }
 
@@ -35,7 +35,7 @@ const config = {
 	cachedLogins: true,
 	logging: { level: 'info', table: 'audit.logs' },
 	env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
-	routes: { auth: '(public)/auth', data: '(server)/data', logout: '/logout' },
+	routes: { auth: '(public)/auth', data: '(server)/data', logout: '/logout', home: null },
 	rules: [
 		{ path: '/public', public: true },
 		{ path: '/data', roles: '*' }
@@ -119,6 +119,7 @@ describe('generateAuth - firebase emulator', () => {
 				authEmulatorHost: 'PUBLIC_FIREBASE_AUTH_EMULATOR_HOST'
 			},
 			logging: { level: 'error', collection: 'logs' },
+			routes: { home: null },
 			rules: []
 		}
 		const viteEnv = { PUBLIC_FIREBASE_AUTH_EMULATOR_HOST: 'http://127.0.0.1:9099' }
@@ -136,6 +137,7 @@ describe('generateAuth - firebase emulator', () => {
 				appId: 'PUBLIC_FIREBASE_APP_ID'
 			},
 			logging: { level: 'error', collection: 'logs' },
+			routes: { home: null },
 			rules: []
 		}
 		const output = generateModule('auth', config)
