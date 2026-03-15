@@ -15,7 +15,7 @@
     "test:e2e:firebase": "KAVACH_ADAPTER=firebase playwright test",
     "test:e2e:convex": "KAVACH_ADAPTER=convex playwright test",
     "test:e2e:all": "npm run test:e2e:supabase && npm run test:e2e:firebase && npm run test:e2e:convex",
-    "emulators": "firebase emulators:start",
+    "emulators": "bunx firebase emulators:start",
     "convex:dev": "bunx convex dev --local"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.15.2",
+    "firebase-tools": "^15.10.0",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.5.1",
     "svelte": "^5.53.10",

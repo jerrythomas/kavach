@@ -57,3 +57,42 @@ Design details live in `docs/design/` — modular docs per module.
 - **Cached login cards**: auth page reads `getCachedLogins()` via Svelte context on mount and shows recent-account cards above the login form; clicking a card pre-fills the email.
 - Updated all e2e tests to match new page titles, nav labels, and removed `selectOption` in favour of clicking the platform card.
 - **47/47 e2e tests pass.**
+
+---
+
+## 2026-03-15
+
+### Learn site — demo env vars + remove embedded auth
+
+**Goal:** Wire `sites/learn` so Supabase, Firebase, and Convex demo URLs come from env vars. Remove all embedded Supabase auth from the learn site, making it a pure landing/docs site.
+
+**Design spec:** `docs/superpowers/specs/2026-03-15-learn-demo-env-vars-design.md`
+**Plan:** `docs/superpowers/plans/2026-03-15-learn-demo-env-vars.md`
+
+**What was done:**
+
+- Added `sites/learn/.env.example` documenting `PUBLIC_DEMO_SUPABASE_URL`, `PUBLIC_DEMO_FIREBASE_URL`, `PUBLIC_DEMO_CONVEX_URL`
+- Created `sites/learn/src/routes/(demo)/demo/+layout.server.ts` — reads env vars via `$env/dynamic/public`, passes as `demoUrls` page data
+- Updated `sites/learn/src/lib/demo/platforms.ts` — removed hardcoded URLs, added `getPlatformsWithUrls()` and `getPlatformWithUrl()` helpers that merge env-backed URLs into platform config
+- Updated `sites/learn/src/routes/(demo)/demo/+page.svelte` — uses `getPlatformsWithUrls(data.demoUrls)`
+- Rewrote `sites/learn/src/routes/(demo)/demo/[platform]/+page.svelte` — removed `AuthProvider`, `goto`, `onSuccess`, `prefillTestCredentials`; right panel now shows external launch link for live platforms, "Demo URL not configured" if URL missing, "Coming soon" for inactive platforms
+- Deleted `sites/learn/src/routes/(app)/` — embedded dashboard/admin/data/logout routes
+- Deleted `sites/learn/src/routes/(server)/data/` — role-based data API (only `data/` subdir; `api/` preserved)
+- Deleted `sites/learn/kavach.config.js` and `sites/learn/src/hooks.server.js`
+- Removed lingering `$kavach/auth` imports from `+layout@.svelte` and `(public)/+layout.svelte`
+- Updated `sites/learn/vite.config.js` — removed `kavach` plugin
+- Removed `@kavach/adapter-supabase`, `@kavach/vite`, `@supabase/supabase-js` from `sites/learn/package.json`
+- Replaced `sites/learn/e2e/demo.e2e.ts` with new tests: demo landing (5), live platform external links for supabase/firebase/convex (9), coming-soon badges for auth0/amplify (2)
+- **626/626 unit tests pass. 46/46 learn e2e tests pass.**
+
+**Commits:**
+
+- `b0221b8` — docs: add learn site demo env vars design spec
+- `ca78219` — docs: add learn demo env vars implementation plan
+- `1cd35c1` — chore(learn): add .env.example with demo site URL vars
+- `bde5e17` — feat(learn): read demo site URLs from env via layout server load
+- `85ac2c3` — feat(learn): use env-backed platform URLs on demo landing page
+- `d089436` — feat(learn): replace embedded auth form with external demo link on platform page
+- `4540b0e` — feat(learn): remove embedded auth routes, hooks, and kavach vite plugin
+- `316f4a6` — chore(learn): remove @kavach/adapter-supabase, @kavach/vite, and @supabase/supabase-js deps
+- `6b0754e` — test(learn): replace embedded auth e2e tests with demo landing and external link tests
