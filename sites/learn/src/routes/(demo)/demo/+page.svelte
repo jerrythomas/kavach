@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { PLATFORMS, KAVACH_FEATURES } from '$lib/demo/platforms'
+	import { getPlatformsWithUrls, KAVACH_FEATURES } from '$lib/demo/platforms'
+
+	let { data } = $props()
+	const platforms = $derived(getPlatformsWithUrls(data.demoUrls))
 </script>
 
 <div class="mx-auto flex max-w-4xl flex-col items-center px-6 py-16 sm:px-8">
@@ -26,9 +29,9 @@
 		</div>
 	</div>
 
-	<!-- Platform grid -->
+	<!-- Platform grid — cards link to internal /demo/{id} detail page -->
 	<div class="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-		{#each PLATFORMS as platform (platform.id)}
+		{#each platforms as platform (platform.id)}
 			<a
 				href="/demo/{platform.id}"
 				class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-4 rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
@@ -71,10 +74,4 @@
 			</a>
 		{/each}
 	</div>
-
-	<!-- Footnote on mock/simulated -->
-	<p class="text-surface-z4 mt-10 text-center text-xs">
-		All platforms authenticate via Supabase in this demo. "Simulated" shows how Kavach's unified API
-		would work with that adapter — swap one file to go live.
-	</p>
 </div>
