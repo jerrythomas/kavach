@@ -48,7 +48,7 @@ function generateProviders(config) {
 	return `export const providers = ${serialize(config.providers)}\n`
 }
 
-function generateAuth(config) {
+function generateAuth(config, viteEnv = {}) {
 	const { env, logging, rules } = config
 
 	if (config.adapter === 'supabase') {
@@ -61,19 +61,23 @@ function generateAuth(config) {
 	}
 
 	if (config.adapter === 'firebase') {
+		// Embed env var values as literals — avoids SvelteKit $env timing issues at module init.
+		const apiKey = JSON.stringify(viteEnv[env.apiKey] ?? '')
+		const projectId = JSON.stringify(viteEnv[env.projectId] ?? '')
+		const appId = JSON.stringify(viteEnv[env.appId] ?? '')
+
 		const hasEmulator = Boolean(env.authEmulatorHost)
 		const emulatorImport = hasEmulator ? ', connectAuthEmulator' : ''
-		const emulatorEnvImport = hasEmulator ? `, ${env.authEmulatorHost}` : ''
+		const emulatorHostValue = hasEmulator ? (viteEnv[env.authEmulatorHost] ?? '') : ''
 		const emulatorBlock = hasEmulator
-			? `if (${env.authEmulatorHost}) {\n\tconnectAuthEmulator(auth, ${env.authEmulatorHost}, { disableWarnings: true })\n}`
+			? `if (${JSON.stringify(emulatorHostValue)}) {\n\tconnectAuthEmulator(auth, ${JSON.stringify(emulatorHostValue)}, { disableWarnings: true })\n}`
 			: ''
 
 		return templates.authFirebase
-			.replaceAll('{{apiKey}}', env.apiKey)
-			.replaceAll('{{projectId}}', env.projectId)
-			.replaceAll('{{appId}}', env.appId)
+			.replaceAll('{{apiKey}}', apiKey)
+			.replaceAll('{{projectId}}', projectId)
+			.replaceAll('{{appId}}', appId)
 			.replaceAll('{{emulatorImport}}', emulatorImport)
-			.replaceAll('{{emulatorEnvImport}}', emulatorEnvImport)
 			.replaceAll('{{emulatorBlock}}', emulatorBlock)
 			.replaceAll('{{logCollection}}', logging.collection ?? 'logs')
 			.replaceAll('{{logLevel}}', logging.level)
@@ -97,8 +101,8 @@ const GENERATORS = {
 	auth: generateAuth
 }
 
-export function generateModule(name, config) {
+export function generateModule(name, config, viteEnv = {}) {
 	const generator = GENERATORS[name]
 	if (!generator) throw new Error(`Unknown virtual module: ${name}`)
-	return generator(config)
+	return generator(config, viteEnv)
 }

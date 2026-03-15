@@ -78,10 +78,15 @@ describe('generateModule', () => {
 	})
 
 	it('should generate $kavach/auth module for firebase', () => {
-		const code = generateModule('auth', firebaseConfig)
+		const viteEnv = {
+			PUBLIC_FIREBASE_API_KEY: 'test-key',
+			PUBLIC_FIREBASE_PROJECT_ID: 'test-proj',
+			PUBLIC_FIREBASE_APP_ID: 'test-app'
+		}
+		const code = generateModule('auth', firebaseConfig, viteEnv)
 		expect(code).toContain("from '@kavach/adapter-firebase'")
 		expect(code).toContain('initializeApp')
-		expect(code).toContain('PUBLIC_FIREBASE_API_KEY')
+		expect(code).toContain('"test-key"') // literal value embedded at build time
 		expect(code).toContain("collection: 'audit'")
 		expect(code).toContain("level: 'info'")
 	})
@@ -116,11 +121,10 @@ describe('generateAuth - firebase emulator', () => {
 			logging: { level: 'error', collection: 'logs' },
 			rules: []
 		}
-		const output = generateModule('auth', config)
+		const viteEnv = { PUBLIC_FIREBASE_AUTH_EMULATOR_HOST: 'http://127.0.0.1:9099' }
+		const output = generateModule('auth', config, viteEnv)
 		expect(output).toContain('connectAuthEmulator')
-		expect(output).toContain('PUBLIC_FIREBASE_AUTH_EMULATOR_HOST')
-		expect(output).toContain("from '$env/static/public'")
-		expect(output).toContain(', PUBLIC_FIREBASE_AUTH_EMULATOR_HOST }')
+		expect(output).toContain('"http://127.0.0.1:9099"') // emulator host embedded as literal
 	})
 
 	it('omits connectAuthEmulator when authEmulatorHost is not configured', () => {
