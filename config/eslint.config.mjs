@@ -19,7 +19,8 @@ export default [
       '.worktrees/**',
       'sites/learn/**',
       'packages/vite/src/templates/**',
-      'sites/demo/playwright.config.js'
+      'sites/demo/playwright.config.js',
+      'sites/demo/convex/_generated/**'
     ]
   },
   {
