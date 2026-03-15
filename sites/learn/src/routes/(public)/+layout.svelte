@@ -1,28 +1,15 @@
 <script lang="ts">
 	import { ThemeSwitcherToggle } from '@rokkit/app'
 	import { page } from '$app/stores'
-	import { onMount, setContext } from 'svelte'
 
 	const title = 'Kavach'
-	let { children, data } = $props()
+	let { children } = $props()
 
 	const navItems = [
 		{ href: '/', label: 'Home' },
 		{ href: '/docs', label: 'Docs' },
 		{ href: '/demo', label: 'Demo' }
 	]
-
-	const kavach = $state<Record<string, any>>({})
-	setContext('kavach', kavach)
-
-	onMount(async () => {
-		const { createKavach } = await import('kavach')
-		const { adapter, logger } = await import('$kavach/auth')
-		const { invalidateAll } = await import('$app/navigation')
-		const instance = createKavach(adapter, { logger, invalidateAll })
-		Object.assign(kavach, instance)
-		instance.onAuthChange($page.url)
-	})
 </script>
 
 <div class="flex h-screen flex-col">
