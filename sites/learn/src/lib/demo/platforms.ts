@@ -26,7 +26,6 @@ export const PLATFORMS: Platform[] = [
     icon: 'i-auth-supabase',
     iconFallback: 'bg-emerald-500',
     live: true,
-    // url intentionally omitted — Supabase runs as the embedded in-site demo, not a standalone deployment
     modes: ['password', 'magic', 'cached', 'social'],
     capabilities: ['Email + password', 'Magic link (OTP)', 'Social OAuth', 'PostgREST RLS'],
     adapterPackage: '@kavach/adapter-supabase'
@@ -38,9 +37,14 @@ export const PLATFORMS: Platform[] = [
     icon: 'i-auth-firebase',
     iconFallback: 'bg-orange-500',
     live: true,
-    url: 'https://firebase.demo.kavach.dev',
     modes: ['password', 'magic', 'social'],
-    capabilities: ['Email + password', 'Magic link (OTP)', 'Google OAuth', 'Firestore security rules', 'Structured logging'],
+    capabilities: [
+      'Email + password',
+      'Magic link (OTP)',
+      'Google OAuth',
+      'Firestore security rules',
+      'Structured logging'
+    ],
     adapterPackage: '@kavach/adapter-firebase'
   },
   {
@@ -72,13 +76,37 @@ export const PLATFORMS: Platform[] = [
     icon: 'i-app-shield',
     iconFallback: 'bg-purple-600',
     live: true,
-    url: 'https://convex.demo.kavach.dev',
     modes: ['social'],
-    capabilities: ['Google OAuth', 'Reactive data queries', 'Server-side auth functions', 'Structured logging'],
+    capabilities: [
+      'Google OAuth',
+      'Reactive data queries',
+      'Server-side auth functions',
+      'Structured logging'
+    ],
     adapterPackage: '@kavach/adapter-convex'
   }
 ]
 
+/** Returns all platforms with URLs injected from runtime env data.
+ * env-backed urls are only set for live platforms (supabase, firebase, convex).
+ * Auth0 and Amplify remain url-less (live: false). */
+export function getPlatformsWithUrls(demoUrls: Record<string, string>): Platform[] {
+  return PLATFORMS.map((p) => ({
+    ...p,
+    url: demoUrls[p.id] !== undefined ? demoUrls[p.id] : p.url
+  }))
+}
+
 export function getPlatform(id: string): Platform | undefined {
   return PLATFORMS.find((p) => p.id === id)
+}
+
+/** Returns a single platform with its URL injected from runtime env data. */
+export function getPlatformWithUrl(
+  id: string,
+  demoUrls: Record<string, string>
+): Platform | undefined {
+  const p = getPlatform(id)
+  if (!p) return undefined
+  return { ...p, url: demoUrls[id] ?? p.url }
 }
