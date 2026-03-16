@@ -32,7 +32,7 @@ jobs:
         run: |
           for dir in ./packages/*/ ./adapters/*/; do
             grep -q '"private": true' "${dir}package.json" 2>/dev/null || \
-              (cd "$dir" && npm publish --provenance --access public --tag next)
+              (cd "$dir" && npm publish --provenance --access public --tag latest)
           done
 
       - name: Create GitHub release
