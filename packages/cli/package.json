@@ -21,6 +21,11 @@
   },
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerrythomas/kavach",
+    "directory": "packages/cli"
+  },
   "publishConfig": {
     "access": "public"
   }
