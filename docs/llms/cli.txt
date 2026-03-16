@@ -1,88 +1,134 @@
-# Kavach — CLI (kavach)
+# Kavach — CLI (@kavach/cli)
 
-> Scaffolding CLI for adding Kavach to a SvelteKit project. Generates config
-> files, hooks, and auth page structure.
+> Scaffolding CLI for adding and maintaining Kavach in SvelteKit projects.
+> Always use the CLI — never hand-write config files or patches.
+
+## IMPORTANT — For AI Agents
+
+Never hand-craft kavach integration files. The CLI is the only supported path.
+
+    npx kavach init            # first-time setup
+    npx kavach doctor          # verify existing setup
+    npx kavach doctor --fix    # auto-repair issues
 
 ## Install
 
-```bash
-npm install -g kavach
-# or use with npx/bunx
-npx kavach init
-```
+    npm install -g @kavach/cli
+    # or without installing:
+    npx kavach <command>
+    bunx kavach <command>
 
 ## Commands
 
 ### kavach init
 
-Scaffolds a new Kavach setup in the current SvelteKit project.
+Scaffolds a complete kavach setup from the SvelteKit project root.
 
-```bash
-kavach init
-```
+    npx kavach init
 
 Interactive prompts:
-
 1. Choose adapter: supabase | firebase | auth0 | amplify | convex
-2. Choose providers: email, magic link, Google, GitHub, etc.
-3. Configure protected routes
+2. Choose providers: email/password, magic link, Google, GitHub, etc.
+3. Configure data route (optional, adapter-dependent)
+4. Configure RPC route (optional, adapter-dependent)
+5. Configure logging (optional, adapter-dependent)
+6. Set auth route path (default: (public)/auth)
+7. Set logout route (default: /logout)
+8. Enable cached logins
+9. Define route protection rules
 
-Generates:
+Files generated / patched:
+- kavach.config.js — adapter, providers, rules, env var names
+- vite.config.js — kavach() plugin injected before sveltekit()
+- src/hooks.server.js — kavach.handle registered
+- src/routes/+layout.server.js — session: locals.session passed to pages
+- src/routes/(public)/auth/+page.svelte — auth page with providers
+- .env — env var keys added with empty values
 
-- `kavach.config.js` — main config with adapter, providers, and route rules
-- `src/hooks.server.js` (or updates existing) — registers `kavach.handle`
-- `src/routes/(public)/auth/+page.svelte` — auth page using `@kavach/ui`
-- `src/routes/+layout.svelte` (or updates existing) — kavach client setup
+### kavach doctor [--fix]
 
-### kavach add auth-page
+Validates an existing kavach integration. Use after init, after manual changes,
+or when diagnosing a broken setup.
 
-Adds an auth page to an existing Kavach setup.
+    npx kavach doctor        # check only
+    npx kavach doctor --fix  # check and auto-repair
 
-```bash
-kavach add auth-page
-```
+Checks:
 
-Generates `src/routes/(public)/auth/+page.svelte` with `AuthPage` component.
+| # | Check | Auto-fixable |
+|---|-------|-------------|
+| 1 | kavach.config.js exists with adapter, env, rules | No — run kavach init |
+| 2 | vite.config.js has kavach() from @kavach/vite, before sveltekit() | Yes |
+| 3 | hooks.server imports $kavach/auth and exports kavach.handle | Yes |
+| 4 | +layout.server passes session: locals.session | Yes |
+| 5 | All env keys from config exist in .env | Yes — adds empty keys |
+| 6 | .env values are non-empty | No — prints set KEY=<value> instructions |
+| 7 | Adapter + kavach packages in package.json | Yes — installs missing |
 
-### kavach add routes
+Example output:
 
-Adds example protected route scaffolding.
+    kavach doctor
 
-```bash
-kavach add routes
-```
+      ✓ kavach.config.js — valid
+      ✗ vite.config.js — kavach() plugin missing
+          Run kavach doctor --fix
+      ✗ hooks.server.ts — must import from '$kavach/auth' and export kavach.handle
+          Run kavach doctor --fix
+      ✓ +layout.server.ts — valid
+      ✗ .env — empty values: PUBLIC_SUPABASE_URL
+          set PUBLIC_SUPABASE_URL=<your-value> in .env
+      ✓ dependencies — all installed
 
-Generates:
+      3 issues found. Run kavach doctor --fix to repair what can be fixed automatically.
 
-- `src/routes/(public)/+page.svelte` — public home page
-- `src/routes/(protected)/dashboard/+page.svelte` — protected dashboard
-- Updates `kavach.config.js` rules if needed
+After --fix:
 
-## Usage Without Global Install
+    kavach doctor --fix
 
-```bash
-# npm
-npx kavach init
+      ✓ kavach.config.js — valid
+      ✔ vite.config.js — patched
+      ✔ hooks.server.ts — patched
+      ✓ +layout.server.ts — valid
+      ✗ .env — empty values: PUBLIC_SUPABASE_URL
+          set PUBLIC_SUPABASE_URL=<your-value> in .env
+      ✓ dependencies — all installed
 
-# bun
-bunx kavach init
-```
+      1 issue requires manual action — see above.
 
-## Platform-Aware Config Generation
+### kavach add
 
-`kavach init` generates adapter-specific environment variable configs. For example,
-choosing Supabase generates:
+Adds components to an existing setup.
 
-```js
-env: {
-  url: 'PUBLIC_SUPABASE_URL',
-  anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
-}
-```
+    npx kavach add auth-page   # auth page with configured providers
+    npx kavach add routes      # data and RPC route handlers
 
-And creates a `.env.example` with the required variables.
+## Anti-Patterns
+
+    // No default export — will throw
+    import kavach from 'kavach'
+
+    // Don't call createKavach in hooks.server
+    import { createKavach } from 'kavach'
+
+    // Do not alias the package in vite.config
+    resolve: { alias: { kavach: '/path/to/src/index.ts' } }
+
+    // Not needed when using $kavach/auth
+    ssr: { noExternal: ['kavach'] }
+
+    // Correct
+    import { kavach } from '$kavach/auth'
+    export const handle = kavach.handle
+
+## Verifying Your Setup
+
+    npx kavach doctor
+
+All 7 checks should show ✓. If any show ✗:
+- Run npx kavach doctor --fix for auto-fixable issues
+- For env value issues: set the values in .env manually
 
 ## Related
 
-- [Auth](./auth.txt) — manual setup without CLI
+- [Auth](./auth.txt) — manual setup reference and API
 - [Vite Plugin](./vite.txt) — kavach.config.js reference

@@ -3,14 +3,28 @@
 > A drop-in authentication framework for SvelteKit with unified API across multiple
 > platforms, declarative route protection, and pre-built UI components.
 
-Kavach provides a single authentication abstraction for SvelteKit apps. Swap between
-Supabase, Firebase, Auth0, AWS Amplify, or Convex by changing one config value.
-Route protection rules are declared once in `kavach.config.js` and enforced
-server-side via a SvelteKit hook.
+## IMPORTANT — For AI Agents
+
+Never hand-write kavach.config.js, vite.config.js patches, or hooks.server.js.
+Always use the CLI:
+
+    npx kavach init            # first-time setup in a SvelteKit project
+    npx kavach doctor          # verify an existing setup
+    npx kavach doctor --fix    # auto-repair detected issues
+
+Hand-crafting these files is the most common source of broken integrations.
+The CLI handles correct patching, plugin ordering (kavach() before sveltekit()),
+and the $kavach/auth virtual module pattern automatically.
+
+## How It Works
+
+kavach.config.js → @kavach/vite plugin → $kavach/auth virtual module
+→ kavach.handle hook → sentry route protection → session cookie → locals.session
 
 ## Core Packages
 
-- [Auth](./auth.txt): Core client — createKavach, session management, auth state
+- [Auth](./auth.txt): Core — createKavach, session management, auth state
+- [CLI](./cli.txt): kavach init, kavach doctor, kavach add
 - [Sentry](./sentry.txt): Route protection engine — rules, roles, redirect logic
 - [UI](./ui.txt): Pre-built Svelte components — AuthProvider, AuthPage
 - [Vite Plugin](./vite.txt): Virtual module generation from kavach.config.js
@@ -18,7 +32,6 @@ server-side via a SvelteKit hook.
 - [Query](./query.txt): Declarative data query helpers
 - [Cookie](./cookie.txt): Cookie serialization and parsing utilities
 - [Hashing](./hashing.txt): Password and token hashing utilities
-- [CLI](./cli.txt): Scaffolding CLI — kavach init, kavach add
 
 ## Adapters
 
@@ -28,13 +41,9 @@ server-side via a SvelteKit hook.
 - [AWS Amplify](./adapter-amplify.txt): Auth, OAuth, password (Cognito)
 - [Convex](./adapter-convex.txt): Auth, OAuth, password
 
-## Quick Start
+## Troubleshooting
 
-Install:
+Run `npx kavach doctor` to diagnose integration issues. It checks config, vite plugin,
+hooks pattern, layout session, env vars, and dependencies — and can auto-fix most issues.
 
-```bash
-npm install kavach @kavach/sentry @kavach/ui @kavach/vite
-npm install @kavach/adapter-supabase  # or other adapter
-```
-
-See [Auth](./auth.txt) for full setup instructions.
+See [CLI](./cli.txt) for full doctor output reference.
