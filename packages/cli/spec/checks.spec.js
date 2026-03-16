@@ -211,6 +211,12 @@ describe('checkEnvValues', () => {
 		const r = checkEnvValues(tmp, config)
 		expect(r.ok).toBe(true)
 	})
+
+	it('passes when .env does not exist (missing keys are checkEnvKeys responsibility)', () => {
+		// No .env file written
+		const r = checkEnvValues(tmp, config)
+		expect(r.ok).toBe(true)
+	})
 })
 
 // --- checkDeps ---

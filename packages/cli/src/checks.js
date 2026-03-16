@@ -35,7 +35,7 @@ export function checkConfig(cwd, config) {
 			fixable: false
 		}
 	}
-	return { id: 'config', ok: true, label: 'kavach.config.js', message: 'valid' }
+	return { id: 'config', ok: true, label: 'kavach.config.js', message: 'valid', fixable: false }
 }
 
 export function checkVite(cwd) {
@@ -64,7 +64,7 @@ export function checkVite(cwd) {
 			path
 		}
 	}
-	return { id: 'vite', ok: true, label, message: 'valid' }
+	return { id: 'vite', ok: true, label, message: 'valid', fixable: false }
 }
 
 export function checkHooks(cwd) {
@@ -93,7 +93,7 @@ export function checkHooks(cwd) {
 			path
 		}
 	}
-	return { id: 'hooks', ok: true, label, message: 'valid' }
+	return { id: 'hooks', ok: true, label, message: 'valid', fixable: false }
 }
 
 export function checkLayout(cwd) {
@@ -124,12 +124,12 @@ export function checkLayout(cwd) {
 			path
 		}
 	}
-	return { id: 'layout', ok: true, label, message: 'valid' }
+	return { id: 'layout', ok: true, label, message: 'valid', fixable: false }
 }
 
 export function checkEnvKeys(cwd, config) {
 	if (!config?.env || Object.keys(config.env).length === 0) {
-		return { id: 'env-keys', ok: true, label: '.env', message: 'no env config' }
+		return { id: 'env-keys', ok: true, label: '.env', message: 'no env config', fixable: false }
 	}
 	const envPath = resolve(cwd, '.env')
 	const present = new Set()
@@ -152,12 +152,18 @@ export function checkEnvKeys(cwd, config) {
 			fixable: true
 		}
 	}
-	return { id: 'env-keys', ok: true, label: '.env', message: 'all keys present' }
+	return { id: 'env-keys', ok: true, label: '.env', message: 'all keys present', fixable: false }
 }
 
 export function checkEnvValues(cwd, config) {
 	if (!config?.env || Object.keys(config.env).length === 0) {
-		return { id: 'env-values', ok: true, label: '.env values', message: 'no env config' }
+		return {
+			id: 'env-values',
+			ok: true,
+			label: '.env values',
+			message: 'no env config',
+			fixable: false
+		}
 	}
 	const envPath = resolve(cwd, '.env')
 	const values = {}
@@ -169,7 +175,7 @@ export function checkEnvValues(cwd, config) {
 				if (idx > 0) values[line.slice(0, idx).trim()] = line.slice(idx + 1).trim()
 			})
 	}
-	const empty = Object.values(config.env).filter((k) => !values[k])
+	const empty = Object.values(config.env).filter((k) => k in values && !values[k])
 	if (empty.length > 0) {
 		return {
 			id: 'env-values',
@@ -180,7 +186,13 @@ export function checkEnvValues(cwd, config) {
 			fixable: false
 		}
 	}
-	return { id: 'env-values', ok: true, label: '.env values', message: 'all values set' }
+	return {
+		id: 'env-values',
+		ok: true,
+		label: '.env values',
+		message: 'all values set',
+		fixable: false
+	}
 }
 
 export function checkDeps(cwd, config) {
@@ -208,5 +220,5 @@ export function checkDeps(cwd, config) {
 			fixable: true
 		}
 	}
-	return { id: 'deps', ok: true, label: 'dependencies', message: 'all installed' }
+	return { id: 'deps', ok: true, label: 'dependencies', message: 'all installed', fixable: false }
 }
