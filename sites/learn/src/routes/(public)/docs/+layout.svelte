@@ -1,33 +1,13 @@
 <script>
 	import { List } from '@rokkit/ui'
 	import { page } from '$app/stores'
+	import TableOfContents from '$lib/TableOfContents.svelte'
 
 	const docsItems = [
-		{
-			label: 'Getting Started',
-			children: [
-				{ label: 'Introduction', value: '/docs' },
-				{ label: 'Quick Start', value: '/docs/quick-start' },
-				{ label: 'Configuration', value: '/docs/configuration' }
-			]
-		},
-		{
-			label: 'Core Concepts',
-			children: [
-				{ label: 'Authentication', value: '/docs/authentication' },
-				{ label: 'Authorization', value: '/docs/authorization' },
-				{ label: 'Session Management', value: '/docs/session' }
-			]
-		},
-		{
-			label: 'Components',
-			children: [
-				{ label: 'AuthProvider', value: '/docs/components/auth-provider' },
-				{ label: 'AuthButton', value: '/docs/components/auth-button' },
-				{ label: 'AuthPage', value: '/docs/components/auth-page' },
-				{ label: 'LoginCard', value: '/docs/components/login-card' }
-			]
-		},
+		{ label: 'Why Kavach', value: '/docs/why-kavach' },
+		{ label: 'Quick Start', value: '/docs/quick-start' },
+		{ label: 'CLI', value: '/docs/cli' },
+		{ label: 'Core Concepts', value: '/docs/core-concepts' },
 		{
 			label: 'Adapters',
 			children: [
@@ -39,15 +19,16 @@
 			]
 		},
 		{
-			label: 'Plugins & Tools',
+			label: 'Reference',
 			children: [
+				{ label: 'Configuration', value: '/docs/configuration' },
 				{ label: 'Vite Plugin', value: '/docs/plugins/vite' },
-				{ label: 'CLI Commands', value: '/docs/cli' },
 				{ label: 'Sentry', value: '/docs/sentry' },
 				{ label: 'Logger', value: '/docs/logger' }
 			]
 		}
 	]
+
 	let { children } = $props()
 	let selected = $derived($page.url.pathname)
 </script>
@@ -61,7 +42,14 @@
 			collapsible={true}
 		/>
 	</aside>
-	<main class="flex-1 overflow-y-auto p-8">
-		{@render children()}
-	</main>
+	<div class="flex min-w-0 flex-1 overflow-hidden">
+		<main id="main-content" class="min-w-0 flex-1 overflow-y-auto p-8">
+			{@render children()}
+		</main>
+		<aside
+			class="border-surface-z3 hidden w-52 flex-shrink-0 flex-col overflow-y-auto border-l px-5 py-6 xl:flex"
+		>
+			<TableOfContents />
+		</aside>
+	</div>
 </div>
