@@ -28,5 +28,10 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "files": [
+    "src/**/*.js",
+    "README.md",
+    "package.json"
+  ]
 }

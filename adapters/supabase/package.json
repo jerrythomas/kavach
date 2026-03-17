@@ -28,9 +28,16 @@
     "@supabase/supabase-js": "^2.49.4",
     "ramda": "^0.30.1"
   },
+  "files": [
+    "src/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md",
+    "package.json"
+  ],
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./src/index.js",
       "svelte": "./src/index.js"
     }

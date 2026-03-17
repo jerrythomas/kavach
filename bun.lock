@@ -5,6 +5,9 @@
     "": {
       "name": "@kavach/core",
       "dependencies": {
+        "@fontsource/open-sans": "^5.2.7",
+        "@fontsource/overpass": "^5.2.8",
+        "@fontsource/victor-mono": "^5.2.8",
         "@rokkit/actions": "latest",
         "@rokkit/core": "latest",
         "@rokkit/data": "latest",
@@ -39,7 +42,7 @@
     },
     "adapters/amplify": {
       "name": "@kavach/adapter-amplify",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "aws-amplify": "^6.14.4",
         "kavach": "workspace:*",
@@ -47,7 +50,7 @@
     },
     "adapters/auth0": {
       "name": "@kavach/adapter-auth0",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@auth0/auth0-spa-js": "^2.1.3",
         "kavach": "workspace:*",
@@ -56,7 +59,7 @@
     },
     "adapters/convex": {
       "name": "@kavach/adapter-convex",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@convex-dev/auth": "^0.0.80",
         "@kavach/query": "workspace:*",
@@ -66,7 +69,7 @@
     },
     "adapters/firebase": {
       "name": "@kavach/adapter-firebase",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@kavach/query": "workspace:*",
         "firebase": "^11.0.0",
@@ -76,7 +79,7 @@
     },
     "adapters/supabase": {
       "name": "@kavach/adapter-supabase",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@kavach/query": "workspace:*",
         "@supabase/supabase-js": "^2.49.4",
@@ -86,7 +89,7 @@
     },
     "packages/auth": {
       "name": "kavach",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@kavach/cookie": "workspace:*",
         "@kavach/hashing": "workspace:*",
@@ -100,7 +103,7 @@
     },
     "packages/cli": {
       "name": "@kavach/cli",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "bin": {
         "kavach": "src/index.js",
       },
@@ -113,23 +116,23 @@
     },
     "packages/cookie": {
       "name": "@kavach/cookie",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
     },
     "packages/hashing": {
       "name": "@kavach/hashing",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
     },
     "packages/logger": {
       "name": "@kavach/logger",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
     },
     "packages/query": {
       "name": "@kavach/query",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
     },
     "packages/sentry": {
       "name": "@kavach/sentry",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@kavach/logger": "workspace:*",
         "ramda": "^0.30.1",
@@ -137,7 +140,7 @@
     },
     "packages/ui": {
       "name": "@kavach/ui",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@rokkit/forms": "latest",
         "kavach": "workspace:*",
@@ -146,7 +149,7 @@
     },
     "packages/vite": {
       "name": "@kavach/vite",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "magicast": "^0.3.5",
       },
@@ -156,7 +159,7 @@
     },
     "sites/demo": {
       "name": "demo-kavach",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@convex-dev/auth": "^0.0.91",
         "@kavach/adapter-convex": "workspace:*",
@@ -201,7 +204,7 @@
     },
     "sites/learn": {
       "name": "learn-kavach",
-      "version": "1.0.0-next.34",
+      "version": "1.0.0-next.35",
       "dependencies": {
         "@kavach/logger": "workspace:*",
         "@kavach/ui": "workspace:*",
@@ -554,6 +557,12 @@
     "@firebase/vertexai-preview": ["@firebase/vertexai-preview@0.0.4", "", { "dependencies": { "@firebase/app-check-interop-types": "0.3.2", "@firebase/component": "0.6.9", "@firebase/logger": "0.4.2", "@firebase/util": "1.10.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x", "@firebase/app-types": "0.x" } }, "sha512-EBSqyu9eg8frQlVU9/HjKtHN7odqbh9MtAcVz3WwHj4gLCLOoN9F/o+oxlq3CxvFrd3CNTZwu6d2mZtVlEInng=="],
 
     "@firebase/webchannel-wrapper": ["@firebase/webchannel-wrapper@1.0.3", "", {}, "sha512-2xCRM9q9FlzGZCdgDMJwc0gyUkWFtkosy7Xxr6sFgQwn+wMNIWd7xIvYNauU1r64B5L5rsGKy/n9TKJ0aAFeqQ=="],
+
+    "@fontsource/open-sans": ["@fontsource/open-sans@5.2.7", "", {}, "sha512-8yfgDYjE5O0vmTPdrcjV35y4yMnctsokmi9gN49Gcsr0sjzkMkR97AnKDe6OqZh2SFkYlR28fxOvi21bYEgMSw=="],
+
+    "@fontsource/overpass": ["@fontsource/overpass@5.2.8", "", {}, "sha512-Svtn/TJCtVZ99JoCi3P+jvHiCo8WoUHZjm5RwHMgSqX2k4qiL4sK1Lh4enotfyDkEIyj/oP99ezOdy5YlEqkDA=="],
+
+    "@fontsource/victor-mono": ["@fontsource/victor-mono@5.2.8", "", {}, "sha512-8WYdXLzYNHvsvXWaGW4zs1hNu6RHUrQCVJplS9XKhZZNE1VqxPsm5zSbKQox4YuLZG1fV4fOxIt0SAc+YLGkjg=="],
 
     "@gar/promise-retry": ["@gar/promise-retry@1.0.2", "", { "dependencies": { "retry": "^0.13.1" } }, "sha512-Lm/ZLhDZcBECta3TmCQSngiQykFdfw+QtI1/GYMsZd4l3nG+P8WLB16XuS7WaBGLQ+9E+cOcWQsth9cayuGt8g=="],
 

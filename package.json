@@ -60,6 +60,9 @@
     "sites/**"
   ],
   "dependencies": {
+    "@fontsource/open-sans": "^5.2.7",
+    "@fontsource/overpass": "^5.2.8",
+    "@fontsource/victor-mono": "^5.2.8",
     "@rokkit/actions": "latest",
     "@rokkit/core": "latest",
     "@rokkit/data": "latest",

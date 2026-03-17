@@ -29,7 +29,7 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./types/index.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./src/index.js",
       "svelte": "./src/index.js"
     }

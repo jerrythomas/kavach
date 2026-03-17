@@ -11,13 +11,48 @@ bun add kavach @kavach/adapter-supabase
 
 ## Quick start
 
+```bash
+bun add kavach @kavach/vite @kavach/adapter-supabase
+# pick the adapter for your backend
+```
+
+Create `kavach.config.js` in your project root:
+
 ```js
-// src/hooks.server.js
-import { createKavach } from 'kavach'
-import { getAdapter } from '$kavach/auth'
+export default {
+  adapter: 'supabase',
+  providers: [
+    { name: 'google', label: 'Continue with Google' },
+    { name: 'magic', mode: 'otp', label: 'Magic Link' }
+  ],
+  rules: [
+    { path: '/', public: true },
+    { path: '/auth', public: true },
+    { path: '/dashboard', protected: true }
+  ],
+  env: {
+    url: 'PUBLIC_SUPABASE_URL',
+    anonKey: 'PUBLIC_SUPABASE_ANON_KEY'
+  }
+}
+```
 
-const kavach = createKavach(getAdapter())
+Add the Kavach plugin to `vite.config.js` — it must come before `sveltekit()`:
 
+```js
+import { kavach } from '@kavach/vite'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [kavach(), sveltekit()]
+})
+```
+
+Register the server hook in `src/hooks.server.js`:
+
+```js
+import { kavach } from '$kavach/auth'
 export const handle = kavach.handle
 ```
 
@@ -25,16 +60,18 @@ export const handle = kavach.handle
 <!-- src/routes/+layout.svelte -->
 <script>
   import { setContext, onMount } from 'svelte'
-  import { createKavach } from 'kavach'
+  import { page } from '$app/stores'
 
   const kavach = $state({})
   setContext('kavach', kavach)
 
   onMount(async () => {
-    const { adapter } = await import('$kavach/auth')
+    const { createKavach } = await import('kavach')
+    const { adapter, logger } = await import('$kavach/auth')
     const { invalidateAll } = await import('$app/navigation')
-    Object.assign(kavach, createKavach(adapter, { invalidateAll }))
-    kavach.onAuthChange($page.url)
+    const instance = createKavach(adapter, { logger, invalidateAll })
+    Object.assign(kavach, instance)
+    instance.onAuthChange($page.url)
   })
 </script>
 ```

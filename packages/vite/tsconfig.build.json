@@ -10,5 +10,5 @@
     "rootDir": "src"
   },
   "include": ["src/**/*"],
-  "exclude": ["**/spec/**/*", "**/fixtures/**/*", "node_modules", "dist"]
+  "exclude": ["**/spec/**/*", "**/fixtures/**/*", "**/templates/**/*"]
 }
