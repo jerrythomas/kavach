@@ -30,6 +30,8 @@ jobs:
         run: bun install
 
       - name: Publish packages
+        env:
+          BUN_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
           for dir in ./packages/*/; do
             grep -q '"private": true' "${dir}package.json" 2>/dev/null || \
