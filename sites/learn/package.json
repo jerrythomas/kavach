@@ -40,6 +40,9 @@
   },
   "type": "module",
   "dependencies": {
+    "@fontsource/open-sans": "^5.2.7",
+    "@fontsource/overpass": "^5.2.8",
+    "@fontsource/victor-mono": "^5.2.8",
     "@kavach/ui": "workspace:*",
     "@kavach/logger": "workspace:*",
     "@rokkit/actions": "latest",
