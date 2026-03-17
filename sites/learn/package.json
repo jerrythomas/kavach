@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "@rokkit/icons": "1.0.0-next.132",
+    "@rokkit/icons": "1.0.0-next.145",
     "@sveltejs/adapter-auto": "^7.0.1",
     "@sveltejs/kit": "^2.54.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
@@ -45,13 +45,13 @@
     "@fontsource/victor-mono": "^5.2.8",
     "@kavach/ui": "workspace:*",
     "@kavach/logger": "workspace:*",
-    "@rokkit/actions": "1.0.0-next.132",
-    "@rokkit/app": "1.0.0-next.134",
-    "@rokkit/core": "1.0.0-next.132",
-    "@rokkit/states": "1.0.0-next.132",
-    "@rokkit/themes": "1.0.0-next.132",
-    "@rokkit/ui": "1.0.0-next.132",
-    "@rokkit/unocss": "1.0.0-next.134",
+    "@rokkit/actions": "1.0.0-next.145",
+    "@rokkit/app": "1.0.0-next.145",
+    "@rokkit/core": "1.0.0-next.145",
+    "@rokkit/states": "1.0.0-next.145",
+    "@rokkit/themes": "1.0.0-next.145",
+    "@rokkit/ui": "1.0.0-next.145",
+    "@rokkit/unocss": "1.0.0-next.145",
     "kavach": "workspace:*"
   }
 }
