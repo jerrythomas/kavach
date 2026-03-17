@@ -8,6 +8,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       contents: write
       id-token: write
@@ -15,7 +17,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -30,10 +31,55 @@ jobs:
         run: bun install
 
       - name: Publish packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_NO_WARNINGS: 1
         run: |
-          for dir in ./packages/*/; do
-            grep -q '"private": true' "${dir}package.json" 2>/dev/null || \
-              (cd "$dir" && bun publish --access public --tag latest)
+          # Publish in dependency order so each package's deps are already on npm
+          PACKAGES=(cookie hashing logger query sentry auth ui vite cli)
+          for name in "${PACKAGES[@]}"; do
+            pkg="./packages/${name}/package.json"
+            [ -f "$pkg" ] || continue
+            grep -q '"private": true' "$pkg" 2>/dev/null && continue
+            # rewrite workspace:* and workspace:latest to "latest"
+            node -e "
+              const fs = require('fs');
+              const p = JSON.parse(fs.readFileSync('${pkg}', 'utf8'));
+              for (const section of ['dependencies','peerDependencies']) {
+                for (const [k,v] of Object.entries(p[section] || {})) {
+                  if (v.startsWith('workspace:')) p[section][k] = 'latest';
+                }
+              }
+              fs.writeFileSync('${pkg}', JSON.stringify(p, null, 2) + '\n');
+            "
+            (cd "./packages/${name}" && npm publish --provenance --access public --tag latest)
+            git checkout -- "$pkg"
+          done
+
+      - name: Publish adapters
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_NO_WARNINGS: 1
+        run: |
+          # Publish in dependency order — all adapters depend on kavach (published above)
+          ADAPTERS=(amplify auth0 supabase firebase convex)
+          for name in "${ADAPTERS[@]}"; do
+            pkg="./adapters/${name}/package.json"
+            [ -f "$pkg" ] || continue
+            grep -q '"private": true' "$pkg" 2>/dev/null && continue
+            # rewrite workspace:* and workspace:latest to "latest"
+            node -e "
+              const fs = require('fs');
+              const p = JSON.parse(fs.readFileSync('${pkg}', 'utf8'));
+              for (const section of ['dependencies','peerDependencies']) {
+                for (const [k,v] of Object.entries(p[section] || {})) {
+                  if (v.startsWith('workspace:')) p[section][k] = 'latest';
+                }
+              }
+              fs.writeFileSync('${pkg}', JSON.stringify(p, null, 2) + '\n');
+            "
+            (cd "./adapters/${name}" && npm publish --provenance --access public --tag latest)
+            git checkout -- "$pkg"
           done
 
       - name: Create GitHub release
