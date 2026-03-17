@@ -1,6 +1,6 @@
 {
   "name": "demo-kavach",
-  "version": "1.0.0-next.35",
+  "version": "1.0.0-next.36",
   "private": true,
   "packageManager": "bun@1.3.10",
   "scripts": {
