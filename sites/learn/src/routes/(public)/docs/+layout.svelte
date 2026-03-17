@@ -1,7 +1,7 @@
 <script>
 	import { List } from '@rokkit/ui'
 	import { page } from '$app/stores'
-	import TableOfContents from '$lib/TableOfContents.svelte'
+	import { TableOfContents } from '@rokkit/app'
 
 	const docsItems = [
 		{ label: 'Why Kavach', value: '/docs/why-kavach' },
