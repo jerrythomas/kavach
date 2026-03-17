@@ -32,7 +32,7 @@ jobs:
 
       - name: Publish packages
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
           NODE_NO_WARNINGS: 1
         run: |
           # Publish in dependency order so each package's deps are already on npm
@@ -58,7 +58,7 @@ jobs:
 
       - name: Publish adapters
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
           NODE_NO_WARNINGS: 1
         run: |
           # Publish in dependency order — all adapters depend on kavach (published above)
