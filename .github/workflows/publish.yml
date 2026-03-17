@@ -31,9 +31,9 @@ jobs:
 
       - name: Publish packages
         run: |
-          for dir in ./packages/*/ ./adapters/*/; do
+          for dir in ./packages/*/; do
             grep -q '"private": true' "${dir}package.json" 2>/dev/null || \
-              (cd "$dir" && npm publish --provenance --access public --tag latest)
+              (cd "$dir" && bun publish --access public --tag latest)
           done
 
       - name: Create GitHub release
