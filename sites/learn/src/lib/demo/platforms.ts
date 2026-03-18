@@ -48,6 +48,22 @@ export const PLATFORMS: Platform[] = [
     adapterPackage: '@kavach/adapter-firebase'
   },
   {
+    id: 'convex',
+    name: 'Convex',
+    description: 'Reactive database with built-in auth',
+    icon: 'i-app-shield',
+    iconFallback: 'bg-purple-600',
+    live: true,
+    modes: ['social'],
+    capabilities: [
+      'Google OAuth',
+      'Reactive data queries',
+      'Server-side auth functions',
+      'Structured logging'
+    ],
+    adapterPackage: '@kavach/adapter-convex'
+  },
+  {
     id: 'auth0',
     name: 'Auth0',
     description: 'Auth-as-a-service with universal login',
@@ -68,22 +84,6 @@ export const PLATFORMS: Platform[] = [
     modes: ['password', 'social'],
     capabilities: ['Cognito user pools', 'Social identity providers', 'AWS IAM integration'],
     adapterPackage: '@kavach/adapter-amplify'
-  },
-  {
-    id: 'convex',
-    name: 'Convex',
-    description: 'Reactive database with built-in auth',
-    icon: 'i-app-shield',
-    iconFallback: 'bg-purple-600',
-    live: true,
-    modes: ['social'],
-    capabilities: [
-      'Google OAuth',
-      'Reactive data queries',
-      'Server-side auth functions',
-      'Structured logging'
-    ],
-    adapterPackage: '@kavach/adapter-convex'
   }
 ]
 
