@@ -48,7 +48,7 @@
 							? 'bg-success-100 text-success-700'
 							: 'bg-surface-z3 text-surface-z5'}"
 					>
-						{platform.live ? 'LIVE' : 'SIMULATED'}
+						{platform.live ? 'LIVE' : 'WIP'}
 					</span>
 				</div>
 
