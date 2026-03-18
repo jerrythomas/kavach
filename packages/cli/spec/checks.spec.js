@@ -9,7 +9,9 @@ import {
 	checkLayout,
 	checkEnvKeys,
 	checkEnvValues,
-	checkDeps
+	checkDeps,
+	checkContextSetup,
+	checkAuthPage
 } from '../src/checks.js'
 
 let tmp
@@ -215,6 +217,90 @@ describe('checkEnvValues', () => {
 	it('passes when .env does not exist (missing keys are checkEnvKeys responsibility)', () => {
 		// No .env file written
 		const r = checkEnvValues(tmp, config)
+		expect(r.ok).toBe(true)
+	})
+})
+
+// --- checkContextSetup ---
+
+describe('checkContextSetup', () => {
+	it('fails when no layout files exist under src/routes/', () => {
+		const r = checkContextSetup(tmp)
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+		expect(r.id).toBe('layout-svelte')
+	})
+
+	it('fails when layout exists but has no setContext call', () => {
+		writeFileSync(join(tmp, 'src/routes/+layout.svelte'), `<script>\n\timport 'uno.css'\n</script>`)
+		const r = checkContextSetup(tmp)
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+	})
+
+	it("passes when root +layout.svelte has setContext('kavach')", () => {
+		writeFileSync(
+			join(tmp, 'src/routes/+layout.svelte'),
+			`<script>\n\tsetContext('kavach', {})\n</script>`
+		)
+		const r = checkContextSetup(tmp)
+		expect(r.ok).toBe(true)
+	})
+
+	it("passes when a nested layout has setContext('kavach') but root does not", () => {
+		mkdirSync(join(tmp, 'src/routes/(app)'), { recursive: true })
+		writeFileSync(
+			join(tmp, 'src/routes/(app)/+layout@.svelte'),
+			`<script>\n\tsetContext('kavach', kavach)\n</script>`
+		)
+		const r = checkContextSetup(tmp)
+		expect(r.ok).toBe(true)
+	})
+})
+
+// --- checkAuthPage ---
+
+describe('checkAuthPage', () => {
+	const config = { routes: { auth: '/auth' } }
+
+	it('passes when no routes config present', () => {
+		const r = checkAuthPage(tmp, {})
+		expect(r.ok).toBe(true)
+		expect(r.fixable).toBe(false)
+	})
+
+	it('fails when auth page does not exist', () => {
+		const r = checkAuthPage(tmp, config)
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+		expect(r.id).toBe('auth-page')
+	})
+
+	it('fails when auth page exists but lacks AuthProvider', () => {
+		mkdirSync(join(tmp, 'src/routes/auth'), { recursive: true })
+		writeFileSync(join(tmp, 'src/routes/auth/+page.svelte'), '<div>Login</div>')
+		const r = checkAuthPage(tmp, config)
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+	})
+
+	it('passes when auth page contains AuthProvider', () => {
+		mkdirSync(join(tmp, 'src/routes/auth'), { recursive: true })
+		writeFileSync(
+			join(tmp, 'src/routes/auth/+page.svelte'),
+			`<script>\n\timport { AuthProvider } from '@kavach/ui'\n</script>\n<AuthProvider name="email" />`
+		)
+		const r = checkAuthPage(tmp, config)
+		expect(r.ok).toBe(true)
+	})
+
+	it('passes when auth page is inside a route group', () => {
+		mkdirSync(join(tmp, 'src/routes/(public)/auth'), { recursive: true })
+		writeFileSync(
+			join(tmp, 'src/routes/(public)/auth/+page.svelte'),
+			`<AuthProvider name="email" />`
+		)
+		const r = checkAuthPage(tmp, config)
 		expect(r.ok).toBe(true)
 	})
 })
