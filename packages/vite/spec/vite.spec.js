@@ -7,6 +7,15 @@ describe('kavach vite plugin', () => {
 		expect(plugin.name).toBe('kavach')
 	})
 
+	it('config() marks kavach packages as noExternal for SSR', () => {
+		const plugin = kavach()
+		const result = plugin.config()
+		expect(result.ssr.noExternal).toContain('kavach')
+		expect(result.ssr.noExternal.some((r) => r instanceof RegExp && r.test('@kavach/ui'))).toBe(
+			true
+		)
+	})
+
 	it('should resolve $kavach/* virtual module ids', () => {
 		const plugin = kavach()
 		expect(plugin.resolveId('$kavach/auth')).toBe('\0$kavach/auth')

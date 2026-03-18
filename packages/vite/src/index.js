@@ -52,6 +52,14 @@ export function kavach(options = {}) {
 	return {
 		name: 'kavach',
 
+		config() {
+			return {
+				ssr: {
+					noExternal: ['kavach', /@kavach\/.*/]
+				}
+			}
+		},
+
 		configResolved(viteConfig) {
 			configPath =
 				options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
