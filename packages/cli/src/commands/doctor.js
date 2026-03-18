@@ -7,11 +7,20 @@ import {
 	checkVite,
 	checkHooks,
 	checkLayout,
+	checkContextSetup,
+	checkAuthPage,
 	checkEnvKeys,
 	checkEnvValues,
 	checkDeps
 } from '../checks.js'
-import { patchViteConfig, patchHooksServer, patchLayoutServer, patchEnvFile } from '../patchers.js'
+import {
+	patchViteConfig,
+	patchHooksServer,
+	patchLayoutServer,
+	patchEnvFile,
+	patchLayoutSvelte
+} from '../patchers.js'
+import { generateAuthPage } from '../generators.js'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './constants.js'
 
@@ -67,6 +76,10 @@ export class DoctorCommand {
 		results.push(this.#applyFix(checkVite(this.#cwd), (r) => this.#fixVite(r)))
 		results.push(this.#applyFix(checkHooks(this.#cwd), (r) => this.#fixHooks(r)))
 		results.push(this.#applyFix(checkLayout(this.#cwd), (r) => this.#fixLayout(r)))
+		results.push(this.#applyFix(checkContextSetup(this.#cwd), (r) => this.#fixContextSetup(r)))
+		results.push(
+			this.#applyFix(checkAuthPage(this.#cwd, this.#config), (r) => this.#fixAuthPage(r))
+		)
 		results.push(this.#applyFix(checkEnvKeys(this.#cwd, this.#config), (r) => this.#fixEnvKeys(r)))
 		results.push(checkEnvValues(this.#cwd, this.#config)) // never auto-fixable
 		results.push(this.#applyFix(checkDeps(this.#cwd, this.#config), (r) => this.#fixDeps(r)))
@@ -97,6 +110,19 @@ export class DoctorCommand {
 		const path = result.path ?? resolve(this.#cwd, `src/routes/+layout.server.${ext}`)
 		writeFile(path, patchLayoutServer(fileExists(path) ? readFile(path) : ''))
 		return { ...result, ok: true, message: 'patched', fixed: true }
+	}
+
+	#fixContextSetup(result) {
+		const path = resolve(this.#cwd, 'src/routes/+layout.svelte')
+		writeFile(path, patchLayoutSvelte(fileExists(path) ? readFile(path) : ''))
+		return { ...result, ok: true, message: 'patched', fixed: true }
+	}
+
+	#fixAuthPage(result) {
+		const segment = this.#config.routes.auth.replace(/^\//, '').split('/').pop()
+		const path = result.path ?? resolve(this.#cwd, `src/routes/${segment}/+page.svelte`)
+		writeFile(path, generateAuthPage(this.#config))
+		return { ...result, ok: true, message: 'generated', fixed: true }
 	}
 
 	#fixEnvKeys(result) {

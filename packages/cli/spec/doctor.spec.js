@@ -9,6 +9,7 @@ let tmp
 const validConfig = {
 	adapter: 'supabase',
 	env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
+	routes: { auth: '/auth' },
 	rules: [{ path: '/', public: true }]
 }
 
@@ -55,6 +56,19 @@ function scaffold(dir, opts = {}) {
 					'@supabase/supabase-js': '^2.0.0'
 				}
 			})
+		)
+	}
+	if (opts.layoutSvelte !== false) {
+		writeFileSync(
+			join(dir, 'src/routes/+layout.svelte'),
+			opts.layoutSvelte ?? `<script>\n\tsetContext('kavach', {})\n</script>\n{@render children()}`
+		)
+	}
+	if (opts.authPage !== false) {
+		mkdirSync(join(dir, 'src/routes/auth'), { recursive: true })
+		writeFileSync(
+			join(dir, 'src/routes/auth/+page.svelte'),
+			opts.authPage ?? `<AuthProvider name="email" />`
 		)
 	}
 }
@@ -117,5 +131,45 @@ describe('DoctorCommand', () => {
 		const envVals = results.find((r) => r.id === 'env-values')
 		expect(envVals.ok).toBe(false)
 		expect(envVals.fixable).toBe(false)
+	})
+
+	it('reports missing setContext in layout.svelte as fixable', async () => {
+		scaffold(tmp, { layoutSvelte: `<script>\n\timport 'uno.css'\n</script>` })
+		const cmd = new DoctorCommand(tmp, false)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'layout-svelte')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('--fix patches +layout.svelte to add kavach context', async () => {
+		scaffold(tmp, { layoutSvelte: `<script>\n\timport 'uno.css'\n</script>` })
+		const cmd = new DoctorCommand(tmp, true)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'layout-svelte')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
+	})
+
+	it('reports missing auth page as fixable', async () => {
+		scaffold(tmp, { authPage: false })
+		const cmd = new DoctorCommand(tmp, false)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'auth-page')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('--fix generates auth page', async () => {
+		scaffold(tmp, { authPage: false })
+		const cmd = new DoctorCommand(tmp, true)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'auth-page')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
 	})
 })
