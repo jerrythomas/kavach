@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { hackerMode } from './hacker.svelte'
 </script>
 

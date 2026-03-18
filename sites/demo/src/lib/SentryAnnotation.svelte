@@ -1,13 +1,5 @@
-<script lang="ts">
-	let {
-		title,
-		body,
-		rule
-	}: {
-		title: string
-		body: string
-		rule?: string
-	} = $props()
+<script>
+	let { title, body, rule } = $props()
 </script>
 
 <div
