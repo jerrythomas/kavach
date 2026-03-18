@@ -3,7 +3,8 @@ import {
 	patchViteConfig,
 	patchHooksServer,
 	patchLayoutServer,
-	patchEnvFile
+	patchEnvFile,
+	patchLayoutSvelte
 } from '../src/patchers.js'
 
 describe('patchViteConfig', () => {
@@ -83,5 +84,42 @@ describe('patchEnvFile', () => {
 		const output = patchEnvFile('', envConfig)
 		expect(output).toContain('PUBLIC_SUPABASE_URL=')
 		expect(output).toContain('PUBLIC_SUPABASE_ANON_KEY=')
+	})
+})
+
+describe('patchLayoutSvelte', () => {
+	it('generates a minimal layout when content is empty', () => {
+		const output = patchLayoutSvelte('')
+		expect(output).toContain("setContext('kavach'")
+		expect(output).toContain('createKavach')
+		expect(output).toContain('{@render children()}')
+	})
+
+	it('generates a minimal layout when no <script> block is present', () => {
+		const input = '<div>{@render children()}</div>'
+		const output = patchLayoutSvelte(input)
+		expect(output).toContain("setContext('kavach'")
+		expect(output).toContain('createKavach')
+	})
+
+	it('injects kavach setup into an existing <script> block', () => {
+		const input = `<script>\n\timport 'uno.css'\n</script>\n\n{@render children()}`
+		const output = patchLayoutSvelte(input)
+		expect(output).toContain("setContext('kavach'")
+		expect(output).toContain('createKavach')
+		expect(output).toContain("import 'uno.css'")
+	})
+
+	it('injects kavach setup into an existing <script lang="ts"> block', () => {
+		const input = `<script lang="ts">\n\timport 'uno.css'\n</script>\n\n{@render children()}`
+		const output = patchLayoutSvelte(input)
+		expect(output).toContain("setContext('kavach'")
+		expect(output).toContain('createKavach')
+	})
+
+	it('is idempotent when setContext already present', () => {
+		const input = `<script>\n\timport { setContext } from 'svelte'\n\tsetContext('kavach', {})\n</script>`
+		const output = patchLayoutSvelte(input)
+		expect(output).toBe(input)
 	})
 })
