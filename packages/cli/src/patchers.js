@@ -7,7 +7,7 @@ export function patchViteConfig(content) {
 	const code = generateCode(mod).code
 
 	const importLine = "import { kavach } from '@kavach/vite'"
-	const withImport = `${importLine  }\n${  code}`
+	const withImport = `${importLine}\n${code}`
 
 	// Add kavach() to plugins array — insert before sveltekit()
 	return withImport.replace(/plugins:\s*\[/, 'plugins: [kavach(), ')
@@ -26,14 +26,14 @@ export const handle = kavach.handle
 
 	if (hasKavach) return content
 
-	let result = `import { kavach } from '$kavach/auth'\n${  content}`
+	let result = `import { kavach } from '$kavach/auth'\n${content}`
 
 	if (hasSequence) {
 		// Add kavach.handle as first arg to existing sequence()
 		result = result.replace(/sequence\(/, 'sequence(kavach.handle, ')
 	} else {
 		// Add sequence import and wrap existing handle
-		result = `import { sequence } from '@sveltejs/kit/hooks'\n${  result}`
+		result = `import { sequence } from '@sveltejs/kit/hooks'\n${result}`
 
 		// Replace `export const handle = <expr>` with sequence(kavach.handle, <expr>)
 		result = result.replace(
@@ -59,10 +59,7 @@ export function patchLayoutServer(content) {
 	if (content.includes('locals.session')) return content
 
 	// Add session to existing return object
-	return content.replace(
-		/return\s*\{/,
-		'return {\n\t\tsession: locals.session,'
-	)
+	return content.replace(/return\s*\{/, 'return {\n\t\tsession: locals.session,')
 }
 
 export function patchEnvFile(content, envConfig) {
@@ -79,5 +76,63 @@ export function patchEnvFile(content, envConfig) {
 	if (additions.length === 0) return content
 
 	const separator = content.trim() ? '\n' : ''
-	return `${content.trimEnd() + separator + additions.join('\n')  }\n`
+	return `${content.trimEnd() + separator + additions.join('\n')}\n`
+}
+
+const KAVACH_SETUP = `
+	const kavach = $state({})
+	setContext('kavach', kavach)
+
+	onMount(async () => {
+		const { createKavach } = await import('kavach')
+		const { adapter, logger } = await import('$kavach/auth')
+		const { invalidateAll } = await import('$app/navigation')
+		const instance = createKavach(adapter, { logger, invalidateAll })
+		Object.assign(kavach, instance)
+		instance.onAuthChange($page.url)
+	})`
+
+const KAVACH_MINIMAL_LAYOUT = `<script>
+	import { setContext, onMount } from 'svelte'
+	import { page } from '$app/stores'
+
+	let { children } = $props()
+${KAVACH_SETUP}
+</script>
+
+{@render children()}
+`
+
+export function patchLayoutSvelte(content) {
+	if (content.includes("setContext('kavach'")) return content
+
+	// No <script> block — generate a complete minimal layout
+	const scriptMatch = content.match(/<script(\s[^>]*)?>/)
+	if (!content.trim() || !scriptMatch) {
+		return KAVACH_MINIMAL_LAYOUT
+	}
+
+	const scriptTag = scriptMatch[0]
+	let result = content
+
+	// Inject missing svelte imports after the opening <script> tag
+	if (!content.includes('setContext') && !content.includes('onMount')) {
+		result = result.replace(
+			scriptTag,
+			`${scriptTag}\n\timport { setContext, onMount } from 'svelte'`
+		)
+	} else if (!content.includes('setContext')) {
+		result = result.replace(scriptTag, `${scriptTag}\n\timport { setContext } from 'svelte'`)
+	} else if (!content.includes('onMount')) {
+		result = result.replace(scriptTag, `${scriptTag}\n\timport { onMount } from 'svelte'`)
+	}
+
+	if (!content.includes("from '$app/stores'")) {
+		result = result.replace(scriptTag, `${scriptTag}\n\timport { page } from '$app/stores'`)
+	}
+
+	// Inject kavach setup before closing </script>
+	result = result.replace('</script>', `${KAVACH_SETUP}\n</script>`)
+
+	return result
 }
