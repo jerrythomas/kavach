@@ -119,7 +119,7 @@ export class DoctorCommand {
 	}
 
 	#fixAuthPage(result) {
-		const segment = this.#config.routes.auth.replace(/^\//, '').split('/').pop()
+		const segment = this.#config.routes?.auth?.replace(/^\//, '').split('/').pop()
 		const path = result.path ?? resolve(this.#cwd, `src/routes/${segment}/+page.svelte`)
 		writeFile(path, generateAuthPage(this.#config))
 		return { ...result, ok: true, message: 'generated', fixed: true }
