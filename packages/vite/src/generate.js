@@ -50,7 +50,12 @@ function generateProviders(config) {
 
 function generateAuth(config, viteEnv = {}) {
 	const { env, logging, rules, routes } = config
-	const app = routes?.home ? { home: routes.home } : {}
+	const app = {}
+	if (routes?.home) app.home = routes.home
+	if (routes?.auth) app.login = routes.auth
+	if (routes?.logout) app.logout = routes.logout
+	if (routes?.data) app.data = routes.data
+	if (routes?.rpc) app.rpc = routes.rpc
 
 	if (config.adapter === 'supabase') {
 		return templates.authSupabase
