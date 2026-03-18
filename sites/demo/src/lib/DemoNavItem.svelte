@@ -1,25 +1,14 @@
-<script lang="ts">
+<script>
 	import { page } from '$app/stores'
-	import { goto } from '$app/navigation'
 	import { hackerMode } from './hacker.svelte'
 
-	let {
-		href,
-		label,
-		icon,
-		locked = false
-	}: {
-		href: string
-		label: string
-		icon: string
-		locked?: boolean
-	} = $props()
+	let { href, label, icon, locked = false } = $props()
 
 	const isActive = $derived(
 		$page.url.pathname === href || $page.url.pathname.startsWith(href + '/')
 	)
 
-	function handleClick(e: MouseEvent) {
+	function handleClick(e) {
 		if (locked && !hackerMode.value) {
 			e.preventDefault()
 			// Non-admin user in App Mode: do nothing (Kavach will redirect server-side anyway)

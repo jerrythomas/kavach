@@ -3,6 +3,11 @@
 	import { setContext, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import { env } from '$env/dynamic/public'
+	import DemoNavItem from '$lib/DemoNavItem.svelte'
+	import RoleCard from '$lib/RoleCard.svelte'
+	import SentryConfigPanel from '$lib/SentryConfigPanel.svelte'
+	import HackerToggle from '$lib/HackerToggle.svelte'
+	import FloatingBadge from '$lib/FloatingBadge.svelte'
 
 	let { children, data } = $props()
 
@@ -24,12 +29,21 @@
 	const adapterLabel =
 		{ supabase: 'Supabase', firebase: 'Firebase', convex: 'Convex' }[adapterId] ?? adapterId
 
-	const navLinks = [
-		{ href: '/dashboard', label: 'Dashboard', icon: 'i-app-list' },
-		{ href: '/data', label: 'Space Facts', icon: 'i-app-list' },
-		{ href: '/admin', label: 'Admin Panel', icon: 'i-app-shield' },
-		{ href: '/logout', label: 'Sign Out', icon: 'i-app-logout' }
-	]
+	const routeAccess = $derived([
+		{ path: '/dashboard', roles: '*', allowed: true },
+		{ path: '/data', roles: '*', allowed: true },
+		{ path: '/admin', roles: ['admin'], allowed: role === 'admin' }
+	])
+
+	const sentryRules = $derived([
+		{ path: '/', roles: 'public', allowed: true },
+		{ path: '/auth', roles: 'public', allowed: true },
+		{ path: '/dashboard', roles: '*', allowed: true },
+		{ path: '/data', roles: '*', allowed: true },
+		{ path: '/admin', roles: ['admin'], allowed: role === 'admin' },
+		{ path: '/data/facts', roles: '*', allowed: true },
+		{ path: '/data/admin-stats', roles: ['admin'], allowed: role === 'admin' }
+	])
 </script>
 
 <div class="bg-surface-z0 text-surface-z9 flex h-screen flex-col overflow-hidden">
@@ -66,18 +80,32 @@
 	<!-- Body -->
 	<div class="flex flex-1 overflow-hidden">
 		<!-- Sidebar -->
-		<aside class="border-surface-z2 bg-surface-z1 w-52 shrink-0 overflow-y-auto border-r">
+		<aside
+			class="border-surface-z2 bg-surface-z1 flex w-52 shrink-0 flex-col overflow-y-auto border-r"
+		>
 			<nav class="flex flex-col gap-1 p-3">
-				{#each navLinks as link (link.href)}
-					<a
-						href={link.href}
-						class="text-surface-z6 hover:bg-surface-z2 hover:text-surface-z9 flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
-					>
-						<span class="{link.icon} h-4 w-4" aria-hidden="true"></span>
-						{link.label}
-					</a>
-				{/each}
+				<DemoNavItem href="/dashboard" label="Dashboard" icon="i-app-list" />
+				<DemoNavItem href="/data" label="Space Facts" icon="i-app-list" />
+				<DemoNavItem
+					href="/admin"
+					label="Admin Panel"
+					icon="i-app-shield"
+					locked={role !== 'admin'}
+				/>
+				<DemoNavItem href="/logout" label="Sign Out" icon="i-app-logout" />
 			</nav>
+
+			<div class="border-surface-z2 border-t p-3">
+				<RoleCard {role} routes={routeAccess} />
+			</div>
+
+			<div class="border-surface-z2 border-t p-3">
+				<SentryConfigPanel rules={sentryRules} />
+			</div>
+
+			<div class="border-surface-z2 mt-auto border-t p-3">
+				<HackerToggle />
+			</div>
 		</aside>
 
 		<!-- Main -->
@@ -86,3 +114,5 @@
 		</main>
 	</div>
 </div>
+
+<FloatingBadge {adapterId} {adapterLabel} />

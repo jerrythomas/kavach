@@ -1,11 +1,5 @@
-<script lang="ts">
-	interface Rule {
-		path: string
-		roles: string | string[]
-		allowed: boolean
-	}
-
-	let { rules }: { rules: Rule[] } = $props()
+<script>
+	let { rules } = $props()
 	let open = $state(false)
 </script>
 
@@ -20,7 +14,7 @@
 
 	{#if open}
 		<div class="border-surface-z2 flex flex-col gap-1 rounded-lg border p-2">
-			{#each rules as rule}
+			{#each rules as rule (rule.path)}
 				<div class="flex items-center gap-2 py-0.5">
 					<span
 						class="h-2 w-2 shrink-0 rounded-full {rule.allowed ? 'bg-success-500' : 'bg-error-400'}"
