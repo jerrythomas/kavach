@@ -29,7 +29,6 @@
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./provider.css": "./src/provider.css",
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./src/index.js",
