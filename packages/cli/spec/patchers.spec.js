@@ -122,4 +122,12 @@ describe('patchLayoutSvelte', () => {
 		const output = patchLayoutSvelte(input)
 		expect(output).toBe(input)
 	})
+
+	it('injects $app/stores import when onMount is already present', () => {
+		const input = `<script>\n\timport { onMount } from 'svelte'\n</script>\n{@render children()}`
+		const output = patchLayoutSvelte(input)
+		expect(output).toContain("setContext('kavach'")
+		expect(output).toContain("from '$app/stores'")
+		expect(output).toContain("import { onMount } from 'svelte'")
+	})
 })
