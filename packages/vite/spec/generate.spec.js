@@ -103,6 +103,14 @@ describe('generateModule', () => {
 		expect(code).toContain('getLogger(null')
 	})
 
+	it('forwards routes to app config — auth maps to login', () => {
+		const code = generateModule('auth', config)
+		// routes.auth: '(public)/auth' should appear as login in the app object
+		expect(code).toContain("login: '(public)/auth'")
+		expect(code).toContain("logout: '/logout'")
+		expect(code).toContain("data: '(server)/data'")
+	})
+
 	it('should throw for unknown module', () => {
 		expect(() => generateModule('unknown', config)).toThrow('Unknown virtual module')
 	})
