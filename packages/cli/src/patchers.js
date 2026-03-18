@@ -127,6 +127,9 @@ export function patchLayoutSvelte(content) {
 		result = result.replace(scriptTag, `${scriptTag}\n\timport { onMount } from 'svelte'`)
 	}
 
+	// NOTE: uses original scriptTag as search string. Safe because each replace
+	// only prepends content after the tag, so the literal '<script' string
+	// remains at position 0 in result for subsequent replacements.
 	if (!content.includes("from '$app/stores'")) {
 		result = result.replace(scriptTag, `${scriptTag}\n\timport { page } from '$app/stores'`)
 	}
