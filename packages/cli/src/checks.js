@@ -1,4 +1,5 @@
-import { resolve } from 'path'
+import { resolve, join } from 'path'
+import { readdirSync } from 'fs'
 import { readFile, fileExists } from './fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './commands/constants.js'
 
@@ -193,6 +194,124 @@ export function checkEnvValues(cwd, config) {
 		message: 'all values set',
 		fixable: false
 	}
+}
+
+function findLayoutSvelteFiles(dir) {
+	const results = []
+	try {
+		for (const entry of readdirSync(dir, { withFileTypes: true })) {
+			const full = join(dir, entry.name)
+			if (entry.isDirectory()) {
+				results.push(...findLayoutSvelteFiles(full))
+			} else if (entry.name === '+layout.svelte' || entry.name.startsWith('+layout@')) {
+				results.push(full)
+			}
+		}
+	} catch {
+		// dir doesn't exist — return empty
+	}
+	return results
+}
+
+function collectAuthPage(full, segment, results) {
+	const page = join(full, '+page.svelte')
+	if (fileExists(page)) results.push(page)
+}
+
+function findAuthPageCandidates(dir, segment) {
+	const results = []
+	let entries
+	try {
+		entries = readdirSync(dir, { withFileTypes: true })
+	} catch {
+		return results
+	}
+	for (const entry of entries) {
+		if (!entry.isDirectory()) continue
+		const full = join(dir, entry.name)
+		if (entry.name === segment) collectAuthPage(full, segment, results)
+		else results.push(...findAuthPageCandidates(full, segment))
+	}
+	return results
+}
+
+export function checkContextSetup(cwd) {
+	const routesDir = resolve(cwd, 'src/routes')
+	const layouts = findLayoutSvelteFiles(routesDir)
+
+	if (layouts.length === 0) {
+		return {
+			id: 'layout-svelte',
+			ok: false,
+			label: '+layout.svelte',
+			message: 'not found',
+			hint: 'Run kavach doctor --fix',
+			fixable: true
+		}
+	}
+
+	const hasContext = layouts.some((p) => readFile(p).includes("setContext('kavach'"))
+	if (!hasContext) {
+		return {
+			id: 'layout-svelte',
+			ok: false,
+			label: '+layout.svelte',
+			message: "setContext('kavach') missing",
+			hint: 'Run kavach doctor --fix',
+			fixable: true
+		}
+	}
+
+	return {
+		id: 'layout-svelte',
+		ok: true,
+		label: '+layout.svelte',
+		message: 'valid',
+		fixable: false
+	}
+}
+
+export function checkAuthPage(cwd, config) {
+	if (!config?.routes?.auth) {
+		return {
+			id: 'auth-page',
+			ok: true,
+			label: 'auth page',
+			message: 'no auth route configured',
+			fixable: false
+		}
+	}
+
+	const segment = config.routes.auth.replace(/^\//, '').split('/').pop()
+	const routesDir = resolve(cwd, 'src/routes')
+	const candidates = findAuthPageCandidates(routesDir, segment)
+
+	if (candidates.length === 0) {
+		return {
+			id: 'auth-page',
+			ok: false,
+			label: 'auth page',
+			message: 'not found',
+			hint: 'Run kavach doctor --fix',
+			fixable: true
+		}
+	}
+
+	const found = candidates.find((p) => readFile(p).includes('AuthProvider'))
+	if (!found) {
+		const label = candidates[0].replace(`${routesDir}/`, '')
+		return {
+			id: 'auth-page',
+			ok: false,
+			label,
+			message: 'AuthProvider missing',
+			hint: 'Run kavach doctor --fix',
+			fixable: true,
+			path: candidates[0]
+		}
+	}
+
+	return { id: 'auth-page', ok: true, label: 'auth page', message: 'valid', fixable: false }
 }
 
 export function checkDeps(cwd, config) {
