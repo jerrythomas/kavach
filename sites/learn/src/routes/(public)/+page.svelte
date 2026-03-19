@@ -9,6 +9,14 @@
 		{ icon: 'i-app-code-visible', label: 'Pre-built UI components' }
 	]
 
+	const footerDocs = [
+		{ label: 'Quick Start', href: '/docs/quick-start' },
+		{ label: 'Adapters', href: '/docs/adapters' },
+		{ label: 'Configuration', href: '/docs/configuration' },
+		{ label: 'Sentry', href: '/docs/sentry' },
+		{ label: 'CLI', href: '/docs/cli' }
+	]
+
 	const docsSections = [
 		{
 			label: 'Getting Started',
@@ -164,13 +172,13 @@
 	</div>
 
 	<!-- Browse the docs -->
-	<div class="mx-auto mt-16 w-full max-w-3xl">
+	<div class="border-surface-z3 bg-surface-z1 mt-16 w-full max-w-4xl rounded-2xl border px-8 py-8">
 		<h2 class="text-surface-z9 mb-5 text-lg font-bold">Browse the docs</h2>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each docsSections as s (s.href)}
 				<a
 					href={s.href}
-					class="border-surface-z3 bg-surface-z1 hover:border-primary flex flex-col items-start gap-3 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
+					class="border-surface-z3 bg-surface-z0 hover:border-primary flex flex-col items-start gap-3 rounded-xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<span class="{s.icon} text-primary h-6 w-6"></span>
 					<div>
@@ -181,4 +189,97 @@
 			{/each}
 		</div>
 	</div>
+
+	<!-- CTA -->
+	<div class="cta-section mt-8 w-full max-w-4xl rounded-3xl px-8 py-14 text-center">
+		<h2 class="mb-3 text-2xl font-black text-white">Ready to get started?</h2>
+		<p class="mx-auto mb-8 max-w-md text-sm text-white/70">
+			Drop authentication into your SvelteKit app in minutes. One unified API for every platform.
+		</p>
+		<div class="flex justify-center gap-4">
+			<a
+				href="/docs/quick-start"
+				class="rounded-xl bg-white px-6 py-2.5 text-sm font-bold text-indigo-700 transition-colors hover:bg-white/90"
+			>
+				Get Started
+			</a>
+			<a
+				href="https://github.com/jerrythomas/kavach"
+				class="rounded-xl border border-white/30 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+			>
+				GitHub
+			</a>
+		</div>
+	</div>
+
+	<!-- Page footer links -->
+	<div class="page-footer mt-8 w-full max-w-4xl rounded-2xl px-8 py-10">
+		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+			<div class="space-y-3">
+				<div class="flex items-center gap-2">
+					<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-5 w-5 opacity-60" />
+					<span class="font-bold text-white">Kavach</span>
+				</div>
+				<p class="text-xs leading-relaxed text-white/50">
+					Authentication made simple for SvelteKit apps.
+				</p>
+			</div>
+			<div class="space-y-3">
+				<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Documentation</p>
+				<ul class="space-y-2">
+					{#each footerDocs as link (link.href)}
+						<li>
+							<a href={link.href} class="text-xs text-white/60 transition-colors hover:text-white">
+								{link.label}
+							</a>
+						</li>
+					{/each}
+				</ul>
+			</div>
+			<div class="space-y-3">
+				<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Resources</p>
+				<ul class="space-y-2">
+					<li>
+						<a
+							href="https://github.com/jerrythomas/kavach"
+							class="text-xs text-white/60 transition-colors hover:text-white"
+						>
+							GitHub
+						</a>
+					</li>
+					<li>
+						<a
+							href="/llms/llms.txt"
+							class="text-xs text-white/60 transition-colors hover:text-white"
+						>
+							llms.txt
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="mt-8 border-t border-white/10 pt-6">
+			<p class="text-xs text-white/30">© 2025 Kavach. MIT Licensed.</p>
+		</div>
+	</div>
 </main>
+
+<style>
+	@keyframes gradient-shift {
+		0%,
+		100% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+	}
+	.cta-section {
+		background: linear-gradient(135deg, #4f46e5, #7c3aed, #4f46e5);
+		background-size: 200% 200%;
+		animation: gradient-shift 6s ease infinite;
+	}
+	.page-footer {
+		background: #0f172a;
+	}
+</style>
