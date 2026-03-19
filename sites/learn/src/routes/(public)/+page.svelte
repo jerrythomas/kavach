@@ -60,7 +60,7 @@
 
 <main class="text-surface-z9 flex flex-col">
 	<!-- Padded content area -->
-	<div class="mx-auto flex w-full max-w-4xl flex-col items-center px-8 py-16">
+	<div class="mx-auto flex w-full max-w-4xl flex-col items-center px-8 pt-16 pb-12">
 		<!-- Hero -->
 		<div class="mb-16 w-full space-y-6 text-center">
 			<h1
@@ -175,15 +175,17 @@
 				{/each}
 			</div>
 		</div>
+	</div>
 
-		<!-- Browse the docs -->
-		<div class="border-surface-z3 bg-surface-z1 mt-16 w-full rounded-2xl border px-8 py-8">
+	<!-- Browse the docs — full width -->
+	<div class="bg-surface-z2 w-full px-8 py-12">
+		<div class="mx-auto max-w-4xl">
 			<h2 class="text-surface-z9 mb-5 text-lg font-bold">Browse the docs</h2>
 			<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 				{#each docsSections as s (s.href)}
 					<a
 						href={s.href}
-						class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-4 rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+						class="border-surface-z3 bg-surface-z0 hover:border-primary group flex flex-col gap-4 rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
 					>
 						<span class="{s.icon} text-primary h-6 w-6"></span>
 						<div>

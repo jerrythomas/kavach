@@ -55,31 +55,34 @@
 		border-radius: 50%;
 		pointer-events: none;
 	}
-	@keyframes float-a {
-		0%,
-		100% {
-			transform: translateY(0) scale(1);
+	/* :global so animation names aren't scoped — inline style references need the raw name */
+	:global {
+		@keyframes float-a {
+			0%,
+			100% {
+				transform: translateY(0) scale(1);
+			}
+			50% {
+				transform: translateY(-14px) scale(1.05);
+			}
 		}
-		50% {
-			transform: translateY(-14px) scale(1.05);
+		@keyframes float-b {
+			0%,
+			100% {
+				transform: translateY(0) scale(1);
+			}
+			50% {
+				transform: translateY(10px) scale(0.96);
+			}
 		}
-	}
-	@keyframes float-b {
-		0%,
-		100% {
-			transform: translateY(0) scale(1);
-		}
-		50% {
-			transform: translateY(10px) scale(0.96);
-		}
-	}
-	@keyframes float-c {
-		0%,
-		100% {
-			transform: translate(0, 0);
-		}
-		50% {
-			transform: translate(8px, -8px);
+		@keyframes float-c {
+			0%,
+			100% {
+				transform: translate(0, 0);
+			}
+			50% {
+				transform: translate(8px, -8px);
+			}
 		}
 	}
 </style>
