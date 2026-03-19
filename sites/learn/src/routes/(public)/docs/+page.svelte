@@ -1,63 +1,151 @@
 <script>
 	import { Code } from '@rokkit/ui'
+	import { PLATFORMS } from '$lib/demo/platforms'
 </script>
 
-<div class="max-w-4xl">
-	<h1 class="mb-4 text-3xl font-bold">Kavach Documentation</h1>
+<div class="max-w-4xl space-y-12">
+	<!-- Hero -->
+	<div>
+		<h1 class="text-surface-z9 mb-3 text-3xl font-extrabold tracking-tight">
+			Kavach Documentation
+		</h1>
+		<p class="text-surface-z6 max-w-2xl text-base leading-relaxed">
+			Drop-in authentication for SvelteKit — one unified API across all platforms, declarative route
+			protection, and pre-built UI components.
+		</p>
+	</div>
 
-	<p class="text-surface-z7 mb-8 text-lg">
-		Kavach is a drop-in authentication framework for SvelteKit with unified API across multiple
-		platforms, declarative route protection, and pre-built UI components.
-	</p>
-
-	<section class="mb-8">
-		<h2 class="mb-4 text-xl font-semibold">Quick Links</h2>
-		<ul class="space-y-2">
-			<li>
-				<a href="/docs/quick-start" class="text-primary hover:underline">Quick Start Guide</a>
-			</li>
-			<li>
-				<a href="/docs/configuration" class="text-primary hover:underline">Configuration Options</a>
-			</li>
-			<li>
-				<a href="/docs/adapters/supabase" class="text-primary hover:underline">Adapter Setup</a>
-			</li>
-			<li><a href="/docs/cli" class="text-primary hover:underline">CLI Commands</a></li>
-		</ul>
-	</section>
-
-	<section class="mb-8">
-		<h2 class="mb-4 text-xl font-semibold">Features</h2>
-		<ul class="grid grid-cols-2 gap-4">
-			<li class="border-surface-z3 rounded-lg border p-4">
-				<h3 class="mb-2 font-semibold">Platform Agnostic</h3>
-				<p class="text-surface-z7 text-sm">
-					Switch between Supabase, Firebase, Auth0, Amplify, or Convex by swapping one adapter
-				</p>
-			</li>
-			<li class="border-surface-z3 rounded-lg border p-4">
-				<h3 class="mb-2 font-semibold">Declarative Protection</h3>
-				<p class="text-surface-z7 text-sm">
-					Define route rules once; no scattered authentication checks
-				</p>
-			</li>
-			<li class="border-surface-z3 rounded-lg border p-4">
-				<h3 class="mb-2 font-semibold">Type Safe</h3>
-				<p class="text-surface-z7 text-sm">
-					Full TypeScript support with centralized types and unified session management
-				</p>
-			</li>
-			<li class="border-surface-z3 rounded-lg border p-4">
-				<h3 class="mb-2 font-semibold">Pre-built Components</h3>
-				<p class="text-surface-z7 text-sm">
-					Ready-to-use UI components for login, registration, and auth flows
-				</p>
-			</li>
-		</ul>
-	</section>
-
+	<!-- Get started -->
 	<section>
-		<h2 class="mb-4 text-xl font-semibold">Installation</h2>
+		<p class="text-surface-z5 mb-4 text-xs font-semibold tracking-wider uppercase">Get started</p>
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+			<a
+				href="/docs/quick-start"
+				class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+			>
+				<span class="i-app-login text-primary h-5 w-5"></span>
+				<span class="text-surface-z8 text-sm font-semibold">Quick Start</span>
+				<span class="text-surface-z5 text-xs">Up and running in 5 min</span>
+			</a>
+			<a
+				href="/docs/configuration"
+				class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+			>
+				<span class="i-app-list text-primary h-5 w-5"></span>
+				<span class="text-surface-z8 text-sm font-semibold">Configuration</span>
+				<span class="text-surface-z5 text-xs">kavach.config.js reference</span>
+			</a>
+			<a
+				href="/docs/adapters"
+				class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+			>
+				<span class="i-app-shield text-primary h-5 w-5"></span>
+				<span class="text-surface-z8 text-sm font-semibold">Adapters</span>
+				<span class="text-surface-z5 text-xs">Pick your auth platform</span>
+			</a>
+			<a
+				href="/docs/cli"
+				class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-2 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+			>
+				<span class="i-app-code-visible text-primary h-5 w-5"></span>
+				<span class="text-surface-z8 text-sm font-semibold">CLI</span>
+				<span class="text-surface-z5 text-xs">kavach init, doctor, generate</span>
+			</a>
+		</div>
+	</section>
+
+	<!-- Adapter grid -->
+	<section>
+		<p class="text-surface-z5 mb-4 text-xs font-semibold tracking-wider uppercase">
+			Choose an adapter
+		</p>
+		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+			{#each PLATFORMS as platform (platform.id)}
+				<a
+					href="/docs/adapters/{platform.id}"
+					class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-3 rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+				>
+					<!-- Icon + badge -->
+					<div class="flex items-start justify-between">
+						<div
+							class="flex h-11 w-11 items-center justify-center rounded-xl {platform.iconFallback} bg-opacity-10"
+						>
+							<span class="{platform.icon} h-7 w-7" aria-hidden="true"></span>
+						</div>
+						<span
+							class="rounded-full px-2.5 py-0.5 text-xs font-semibold {platform.live
+								? 'bg-success-100 text-success-700'
+								: 'bg-surface-z3 text-surface-z5'}"
+						>
+							{platform.live ? 'LIVE' : 'WIP'}
+						</span>
+					</div>
+
+					<!-- Name + description -->
+					<div>
+						<p class="text-surface-z9 group-hover:text-primary mb-0.5 font-bold transition-colors">
+							{platform.name}
+						</p>
+						<p class="text-surface-z5 text-xs leading-relaxed">{platform.description}</p>
+					</div>
+
+					<!-- Capability pills -->
+					<div class="flex flex-wrap gap-1.5">
+						{#each platform.capabilities.slice(0, 3) as cap}
+							<span class="bg-surface-z2 text-surface-z5 rounded-full px-2 py-0.5 text-xs"
+								>{cap}</span
+							>
+						{/each}
+					</div>
+				</a>
+			{/each}
+		</div>
+	</section>
+
+	<!-- What Kavach provides -->
+	<section>
+		<p class="text-surface-z5 mb-4 text-xs font-semibold tracking-wider uppercase">
+			What Kavach provides
+		</p>
+		<div class="grid grid-cols-2 gap-3">
+			<div class="border-surface-z3 bg-surface-z1 flex items-start gap-3 rounded-xl border p-4">
+				<span class="i-app-shield text-primary mt-0.5 h-5 w-5 shrink-0"></span>
+				<div>
+					<p class="text-surface-z8 mb-1 text-sm font-semibold">Role-based route protection</p>
+					<p class="text-surface-z5 text-xs">
+						Declare rules once in config — no scattered auth checks
+					</p>
+				</div>
+			</div>
+			<div class="border-surface-z3 bg-surface-z1 flex items-start gap-3 rounded-xl border p-4">
+				<span class="i-app-login text-primary mt-0.5 h-5 w-5 shrink-0"></span>
+				<div>
+					<p class="text-surface-z8 mb-1 text-sm font-semibold">Server-side session cookies</p>
+					<p class="text-surface-z5 text-xs">
+						Secure httpOnly cookies, no client-side token exposure
+					</p>
+				</div>
+			</div>
+			<div class="border-surface-z3 bg-surface-z1 flex items-start gap-3 rounded-xl border p-4">
+				<span class="i-app-list text-primary mt-0.5 h-5 w-5 shrink-0"></span>
+				<div>
+					<p class="text-surface-z8 mb-1 text-sm font-semibold">Platform agnostic API</p>
+					<p class="text-surface-z5 text-xs">Swap adapters without touching your app code</p>
+				</div>
+			</div>
+			<div class="border-surface-z3 bg-surface-z1 flex items-start gap-3 rounded-xl border p-4">
+				<span class="i-app-code-visible text-primary mt-0.5 h-5 w-5 shrink-0"></span>
+				<div>
+					<p class="text-surface-z8 mb-1 text-sm font-semibold">Pre-built UI components</p>
+					<p class="text-surface-z5 text-xs">AuthPage, AuthProvider, login flows ready to use</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Installation -->
+	<section>
+		<p class="text-surface-z5 mb-4 text-xs font-semibold tracking-wider uppercase">Installation</p>
 		<Code code={`npm install kavach @kavach/sentry @kavach/ui`} language="bash" />
 	</section>
 </div>
