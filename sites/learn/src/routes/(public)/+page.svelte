@@ -160,7 +160,7 @@
 	</div>
 
 	<!-- Browse the docs — full width -->
-	<div class="bg-surface-z2 w-full py-12">
+	<div class="bg-surface-z2/80 w-full py-12">
 		<div class="mx-auto max-w-4xl px-8">
 			<h2 class="text-surface-z9 mb-5">Browse the docs</h2>
 			<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -308,11 +308,16 @@
 		}
 	}
 	.cta-section {
-		background: linear-gradient(135deg, #0d9488, #0ea5e9, #0d9488);
+		background: linear-gradient(
+			135deg,
+			rgba(13, 148, 136, 0.8),
+			rgba(14, 165, 233, 0.8),
+			rgba(13, 148, 136, 0.8)
+		);
 		background-size: 200% 200%;
 		animation: gradient-shift 6s ease infinite;
 	}
 	.page-footer {
-		background: #0f172a;
+		background: rgba(15, 23, 42, 0.8);
 	}
 </style>
