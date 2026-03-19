@@ -55,9 +55,7 @@
 	<div class="mx-auto flex w-full max-w-4xl flex-col items-center px-8 pt-16 pb-12">
 		<!-- Hero -->
 		<div class="mb-16 w-full space-y-6 text-center">
-			<h1
-				class="text-surface-z9 flex w-full items-center justify-center gap-3 text-5xl font-black tracking-tight"
-			>
+			<h1 class="text-surface-z9 flex w-full items-center justify-center gap-3">
 				<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-14 w-14" />
 				Kavach
 			</h1>
@@ -77,7 +75,7 @@
 				<div
 					class="border-surface-z3 bg-surface-z1 flex flex-1 flex-col gap-3 rounded-2xl border p-5 text-left shadow-sm"
 				>
-					<p class="text-surface-z5 text-xs font-semibold tracking-wider uppercase">Works with</p>
+					<p class="section-label text-surface-z5">Works with</p>
 					<div class="flex flex-wrap items-center gap-3">
 						{#each PLATFORMS as platform (platform.id)}
 							<a
@@ -95,7 +93,7 @@
 				<div
 					class="border-surface-z3 bg-surface-z1 flex flex-1 flex-col gap-3 rounded-2xl border p-5 text-left shadow-sm"
 				>
-					<p class="text-surface-z5 text-xs font-semibold tracking-wider uppercase">Quick start</p>
+					<p class="section-label text-surface-z5">Quick start</p>
 					<div
 						class="border-surface-z2 bg-surface-z2 overflow-hidden rounded-md border [&_pre]:!py-2"
 					>
@@ -108,9 +106,7 @@
 
 		<!-- What Kavach provides -->
 		<div class="border-primary/20 bg-primary/5 mb-12 w-full rounded-2xl border px-6 py-5">
-			<p class="text-primary mb-3 text-xs font-semibold tracking-wider uppercase">
-				What Kavach provides with any platform
-			</p>
+			<p class="section-label text-primary">What Kavach provides with any platform</p>
 			<div class="flex flex-wrap gap-5">
 				{#each features as feature (feature.icon)}
 					<div class="flex items-center gap-2 text-sm">
@@ -123,9 +119,7 @@
 
 		<!-- Adapter grid -->
 		<div class="w-full">
-			<p class="text-surface-z5 mb-5 text-xs font-semibold tracking-wider uppercase">
-				Choose your platform
-			</p>
+			<p class="section-label text-surface-z5">Choose your platform</p>
 			<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
 				{#each PLATFORMS as platform (platform.id)}
 					<a
@@ -144,16 +138,12 @@
 								{platform.live ? 'LIVE' : 'WIP'}
 							</span>
 						</div>
-
 						<div>
-							<h2
-								class="text-surface-z9 group-hover:text-primary mb-0.5 text-lg font-bold transition-colors"
-							>
+							<h3 class="text-surface-z9 group-hover:text-primary mb-0.5 transition-colors">
 								{platform.name}
-							</h2>
+							</h3>
 							<p class="text-surface-z6 text-sm">{platform.description}</p>
 						</div>
-
 						<ul class="flex flex-col gap-1.5">
 							{#each platform.capabilities as cap}
 								<li class="flex items-center gap-2 text-sm">
@@ -172,7 +162,7 @@
 	<!-- Browse the docs — full width -->
 	<div class="bg-surface-z2 w-full py-12">
 		<div class="mx-auto max-w-4xl px-8">
-			<h2 class="text-surface-z9 mb-5 text-lg font-bold">Browse the docs</h2>
+			<h2 class="text-surface-z9 mb-5">Browse the docs</h2>
 			<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 				{#each docsSections as s (s.href)}
 					<a
@@ -181,7 +171,7 @@
 					>
 						<span class="{s.icon} text-primary h-6 w-6"></span>
 						<div>
-							<p class="text-surface-z9 font-semibold">{s.label}</p>
+							<h3 class="text-surface-z9">{s.label}</h3>
 							<p class="text-surface-z5 mt-0.5 text-xs leading-relaxed">{s.desc}</p>
 						</div>
 					</a>
@@ -193,9 +183,8 @@
 	<!-- CTA — full width with floating circles -->
 	<div class="cta-section relative w-full overflow-hidden py-16 text-center">
 		<FloatingCircles count={7} minSize={10} maxSize={68} />
-		<!-- Content -->
 		<div class="relative z-10 mx-auto max-w-4xl px-8">
-			<h2 class="mb-3 text-2xl font-black text-white">Ready to get started?</h2>
+			<h2 class="mb-3 text-white">Ready to get started?</h2>
 			<p class="mx-auto mb-8 max-w-md text-sm text-white/70">
 				Drop authentication into your SvelteKit app in minutes. One unified API for every platform.
 			</p>
@@ -221,93 +210,94 @@
 		<div class="mx-auto max-w-4xl px-8">
 			<div class="grid grid-cols-2 gap-6 sm:grid-cols-5">
 				<!-- Brand -->
-				<div class="col-span-2 space-y-2 sm:col-span-1">
+				<div class="col-span-2 space-y-1.5 sm:col-span-1">
 					<div class="flex items-center gap-2.5">
 						<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-8 w-8 opacity-70" />
 						<span class="text-base font-bold text-white">Kavach</span>
 					</div>
 					<p class="text-xs leading-relaxed text-white/40">Auth for SvelteKit.</p>
+					<p class="text-xs text-white/30">© 2025 Kavach. MIT Licensed.</p>
 				</div>
 				<!-- Start -->
 				<div class="space-y-2">
-					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Start</p>
+					<p class="footer-label">Start</p>
 					<ul class="space-y-1.5">
-						<li>
-							<a
-								href="/docs/quick-start"
-								class="text-xs text-white/60 transition-colors hover:text-white">Quick Start</a
-							>
-						</li>
-						<li>
-							<a
-								href="/docs/adapters"
-								class="text-xs text-white/60 transition-colors hover:text-white">Adapters</a
-							>
-						</li>
+						<li><a href="/docs/quick-start" class="footer-link">Quick Start</a></li>
+						<li><a href="/docs/adapters" class="footer-link">Adapters</a></li>
 					</ul>
 				</div>
 				<!-- Configure -->
 				<div class="space-y-2">
-					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Configure</p>
+					<p class="footer-label">Configure</p>
 					<ul class="space-y-1.5">
-						<li>
-							<a
-								href="/docs/configuration"
-								class="text-xs text-white/60 transition-colors hover:text-white">Configuration</a
-							>
-						</li>
-						<li>
-							<a
-								href="/docs/sentry"
-								class="text-xs text-white/60 transition-colors hover:text-white">Sentry</a
-							>
-						</li>
+						<li><a href="/docs/configuration" class="footer-link">Configuration</a></li>
+						<li><a href="/docs/sentry" class="footer-link">Sentry</a></li>
 					</ul>
 				</div>
 				<!-- Tools -->
 				<div class="space-y-2">
-					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Tools</p>
+					<p class="footer-label">Tools</p>
 					<ul class="space-y-1.5">
-						<li>
-							<a href="/docs/cli" class="text-xs text-white/60 transition-colors hover:text-white"
-								>CLI</a
-							>
-						</li>
-						<li>
-							<a
-								href="/docs/components"
-								class="text-xs text-white/60 transition-colors hover:text-white">UI Components</a
-							>
-						</li>
+						<li><a href="/docs/cli" class="footer-link">CLI</a></li>
+						<li><a href="/docs/components" class="footer-link">UI Components</a></li>
 					</ul>
 				</div>
 				<!-- Resources -->
 				<div class="space-y-2">
-					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Resources</p>
+					<p class="footer-label">Resources</p>
 					<ul class="space-y-1.5">
-						<li>
-							<a
-								href="https://github.com/jerrythomas/kavach"
-								class="text-xs text-white/60 transition-colors hover:text-white">GitHub</a
-							>
-						</li>
-						<li>
-							<a
-								href="/llms/llms.txt"
-								class="text-xs text-white/60 transition-colors hover:text-white">llms.txt</a
-							>
-						</li>
+						<li><a href="https://github.com/jerrythomas/kavach" class="footer-link">GitHub</a></li>
+						<li><a href="/llms/llms.txt" class="footer-link">llms.txt</a></li>
 					</ul>
 				</div>
-			</div>
-			<div class="mt-6 border-t border-white/10 pt-4">
-				<p class="text-xs text-white/30">© 2025 Kavach. MIT Licensed.</p>
 			</div>
 		</div>
 	</footer>
 </main>
 
 <style>
+	/* Heading scale — size and weight defined once */
+	h1 {
+		font-size: 3rem;
+		font-weight: 900;
+		letter-spacing: -0.025em;
+		line-height: 1.1;
+	}
+	h2 {
+		font-size: 1.75rem;
+		font-weight: 800;
+		line-height: 1.25;
+	}
+	h3 {
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.4;
+	}
+	/* Eyebrow labels above sections */
+	:global(.section-label) {
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		margin-bottom: 1.25rem;
+	}
+	/* Footer column labels and links */
+	:global(.footer-label) {
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.4);
+	}
+	:global(.footer-link) {
+		font-size: 0.75rem;
+		color: rgba(255, 255, 255, 0.6);
+		transition: color 0.15s;
+	}
+	:global(.footer-link:hover) {
+		color: white;
+	}
+	/* CTA gradient */
 	@keyframes gradient-shift {
 		0%,
 		100% {
