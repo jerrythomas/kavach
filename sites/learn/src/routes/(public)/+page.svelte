@@ -1,6 +1,7 @@
 <script>
 	import { Button, Code } from '@rokkit/ui'
 	import { PLATFORMS } from '$lib/demo/platforms'
+	import FloatingCircles from '$lib/FloatingCircles.svelte'
 
 	const features = [
 		{ icon: 'i-app-shield', label: 'Role-based route protection' },
@@ -197,12 +198,7 @@
 
 	<!-- CTA — full width with floating circles -->
 	<div class="cta-section relative w-full overflow-hidden px-8 py-16 text-center">
-		<!-- Decorative circles -->
-		<div class="circle circle-1"></div>
-		<div class="circle circle-2"></div>
-		<div class="circle circle-3"></div>
-		<div class="circle circle-4"></div>
-		<div class="circle circle-5"></div>
+		<FloatingCircles count={7} minSize={10} maxSize={68} />
 		<!-- Content -->
 		<div class="relative z-10 mx-auto max-w-4xl">
 			<h2 class="mb-3 text-2xl font-black text-white">Ready to get started?</h2>
@@ -295,74 +291,5 @@
 	}
 	.page-footer {
 		background: #0f172a;
-	}
-	@keyframes float-a {
-		0%,
-		100% {
-			transform: translateY(0px) scale(1);
-		}
-		50% {
-			transform: translateY(-18px) scale(1.04);
-		}
-	}
-	@keyframes float-b {
-		0%,
-		100% {
-			transform: translateY(0px) scale(1);
-		}
-		50% {
-			transform: translateY(14px) scale(0.97);
-		}
-	}
-	@keyframes float-c {
-		0%,
-		100% {
-			transform: translate(0, 0);
-		}
-		50% {
-			transform: translate(10px, -10px);
-		}
-	}
-	.circle {
-		position: absolute;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.1);
-	}
-	.circle-1 {
-		width: 140px;
-		height: 140px;
-		top: -50px;
-		right: 8%;
-		animation: float-a 8s ease-in-out infinite;
-	}
-	.circle-2 {
-		width: 80px;
-		height: 80px;
-		top: 24px;
-		left: 12%;
-		animation: float-b 10s ease-in-out infinite;
-	}
-	.circle-3 {
-		width: 48px;
-		height: 48px;
-		bottom: 20px;
-		left: 6%;
-		animation: float-a 7s ease-in-out infinite 1s;
-	}
-	.circle-4 {
-		width: 96px;
-		height: 96px;
-		bottom: 16px;
-		right: 18%;
-		opacity: 0.07;
-		animation: float-c 9s ease-in-out infinite 2s;
-	}
-	.circle-5 {
-		width: 40px;
-		height: 40px;
-		top: 35%;
-		left: 38%;
-		opacity: 0.12;
-		animation: float-b 6s ease-in-out infinite 0.5s;
 	}
 </style>
