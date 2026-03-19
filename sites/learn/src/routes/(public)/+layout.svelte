@@ -7,14 +7,13 @@
 
 	const navItems = [
 		{ href: '/', label: 'Home' },
-		{ href: '/docs', label: 'Docs' },
-		{ href: '/demo', label: 'Demo' }
+		{ href: '/docs', label: 'Docs' }
 	]
 </script>
 
-<div class="flex h-screen flex-col">
+<div class="demo-grid-bg bg-surface-z0 flex h-screen flex-col">
 	<header
-		class="border-surface-z1 bg-surface-z1 text-surface-z8 flex w-full shrink-0 items-center justify-between border-b px-8 py-4"
+		class="border-surface-z2 bg-surface-z1 text-surface-z8 flex w-full shrink-0 items-center justify-between border-b px-8 py-4"
 	>
 		<div class="flex items-center gap-8">
 			<h1 class="text-xl font-bold">
@@ -40,12 +39,12 @@
 		<ThemeSwitcherToggle />
 	</header>
 
-	<div class="min-h-0 flex-1">
+	<div class="min-h-0 flex-1 overflow-y-auto">
 		{@render children()}
 	</div>
 
 	<footer
-		class="border-surface-z3 text-surface-z6 flex shrink-0 items-center justify-between border-t px-8 py-3 text-xs"
+		class="border-surface-z2 bg-surface-z1 text-surface-z6 flex shrink-0 items-center justify-between border-t px-8 py-3 text-xs"
 	>
 		<span>Kavach — Authentication made simple</span>
 		<a

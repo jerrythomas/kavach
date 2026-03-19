@@ -20,3 +20,4 @@ test-results/
 .eslintcache
 # Generated llms docs (copied from docs/llms/ by prebuild)
 sites/learn/static/llms/
+.playwright-mcp
