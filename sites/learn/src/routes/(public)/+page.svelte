@@ -329,39 +329,39 @@
 		background: rgba(255, 255, 255, 0.1);
 	}
 	.circle-1 {
-		width: 320px;
-		height: 320px;
-		top: -100px;
-		right: -60px;
+		width: 140px;
+		height: 140px;
+		top: -50px;
+		right: 8%;
 		animation: float-a 8s ease-in-out infinite;
 	}
 	.circle-2 {
-		width: 200px;
-		height: 200px;
-		top: 20px;
-		left: 10%;
+		width: 80px;
+		height: 80px;
+		top: 24px;
+		left: 12%;
 		animation: float-b 10s ease-in-out infinite;
 	}
 	.circle-3 {
-		width: 120px;
-		height: 120px;
-		bottom: -30px;
-		left: 5%;
+		width: 48px;
+		height: 48px;
+		bottom: 20px;
+		left: 6%;
 		animation: float-a 7s ease-in-out infinite 1s;
 	}
 	.circle-4 {
-		width: 180px;
-		height: 180px;
-		bottom: 10px;
-		right: 20%;
+		width: 96px;
+		height: 96px;
+		bottom: 16px;
+		right: 18%;
 		opacity: 0.07;
 		animation: float-c 9s ease-in-out infinite 2s;
 	}
 	.circle-5 {
-		width: 80px;
-		height: 80px;
-		top: 40%;
-		left: 40%;
+		width: 40px;
+		height: 40px;
+		top: 35%;
+		left: 38%;
 		opacity: 0.12;
 		animation: float-b 6s ease-in-out infinite 0.5s;
 	}
