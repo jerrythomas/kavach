@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores'
+	import { afterNavigate } from '$app/navigation'
 	import { TableOfContents } from '@rokkit/app'
 
 	const docsItems = [
@@ -31,6 +32,9 @@
 
 	let { children } = $props()
 	let selected = $derived($page.url.pathname)
+	let toc = $state(null)
+
+	afterNavigate(() => toc?.rescan())
 </script>
 
 <div class="text-surface-z7 flex h-full">
@@ -97,9 +101,9 @@
 			{@render children()}
 		</main>
 		<aside
-			class="border-surface-z3 hidden w-52 flex-shrink-0 flex-col overflow-y-auto border-l px-5 py-6 xl:flex"
+			class="border-surface-z3 hidden w-52 flex-shrink-0 flex-col overflow-y-auto border-l px-5 py-6 lg:flex"
 		>
-			<TableOfContents />
+			<TableOfContents bind:this={toc} />
 		</aside>
 	</div>
 </div>
