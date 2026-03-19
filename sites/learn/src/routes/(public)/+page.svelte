@@ -182,7 +182,7 @@
 				{#each docsSections as s (s.href)}
 					<a
 						href={s.href}
-						class="border-surface-z3 bg-surface-z0 hover:border-primary flex flex-col items-start gap-3 rounded-xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
+						class="border-surface-z3 bg-surface-z1 hover:border-primary group flex flex-col gap-4 rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
 					>
 						<span class="{s.icon} text-primary h-6 w-6"></span>
 						<div>
@@ -195,9 +195,16 @@
 		</div>
 	</div>
 
-	<!-- CTA — full width -->
-	<div class="cta-section w-full px-8 py-16 text-center">
-		<div class="mx-auto max-w-4xl">
+	<!-- CTA — full width with floating circles -->
+	<div class="cta-section relative w-full overflow-hidden px-8 py-16 text-center">
+		<!-- Decorative circles -->
+		<div class="circle circle-1"></div>
+		<div class="circle circle-2"></div>
+		<div class="circle circle-3"></div>
+		<div class="circle circle-4"></div>
+		<div class="circle circle-5"></div>
+		<!-- Content -->
+		<div class="relative z-10 mx-auto max-w-4xl">
 			<h2 class="mb-3 text-2xl font-black text-white">Ready to get started?</h2>
 			<p class="mx-auto mb-8 max-w-md text-sm text-white/70">
 				Drop authentication into your SvelteKit app in minutes. One unified API for every platform.
@@ -288,5 +295,42 @@
 	}
 	.page-footer {
 		background: #0f172a;
+	}
+	.circle {
+		position: absolute;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.1);
+	}
+	.circle-1 {
+		width: 320px;
+		height: 320px;
+		top: -100px;
+		right: -60px;
+	}
+	.circle-2 {
+		width: 200px;
+		height: 200px;
+		top: 20px;
+		left: 10%;
+	}
+	.circle-3 {
+		width: 120px;
+		height: 120px;
+		bottom: -30px;
+		left: 5%;
+	}
+	.circle-4 {
+		width: 180px;
+		height: 180px;
+		bottom: 10px;
+		right: 20%;
+		opacity: 0.07;
+	}
+	.circle-5 {
+		width: 80px;
+		height: 80px;
+		top: 40%;
+		left: 40%;
+		opacity: 0.12;
 	}
 </style>
