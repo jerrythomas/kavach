@@ -38,6 +38,7 @@ export default defineConfig({
 		'bg-indigo-600',
 		'bg-indigo-100',
 		'text-indigo-700',
+		'text-teal-700',
 		'text-indigo-600',
 		'text-indigo-400',
 		'bg-indigo-50',
