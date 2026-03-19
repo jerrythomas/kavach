@@ -8,6 +8,45 @@
 		{ icon: 'i-app-list', label: 'Cached login history' },
 		{ icon: 'i-app-code-visible', label: 'Pre-built UI components' }
 	]
+
+	const docsSections = [
+		{
+			label: 'Getting Started',
+			icon: 'i-app-login',
+			href: '/docs/quick-start',
+			desc: 'Install, scaffold, and go live in minutes'
+		},
+		{
+			label: 'Adapters',
+			icon: 'i-auth-supabase',
+			href: '/docs/adapters',
+			desc: 'Supabase, Firebase, Convex, Auth0, Amplify'
+		},
+		{
+			label: 'Configuration',
+			icon: 'i-app-list',
+			href: '/docs/configuration',
+			desc: 'Routes, roles, sessions, and redirects'
+		},
+		{
+			label: 'UI Components',
+			icon: 'i-app-code-visible',
+			href: '/docs/components',
+			desc: 'AuthPage, LoginCard, AuthButton, and more'
+		},
+		{
+			label: 'Sentry',
+			icon: 'i-app-shield',
+			href: '/docs/sentry',
+			desc: 'Declarative route protection rules'
+		},
+		{
+			label: 'CLI',
+			icon: 'i-app-code-hidden',
+			href: '/docs/cli',
+			desc: 'Doctor, init, and scaffold commands'
+		}
+	]
 </script>
 
 <main class="text-surface-z9 flex flex-col items-center px-8 py-16">
@@ -119,6 +158,25 @@
 							</li>
 						{/each}
 					</ul>
+				</a>
+			{/each}
+		</div>
+	</div>
+
+	<!-- Browse the docs -->
+	<div class="mx-auto mt-16 w-full max-w-3xl">
+		<h2 class="text-surface-z9 mb-5 text-lg font-bold">Browse the docs</h2>
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+			{#each docsSections as s (s.href)}
+				<a
+					href={s.href}
+					class="border-surface-z3 bg-surface-z1 hover:border-primary flex flex-col items-start gap-3 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
+				>
+					<span class="{s.icon} text-primary h-6 w-6"></span>
+					<div>
+						<p class="text-surface-z9 font-semibold">{s.label}</p>
+						<p class="text-surface-z5 mt-0.5 text-xs leading-relaxed">{s.desc}</p>
+					</div>
 				</a>
 			{/each}
 		</div>
