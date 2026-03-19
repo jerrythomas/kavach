@@ -296,6 +296,33 @@
 	.page-footer {
 		background: #0f172a;
 	}
+	@keyframes float-a {
+		0%,
+		100% {
+			transform: translateY(0px) scale(1);
+		}
+		50% {
+			transform: translateY(-18px) scale(1.04);
+		}
+	}
+	@keyframes float-b {
+		0%,
+		100% {
+			transform: translateY(0px) scale(1);
+		}
+		50% {
+			transform: translateY(14px) scale(0.97);
+		}
+	}
+	@keyframes float-c {
+		0%,
+		100% {
+			transform: translate(0, 0);
+		}
+		50% {
+			transform: translate(10px, -10px);
+		}
+	}
 	.circle {
 		position: absolute;
 		border-radius: 50%;
@@ -306,18 +333,21 @@
 		height: 320px;
 		top: -100px;
 		right: -60px;
+		animation: float-a 8s ease-in-out infinite;
 	}
 	.circle-2 {
 		width: 200px;
 		height: 200px;
 		top: 20px;
 		left: 10%;
+		animation: float-b 10s ease-in-out infinite;
 	}
 	.circle-3 {
 		width: 120px;
 		height: 120px;
 		bottom: -30px;
 		left: 5%;
+		animation: float-a 7s ease-in-out infinite 1s;
 	}
 	.circle-4 {
 		width: 180px;
@@ -325,6 +355,7 @@
 		bottom: 10px;
 		right: 20%;
 		opacity: 0.07;
+		animation: float-c 9s ease-in-out infinite 2s;
 	}
 	.circle-5 {
 		width: 80px;
@@ -332,5 +363,6 @@
 		top: 40%;
 		left: 40%;
 		opacity: 0.12;
+		animation: float-b 6s ease-in-out infinite 0.5s;
 	}
 </style>
