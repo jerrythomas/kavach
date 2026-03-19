@@ -1,6 +1,6 @@
 {
   "name": "@kavach/query",
-  "version": "1.0.0-next.36",
+  "version": "1.0.0-next.37",
   "description": "Adapter-agnostic query filter parser for kavach",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
