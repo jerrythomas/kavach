@@ -10,14 +10,6 @@
 		{ icon: 'i-app-code-visible', label: 'Pre-built UI components' }
 	]
 
-	const footerDocs = [
-		{ label: 'Quick Start', href: '/docs/quick-start' },
-		{ label: 'Adapters', href: '/docs/adapters' },
-		{ label: 'Configuration', href: '/docs/configuration' },
-		{ label: 'Sentry', href: '/docs/sentry' },
-		{ label: 'CLI', href: '/docs/cli' }
-	]
-
 	const docsSections = [
 		{
 			label: 'Getting Started',
@@ -178,8 +170,8 @@
 	</div>
 
 	<!-- Browse the docs — full width -->
-	<div class="bg-surface-z2 w-full px-8 py-12">
-		<div class="mx-auto max-w-4xl">
+	<div class="bg-surface-z2 w-full py-12">
+		<div class="mx-auto max-w-4xl px-8">
 			<h2 class="text-surface-z9 mb-5 text-lg font-bold">Browse the docs</h2>
 			<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 				{#each docsSections as s (s.href)}
@@ -199,10 +191,10 @@
 	</div>
 
 	<!-- CTA — full width with floating circles -->
-	<div class="cta-section relative w-full overflow-hidden px-8 py-16 text-center">
+	<div class="cta-section relative w-full overflow-hidden py-16 text-center">
 		<FloatingCircles count={7} minSize={10} maxSize={68} />
 		<!-- Content -->
-		<div class="relative z-10 mx-auto max-w-4xl">
+		<div class="relative z-10 mx-auto max-w-4xl px-8">
 			<h2 class="mb-3 text-2xl font-black text-white">Ready to get started?</h2>
 			<p class="mx-auto mb-8 max-w-md text-sm text-white/70">
 				Drop authentication into your SvelteKit app in minutes. One unified API for every platform.
@@ -225,53 +217,92 @@
 	</div>
 
 	<!-- Footer — full width -->
-	<footer class="page-footer w-full px-8 py-10">
-		<div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 sm:grid-cols-3">
-			<div class="space-y-3">
-				<div class="flex items-center gap-2">
-					<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-5 w-5 opacity-60" />
-					<span class="font-bold text-white">Kavach</span>
+	<footer class="page-footer w-full py-8">
+		<div class="mx-auto max-w-4xl px-8">
+			<div class="grid grid-cols-2 gap-6 sm:grid-cols-5">
+				<!-- Brand -->
+				<div class="col-span-2 space-y-2 sm:col-span-1">
+					<div class="flex items-center gap-2.5">
+						<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-8 w-8 opacity-70" />
+						<span class="text-base font-bold text-white">Kavach</span>
+					</div>
+					<p class="text-xs leading-relaxed text-white/40">Auth for SvelteKit.</p>
 				</div>
-				<p class="text-xs leading-relaxed text-white/50">
-					Authentication made simple for SvelteKit apps.
-				</p>
-			</div>
-			<div class="space-y-3">
-				<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Documentation</p>
-				<ul class="space-y-2">
-					{#each footerDocs as link (link.href)}
+				<!-- Start -->
+				<div class="space-y-2">
+					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Start</p>
+					<ul class="space-y-1.5">
 						<li>
-							<a href={link.href} class="text-xs text-white/60 transition-colors hover:text-white">
-								{link.label}
-							</a>
+							<a
+								href="/docs/quick-start"
+								class="text-xs text-white/60 transition-colors hover:text-white">Quick Start</a
+							>
 						</li>
-					{/each}
-				</ul>
+						<li>
+							<a
+								href="/docs/adapters"
+								class="text-xs text-white/60 transition-colors hover:text-white">Adapters</a
+							>
+						</li>
+					</ul>
+				</div>
+				<!-- Configure -->
+				<div class="space-y-2">
+					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Configure</p>
+					<ul class="space-y-1.5">
+						<li>
+							<a
+								href="/docs/configuration"
+								class="text-xs text-white/60 transition-colors hover:text-white">Configuration</a
+							>
+						</li>
+						<li>
+							<a
+								href="/docs/sentry"
+								class="text-xs text-white/60 transition-colors hover:text-white">Sentry</a
+							>
+						</li>
+					</ul>
+				</div>
+				<!-- Tools -->
+				<div class="space-y-2">
+					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Tools</p>
+					<ul class="space-y-1.5">
+						<li>
+							<a href="/docs/cli" class="text-xs text-white/60 transition-colors hover:text-white"
+								>CLI</a
+							>
+						</li>
+						<li>
+							<a
+								href="/docs/components"
+								class="text-xs text-white/60 transition-colors hover:text-white">UI Components</a
+							>
+						</li>
+					</ul>
+				</div>
+				<!-- Resources -->
+				<div class="space-y-2">
+					<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Resources</p>
+					<ul class="space-y-1.5">
+						<li>
+							<a
+								href="https://github.com/jerrythomas/kavach"
+								class="text-xs text-white/60 transition-colors hover:text-white">GitHub</a
+							>
+						</li>
+						<li>
+							<a
+								href="/llms/llms.txt"
+								class="text-xs text-white/60 transition-colors hover:text-white">llms.txt</a
+							>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="space-y-3">
-				<p class="text-xs font-semibold tracking-wider text-white/40 uppercase">Resources</p>
-				<ul class="space-y-2">
-					<li>
-						<a
-							href="https://github.com/jerrythomas/kavach"
-							class="text-xs text-white/60 transition-colors hover:text-white"
-						>
-							GitHub
-						</a>
-					</li>
-					<li>
-						<a
-							href="/llms/llms.txt"
-							class="text-xs text-white/60 transition-colors hover:text-white"
-						>
-							llms.txt
-						</a>
-					</li>
-				</ul>
+			<div class="mt-6 border-t border-white/10 pt-4">
+				<p class="text-xs text-white/30">© 2025 Kavach. MIT Licensed.</p>
 			</div>
-		</div>
-		<div class="mx-auto mt-8 max-w-4xl border-t border-white/10 pt-6">
-			<p class="text-xs text-white/30">© 2025 Kavach. MIT Licensed.</p>
 		</div>
 	</footer>
 </main>
