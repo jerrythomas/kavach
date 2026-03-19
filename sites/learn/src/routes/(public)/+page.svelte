@@ -208,14 +208,15 @@
 	<!-- Footer — full width -->
 	<footer class="page-footer w-full py-8">
 		<div class="mx-auto max-w-4xl px-8">
-			<div class="grid grid-cols-2 gap-6 sm:grid-cols-5">
+			<div class="grid grid-cols-2 gap-6 sm:grid-cols-6">
 				<!-- Brand -->
-				<div class="col-span-2 space-y-1.5 sm:col-span-1">
+				<div class="col-span-2 space-y-2">
 					<div class="flex items-center gap-2.5">
 						<img src="/brand/kavach.svg" alt="Kavach Logo" class="h-8 w-8 opacity-70" />
 						<span class="text-base font-bold text-white">Kavach</span>
 					</div>
 					<p class="text-xs leading-relaxed text-white/40">Auth for SvelteKit.</p>
+					<hr class="border-white/10" />
 					<p class="text-xs text-white/30">© 2025 Kavach. MIT Licensed.</p>
 				</div>
 				<!-- Start -->

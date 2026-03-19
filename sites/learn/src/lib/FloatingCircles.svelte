@@ -3,7 +3,7 @@
 
 	/**
 	 * Decorative floating circles for gradient CTA sections.
-	 * All values are randomised at mount time — tweak props to control the range.
+	 * Circles are spread evenly across the width, with diagonal movement.
 	 */
 	let {
 		count = 6,
@@ -20,17 +20,20 @@
 		return min + Math.random() * (max - min)
 	}
 
-	// Only generate on the client to avoid SSR/hydration mismatch.
+	// Distribute circles evenly across width; randomise within each horizontal slot.
 	const circles = browser
-		? Array.from({ length: count }, () => ({
-				size: rand(minSize, maxSize),
-				top: rand(0, 90),
-				left: rand(0, 90),
-				opacity: rand(minOpacity, maxOpacity),
-				animation: animations[Math.floor(Math.random() * animations.length)],
-				duration: rand(6, 12),
-				delay: rand(0, 3)
-			}))
+		? Array.from({ length: count }, (_, i) => {
+				const slotWidth = 90 / count
+				return {
+					size: rand(minSize, maxSize),
+					top: rand(5, 85),
+					left: i * slotWidth + rand(0, slotWidth),
+					opacity: rand(minOpacity, maxOpacity),
+					animation: animations[Math.floor(Math.random() * animations.length)],
+					duration: rand(6, 12),
+					delay: rand(0, 3)
+				}
+			})
 		: []
 </script>
 
@@ -60,19 +63,19 @@
 		@keyframes float-a {
 			0%,
 			100% {
-				transform: translateY(0) scale(1);
+				transform: translate(0, 0) scale(1);
 			}
 			50% {
-				transform: translateY(-14px) scale(1.05);
+				transform: translate(-14px, -12px) scale(1.05);
 			}
 		}
 		@keyframes float-b {
 			0%,
 			100% {
-				transform: translateY(0) scale(1);
+				transform: translate(0, 0) scale(1);
 			}
 			50% {
-				transform: translateY(10px) scale(0.96);
+				transform: translate(10px, 8px) scale(0.96);
 			}
 		}
 		@keyframes float-c {
@@ -81,7 +84,7 @@
 				transform: translate(0, 0);
 			}
 			50% {
-				transform: translate(8px, -8px);
+				transform: translate(12px, -10px);
 			}
 		}
 	}
