@@ -18,15 +18,18 @@ CLAUDE.md loads this file at session start — follow it.
 ## Task Classification
 
 ### Design Work (full pipeline)
+
 - New features, new patterns, architectural changes
 - Anything that could be done multiple ways
 - **Process:** Feature → Plan → Implement (see below)
 
 ### Tactical Work (lightweight)
+
 - Bug fixes, small changes, clear scope
 - **Process:** Confirm reasoning → implement → update docs if needed
 
 ### When in Doubt
+
 Ask. The cost of a question is low.
 
 ---
@@ -40,7 +43,7 @@ Write or refine module level features in `docs/features/NN-<module>.md`. Flat di
 - If the feature touches a **new module**: a new module file first.
 - If the feature touches an **existing module**: check that features and design docs are still current.
 - Clarifications happen inline — questions and answers are captured in the design file.
-- Add the feature and scenarios to `docs/features/README.md` with the status. 
+- Add the feature and scenarios to `docs/features/README.md` with the status.
 
 ### 2. PLAN
 
@@ -67,24 +70,34 @@ Execute the agreed plan.
 
 ## Interrupts
 
-Everything goes to `docs/design/README.md`. No inline insertion into current work. Pick it up next. If it is a big enough feature, add to features. 
+Everything goes to `docs/design/README.md`. No inline insertion into current work. Pick it up next. If it is a big enough feature, add to features.
+
+---
+
+## Git Branching
+
+- **All work happens on `develop`** — never commit directly to `main`
+- **After a release:** merge `develop` → `main` (fast-forward), push, then switch back to `develop`
 
 ---
 
 ## Session Lifecycle
 
 ### Session Start
+
 1. Read `agents/workflow.md` — this file
 2. Read `agents/memory.md` — project knowledge
 3. Read `agents/journal.md` (last ~50 lines) — recent progress
 4. Check `docs/plans/README.md` — active plan to resume?
 
 ### During Session
+
 - Track progress in the active plan
 - Capture decisions in `agents/memory.md` immediately
 - Update `docs/design/*.md` when designs change
 
 ### Before Commit
+
 1. Run tests — all must pass
 2. Run lint — 0 errors
 3. Update `agents/journal.md`
@@ -102,13 +115,13 @@ Everything goes to `docs/design/README.md`. No inline insertion into current wor
 
 ## File Reference
 
-| File | Purpose | When to update |
-|------|---------|---------------|
-| `agents/workflow.md` | This file — methodology | When workflow evolves |
-| `agents/memory.md` | Project knowledge, principles | When decisions are made |
-| `agents/journal.md` | Progress log | Every session |
-| `docs/requirements/` | Module requirements (what/why) | When module scope changes |
-| `docs/design/` | Module design (how/why) | When design changes |
-| `docs/features/` | Feature specs (flat, NNN-name.md) | During feature work |
-| `docs/features/README.md` | Prioritized feature dashboard | When features are added/completed |
-| `docs/plans/README.md` | Active plan | When starting/finishing features |
+| File                      | Purpose                           | When to update                    |
+| ------------------------- | --------------------------------- | --------------------------------- |
+| `agents/workflow.md`      | This file — methodology           | When workflow evolves             |
+| `agents/memory.md`        | Project knowledge, principles     | When decisions are made           |
+| `agents/journal.md`       | Progress log                      | Every session                     |
+| `docs/requirements/`      | Module requirements (what/why)    | When module scope changes         |
+| `docs/design/`            | Module design (how/why)           | When design changes               |
+| `docs/features/`          | Feature specs (flat, NNN-name.md) | During feature work               |
+| `docs/features/README.md` | Prioritized feature dashboard     | When features are added/completed |
+| `docs/plans/README.md`    | Active plan                       | When starting/finishing features  |
