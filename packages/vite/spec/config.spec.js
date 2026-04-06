@@ -59,6 +59,39 @@ describe('parseConfig', () => {
 		const result = parseConfig({ adapter: 'firebase', logging: { collection: 'audit' } })
 		expect(result.logging.collection).toBe('audit')
 	})
+
+	it('accepts app.home/login/logout/session/data as fallback for routes', () => {
+		const result = parseConfig({
+			adapter: 'supabase',
+			app: {
+				home: '/home',
+				login: '/auth',
+				logout: '/logout',
+				session: '/auth/session',
+				data: '/data'
+			},
+			rules: []
+		})
+		expect(result.routes.home).toBe('/home')
+		expect(result.routes.auth).toBe('/auth')
+		expect(result.routes.logout).toBe('/logout')
+		expect(result.routes.session).toBe('/auth/session')
+		expect(result.routes.data).toBe('/data')
+	})
+
+	it('routes key takes precedence over app key', () => {
+		const result = parseConfig({
+			adapter: 'supabase',
+			routes: { home: '/dashboard' },
+			app: { home: '/home' }
+		})
+		expect(result.routes.home).toBe('/dashboard')
+	})
+
+	it('includes session in routes when configured', () => {
+		const result = parseConfig({ adapter: 'supabase', routes: { session: '/api/session' } })
+		expect(result.routes.session).toBe('/api/session')
+	})
 })
 
 describe('validateConfig', () => {

@@ -56,6 +56,7 @@ function generateAuth(config, viteEnv = {}) {
 	if (routes?.home) app.home = routes.home
 	if (routes?.auth) app.login = routes.auth
 	if (routes?.logout) app.logout = routes.logout
+	if (routes?.session) app.session = routes.session
 	if (routes?.data) app.data = routes.data
 	if (routes?.rpc) app.rpc = routes.rpc
 

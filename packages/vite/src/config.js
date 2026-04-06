@@ -59,11 +59,12 @@ export function parseConfig(raw) {
 		},
 		env: { ...envDefaults, ...raw.env },
 		routes: {
-			auth: raw.routes?.auth ?? DEFAULTS.routes.auth,
-			data: raw.routes?.data ?? DEFAULTS.routes.data,
-			rpc: raw.routes?.rpc ?? DEFAULTS.routes.rpc,
-			logout: raw.routes?.logout ?? DEFAULTS.routes.logout,
-			home: raw.routes?.home ?? null
+			auth: raw.routes?.auth ?? raw.app?.login ?? DEFAULTS.routes.auth,
+			data: raw.routes?.data ?? raw.app?.data ?? DEFAULTS.routes.data,
+			rpc: raw.routes?.rpc ?? raw.app?.rpc ?? DEFAULTS.routes.rpc,
+			logout: raw.routes?.logout ?? raw.app?.logout ?? DEFAULTS.routes.logout,
+			home: raw.routes?.home ?? raw.app?.home ?? null,
+			session: raw.routes?.session ?? raw.app?.session ?? null
 		},
 		endpoints: {
 			data: raw.endpoints?.data ?? DEFAULTS.endpoints.data,

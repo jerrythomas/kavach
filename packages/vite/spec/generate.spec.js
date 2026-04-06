@@ -125,6 +125,15 @@ describe('generateModule', () => {
 		expect(code).toContain('home:')
 		expect(code).toContain('session.user.user_metadata.slug')
 	})
+
+	it('includes session in app when routes.session is configured', () => {
+		const configWithSession = {
+			...config,
+			routes: { ...config.routes, session: '/api/session' }
+		}
+		const code = generateModule('auth', configWithSession)
+		expect(code).toContain("session: '/api/session'")
+	})
 })
 
 describe('generateAuth - firebase emulator', () => {
