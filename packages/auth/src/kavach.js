@@ -240,56 +240,39 @@ async function syncSessionWithServer(agents, event, session = null) {
  * @param {object}                             request
  * @returns {Promise<void>}
  */
-async function handleRouteProtection(adapter, agents, { event, resolve }) {
+function handleRouteProtection(adapter, agents, { event, resolve }) {
 	const { sentry } = agents
+	const { pathname } = event.url
 	event.locals.session = parseSessionFromCookies(event)
 	sentry.setSession(event.locals.session)
 
-	if (event.url.pathname.startsWith(sentry.app.session)) {
+	if (sentry.app.session && pathname.startsWith(sentry.app.session)) {
 		return handleSessionSync(event, adapter, sentry)
 	}
 
-	const protection = await handleUnauthorizedAccess(agents, { event, resolve })
-
-	// If protection returns a Response (redirect or error), return it immediately
-	if (protection instanceof Response) {
-		// Check for data/rpc routes before returning error response
-		const { pathname } = event.url
-		const dataRoute = sentry.app.data
-		const rpcRoute = sentry.app.rpc
-
-		// Only handle data/rpc routes if the request would otherwise be allowed
-		if (protection.status === 200 || protection.status === undefined) {
-			// Handle data route if configured
-			if (dataRoute && isDataRoute(pathname, dataRoute)) {
-				return handleDataRoute(agents, { event }, dataRoute, agents.dataFn)
-			}
-
-			// Handle RPC route if configured
-			if (rpcRoute && isRpcRoute(pathname, rpcRoute)) {
-				return handleRpcRoute(agents, { event }, rpcRoute)
-			}
+	if (agents.dataFn && sentry.app.data && isDataRoute(pathname, sentry.app.data)) {
+		const result = sentry.protect(pathname)
+		if (result.status !== 200) {
+			return new Response(JSON.stringify({ error: { message: MESSAGES.NOT_AUTHENTICATED } }), {
+				status: result.status,
+				headers: { 'Content-Type': 'application/json' }
+			})
 		}
-
-		return protection
+		return handleDataRoute(agents, { event }, sentry.app.data, agents.dataFn)
 	}
 
-	// Route is allowed - check for data/rpc routes
-	const { pathname } = event.url
-	const dataRoute = sentry.app.data
-	const rpcRoute = sentry.app.rpc
-
-	// Handle data route if configured
-	if (dataRoute && isDataRoute(pathname, dataRoute)) {
-		return handleDataRoute(agents, { event }, dataRoute, agents.dataFn)
+	if (sentry.app.rpc && isRpcRoute(pathname, sentry.app.rpc)) {
+		const result = sentry.protect(pathname)
+		if (result.status !== 200) {
+			return new Response(JSON.stringify({ error: { message: MESSAGES.NOT_AUTHENTICATED } }), {
+				status: result.status,
+				headers: { 'Content-Type': 'application/json' }
+			})
+		}
+		return handleRpcRoute(agents, { event }, sentry.app.rpc)
 	}
 
-	// Handle RPC route if configured
-	if (rpcRoute && isRpcRoute(pathname, rpcRoute)) {
-		return handleRpcRoute(agents, { event }, rpcRoute)
-	}
-
-	return resolve(event)
+	return handleUnauthorizedAccess(agents, { event, resolve })
 }
 /**
  * Handle auth change
@@ -378,7 +361,7 @@ function getEntityFromPath(pathname, baseRoute) {
  */
 async function handleDataRoute(agents, { event }, dataRoute, dataFn) {
 	const { pathname, searchParams } = event.url
-	const entity = getEntityFromPath(pathname, dataRoute)
+	const raw = getEntityFromPath(pathname, dataRoute)
 
 	if (!dataFn) {
 		return new Response(JSON.stringify({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }), {
@@ -387,7 +370,12 @@ async function handleDataRoute(agents, { event }, dataRoute, dataFn) {
 		})
 	}
 
-	const actions = dataFn()
+	// Parse schema-qualified paths: 'core/teams' → schema='core', entity='teams'
+	const parts = raw.split('/')
+	const schema = parts.length > 1 ? parts[0] : undefined
+	const entity = parts.length > 1 ? parts.slice(1).join('/') : raw
+
+	const actions = dataFn(schema, event.locals.session)
 	if (!actions) {
 		return new Response(JSON.stringify({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }), {
 			status: 501,
@@ -489,6 +477,107 @@ async function handleRpcRoute(agents, { event }, _rpcRoute) {
 		})
 	}
 }
+
+// ─── SvelteKit data route handlers ──────────────────────────────────────────
+
+const DATA_RESERVED = [':select', ':order', ':limit', ':offset', ':count']
+
+function getRouteActions(locals, slug) {
+	const parts = (slug ?? '').split('/')
+	const schema = parts.length > 1 ? parts[0] : undefined
+	const entity = parts.length > 1 ? parts.slice(1).join('/') : slug
+	const actions = locals.kavach?.actions?.(schema)
+	return { entity, actions }
+}
+
+function jsonResponse(body, status = 200) {
+	return new Response(JSON.stringify(body), {
+		status,
+		headers: { 'Content-Type': 'application/json' }
+	})
+}
+
+export async function GET({ params, url, locals }) {
+	if (!locals.session) return jsonResponse({ error: { message: MESSAGES.NOT_AUTHENTICATED } }, 401)
+	const { entity, actions } = getRouteActions(locals, params.slug)
+	if (!actions) return jsonResponse({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }, 501)
+	const body = Object.fromEntries(url.searchParams.entries())
+	const filter = Object.fromEntries(
+		Object.entries(body).filter(([k]) => !DATA_RESERVED.includes(k))
+	)
+	try {
+		const { data, error, count, status } = await actions.get(entity, {
+			columns: body[':select'],
+			order: body[':order'],
+			limit: body[':limit'] ? Number(body[':limit']) : undefined,
+			offset: body[':offset'] ? Number(body[':offset']) : undefined,
+			count: body[':count'],
+			filter
+		})
+		if (error) return jsonResponse({ error: sanitizeError(error) }, status || 500)
+		return jsonResponse(count !== undefined ? { data, count } : { data })
+	} catch (err) {
+		return jsonResponse({ error: sanitizeError(err) }, 500)
+	}
+}
+
+export async function POST({ params, request, locals }) {
+	if (!locals.session) return jsonResponse({ error: { message: MESSAGES.NOT_AUTHENTICATED } }, 401)
+	const { entity, actions } = getRouteActions(locals, params.slug)
+	if (!actions) return jsonResponse({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }, 501)
+	try {
+		const body = await request.json()
+		const { data, error, status } = await actions.post(entity, body)
+		if (error) return jsonResponse({ error: sanitizeError(error) }, status || 500)
+		return jsonResponse({ data })
+	} catch (err) {
+		return jsonResponse({ error: sanitizeError(err) }, 500)
+	}
+}
+
+export async function PUT({ params, request, locals }) {
+	if (!locals.session) return jsonResponse({ error: { message: MESSAGES.NOT_AUTHENTICATED } }, 401)
+	const { entity, actions } = getRouteActions(locals, params.slug)
+	if (!actions) return jsonResponse({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }, 501)
+	try {
+		const body = await request.json()
+		const { data, error, status } = await actions.put(entity, body)
+		if (error) return jsonResponse({ error: sanitizeError(error) }, status || 500)
+		return jsonResponse({ data })
+	} catch (err) {
+		return jsonResponse({ error: sanitizeError(err) }, 500)
+	}
+}
+
+export async function PATCH({ params, request, locals }) {
+	if (!locals.session) return jsonResponse({ error: { message: MESSAGES.NOT_AUTHENTICATED } }, 401)
+	const { entity, actions } = getRouteActions(locals, params.slug)
+	if (!actions) return jsonResponse({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }, 501)
+	try {
+		const body = await request.json()
+		const { data, error, status } = await actions.patch(entity, body)
+		if (error) return jsonResponse({ error: sanitizeError(error) }, status || 500)
+		return jsonResponse({ data })
+	} catch (err) {
+		return jsonResponse({ error: sanitizeError(err) }, 500)
+	}
+}
+
+export async function DELETE({ params, request, locals }) {
+	if (!locals.session) return jsonResponse({ error: { message: MESSAGES.NOT_AUTHENTICATED } }, 401)
+	const { entity, actions } = getRouteActions(locals, params.slug)
+	if (!actions) return jsonResponse({ error: { message: MESSAGES.DATA_NOT_SUPPORTED } }, 501)
+	try {
+		const body = await request.json()
+		const { data, error, status } = await actions.delete(entity, body)
+		if (error) return jsonResponse({ error: sanitizeError(error) }, status || 500)
+		return jsonResponse({ data })
+	} catch (err) {
+		return jsonResponse({ error: sanitizeError(err) }, 500)
+	}
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 function getAgents(options) {
 	const logger = options.logger ?? zeroLogger

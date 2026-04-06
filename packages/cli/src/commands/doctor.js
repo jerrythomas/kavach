@@ -21,7 +21,7 @@ import {
 	patchEnvFile,
 	patchLayoutSvelte
 } from '../patchers.js'
-import { generateAuthPage, generateConfigFile, generateDataRoute } from '../generators.js'
+import { generateAuthPage, generateConfigFile } from '../generators.js'
 import { parseConfig } from '@kavach/vite'
 import { readFile, writeFile, fileExists, renameFile, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './constants.js'
@@ -164,25 +164,18 @@ export class DoctorCommand {
 	}
 
 	#fixDataRoute(result) {
-		const ext = fileExists(resolve(this.#cwd, 'tsconfig.json')) ? 'ts' : 'js'
-		const segment = this.#config.routes?.data?.replace(/^\//, '')
-
-		if (result.path) {
-			// Existing file doesn't use kavach — rename it, write standard file alongside
-			const deprecated = resolve(dirname(result.path), `deprecated_${basename(result.path)}`)
-			renameFile(result.path, deprecated)
-			writeFile(result.path, generateDataRoute())
-			return {
-				...result,
-				ok: true,
-				message: `generated — deprecated file can be removed: ${deprecated.replace(`${this.#cwd  }/`, '')}`,
-				fixed: true
-			}
+		const deprecated = resolve(
+			dirname(result.segmentDir),
+			`deprecated_${basename(result.segmentDir)}`
+		)
+		renameFile(result.segmentDir, deprecated)
+		const rel = deprecated.replace(`${this.#cwd}/`, '')
+		return {
+			...result,
+			ok: true,
+			message: `renamed to ${rel} — can be safely removed`,
+			fixed: true
 		}
-
-		const path = resolve(this.#cwd, `src/routes/${segment}/+server.${ext}`)
-		writeFile(path, generateDataRoute())
-		return { ...result, ok: true, message: 'generated', fixed: true }
 	}
 
 	#fixEnvKeys(result) {

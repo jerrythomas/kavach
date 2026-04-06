@@ -35,11 +35,10 @@ export function buildConfig(answers) {
 		env: ADAPTER_ENV_DEFAULTS[answers.adapter] || {},
 		routes: {
 			auth: answers.authRoute || '(public)/auth',
-			data: answers.dataRoute || '(server)/data',
+			data: answers.dataRoute || null,
+			rpc: answers.rpcRoute || null,
 			logout: answers.logoutRoute || '/logout'
 		},
-		rpcRoute: answers.rpcRoute,
-		dataRoute: answers.dataRoute,
 		rules: answers.rules || []
 	}
 }
@@ -78,14 +77,22 @@ export async function promptDataRoute(adapterName) {
 	const capabilities = getAdapterCapabilities(adapterName)
 
 	if (!capabilities.supports.data) {
-		p.log.warn(`Data endpoints not supported by ${capabilities.displayName}`)
+		return { enabled: false, path: null }
+	}
+
+	const enabled = await p.confirm({
+		message: 'Enable data endpoint?',
+		initialValue: true
+	})
+
+	if (!enabled || p.isCancel(enabled)) {
 		return { enabled: false, path: null }
 	}
 
 	const path = await p.text({
 		message: 'Data route path?',
-		placeholder: '(server)/data',
-		defaultValue: '(server)/data'
+		placeholder: '/data',
+		defaultValue: '/data'
 	})
 
 	return { enabled: true, path }
@@ -95,14 +102,22 @@ export async function promptRpcRoute(adapterName) {
 	const capabilities = getAdapterCapabilities(adapterName)
 
 	if (!capabilities.supports.rpc) {
-		p.log.warn(`RPC not supported by ${capabilities.displayName}`)
+		return { enabled: false, path: null }
+	}
+
+	const enabled = await p.confirm({
+		message: 'Enable RPC endpoint?',
+		initialValue: true
+	})
+
+	if (!enabled || p.isCancel(enabled)) {
 		return { enabled: false, path: null }
 	}
 
 	const path = await p.text({
 		message: 'RPC route path?',
-		placeholder: '(server)/rpc',
-		defaultValue: '(server)/rpc'
+		placeholder: '/rpc',
+		defaultValue: '/rpc'
 	})
 
 	return { enabled: true, path }

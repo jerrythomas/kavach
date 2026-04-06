@@ -71,13 +71,6 @@ function scaffold(dir, opts = {}) {
 			opts.authPage ?? `<AuthProvider name="email" />`
 		)
 	}
-	if (opts.dataRoute !== false) {
-		mkdirSync(join(dir, 'src/routes/data'), { recursive: true })
-		writeFileSync(
-			join(dir, 'src/routes/data/+server.js'),
-			opts.dataRoute ?? `export { GET, POST, PUT, PATCH, DELETE } from 'kavach'`
-		)
-	}
 }
 
 beforeEach(() => {
@@ -212,6 +205,34 @@ describe('DoctorCommand', () => {
 		expect(results.find((r) => r.id === 'vite')).toBeDefined()
 	})
 
+	it('reports legacy data route files as fixable', async () => {
+		scaffold(tmp)
+		mkdirSync(join(tmp, 'src/routes/data'), { recursive: true })
+		writeFileSync(join(tmp, 'src/routes/data/+server.js'), `export const GET = () => {}`)
+		const cmd = new DoctorCommand(tmp, false)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'data-route')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('--fix renames legacy data route folder to deprecated_data', async () => {
+		scaffold(tmp)
+		mkdirSync(join(tmp, 'src/routes/data'), { recursive: true })
+		writeFileSync(join(tmp, 'src/routes/data/+server.js'), `export const GET = () => {}`)
+		const cmd = new DoctorCommand(tmp, true)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'data-route')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
+		expect(check.message).toMatch(/deprecated/)
+		const { existsSync } = await import('fs')
+		expect(existsSync(join(tmp, 'src/routes/deprecated_data'))).toBe(true)
+		expect(existsSync(join(tmp, 'src/routes/data'))).toBe(false)
+	})
+
 	it('reports config using app routing key as fixable', async () => {
 		scaffold(tmp, { config: false })
 		writeFileSync(
@@ -257,53 +278,5 @@ describe('DoctorCommand', () => {
 		expect(content).toContain('routes')
 		expect(content).toContain('/home')
 		expect(content).not.toContain('app:')
-	})
-
-	it('reports missing data route as fixable', async () => {
-		scaffold(tmp, { dataRoute: false })
-		const cmd = new DoctorCommand(tmp, false)
-		cmd._configForTest = validConfig
-		const results = await cmd.runChecksForTest()
-		const check = results.find((r) => r.id === 'data-route')
-		expect(check.ok).toBe(false)
-		expect(check.fixable).toBe(true)
-	})
-
-	it('reports non-kavach data route as fixable', async () => {
-		scaffold(tmp, { dataRoute: `export const GET = () => {}` })
-		const cmd = new DoctorCommand(tmp, false)
-		cmd._configForTest = validConfig
-		const results = await cmd.runChecksForTest()
-		const check = results.find((r) => r.id === 'data-route')
-		expect(check.ok).toBe(false)
-		expect(check.fixable).toBe(true)
-	})
-
-	it('--fix generates standard data route when missing', async () => {
-		scaffold(tmp, { dataRoute: false })
-		const cmd = new DoctorCommand(tmp, true)
-		cmd._configForTest = validConfig
-		const results = await cmd.runChecksForTest()
-		const check = results.find((r) => r.id === 'data-route')
-		expect(check.ok).toBe(true)
-		expect(check.fixed).toBe(true)
-		const { readFileSync } = await import('fs')
-		const content = readFileSync(join(tmp, 'src/routes/data/+server.js'), 'utf8')
-		expect(content).toContain("from 'kavach'")
-	})
-
-	it('--fix renames existing non-kavach data route and writes standard file', async () => {
-		scaffold(tmp, { dataRoute: `export const GET = () => {}` })
-		const cmd = new DoctorCommand(tmp, true)
-		cmd._configForTest = validConfig
-		const results = await cmd.runChecksForTest()
-		const check = results.find((r) => r.id === 'data-route')
-		expect(check.ok).toBe(true)
-		expect(check.fixed).toBe(true)
-		expect(check.message).toMatch(/deprecated/)
-		const { readFileSync, existsSync } = await import('fs')
-		const standard = readFileSync(join(tmp, 'src/routes/data/+server.js'), 'utf8')
-		expect(standard).toContain("from 'kavach'")
-		expect(existsSync(join(tmp, 'src/routes/data/deprecated_+server.js'))).toBe(true)
 	})
 })

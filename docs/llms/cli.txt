@@ -29,8 +29,8 @@ Scaffolds a complete kavach setup from the SvelteKit project root.
 Interactive prompts:
 1. Choose adapter: supabase | firebase | auth0 | amplify | convex
 2. Choose providers: email/password, magic link, Google, GitHub, etc.
-3. Configure data route (optional, adapter-dependent)
-4. Configure RPC route (optional, adapter-dependent)
+3. Enable data endpoint? confirm + path (only if adapter supports data)
+4. Enable RPC endpoint? confirm + path (only if adapter supports RPC)
 5. Configure logging (optional, adapter-dependent)
 6. Set auth route path (default: (public)/auth)
 7. Set logout route (default: /logout)
@@ -38,12 +38,15 @@ Interactive prompts:
 9. Define route protection rules
 
 Files generated / patched:
-- kavach.config.js — adapter, providers, rules, env var names
+- kavach.config.js — adapter, providers, rules, env var names, route paths
 - vite.config.js — kavach() plugin injected before sveltekit()
 - src/hooks.server.js — kavach.handle registered
 - src/routes/+layout.server.js — session: locals.session passed to pages
 - src/routes/(public)/auth/+page.svelte — auth page with providers
 - .env — env var keys added with empty values
+
+No data/ or rpc/ route files are generated. kavach.handle serves these endpoints
+internally — no +server.ts files needed.
 
 ### kavach doctor [--fix]
 
@@ -57,13 +60,16 @@ Checks:
 
 | # | Check | Auto-fixable |
 |---|-------|-------------|
-| 1 | kavach.config.js exists with adapter, env, rules | No — run kavach init |
+| 1 | kavach.config.js exists with adapter, env, rules | Yes — generates defaults |
 | 2 | vite.config.js has kavach() from @kavach/vite, before sveltekit() | Yes |
 | 3 | hooks.server imports $kavach/auth and exports kavach.handle | Yes |
 | 4 | +layout.server passes session: locals.session | Yes |
-| 5 | All env keys from config exist in .env | Yes — adds empty keys |
-| 6 | .env values are non-empty | No — prints set KEY=<value> instructions |
-| 7 | Adapter + kavach packages in package.json | Yes — installs missing |
+| 5 | +layout.svelte has setContext('kavach') | Yes |
+| 6 | Auth page exists with AuthProvider component | Yes — generates page |
+| 7 | All env keys from config exist in .env | Yes — adds empty keys |
+| 8 | .env values are non-empty | No — prints set KEY=<value> instructions |
+| 9 | Legacy data/rpc route files (now handled internally) | Yes — renames to deprecated_<folder> |
+| 10 | Adapter + kavach packages in package.json | Yes — installs missing |
 
 Example output:
 
@@ -100,7 +106,6 @@ After --fix:
 Adds components to an existing setup.
 
     npx kavach add auth-page   # auth page with configured providers
-    npx kavach add routes      # data and RPC route handlers
 
 ## Anti-Patterns
 
@@ -124,7 +129,7 @@ Adds components to an existing setup.
 
     npx kavach doctor
 
-All 7 checks should show ✓. If any show ✗:
+All 10 checks should show ✓. If any show ✗:
 - Run npx kavach doctor --fix for auto-fixable issues
 - For env value issues: set the values in .env manually
 

@@ -18,7 +18,11 @@ describe('buildConfig', () => {
 		expect(config.adapter).toBe('supabase')
 		expect(config.providers).toHaveLength(4)
 		expect(config.providers[0]).toEqual({ name: 'google', label: 'Continue with Google' })
-		expect(config.providers[2]).toEqual({ mode: 'otp', name: 'magic', label: 'Email for Magic Link' })
+		expect(config.providers[2]).toEqual({
+			mode: 'otp',
+			name: 'magic',
+			label: 'Email for Magic Link'
+		})
 		expect(config.providers[3]).toEqual({
 			mode: 'password',
 			name: 'email',
@@ -43,7 +47,7 @@ describe('buildConfig', () => {
 	it('should use default routes when not specified', () => {
 		const config = buildConfig({ adapter: 'supabase', providers: [] })
 		expect(config.routes.auth).toBe('(public)/auth')
-		expect(config.routes.data).toBe('(server)/data')
+		expect(config.routes.data).toBeNull()
 		expect(config.routes.logout).toBe('/logout')
 	})
 

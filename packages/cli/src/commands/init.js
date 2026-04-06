@@ -16,12 +16,7 @@ import {
 	showDDLInstructions
 } from '../prompts.js'
 import { parseConfig } from '@kavach/vite'
-import {
-	generateConfigFile,
-	generateAuthPage,
-	generateDataRoute,
-	generateRpcRoute
-} from '../generators.js'
+import { generateConfigFile, generateAuthPage } from '../generators.js'
 import { patchViteConfig, patchHooksServer, patchLayoutServer, patchEnvFile } from '../patchers.js'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS, ADAPTER_ENV_DEFAULTS } from './constants.js'
@@ -52,8 +47,6 @@ export class InitCommand {
 		await this.#patchHooks()
 		await this.#patchLayout()
 		await this.#generateAuthPage()
-		await this.#generateDataRoute()
-		await this.#generateRpcRoute()
 		await this.#patchEnv()
 		await this.#installDependencies()
 
@@ -180,11 +173,10 @@ export class InitCommand {
 			env: ADAPTER_ENV_DEFAULTS[answers.adapter] || {},
 			routes: {
 				auth: answers.authRoute || '(public)/auth',
-				data: answers.dataRoute || '(server)/data',
+				data: answers.dataRoute || null,
+				rpc: answers.rpcRoute || null,
 				logout: answers.logoutRoute || '/logout'
 			},
-			rpcRoute: answers.rpcRoute,
-			dataRoute: answers.dataRoute,
 			rules: answers.rules || []
 		}
 	}
@@ -242,46 +234,6 @@ export class InitCommand {
 		}
 		await this.#runStep(`Creating auth page at ${this.#parsed.routes.auth}`, () => {
 			writeFile(path, generateAuthPage(this.#parsed))
-		})
-	}
-
-	async #generateDataRoute() {
-		if (!this.#parsed.routes.data) return
-
-		const ext = this.#useTypeScript ? 'ts' : 'js'
-		const path = resolve(
-			this.#cwd,
-			'src/routes',
-			this.#parsed.routes.data,
-			`[...slug]/+server.${ext}`
-		)
-
-		if (fileExists(path)) {
-			p.log.info('Data route already exists — skipped')
-			return
-		}
-		await this.#runStep(`Creating data route at ${this.#parsed.routes.data}`, () => {
-			writeFile(path, generateDataRoute())
-		})
-	}
-
-	async #generateRpcRoute() {
-		if (!this.#parsed.routes.rpc) return
-
-		const ext = this.#useTypeScript ? 'ts' : 'js'
-		const path = resolve(
-			this.#cwd,
-			'src/routes',
-			this.#parsed.routes.rpc,
-			`[...slug]/+server.${ext}`
-		)
-
-		if (fileExists(path)) {
-			p.log.info('RPC route already exists — skipped')
-			return
-		}
-		await this.#runStep(`Creating RPC route at ${this.#parsed.routes.rpc}`, () => {
-			writeFile(path, generateRpcRoute())
 		})
 	}
 

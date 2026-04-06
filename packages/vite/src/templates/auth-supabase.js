@@ -6,7 +6,15 @@ import { env } from '$env/dynamic/public'
 
 const client = createClient(env.{{url}}, env.{{anonKey}})
 const adapter = getAdapter(client)
-const data = (schema) => getActions(client, schema)
+const data = (schema, session) => {
+	const authedClient = session?.access_token
+		? createClient(env.{{url}}, env.{{anonKey}}, {
+				global: { headers: { Authorization: `Bearer ${session.access_token}` } },
+				auth: { persistSession: false }
+		  })
+		: client
+	return getActions(authedClient, schema)
+}
 const writer = getLogWriter({ client }, { table: '{{logTable}}' })
 const logger = getLogger(writer, { level: '{{logLevel}}' })
 

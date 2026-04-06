@@ -325,24 +325,33 @@ export function checkAuthPage(cwd, config) {
 	return { id: 'auth-page', ok: true, label: 'auth page', message: 'valid', fixable: false }
 }
 
-function findServerFileCandidates(dir, segment) {
-	const results = []
+function findSegmentDir(dir, segment) {
 	let entries
 	try {
 		entries = readdirSync(dir, { withFileTypes: true })
 	} catch {
-		return results
+		return null
 	}
 	for (const entry of entries) {
 		if (!entry.isDirectory()) continue
 		const full = join(dir, entry.name)
-		if (entry.name === segment) {
-			results.push(...['+server.ts', '+server.js'].map((ext) => join(full, ext)).filter(fileExists))
-		} else {
-			results.push(...findServerFileCandidates(full, segment))
-		}
+		if (entry.name === segment) return full
+		const found = findSegmentDir(full, segment)
+		if (found) return found
 	}
-	return results
+	return null
+}
+
+function hasServerFiles(dir) {
+	try {
+		for (const entry of readdirSync(dir, { withFileTypes: true })) {
+			if (entry.isDirectory() && hasServerFiles(join(dir, entry.name))) return true
+			if (!entry.isDirectory() && entry.name.startsWith('+server.')) return true
+		}
+	} catch {
+		// dir doesn't exist
+	}
+	return false
 }
 
 export function checkDataRoute(cwd, config) {
@@ -357,32 +366,28 @@ export function checkDataRoute(cwd, config) {
 	}
 	const segment = config.routes.data.replace(/^\//, '').split('/').pop()
 	const routesDir = resolve(cwd, 'src/routes')
-	const candidates = findServerFileCandidates(routesDir, segment)
+	const segmentDir = findSegmentDir(routesDir, segment)
 
-	if (candidates.length === 0) {
+	if (!segmentDir || !hasServerFiles(segmentDir)) {
 		return {
 			id: 'data-route',
-			ok: false,
+			ok: true,
 			label: 'data route',
-			message: `${config.routes.data}/+server not found`,
-			hint: 'Run kavach doctor --fix',
-			fixable: true
+			message: 'no legacy route files',
+			fixable: false
 		}
 	}
-	const found = candidates.find((p) => readFile(p).includes("from 'kavach'"))
-	if (!found) {
-		const label = candidates[0].replace(`${routesDir}/`, '')
-		return {
-			id: 'data-route',
-			ok: false,
-			label,
-			message: "does not export from 'kavach'",
-			hint: 'Run kavach doctor --fix to replace with standard kavach data route',
-			fixable: true,
-			path: candidates[0]
-		}
+
+	const relDir = segmentDir.replace(`${routesDir}/`, '')
+	return {
+		id: 'data-route',
+		ok: false,
+		label: `src/routes/${relDir}/`,
+		message: 'legacy route files found — kavach.handle manages this endpoint internally',
+		hint: 'Run kavach doctor --fix to rename to deprecated_<folder> for safe removal',
+		fixable: true,
+		segmentDir
 	}
-	return { id: 'data-route', ok: true, label: 'data route', message: 'valid', fixable: false }
 }
 
 export function checkDeps(cwd, config) {
