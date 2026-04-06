@@ -30,7 +30,7 @@
 		type={inputType}
 		icon="i-auth-{type}"
 		label={type}
-		autocomplete="on"
+		autocomplete={type === 'email' ? 'email' : 'username'}
 		bind:value
 	/>
 	<InputField
@@ -38,6 +38,7 @@
 		type="password"
 		icon="i-auth-password"
 		label="Password"
+		autocomplete="current-password"
 		bind:value={password}
 	/>
 	<Button

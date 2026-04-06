@@ -436,7 +436,7 @@ exports[`AuthProvider.svelte > password > should handle errors 1`] = `
             <!---->
              
             <input
-              autocomplete="on"
+              autocomplete="email"
               id="email"
               name="email"
               type="email"
@@ -482,6 +482,7 @@ exports[`AuthProvider.svelte > password > should handle errors 1`] = `
             <!---->
              
             <input
+              autocomplete="current-password"
               id="password"
               name="password"
               type="password"
@@ -560,7 +561,7 @@ exports[`AuthProvider.svelte > password > should render email/password auth 1`] 
             <!---->
              
             <input
-              autocomplete="on"
+              autocomplete="email"
               id="email"
               name="email"
               type="email"
@@ -606,6 +607,7 @@ exports[`AuthProvider.svelte > password > should render email/password auth 1`] 
             <!---->
              
             <input
+              autocomplete="current-password"
               id="password"
               name="password"
               type="password"

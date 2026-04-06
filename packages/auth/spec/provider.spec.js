@@ -77,10 +77,10 @@ describe('Provider functions', () => {
 				id: 1,
 				email: 'john.doe@example.com',
 				role: 'user',
+				app_metadata: { plan: 'pro' },
 				user_metadata: {
 					avatar_url: 'https://example.com/avatar.jpg',
-					full_name: 'John Doe',
-					app_metadata: { plan: 'pro' }
+					full_name: 'John Doe'
 				}
 			}
 			expect(getUserInfo(user)).toEqual({
