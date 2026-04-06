@@ -7,7 +7,7 @@ import { env } from '$env/dynamic/public'
 const client = createClient(env.{{url}}, env.{{anonKey}})
 const adapter = getAdapter(client)
 const data = (schema) => getActions(client, schema)
-const writer = getLogWriter({ url: env.{{url}}, anonKey: env.{{anonKey}} }, { table: '{{logTable}}' })
+const writer = getLogWriter({ client }, { table: '{{logTable}}' })
 const logger = getLogger(writer, { level: '{{logLevel}}' })
 
 export const kavach = createKavach(adapter, {
