@@ -191,7 +191,7 @@
 			<div class="flex justify-center gap-4">
 				<a
 					href="/docs/quick-start"
-					class="rounded-xl bg-white px-6 py-2.5 text-sm font-bold text-teal-700 transition-colors hover:bg-white/90"
+					class="rounded-xl bg-white px-6 py-2.5 text-sm font-bold text-red-600 transition-colors hover:bg-white/90"
 				>
 					Get Started
 				</a>
@@ -311,9 +311,9 @@
 	.cta-section {
 		background: linear-gradient(
 			135deg,
-			rgba(13, 148, 136, 0.8),
-			rgba(14, 165, 233, 0.8),
-			rgba(13, 148, 136, 0.8)
+			rgba(220, 38, 38, 0.9),
+			rgba(236, 72, 153, 0.8),
+			rgba(220, 38, 38, 0.9)
 		);
 		background-size: 200% 200%;
 		animation: gradient-shift 6s ease infinite;

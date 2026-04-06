@@ -3,7 +3,7 @@ export default {
 		surface: 'shark'
 	},
 	skins: {
-		default: { surface: 'shark', primary: 'teal' },
+		default: { surface: 'shark', primary: 'red', secondary: 'pink' },
 		vibrant: { primary: 'blue', secondary: 'purple' },
 		seaweed: {
 			primary: 'sky',
