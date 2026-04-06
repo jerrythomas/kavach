@@ -279,7 +279,7 @@ describe('DoctorCommand', () => {
 		expect(check.fixable).toBe(true)
 	})
 
-	it('--fix generates standard data route', async () => {
+	it('--fix generates standard data route when missing', async () => {
 		scaffold(tmp, { dataRoute: false })
 		const cmd = new DoctorCommand(tmp, true)
 		cmd._configForTest = validConfig
@@ -290,5 +290,20 @@ describe('DoctorCommand', () => {
 		const { readFileSync } = await import('fs')
 		const content = readFileSync(join(tmp, 'src/routes/data/+server.js'), 'utf8')
 		expect(content).toContain("from 'kavach'")
+	})
+
+	it('--fix renames existing non-kavach data route and writes standard file', async () => {
+		scaffold(tmp, { dataRoute: `export const GET = () => {}` })
+		const cmd = new DoctorCommand(tmp, true)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'data-route')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
+		expect(check.message).toMatch(/deprecated/)
+		const { readFileSync, existsSync } = await import('fs')
+		const standard = readFileSync(join(tmp, 'src/routes/data/+server.js'), 'utf8')
+		expect(standard).toContain("from 'kavach'")
+		expect(existsSync(join(tmp, 'src/routes/data/deprecated_+server.js'))).toBe(true)
 	})
 })

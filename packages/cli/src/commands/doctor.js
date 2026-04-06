@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve, dirname, basename } from 'path'
 import { spawnSync } from 'child_process'
 import * as p from '@clack/prompts'
 import pc from 'picocolors'
@@ -23,7 +23,7 @@ import {
 } from '../patchers.js'
 import { generateAuthPage, generateConfigFile, generateDataRoute } from '../generators.js'
 import { parseConfig } from '@kavach/vite'
-import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
+import { readFile, writeFile, fileExists, renameFile, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './constants.js'
 
 export class DoctorCommand {
@@ -166,7 +166,21 @@ export class DoctorCommand {
 	#fixDataRoute(result) {
 		const ext = fileExists(resolve(this.#cwd, 'tsconfig.json')) ? 'ts' : 'js'
 		const segment = this.#config.routes?.data?.replace(/^\//, '')
-		const path = result.path ?? resolve(this.#cwd, `src/routes/${segment}/+server.${ext}`)
+
+		if (result.path) {
+			// Existing file doesn't use kavach — rename it, write standard file alongside
+			const deprecated = resolve(dirname(result.path), `deprecated_${basename(result.path)}`)
+			renameFile(result.path, deprecated)
+			writeFile(result.path, generateDataRoute())
+			return {
+				...result,
+				ok: true,
+				message: `generated — deprecated file can be removed: ${deprecated.replace(`${this.#cwd  }/`, '')}`,
+				fixed: true
+			}
+		}
+
+		const path = resolve(this.#cwd, `src/routes/${segment}/+server.${ext}`)
 		writeFile(path, generateDataRoute())
 		return { ...result, ok: true, message: 'generated', fixed: true }
 	}

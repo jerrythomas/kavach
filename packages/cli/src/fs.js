@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from 'fs'
 import { dirname } from 'path'
 
 export function readFile(path) {
@@ -16,6 +16,10 @@ export function writeFile(path, content) {
 
 export function fileExists(path) {
 	return existsSync(path)
+}
+
+export function renameFile(from, to) {
+	renameSync(from, to)
 }
 
 export function detectPackageManager(cwd) {
