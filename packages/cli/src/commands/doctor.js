@@ -21,6 +21,7 @@ import {
 	patchLayoutSvelte
 } from '../patchers.js'
 import { generateAuthPage, generateConfigFile } from '../generators.js'
+import { parseConfig } from '@kavach/vite'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './constants.js'
 
@@ -95,6 +96,22 @@ export class DoctorCommand {
 	}
 
 	#fixConfig(result) {
+		if (this.#config?.app) {
+			// Migrate from app: routing key to routes: key
+			const normalized = parseConfig(this.#config)
+			const migrated = {
+				adapter: this.#config.adapter,
+				providers: this.#config.providers ?? [],
+				cachedLogins: this.#config.cachedLogins ?? false,
+				env: this.#config.env,
+				routes: normalized.routes,
+				rules: this.#config.rules ?? [],
+				logging: this.#config.logging
+			}
+			writeFile(resolve(this.#cwd, 'kavach.config.js'), generateConfigFile(migrated))
+			this.#config = migrated
+			return { ...result, ok: true, message: 'migrated app key to routes key', fixed: true }
+		}
 		const defaults = {
 			adapter: 'supabase',
 			providers: [],

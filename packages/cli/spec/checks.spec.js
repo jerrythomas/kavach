@@ -66,6 +66,19 @@ describe('checkConfig', () => {
 		const r = checkConfig(tmp, { adapter: 'supabase', env: {}, rules: [] })
 		expect(r.ok).toBe(true)
 	})
+
+	it('fails when routing uses app key instead of routes key', () => {
+		writeFileSync(join(tmp, 'kavach.config.js'), 'export default {}')
+		const r = checkConfig(tmp, {
+			adapter: 'supabase',
+			env: {},
+			rules: [],
+			app: { home: '/home', login: '/auth' }
+		})
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+		expect(r.message).toMatch(/app key/)
+	})
 })
 
 // --- checkVite ---

@@ -36,6 +36,17 @@ export function checkConfig(cwd, config) {
 			fixable: false
 		}
 	}
+	const APP_ROUTE_KEYS = ['home', 'login', 'logout', 'session', 'data', 'rpc']
+	if (config.app && APP_ROUTE_KEYS.some((k) => k in config.app)) {
+		return {
+			id: 'config',
+			ok: false,
+			label: 'kavach.config.js',
+			message: 'routing config uses app key — should use routes key',
+			hint: 'Run kavach doctor --fix to migrate',
+			fixable: true
+		}
+	}
 	return { id: 'config', ok: true, label: 'kavach.config.js', message: 'valid', fixable: false }
 }
 

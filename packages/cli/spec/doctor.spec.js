@@ -204,4 +204,51 @@ describe('DoctorCommand', () => {
 		expect(results.length).toBeGreaterThan(1)
 		expect(results.find((r) => r.id === 'vite')).toBeDefined()
 	})
+
+	it('reports config using app routing key as fixable', async () => {
+		scaffold(tmp, { config: false })
+		writeFileSync(
+			join(tmp, 'kavach.config.js'),
+			`export default ${JSON.stringify({ adapter: 'supabase', env: {}, rules: [], app: { home: '/home', login: '/auth' } })}`
+		)
+		const cmd = new DoctorCommand(tmp, false)
+		cmd._configForTest = {
+			adapter: 'supabase',
+			env: {},
+			rules: [],
+			app: { home: '/home', login: '/auth' }
+		}
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'config')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('--fix migrates app routing key to routes key', async () => {
+		scaffold(tmp, { config: false })
+		const appConfig = {
+			adapter: 'supabase',
+			env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
+			rules: [],
+			app: {
+				home: '/home',
+				login: '/auth',
+				logout: '/logout',
+				session: '/auth/session',
+				data: '/data'
+			}
+		}
+		writeFileSync(join(tmp, 'kavach.config.js'), `export default ${JSON.stringify(appConfig)}`)
+		const cmd = new DoctorCommand(tmp, true)
+		cmd._configForTest = appConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'config')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
+		const { readFileSync } = await import('fs')
+		const content = readFileSync(join(tmp, 'kavach.config.js'), 'utf8')
+		expect(content).toContain('routes')
+		expect(content).toContain('/home')
+		expect(content).not.toContain('app:')
+	})
 })
