@@ -172,4 +172,36 @@ describe('DoctorCommand', () => {
 		expect(check.ok).toBe(true)
 		expect(check.fixed).toBe(true)
 	})
+
+	it('reports missing kavach.config.js as fixable', async () => {
+		scaffold(tmp, { config: false })
+		const cmd = new DoctorCommand(tmp, false)
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'config')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('--fix generates kavach.config.js with defaults', async () => {
+		scaffold(tmp, { config: false })
+		const cmd = new DoctorCommand(tmp, true)
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'config')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
+		const { existsSync, readFileSync } = await import('fs')
+		expect(existsSync(join(tmp, 'kavach.config.js'))).toBe(true)
+		const content = readFileSync(join(tmp, 'kavach.config.js'), 'utf8')
+		expect(content).toContain('adapter')
+		expect(content).toContain('supabase')
+	})
+
+	it('--fix generates config and continues with remaining checks', async () => {
+		scaffold(tmp, { config: false })
+		const cmd = new DoctorCommand(tmp, true)
+		const results = await cmd.runChecksForTest()
+		// config fixed — remaining checks should also have run
+		expect(results.length).toBeGreaterThan(1)
+		expect(results.find((r) => r.id === 'vite')).toBeDefined()
+	})
 })

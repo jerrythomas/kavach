@@ -11,8 +11,8 @@ export function checkConfig(cwd, config) {
 			ok: false,
 			label: 'kavach.config.js',
 			message: 'not found',
-			hint: 'Run kavach init',
-			fixable: false
+			hint: 'Run kavach init or kavach doctor --fix',
+			fixable: true
 		}
 	}
 	if (!config) {

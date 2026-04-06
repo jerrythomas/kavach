@@ -29,7 +29,7 @@ describe('checkConfig', () => {
 	it('fails when kavach.config.js is missing', () => {
 		const r = checkConfig(tmp, null)
 		expect(r.ok).toBe(false)
-		expect(r.fixable).toBe(false)
+		expect(r.fixable).toBe(true)
 		expect(r.message).toMatch(/not found/)
 	})
 

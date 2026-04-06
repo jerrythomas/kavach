@@ -20,7 +20,7 @@ import {
 	patchEnvFile,
 	patchLayoutSvelte
 } from '../patchers.js'
-import { generateAuthPage } from '../generators.js'
+import { generateAuthPage, generateConfigFile } from '../generators.js'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './constants.js'
 
@@ -69,7 +69,9 @@ export class DoctorCommand {
 	#runChecks() {
 		const results = []
 
-		const configResult = checkConfig(this.#cwd, this.#config)
+		const configResult = this.#applyFix(checkConfig(this.#cwd, this.#config), (r) =>
+			this.#fixConfig(r)
+		)
 		results.push(configResult)
 		if (!configResult.ok) return results // remaining checks need a valid config
 
@@ -90,6 +92,21 @@ export class DoctorCommand {
 	#applyFix(result, fixFn) {
 		if (!result.ok && result.fixable && this.#fix) return fixFn(result)
 		return result
+	}
+
+	#fixConfig(result) {
+		const defaults = {
+			adapter: 'supabase',
+			providers: [],
+			cachedLogins: false,
+			env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
+			routes: { data: '/data', rpc: '/rpc' },
+			rules: [{ path: '/', public: true }],
+			logging: { enabled: true, level: 'info', table: 'runtime.system_logs' }
+		}
+		writeFile(resolve(this.#cwd, 'kavach.config.js'), generateConfigFile(defaults))
+		this.#config = defaults
+		return { ...result, ok: true, message: 'generated with defaults', fixed: true }
 	}
 
 	#fixVite(result) {
