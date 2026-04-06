@@ -37,23 +37,24 @@ jobs:
         run: |
           # Publish in dependency order so each package's deps are already on npm
           PACKAGES=(cookie hashing logger query sentry auth ui vite cli)
+          VERSION=$(node -p "require('./packages/cookie/package.json').version")
           for name in "${PACKAGES[@]}"; do
             pkg="./packages/${name}/package.json"
             [ -f "$pkg" ] || continue
             grep -q '"private": true' "$pkg" 2>/dev/null && continue
-            # rewrite workspace:* and workspace:latest to "latest"
-            node -e "
-              const fs = require('fs');
-              const p = JSON.parse(fs.readFileSync('${pkg}', 'utf8'));
-              for (const section of ['dependencies','peerDependencies']) {
-                for (const [k,v] of Object.entries(p[section] || {})) {
-                  if (v.startsWith('workspace:')) p[section][k] = 'latest';
-                }
-              }
-              fs.writeFileSync('${pkg}', JSON.stringify(p, null, 2) + '\n');
-            "
-            (cd "./packages/${name}" && npm publish --provenance --access public --tag latest)
-            git checkout -- "$pkg"
+            PKG_NAME=$(node -p "require('$pkg').name")
+            # skip if already published (handles partial/retried runs)
+            if npm view "${PKG_NAME}@${VERSION}" version 2>/dev/null | grep -qF "${VERSION}"; then
+              echo "Skipping ${PKG_NAME}@${VERSION} — already published"
+              continue
+            fi
+            # bun pm pack rewrites workspace:* deps automatically
+            (
+              cd "./packages/${name}"
+              TARBALL=$(bun pm pack | grep '\.tgz$')
+              bunx npm publish "$TARBALL" --provenance --access public --tag latest
+              rm -f "$TARBALL"
+            )
           done
 
       - name: Publish adapters
@@ -63,23 +64,24 @@ jobs:
         run: |
           # Publish in dependency order — all adapters depend on kavach (published above)
           ADAPTERS=(amplify auth0 supabase firebase convex)
+          VERSION=$(node -p "require('./packages/cookie/package.json').version")
           for name in "${ADAPTERS[@]}"; do
             pkg="./adapters/${name}/package.json"
             [ -f "$pkg" ] || continue
             grep -q '"private": true' "$pkg" 2>/dev/null && continue
-            # rewrite workspace:* and workspace:latest to "latest"
-            node -e "
-              const fs = require('fs');
-              const p = JSON.parse(fs.readFileSync('${pkg}', 'utf8'));
-              for (const section of ['dependencies','peerDependencies']) {
-                for (const [k,v] of Object.entries(p[section] || {})) {
-                  if (v.startsWith('workspace:')) p[section][k] = 'latest';
-                }
-              }
-              fs.writeFileSync('${pkg}', JSON.stringify(p, null, 2) + '\n');
-            "
-            (cd "./adapters/${name}" && npm publish --provenance --access public --tag latest)
-            git checkout -- "$pkg"
+            PKG_NAME=$(node -p "require('$pkg').name")
+            # skip if already published (handles partial/retried runs)
+            if npm view "${PKG_NAME}@${VERSION}" version 2>/dev/null | grep -qF "${VERSION}"; then
+              echo "Skipping ${PKG_NAME}@${VERSION} — already published"
+              continue
+            fi
+            # bun pm pack rewrites workspace:* deps automatically
+            (
+              cd "./adapters/${name}"
+              TARBALL=$(bun pm pack | grep '\.tgz$')
+              bunx npm publish "$TARBALL" --provenance --access public --tag latest
+              rm -f "$TARBALL"
+            )
           done
 
       - name: Create GitHub release

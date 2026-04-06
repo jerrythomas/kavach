@@ -64,6 +64,8 @@ export default {
     logout: '/logout',
     home: '/dashboard',    // post-login redirect — string or async function
     // home: async (session) => `/${session.user.user_metadata.slug ?? 'home'}`
+    data: '/data',         // optional — kavach.handle serves this internally
+    rpc: '/rpc'            // optional — kavach.handle serves this internally
   },
   rules: [
     { path: '/', public: true },

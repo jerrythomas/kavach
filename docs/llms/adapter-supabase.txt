@@ -45,27 +45,38 @@ Required environment variables:
 
 ## Data Access
 
-With the Supabase adapter, you can use Kavach's data access layer in server routes:
+Data and RPC endpoints are served internally by `kavach.handle` — no `+server.ts`
+files needed. Configure the routes in `kavach.config.js`:
 
-```ts
-// src/routes/(protected)/data/+server.ts
-import { adapter } from '$kavach/auth'
-
-export async function GET({ locals }) {
-  const { data, error } = await adapter
-    .from('items')
-    .select('*')
-    .eq('user_id', locals.session.user.id)
-
-  return json(data)
+```js
+export default {
+  adapter: 'supabase',
+  routes: {
+    data: '/data',  // kavach.handle intercepts and dispatches to the adapter
+    rpc: '/rpc'
+  }
 }
 ```
 
+Requests use schema-qualified paths: `GET /data/core/teams` queries the `teams`
+table in the `core` schema. Unqualified paths use the default schema: `GET /data/profiles`.
+
+`kavach.handle` creates a per-request Supabase client using the session's
+`access_token`, so PostgREST runs as the `authenticated` role and RLS applies.
+
+Supported query params for GET:
+
+| Param | Description |
+|-------|-------------|
+| `:select` | Column projection |
+| `:order` | Sort order |
+| `:limit` / `:offset` | Pagination |
+| `:count` | Count mode |
+| Any other key | Filter condition |
+
 ## RPC Calls
 
-```ts
-const result = await adapter.rpc('function_name', { param: value })
-```
+RPC is handled internally at `routes.rpc`. POST with `{ procedure, payload }`.
 
 ## Audit Logging
 
@@ -74,8 +85,10 @@ Configure logging to a Supabase table:
 ```js
 export default {
   adapter: 'supabase',
-  logger: {
-    table: 'audit_logs' // logs auth events to this table
+  logging: {
+    enabled: true,
+    level: 'info',
+    table: 'audit_logs'
   }
 }
 ```
