@@ -543,8 +543,9 @@ export function createKavach(adapter, options = {}) {
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
-		configure: ({ invalidateAll: inv } = {}) => {
+		configure: ({ invalidateAll: inv, logger: log } = {}) => {
 			if (inv) agents.invalidateAll = inv
+			if (log) agents.logger = log
 		},
 		actions: (schema) => options.data?.(schema),
 		getCachedLogins: () => loginCache.get(),
