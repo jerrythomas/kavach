@@ -1,6 +1,6 @@
 /**
  * @typedef AppRoute
- * @property {string} home
+ * @property {(session?: object) => string | Promise<string>} home
  * @property {string} login
  * @property {string} logout
  * @property {string} session

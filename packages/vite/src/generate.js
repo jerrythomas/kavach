@@ -14,6 +14,8 @@ function serialize(value, indent = 1) {
 		return `[\n${items}\n${pad}]`
 	}
 
+	if (typeof value === 'function') return value.toString()
+
 	if (typeof value === 'object') {
 		const entries = Object.entries(value)
 		if (entries.length === 0) return '{}'

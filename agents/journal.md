@@ -15,6 +15,23 @@ Design details live in `docs/design/` — modular docs per module.
 
 ---
 
+## 2026-04-05
+
+### Dynamic home URL resolution (GitHub #17)
+
+**What was done:**
+
+- `routes.home` in `kavach.config.js` now accepts an async function `(session) => string` as well as a static string.
+- `processAppRoutes` (sentry) normalises `home` to always be a function. Static strings are wrapped in `() => staticHome` with a `._path` annotation so route rule generation is unaffected.
+- `serialize()` (vite) handles functions via `.toString()` so function values survive virtual module generation.
+- `handleUnauthorizedAccess` and `handleRouteProtection` (auth) are now async; home is always resolved via `await app.home(session)`. Resolver errors fall back to `'/'`.
+- Updated sentry tests to use `expect.any(Function)` for home redirect assertions.
+- Added tests: function serialization in vite, dynamic redirect / error fallback in auth middleware.
+
+**Key decision:** home is always a function internally — `homeExclude` was dropped as the resolver function can express the same conditional logic itself.
+
+---
+
 ## 2026-03-11
 
 ### Fused demo into learn site + deprecated demo/skeleton

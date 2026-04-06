@@ -89,3 +89,37 @@ Feature: Unauthorized Access
     Given an API endpoint is accessed without authorization
     Then the response returns the appropriate HTTP status (401 or 403)
 ```
+
+### Dynamic Home URL Resolution
+
+After login, users can be redirected to a personalized URL derived from their session (e.g. `/[userSlug]`) instead of a fixed static path. `routes.home` can be an async function — it receives the session and returns a string. Because the function has full access to the session, conditional logic (e.g. admins go to `/platform`, regular users go to `/[slug]`) is expressed inside the function itself.
+
+```gherkin
+Feature: Dynamic Home URL Resolution
+
+  Scenario: Authenticated user visiting login page is redirected to dynamic home
+    Given routes.home is async (session) => "/" + session.user.user_metadata.slug
+    And the authenticated user has user_metadata.slug "bob-kim"
+    When the user visits the login page while authenticated
+    Then the user is redirected to "/bob-kim"
+
+  Scenario: Static home is used when routes.home is a string
+    Given routes.home is "/home"
+    When an authenticated user visits the login page
+    Then the user is redirected to "/home"
+
+  Scenario: Resolver can return different paths based on role
+    Given routes.home returns "/platform" for admins and "/" + slug for others
+    When an admin user is redirected to home
+    Then the user is redirected to "/platform"
+
+  Scenario: Resolver receives the current session
+    Given routes.home is an async function
+    When the resolver is invoked
+    Then it receives the full session object
+
+  Scenario: Resolver error falls back to static home
+    Given routes.home is a function that throws
+    When the resolver is called during a redirect
+    Then the static fallback "/" is used
+```

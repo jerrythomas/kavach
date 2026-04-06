@@ -114,6 +114,17 @@ describe('generateModule', () => {
 	it('should throw for unknown module', () => {
 		expect(() => generateModule('unknown', config)).toThrow('Unknown virtual module')
 	})
+
+	it('serializes a function home into the generated auth module', () => {
+		const fn = (session) => `/${session.user.user_metadata.slug}`
+		const configWithFnHome = {
+			...config,
+			routes: { ...config.routes, home: fn }
+		}
+		const code = generateModule('auth', configWithFnHome)
+		expect(code).toContain('home:')
+		expect(code).toContain('session.user.user_metadata.slug')
+	})
 })
 
 describe('generateAuth - firebase emulator', () => {

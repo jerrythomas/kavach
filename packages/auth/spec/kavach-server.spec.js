@@ -41,6 +41,97 @@ describe('Endpoint functions', () => {
 	})
 })
 
+describe('kavach.handle — dynamic home resolution', () => {
+	beforeEach(() => {
+		global.Response = OriginalResponse
+	})
+
+	afterEach(() => {
+		vi.restoreAllMocks()
+	})
+
+	it('redirects to static home when home is a string', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const mockAdapter = {
+			synchronize: vi.fn(),
+			signOut: vi.fn(),
+			onAuthChange: vi.fn(),
+			parseUrlError: vi.fn(() => null),
+			signIn: vi.fn(),
+			signUp: vi.fn()
+		}
+		const kavachInstance = createKavach(mockAdapter, {
+			app: { login: '/auth', home: '/home', session: '/auth/session' },
+			rules: []
+		})
+		const session = { user: { role: 'authenticated', user_metadata: { slug: 'bob' } } }
+		const mockEvent = {
+			url: new URL('http://localhost/auth'),
+			cookies: { get: vi.fn(() => JSON.stringify(session)) },
+			locals: {},
+			request: { method: 'GET' }
+		}
+		const result = await kavachInstance.handle({ event: mockEvent, resolve: vi.fn() })
+		expect(result.status).toBe(303)
+		expect(result.headers.get('location')).toBe('http://localhost/home')
+	})
+
+	it('calls home function and redirects to resolved path', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const mockAdapter = {
+			synchronize: vi.fn(),
+			signOut: vi.fn(),
+			onAuthChange: vi.fn(),
+			parseUrlError: vi.fn(() => null),
+			signIn: vi.fn(),
+			signUp: vi.fn()
+		}
+		const homeResolver = vi.fn().mockResolvedValue('/bob-kim')
+		const kavachInstance = createKavach(mockAdapter, {
+			app: { login: '/auth', home: homeResolver, session: '/auth/session' },
+			rules: []
+		})
+		const session = { user: { role: 'authenticated', user_metadata: { slug: 'bob-kim' } } }
+		const mockEvent = {
+			url: new URL('http://localhost/auth'),
+			cookies: { get: vi.fn(() => JSON.stringify(session)) },
+			locals: {},
+			request: { method: 'GET' }
+		}
+		const result = await kavachInstance.handle({ event: mockEvent, resolve: vi.fn() })
+		expect(homeResolver).toHaveBeenCalledWith(session)
+		expect(result.status).toBe(303)
+		expect(result.headers.get('location')).toBe('http://localhost/bob-kim')
+	})
+
+	it('falls back to static home string when home function throws', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const mockAdapter = {
+			synchronize: vi.fn(),
+			signOut: vi.fn(),
+			onAuthChange: vi.fn(),
+			parseUrlError: vi.fn(() => null),
+			signIn: vi.fn(),
+			signUp: vi.fn()
+		}
+		const homeResolver = vi.fn().mockRejectedValue(new Error('db error'))
+		const kavachInstance = createKavach(mockAdapter, {
+			app: { login: '/auth', home: homeResolver, session: '/auth/session' },
+			rules: []
+		})
+		const session = { user: { role: 'authenticated' } }
+		const mockEvent = {
+			url: new URL('http://localhost/auth'),
+			cookies: { get: vi.fn(() => JSON.stringify(session)) },
+			locals: {},
+			request: { method: 'GET' }
+		}
+		const result = await kavachInstance.handle({ event: mockEvent, resolve: vi.fn() })
+		expect(result.status).toBe(303)
+		expect(result.headers.get('location')).toBe('http://localhost/')
+	})
+})
+
 describe('kavach.handle — Response body serialization', () => {
 	beforeEach(() => {
 		global.Response = OriginalResponse

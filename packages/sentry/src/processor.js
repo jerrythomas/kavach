@@ -134,6 +134,11 @@ export function processAppRoutes(appRoutes) {
 		routes.endpoints.push(routes.session)
 	}
 
+	if (typeof routes.home !== 'function') {
+		const staticHome = routes.home
+		routes.home = Object.assign(() => staticHome, { _path: staticHome })
+	}
+
 	return routes
 }
 
@@ -151,7 +156,8 @@ export function addRulesForAppRoutes(rules, appRoutes, options = {}) {
 		const paths = Array.isArray(appRoutes[route]) ? appRoutes[route] : [appRoutes[route]]
 
 		paths
-			.filter((path) => path)
+			.map((p) => (typeof p === 'function' ? p._path : p))
+			.filter((path) => typeof path === 'string' && path)
 			.forEach((path) => {
 				// Don't override user's explicit rules - skip if already defined
 				const existingRule = rules.find((rule) => rule.path === path)

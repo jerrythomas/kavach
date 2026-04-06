@@ -41,12 +41,16 @@ const result = sentry.protect('/dashboard')
 createSentry({
   rules: RouteRule[]     // prefix-matched rules, evaluated in order
   roleHome?: Record<string, string>  // role → home path mapping
-  routes?: {
-    auth?: string        // sign-in page path (default: '/auth')
+  app?: {
+    home?: string | ((session?: object) => string | Promise<string>)
+                         // post-login redirect — string or async function (default: '/')
+    login?: string       // sign-in page path (default: '/auth')
     logout?: string      // logout path (default: '/logout')
   }
 })
 ```
+
+`app.home` is always normalised to a function internally. A string value is wrapped automatically so that `await app.home(session)` always works regardless of what was configured.
 
 ### sentry.setSession(session)
 

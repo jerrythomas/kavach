@@ -126,7 +126,7 @@ describe('Route Processor', () => {
 		it('should return default routes', () => {
 			const routes = processAppRoutes()
 			expect(routes).toEqual({
-				home: '/',
+				home: expect.any(Function),
 				login: '/auth',
 				logout: '/logout',
 				session: '/auth/session',
@@ -135,6 +135,7 @@ describe('Route Processor', () => {
 				rpc: '/rpc',
 				endpoints: ['/api', '/data', '/auth/session']
 			})
+			expect(routes.home._path).toBe('/')
 		})
 
 		it('should return custom routes', () => {
@@ -147,7 +148,7 @@ describe('Route Processor', () => {
 				endpoints: ['/api', '/data', '/session']
 			})
 			expect(routes).toEqual({
-				home: '/home',
+				home: expect.any(Function),
 				login: '/login',
 				logout: '/logout',
 				session: '/session',
@@ -156,12 +157,13 @@ describe('Route Processor', () => {
 				rpc: '/rpc',
 				endpoints: ['/api', '/data', '/session']
 			})
+			expect(routes.home._path).toBe('/home')
 		})
 
 		it('should return include session route in endpoints', () => {
 			const routes = processAppRoutes({ endpoints: '/api' })
 			expect(routes).toEqual({
-				home: '/',
+				home: expect.any(Function),
 				login: '/auth',
 				logout: '/logout',
 				session: '/auth/session',
@@ -170,6 +172,12 @@ describe('Route Processor', () => {
 				rpc: '/rpc',
 				endpoints: ['/api', '/auth/session']
 			})
+		})
+
+		it('should preserve function home as-is', () => {
+			const fn = (session) => `/${session.user.slug}`
+			const routes = processAppRoutes({ home: fn })
+			expect(routes.home).toBe(fn)
 		})
 	})
 

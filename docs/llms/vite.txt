@@ -61,7 +61,9 @@ export default {
   ],
   routes: {
     auth: '(public)/auth', // SvelteKit route group path for auth page
-    logout: '/logout'
+    logout: '/logout',
+    home: '/dashboard',    // post-login redirect — string or async function
+    // home: async (session) => `/${session.user.user_metadata.slug ?? 'home'}`
   },
   rules: [
     { path: '/', public: true },

@@ -101,20 +101,42 @@ async function handleSignUp(adapter, agents, credentials) {
 }
 
 /**
+ * Resolve the home path — calls home if it is a function, otherwise returns it as-is.
+ *
+ * @param {string|Function} home
+ * @param {object}          session
+ * @param {import('@kavach/logger').Logger} logger
+ * @returns {Promise<string>}
+ */
+async function resolveHome(home, session, logger) {
+	try {
+		return await home(session)
+	} catch (err) {
+		logger.warn({ message: 'home resolver threw — falling back to /', error: err })
+		return '/'
+	}
+}
+
+/**
  * Handle unauthorized access
  *
  * @param {import('kavach').Sentry} sentry
  * @param {object}                          request
- * @returns {Response}
+ * @returns {Promise<Response>}
  */
-function handleUnauthorizedAccess(agents, { event, resolve }) {
+async function handleUnauthorizedAccess(agents, { event, resolve }) {
 	const result = agents.sentry.protect(event.url.pathname)
 
 	if (result.status !== 200) {
 		if (result.redirect) {
+			const { app } = agents.sentry
+			const redirect =
+				result.redirect === app.home
+					? await resolveHome(app.home, event.locals.session, agents.logger)
+					: result.redirect
 			return new Response('', {
 				status: 303,
-				headers: { location: event.url.origin + result.redirect }
+				headers: { location: event.url.origin + redirect }
 			})
 		} else {
 			return new Response(JSON.stringify({ error: HTTP_STATUS_MESSAGES[result.status] }), {
@@ -217,7 +239,7 @@ async function syncSessionWithServer(agents, event, session = null) {
  * @param {object}                             request
  * @returns {Promise<void>}
  */
-function handleRouteProtection(adapter, agents, { event, resolve }) {
+async function handleRouteProtection(adapter, agents, { event, resolve }) {
 	const { sentry } = agents
 	event.locals.session = parseSessionFromCookies(event)
 	sentry.setSession(event.locals.session)
@@ -226,7 +248,7 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 		return handleSessionSync(event, adapter, sentry)
 	}
 
-	const protection = handleUnauthorizedAccess(agents, { event, resolve })
+	const protection = await handleUnauthorizedAccess(agents, { event, resolve })
 
 	// If protection returns a Response (redirect or error), return it immediately
 	if (protection instanceof Response) {

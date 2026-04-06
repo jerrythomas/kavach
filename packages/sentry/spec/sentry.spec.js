@@ -31,7 +31,7 @@ describe('Router functions', () => {
 			const res = createSentry()
 			expect(res).toEqual({
 				app: {
-					home: '/',
+					home: expect.any(Function),
 					login: '/auth',
 					logout: '/logout',
 					session: '/auth/session',
@@ -67,19 +67,17 @@ describe('Router functions', () => {
 		})
 		it('should protect routes when role is "authenticated"', () => {
 			res.setSession({ user: { role: 'authenticated' } })
-			expect(res.protect(page.home)).toEqual({
-				status: 200
-			})
+			expect(res.protect(page.home)).toEqual({ status: 200 })
 			expect(res.protect(page.login)).toEqual({
 				status: 302,
-				redirect: page.home
+				redirect: expect.any(Function)
 			})
 			expect(res.protect(page.logout)).toEqual({ status: 200 })
 			expect(res.protect('/blog')).toEqual({ status: 200 })
 			expect(res.protect('/user')).toEqual({ status: 200 })
 			expect(res.protect('/other')).toEqual({
 				status: 403,
-				redirect: page.home
+				redirect: expect.any(Function)
 			})
 		})
 		it('should protect routes when role is "other"', () => {
@@ -87,13 +85,13 @@ describe('Router functions', () => {
 			expect(res.protect(page.home)).toEqual({ status: 200 })
 			expect(res.protect(page.login)).toEqual({
 				status: 302,
-				redirect: page.home
+				redirect: expect.any(Function)
 			})
 			expect(res.protect(page.logout)).toEqual({ status: 200 })
 			expect(res.protect('/blog')).toEqual({ status: 200 })
 			expect(res.protect('/user')).toEqual({
 				status: 403,
-				redirect: page.home
+				redirect: expect.any(Function)
 			})
 			expect(res.protect('/other')).toEqual({ status: 200 })
 		})
@@ -114,7 +112,7 @@ describe('Router functions', () => {
 			expect(logger.error).not.toHaveBeenCalled()
 			expect(config).toEqual({
 				app: {
-					home: '/',
+					home: expect.any(Function),
 					login: '/auth',
 					logout: '/logout',
 					session: '/auth/session',
@@ -159,7 +157,7 @@ describe('Router functions', () => {
 			})
 			expect(config).toEqual({
 				app: {
-					home: '/home',
+					home: expect.any(Function),
 					login: '/login',
 					logout: '/logout',
 					session: '/auth/session',
@@ -213,7 +211,7 @@ describe('Router functions', () => {
 			})
 			expect(config).toEqual({
 				app: {
-					home: '/home',
+					home: expect.any(Function),
 					login: '/login',
 					logout: '/logout',
 					session: '/auth/session',
@@ -325,7 +323,7 @@ describe('Router functions', () => {
 			const outcome = protectRoute(allowedRoutes, config.app.login, role)
 			expect(outcome).toEqual({
 				status: 302,
-				redirect: '/'
+				redirect: expect.any(Function)
 			})
 		})
 
@@ -340,9 +338,9 @@ describe('Router functions', () => {
 			const role = 'user'
 			const allowedRoutes = configureRoleRoutes(config, role)
 			let outcome = protectRoute(allowedRoutes, '/admin', role)
-			expect(outcome).toEqual({ status: 403, redirect: '/' })
+			expect(outcome).toEqual({ status: 403, redirect: expect.any(Function) })
 			outcome = protectRoute(allowedRoutes, '/shared/admin', role)
-			expect(outcome).toEqual({ status: 403, redirect: '/' })
+			expect(outcome).toEqual({ status: 403, redirect: expect.any(Function) })
 		})
 
 		it('should not allow protected route for unauthenticated user', () => {
@@ -356,7 +354,7 @@ describe('Router functions', () => {
 			const allowedRoutes = configureRoleRoutes(config, role)
 			const outcome = protectRoute(allowedRoutes, '/dashboard', role)
 			expect(outcome).toEqual({
-				redirect: role === null ? '/auth' : '/',
+				redirect: role === null ? '/auth' : expect.any(Function),
 				status: role === null ? 401 : 403
 			})
 		})
