@@ -9,7 +9,7 @@ let tmp
 const validConfig = {
 	adapter: 'supabase',
 	env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
-	routes: { auth: '/auth' },
+	routes: { auth: '/auth', data: '/data' },
 	rules: [{ path: '/', public: true }]
 }
 
@@ -69,6 +69,13 @@ function scaffold(dir, opts = {}) {
 		writeFileSync(
 			join(dir, 'src/routes/auth/+page.svelte'),
 			opts.authPage ?? `<AuthProvider name="email" />`
+		)
+	}
+	if (opts.dataRoute !== false) {
+		mkdirSync(join(dir, 'src/routes/data'), { recursive: true })
+		writeFileSync(
+			join(dir, 'src/routes/data/+server.js'),
+			opts.dataRoute ?? `export { GET, POST, PUT, PATCH, DELETE } from 'kavach'`
 		)
 	}
 }
@@ -250,5 +257,38 @@ describe('DoctorCommand', () => {
 		expect(content).toContain('routes')
 		expect(content).toContain('/home')
 		expect(content).not.toContain('app:')
+	})
+
+	it('reports missing data route as fixable', async () => {
+		scaffold(tmp, { dataRoute: false })
+		const cmd = new DoctorCommand(tmp, false)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'data-route')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('reports non-kavach data route as fixable', async () => {
+		scaffold(tmp, { dataRoute: `export const GET = () => {}` })
+		const cmd = new DoctorCommand(tmp, false)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'data-route')
+		expect(check.ok).toBe(false)
+		expect(check.fixable).toBe(true)
+	})
+
+	it('--fix generates standard data route', async () => {
+		scaffold(tmp, { dataRoute: false })
+		const cmd = new DoctorCommand(tmp, true)
+		cmd._configForTest = validConfig
+		const results = await cmd.runChecksForTest()
+		const check = results.find((r) => r.id === 'data-route')
+		expect(check.ok).toBe(true)
+		expect(check.fixed).toBe(true)
+		const { readFileSync } = await import('fs')
+		const content = readFileSync(join(tmp, 'src/routes/data/+server.js'), 'utf8')
+		expect(content).toContain("from 'kavach'")
 	})
 })

@@ -11,6 +11,7 @@ import {
 	checkAuthPage,
 	checkEnvKeys,
 	checkEnvValues,
+	checkDataRoute,
 	checkDeps
 } from '../checks.js'
 import {
@@ -20,7 +21,7 @@ import {
 	patchEnvFile,
 	patchLayoutSvelte
 } from '../patchers.js'
-import { generateAuthPage, generateConfigFile } from '../generators.js'
+import { generateAuthPage, generateConfigFile, generateDataRoute } from '../generators.js'
 import { parseConfig } from '@kavach/vite'
 import { readFile, writeFile, fileExists, detectPackageManager } from '../fs.js'
 import { DEPENDENCIES, ADAPTER_DEPS } from './constants.js'
@@ -85,6 +86,9 @@ export class DoctorCommand {
 		)
 		results.push(this.#applyFix(checkEnvKeys(this.#cwd, this.#config), (r) => this.#fixEnvKeys(r)))
 		results.push(checkEnvValues(this.#cwd, this.#config)) // never auto-fixable
+		results.push(
+			this.#applyFix(checkDataRoute(this.#cwd, this.#config), (r) => this.#fixDataRoute(r))
+		)
 		results.push(this.#applyFix(checkDeps(this.#cwd, this.#config), (r) => this.#fixDeps(r)))
 
 		return results
@@ -156,6 +160,14 @@ export class DoctorCommand {
 		const segment = this.#config.routes?.auth?.replace(/^\//, '').split('/').pop()
 		const path = result.path ?? resolve(this.#cwd, `src/routes/${segment}/+page.svelte`)
 		writeFile(path, generateAuthPage(this.#config))
+		return { ...result, ok: true, message: 'generated', fixed: true }
+	}
+
+	#fixDataRoute(result) {
+		const ext = fileExists(resolve(this.#cwd, 'tsconfig.json')) ? 'ts' : 'js'
+		const segment = this.#config.routes?.data?.replace(/^\//, '')
+		const path = result.path ?? resolve(this.#cwd, `src/routes/${segment}/+server.${ext}`)
+		writeFile(path, generateDataRoute())
 		return { ...result, ok: true, message: 'generated', fixed: true }
 	}
 

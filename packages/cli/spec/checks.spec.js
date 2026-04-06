@@ -11,7 +11,8 @@ import {
 	checkEnvValues,
 	checkDeps,
 	checkContextSetup,
-	checkAuthPage
+	checkAuthPage,
+	checkDataRoute
 } from '../src/checks.js'
 
 let tmp
@@ -314,6 +315,53 @@ describe('checkAuthPage', () => {
 			`<AuthProvider name="email" />`
 		)
 		const r = checkAuthPage(tmp, config)
+		expect(r.ok).toBe(true)
+	})
+})
+
+// --- checkDataRoute ---
+
+describe('checkDataRoute', () => {
+	const config = { routes: { data: '/data' } }
+
+	it('passes when no data route configured', () => {
+		const r = checkDataRoute(tmp, {})
+		expect(r.ok).toBe(true)
+	})
+
+	it('fails when data route file is missing', () => {
+		const r = checkDataRoute(tmp, config)
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+		expect(r.message).toMatch(/not found/)
+	})
+
+	it('fails when data route does not export from kavach', () => {
+		mkdirSync(join(tmp, 'src/routes/data'), { recursive: true })
+		writeFileSync(join(tmp, 'src/routes/data/+server.js'), `export const GET = () => {}`)
+		const r = checkDataRoute(tmp, config)
+		expect(r.ok).toBe(false)
+		expect(r.fixable).toBe(true)
+		expect(r.message).toMatch(/kavach/)
+	})
+
+	it('passes when data route exports from kavach', () => {
+		mkdirSync(join(tmp, 'src/routes/data'), { recursive: true })
+		writeFileSync(
+			join(tmp, 'src/routes/data/+server.js'),
+			`export { GET, POST, PUT, PATCH, DELETE } from 'kavach'`
+		)
+		const r = checkDataRoute(tmp, config)
+		expect(r.ok).toBe(true)
+	})
+
+	it('passes when data route is inside a route group', () => {
+		mkdirSync(join(tmp, 'src/routes/(server)/data'), { recursive: true })
+		writeFileSync(
+			join(tmp, 'src/routes/(server)/data/+server.js'),
+			`export { GET, POST, PUT, PATCH, DELETE } from 'kavach'`
+		)
+		const r = checkDataRoute(tmp, config)
 		expect(r.ok).toBe(true)
 	})
 })

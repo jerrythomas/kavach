@@ -325,6 +325,66 @@ export function checkAuthPage(cwd, config) {
 	return { id: 'auth-page', ok: true, label: 'auth page', message: 'valid', fixable: false }
 }
 
+function findServerFileCandidates(dir, segment) {
+	const results = []
+	let entries
+	try {
+		entries = readdirSync(dir, { withFileTypes: true })
+	} catch {
+		return results
+	}
+	for (const entry of entries) {
+		if (!entry.isDirectory()) continue
+		const full = join(dir, entry.name)
+		if (entry.name === segment) {
+			results.push(...['+server.ts', '+server.js'].map((ext) => join(full, ext)).filter(fileExists))
+		} else {
+			results.push(...findServerFileCandidates(full, segment))
+		}
+	}
+	return results
+}
+
+export function checkDataRoute(cwd, config) {
+	if (!config?.routes?.data) {
+		return {
+			id: 'data-route',
+			ok: true,
+			label: 'data route',
+			message: 'not configured',
+			fixable: false
+		}
+	}
+	const segment = config.routes.data.replace(/^\//, '').split('/').pop()
+	const routesDir = resolve(cwd, 'src/routes')
+	const candidates = findServerFileCandidates(routesDir, segment)
+
+	if (candidates.length === 0) {
+		return {
+			id: 'data-route',
+			ok: false,
+			label: 'data route',
+			message: `${config.routes.data}/+server not found`,
+			hint: 'Run kavach doctor --fix',
+			fixable: true
+		}
+	}
+	const found = candidates.find((p) => readFile(p).includes("from 'kavach'"))
+	if (!found) {
+		const label = candidates[0].replace(`${routesDir}/`, '')
+		return {
+			id: 'data-route',
+			ok: false,
+			label,
+			message: "does not export from 'kavach'",
+			hint: 'Run kavach doctor --fix to replace with standard kavach data route',
+			fixable: true,
+			path: candidates[0]
+		}
+	}
+	return { id: 'data-route', ok: true, label: 'data route', message: 'valid', fixable: false }
+}
+
 export function checkDeps(cwd, config) {
 	const pkgPath = resolve(cwd, 'package.json')
 	if (!fileExists(pkgPath)) {
