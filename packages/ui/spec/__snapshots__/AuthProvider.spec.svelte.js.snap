@@ -406,115 +406,116 @@ exports[`AuthProvider.svelte > password > should handle errors 1`] = `
     data-auth-mode="password"
     data-auth-provider="email"
   >
-    <!---->
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="email"
-      data-has-icon="true"
-    >
+    <form>
       <div
-        aria-label="email"
-        data-field=""
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="email"
+        data-has-icon="true"
       >
-        <label
-          for="email"
+        <div
+          aria-label="email"
+          data-field=""
         >
-          email
-        </label>
+          <label
+            for="email"
+          >
+            email
+          </label>
+          <!---->
+           
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-email"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              autocomplete="on"
+              id="email"
+              name="email"
+              type="email"
+            />
+            <!---->
+          </div>
+          
+          <!---->
+        </div>
+         
         <!---->
          
         <!---->
+      </div>
+      <!---->
+       
+      <div
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="password"
+        data-has-icon="true"
+      >
         <div
-          data-input-root=""
+          aria-label="Password"
+          data-field=""
         >
-          <span
-            aria-hidden="true"
-            class="i-auth-email"
-            data-input-icon=""
-          />
+          <label
+            for="password"
+          >
+            Password
+          </label>
           <!---->
            
-          <input
-            autocomplete="on"
-            id="email"
-            name="email"
-            type="email"
-          />
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-password"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              id="password"
+              name="password"
+              type="password"
+            />
+            <!---->
+          </div>
+          
           <!---->
         </div>
-        
-        <!---->
-      </div>
-       
-      <!---->
-       
-      <!---->
-    </div>
-    <!---->
-     
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="password"
-      data-has-icon="true"
-    >
-      <div
-        aria-label="Password"
-        data-field=""
-      >
-        <label
-          for="password"
-        >
-          Password
-        </label>
+         
         <!---->
          
         <!---->
-        <div
-          data-input-root=""
-        >
-          <span
-            aria-hidden="true"
-            class="i-auth-password"
-            data-input-icon=""
-          />
-          <!---->
-           
-          <input
-            id="password"
-            name="password"
-            type="password"
-          />
-          <!---->
-        </div>
+      </div>
+      <!---->
+       
+      <!---->
+      <button
+        class="col-start-3 mt-4 h-10 cursor-pointer rounded bg-purple-600 text-center text-white hover:bg-purple-700"
+        data-auth-mode="password"
+        data-button="true"
+        data-size="md"
+        data-style="default"
+        data-variant="default"
+        type="submit"
+      >
+        <!---->
+        Sign in
         
         <!---->
-      </div>
-       
-      <!---->
-       
-      <!---->
-    </div>
-    <!---->
-     
-    <!---->
-    <button
-      class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
-      data-auth-mode="password"
-      data-button="true"
-      data-size="md"
-      data-style="default"
-      data-variant="default"
-      type="button"
-    >
-      <!---->
-      Sign in
+      </button>
       
       <!---->
-    </button>
-    
-    <!---->
+    </form>
     <!---->
   </div>
   
@@ -529,115 +530,116 @@ exports[`AuthProvider.svelte > password > should render email/password auth 1`] 
     data-auth-mode="password"
     data-auth-provider="email"
   >
-    <!---->
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="email"
-      data-has-icon="true"
-    >
+    <form>
       <div
-        aria-label="email"
-        data-field=""
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="email"
+        data-has-icon="true"
       >
-        <label
-          for="email"
+        <div
+          aria-label="email"
+          data-field=""
         >
-          email
-        </label>
+          <label
+            for="email"
+          >
+            email
+          </label>
+          <!---->
+           
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-email"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              autocomplete="on"
+              id="email"
+              name="email"
+              type="email"
+            />
+            <!---->
+          </div>
+          
+          <!---->
+        </div>
+         
         <!---->
          
         <!---->
+      </div>
+      <!---->
+       
+      <div
+        data-field-empty="false"
+        data-field-root="true"
+        data-field-type="password"
+        data-has-icon="true"
+      >
         <div
-          data-input-root=""
+          aria-label="Password"
+          data-field=""
         >
-          <span
-            aria-hidden="true"
-            class="i-auth-email"
-            data-input-icon=""
-          />
+          <label
+            for="password"
+          >
+            Password
+          </label>
           <!---->
            
-          <input
-            autocomplete="on"
-            id="email"
-            name="email"
-            type="email"
-          />
+          <!---->
+          <div
+            data-input-root=""
+          >
+            <span
+              aria-hidden="true"
+              class="i-auth-password"
+              data-input-icon=""
+            />
+            <!---->
+             
+            <input
+              id="password"
+              name="password"
+              type="password"
+            />
+            <!---->
+          </div>
+          
           <!---->
         </div>
-        
-        <!---->
-      </div>
-       
-      <!---->
-       
-      <!---->
-    </div>
-    <!---->
-     
-    <div
-      data-field-empty="false"
-      data-field-root="true"
-      data-field-type="password"
-      data-has-icon="true"
-    >
-      <div
-        aria-label="Password"
-        data-field=""
-      >
-        <label
-          for="password"
-        >
-          Password
-        </label>
+         
         <!---->
          
         <!---->
-        <div
-          data-input-root=""
-        >
-          <span
-            aria-hidden="true"
-            class="i-auth-password"
-            data-input-icon=""
-          />
-          <!---->
-           
-          <input
-            id="password"
-            name="password"
-            type="password"
-          />
-          <!---->
-        </div>
+      </div>
+      <!---->
+       
+      <!---->
+      <button
+        class="col-start-3 mt-4 h-10 cursor-pointer rounded bg-purple-600 text-center text-white hover:bg-purple-700"
+        data-auth-mode="password"
+        data-button="true"
+        data-size="md"
+        data-style="default"
+        data-variant="default"
+        type="submit"
+      >
+        <!---->
+        Sign in
         
         <!---->
-      </div>
-       
-      <!---->
-       
-      <!---->
-    </div>
-    <!---->
-     
-    <!---->
-    <button
-      class="col-start-3 text-center h-10 mt-4 bg-purple-600 text-white rounded cursor-pointer hover:bg-purple-700"
-      data-auth-mode="password"
-      data-button="true"
-      data-size="md"
-      data-style="default"
-      data-variant="default"
-      type="button"
-    >
-      <!---->
-      Sign in
+      </button>
       
       <!---->
-    </button>
-    
-    <!---->
+    </form>
     <!---->
   </div>
   

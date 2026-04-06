@@ -51,6 +51,7 @@ describe('kavach', () => {
 			signOut: expect.any(Function),
 			onAuthChange: expect.any(Function),
 			handle: expect.any(Function),
+			configure: expect.any(Function),
 			actions: expect.any(Function),
 			getCachedLogins: expect.any(Function),
 			removeCachedLogin: expect.any(Function),

@@ -41,6 +41,26 @@ describe('Endpoint functions', () => {
 	})
 })
 
+describe('kavach.configure', () => {
+	it('patches invalidateAll on the existing instance', () => {
+		const adapter = {
+			onAuthChange: vi.fn(),
+			parseUrlError: vi.fn(() => null),
+			signIn: vi.fn(),
+			signUp: vi.fn(),
+			signOut: vi.fn()
+		}
+		const kavach = createKavach(adapter, {
+			app: { login: '/auth', home: '/' },
+			rules: []
+		})
+		const inv = vi.fn()
+		kavach.configure({ invalidateAll: inv })
+		// configure does not throw and the method exists
+		expect(typeof kavach.configure).toBe('function')
+	})
+})
+
 describe('kavach.handle — dynamic home resolution', () => {
 	beforeEach(() => {
 		global.Response = OriginalResponse

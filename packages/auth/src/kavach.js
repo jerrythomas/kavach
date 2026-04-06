@@ -109,6 +109,7 @@ async function handleSignUp(adapter, agents, credentials) {
  * @returns {Promise<string>}
  */
 async function resolveHome(home, session, logger) {
+	if (typeof home === 'string') return home
 	try {
 		return await home(session)
 	} catch (err) {
@@ -542,6 +543,9 @@ export function createKavach(adapter, options = {}) {
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
+		configure: ({ invalidateAll: inv } = {}) => {
+			if (inv) agents.invalidateAll = inv
+		},
 		actions: (schema) => options.data?.(schema),
 		getCachedLogins: () => loginCache.get(),
 		removeCachedLogin: (email) => loginCache.remove(email),
