@@ -1,0 +1,35 @@
+{
+	// Committed so Cloudflare's `wrangler deploy` (Workers Static Assets)
+	// deploys the SvelteKit (adapter-cloudflare) output directly instead of
+	// running its interactive auto-config.
+	//
+	// This is a WORKERS deploy (`wrangler deploy`), not a Pages deploy. Cloudflare
+	// Workers Builds auto-sets WORKERS_CI, which makes svelte.config.js select
+	// @sveltejs/adapter-cloudflare. In that (Workers) mode the adapter emits
+	// _worker.js AND its own .assetsignore, so `wrangler deploy` uses _worker.js
+	// as `main` and skips it (and the other Pages artifacts) from the uploaded
+	// assets — no committed static/.assetsignore workaround is needed. Do NOT set
+	// CF_PAGES on the project: it forces Pages-style output (_routes.json, no
+	// .assetsignore) and breaks this deploy.
+	//
+	// nodejs_compat is required: the site is not fully static — it has server
+	// endpoints (sitemap.xml/+server.ts, (demo)/demo/+layout.server.ts) that run
+	// in the Worker, not prerendered.
+	//
+	// `name` must match the Cloudflare project's Worker name.
+	"name": "kavach",
+	"compatibility_date": "2026-06-13",
+	"compatibility_flags": ["nodejs_compat"],
+	// Made explicit to silence wrangler's "enabled by default" warnings. These
+	// keep the current behavior: the site is served at <name>.<subdomain>.workers.dev
+	// and each deployment gets a versioned preview URL. Set either to false to
+	// turn it off (e.g. workers_dev: false if you serve only from a custom domain).
+	"workers_dev": true,
+	"preview_urls": true,
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"observability": { "enabled": true }
+}
