@@ -4,7 +4,7 @@
   "description": "Drop in security for web apps.",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
-  "module": "src/index.js",
+  "module": "src/index.ts",
   "types": "dist/index.d.ts",
   "type": "module",
   "repository": {
