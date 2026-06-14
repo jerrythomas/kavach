@@ -242,6 +242,7 @@
         "unocss": "66.6.6",
         "vite": "^7.3.1",
         "vitest": "^4.0.18",
+        "wrangler": "^4.100.0",
       },
     },
   },
@@ -2020,7 +2021,7 @@
 
     "kind-of": ["kind-of@3.2.2", "", { "dependencies": { "is-buffer": "^1.1.5" } }, "sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ=="],
 
-    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#b82ba81", {}, "sveltejs-kit-b82ba81", "sha512-J7/FyC6spgxGyim4UIb044CjNAvmnmzY4iAMCG7LMeFfUFrEiuqKnnV3XSBjD0Kcr/913ZhY64gBH3Uoe8OF6w=="],
+    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#361306c", {}, "sveltejs-kit-361306c", "sha512-dEud78xNB25PvJUkt+z7VMzl/7I5Xp14RaEo7UNauEeZCjjRxwriWB96Geshy2ugG18/ymDFkKIK5C1qVkuIPA=="],
 
     "kleur": ["kleur@4.1.5", "", {}, "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ=="],
 
