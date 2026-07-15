@@ -61,6 +61,7 @@ export function kavach(options = {}) {
 	let configPath = null
 	let viteRoot = null
 	let viteMode = null
+	let viteLogger = null
 	const dtsOption = options.dts ?? 'src/kavach.d.ts'
 
 	async function loadConfig() {
@@ -80,8 +81,10 @@ export function kavach(options = {}) {
 		if (dtsOption === false || !config || !viteRoot) return
 		try {
 			writeDeclarationFile(resolve(viteRoot, dtsOption), generateDeclarations())
-		} catch {
-			// best-effort: type generation must never break the build
+		} catch (err) {
+			// best-effort: type generation must never break the build, but leave a
+			// breadcrumb so a failed write doesn't surface only as "Cannot find module".
+			viteLogger?.warn?.(`[kavach] could not write ${dtsOption}: ${err.message}`)
 		}
 	}
 
@@ -101,6 +104,7 @@ export function kavach(options = {}) {
 				options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
 			viteRoot = viteConfig.root ?? process.cwd()
 			viteMode = viteConfig.mode ?? 'development'
+			viteLogger = viteConfig.logger ?? null
 			await loadConfig()
 			emitDeclarations()
 		},
