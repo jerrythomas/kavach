@@ -162,4 +162,14 @@ describe('plugin declaration emission', () => {
 		await plugin.configResolved({ root: dir })
 		expect(existsSync(join(dir, 'types', 'kavach.d.ts'))).toBe(true)
 	})
+
+	it('warns via the vite logger and does not throw when the write fails', async () => {
+		const { dir, cfg } = scratchProject()
+		// occupy the parent path with a file so mkdirSync/write throws
+		writeFileSync(join(dir, 'blocker'), 'x')
+		const warn = vi.fn()
+		const plugin = kavach({ configPath: cfg, dts: 'blocker/kavach.d.ts' })
+		await plugin.configResolved({ root: dir, logger: { warn } })
+		expect(warn).toHaveBeenCalled()
+	})
 })
