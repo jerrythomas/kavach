@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { parseConfig } from './config.js'
-import { generateModule } from './generate.js'
+import { generateModule, generateDeclarations } from './generate.js'
 
 export { parseConfig }
 export { templates } from './templates.js'
@@ -61,6 +61,29 @@ export function kavach(options = {}) {
 	let configPath = null
 	let viteRoot = null
 	let viteMode = null
+	const dtsOption = options.dts ?? 'src/kavach.d.ts'
+
+	async function loadConfig() {
+		if (config) return config
+		const target = configPath ?? options.configPath
+		if (!target) return null
+		try {
+			const mod = await import(target)
+			config = parseConfig(mod.default)
+		} catch {
+			config = null
+		}
+		return config
+	}
+
+	function emitDeclarations() {
+		if (dtsOption === false || !config || !viteRoot) return
+		try {
+			writeDeclarationFile(resolve(viteRoot, dtsOption), generateDeclarations())
+		} catch {
+			// best-effort: type generation must never break the build
+		}
+	}
 
 	return {
 		name: 'kavach',
@@ -73,11 +96,13 @@ export function kavach(options = {}) {
 			}
 		},
 
-		configResolved(viteConfig) {
+		async configResolved(viteConfig) {
 			configPath =
 				options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
 			viteRoot = viteConfig.root ?? process.cwd()
 			viteMode = viteConfig.mode ?? 'development'
+			await loadConfig()
+			emitDeclarations()
 		},
 
 		resolveId(id) {
@@ -85,15 +110,8 @@ export function kavach(options = {}) {
 		},
 
 		async buildStart() {
-			const target = configPath ?? options.configPath
-			if (target) {
-				try {
-					const mod = await import(target)
-					config = parseConfig(mod.default)
-				} catch {
-					// Config not found — will error on load
-				}
-			}
+			await loadConfig()
+			emitDeclarations()
 		},
 
 		configureServer(server) {

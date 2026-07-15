@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { existsSync, mkdtempSync, readFileSync } from 'fs'
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { kavach, writeDeclarationFile } from '../src/index.js'
@@ -127,5 +127,39 @@ describe('writeDeclarationFile', () => {
 
 		expect(writeDeclarationFile(file, 'B')).toBe(true)
 		expect(readFileSync(file, 'utf-8')).toBe('B')
+	})
+})
+
+describe('plugin declaration emission', () => {
+	afterEach(() => vi.restoreAllMocks())
+
+	function scratchProject() {
+		const dir = mkdtempSync(join(tmpdir(), 'kavach-vite-proj-'))
+		const cfg = join(dir, 'kavach.config.mjs')
+		writeFileSync(cfg, "export default { adapter: 'supabase' }\n")
+		return { dir, cfg }
+	}
+
+	it('writes src/kavach.d.ts during configResolved when config loads', async () => {
+		const { dir, cfg } = scratchProject()
+		const plugin = kavach({ configPath: cfg })
+		await plugin.configResolved({ root: dir })
+		const out = join(dir, 'src', 'kavach.d.ts')
+		expect(existsSync(out)).toBe(true)
+		expect(readFileSync(out, 'utf-8')).toContain("declare module '$kavach/auth'")
+	})
+
+	it('does not write when dts is false', async () => {
+		const { dir, cfg } = scratchProject()
+		const plugin = kavach({ configPath: cfg, dts: false })
+		await plugin.configResolved({ root: dir })
+		expect(existsSync(join(dir, 'src', 'kavach.d.ts'))).toBe(false)
+	})
+
+	it('honors a custom dts path', async () => {
+		const { dir, cfg } = scratchProject()
+		const plugin = kavach({ configPath: cfg, dts: 'types/kavach.d.ts' })
+		await plugin.configResolved({ root: dir })
+		expect(existsSync(join(dir, 'types', 'kavach.d.ts'))).toBe(true)
 	})
 })
