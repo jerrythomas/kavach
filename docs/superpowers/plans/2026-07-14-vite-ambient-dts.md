@@ -163,11 +163,11 @@ git commit -m "feat(vite): add generateDeclarations() for \$kavach ambient types
 
 - [ ] **Step 1: Write the failing test**
 
-At the top of `packages/vite/spec/vite.spec.js`, extend the imports:
+At the top of `packages/vite/spec/vite.spec.js`, extend the imports. Import **only** what this task's test uses — the repo's ESLint `no-unused-vars` blocks a commit with an unused import, and `writeFileSync` is not needed until Task 3 (which will add it to this line then):
 
 ```js
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, mkdtempSync, readFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { kavach, writeDeclarationFile } from '../src/index.js'
@@ -254,7 +254,13 @@ git commit -m "feat(vite): add writeDeclarationFile() write-if-changed helper (#
 
 - [ ] **Step 1: Write the failing tests**
 
-Add this describe block at the end of `packages/vite/spec/vite.spec.js`. It uses a `.mjs` config file so the dynamic `import()` is unambiguously ESM regardless of the temp dir having no `package.json`:
+First, add `writeFileSync` to the `fs` import at the top of `packages/vite/spec/vite.spec.js` (Task 2 deliberately left it out to keep that commit lint-clean; the new tests below use it):
+
+```js
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'fs'
+```
+
+Then add this describe block at the end of `packages/vite/spec/vite.spec.js`. It uses a `.mjs` config file so the dynamic `import()` is unambiguously ESM regardless of the temp dir having no `package.json`:
 
 ```js
 describe('plugin declaration emission', () => {
