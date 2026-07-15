@@ -1,4 +1,5 @@
 import eslintPluginSvelte from 'eslint-plugin-svelte'
+import tsParser from '@typescript-eslint/parser'
 
 export default [
   ...eslintPluginSvelte.configs['flat/recommended'],
@@ -112,6 +113,14 @@ export default [
     files: ['**/*.svelte'],
     rules: {
       'svelte/no-navigation-without-resolve': 'off'
+    }
+  },
+  {
+    // `.svelte.ts` rune modules are TypeScript, not Svelte components — parse
+    // them with the TS parser so type annotations don't trip the default parser.
+    files: ['**/*.svelte.ts'],
+    languageOptions: {
+      parser: tsParser
     }
   }
 ]
