@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { kavach } from '../src/index.js'
+import { existsSync, mkdtempSync, readFileSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
+import { kavach, writeDeclarationFile } from '../src/index.js'
 
 describe('kavach vite plugin', () => {
 	it('should return a plugin with correct name', () => {
@@ -108,5 +111,21 @@ describe('kavach vite plugin', () => {
 			const name = id.slice('\0$kavach/'.length)
 			expect(name).toBe('auth')
 		})
+	})
+})
+
+describe('writeDeclarationFile', () => {
+	it('writes when absent, skips when unchanged, overwrites when changed', () => {
+		const dir = mkdtempSync(join(tmpdir(), 'kavach-vite-write-'))
+		const file = join(dir, 'nested', 'kavach.d.ts')
+
+		expect(writeDeclarationFile(file, 'A')).toBe(true)
+		expect(existsSync(file)).toBe(true)
+		expect(readFileSync(file, 'utf-8')).toBe('A')
+
+		expect(writeDeclarationFile(file, 'A')).toBe(false)
+
+		expect(writeDeclarationFile(file, 'B')).toBe(true)
+		expect(readFileSync(file, 'utf-8')).toBe('B')
 	})
 })

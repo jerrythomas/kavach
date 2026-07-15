@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
+import { resolve, dirname } from 'path'
 import { parseConfig } from './config.js'
 import { generateModule } from './generate.js'
 
@@ -7,6 +7,19 @@ export { parseConfig }
 export { templates } from './templates.js'
 
 const VIRTUAL_MODULES = ['$kavach/auth', '$kavach/config', '$kavach/routes', '$kavach/providers']
+
+/**
+ * Write declaration content to `filePath`, but only when it differs from what is
+ * already on disk. Creates parent directories as needed. Returns true if written.
+ */
+export function writeDeclarationFile(filePath, content) {
+	if (existsSync(filePath) && readFileSync(filePath, 'utf-8') === content) {
+		return false
+	}
+	mkdirSync(dirname(filePath), { recursive: true })
+	writeFileSync(filePath, content)
+	return true
+}
 
 function parseDotEnvFile(filePath) {
 	if (!existsSync(filePath)) return {}
