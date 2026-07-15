@@ -113,3 +113,49 @@ Design details live in `docs/design/` — modular docs per module.
 - `4540b0e` — feat(learn): remove embedded auth routes, hooks, and kavach vite plugin
 - `316f4a6` — chore(learn): remove @kavach/adapter-supabase, @kavach/vite, and @supabase/supabase-js deps
 - `6b0754e` — test(learn): replace embedded auth e2e tests with demo landing and external link tests
+
+---
+
+## 2026-07-15
+
+### Issue #22 — @kavach/vite generates ambient `.d.ts` for its virtual modules
+
+**Goal:** Stop every SvelteKit consumer from hand-writing an ambient shim for
+`$kavach/auth|config|routes|providers`. The plugin now generates the declarations
+itself, typed from the real `kavach` types, and writes them where the toolchain
+already looks.
+
+**Spec:** `docs/superpowers/specs/2026-07-14-vite-ambient-dts-design.md`
+**Plan:** `docs/plans/2026-07-14-vite-ambient-dts.md` (archived)
+
+**What was done:**
+
+- Added pure `generateDeclarations()` in `packages/vite/src/generate.js` — emits
+  four `declare module` blocks; reuses `AuthAdapter` from `kavach` and types the
+  full `kavach` instance (handle, signIn/Up/Out, onAuthChange, configure, actions,
+  cached-login helpers). Content is config-invariant (structural, not literal), so
+  its value is auto-placement + lockstep with the JS generators.
+- Added `writeDeclarationFile()` (write-if-changed, creates parent dirs) and a new
+  `dts?: string | false` option (default `src/kavach.d.ts`). Refactored config
+  loading into a memoized `loadConfig()`; emit on both `configResolved` and
+  `buildStart`. A failed write now warns via the Vite logger instead of silently
+  swallowing (best-effort — never breaks the build).
+- Widened `server.fs.allow` to `['/']` for the `vite` project only in
+  `config/vitest.config.js` — Vitest 4's SSR runner sandboxes dynamic `import()`
+  of the temp `.mjs` config the new tests load from `os.tmpdir()`.
+
+**Validation (sites/demo, real `svelte-check`):**
+
+- Confirmed the generated file removes exactly the 3 `$kavach/*` module-resolution
+  errors (`$kavach/auth` ×2, `$kavach/providers`) and introduces none. Remaining
+  demo check errors are all pre-existing/unrelated (`Locals.session`,
+  `@rokkit/states` decls, `@kavach/ui` `AuthProvider`, `createKavach` `object`
+  return, implicit-anys).
+- **Timing finding:** `svelte-kit sync` and `svelte-check` do NOT run Vite plugin
+  hooks — only `vite dev`/`vite build` generate the file. Documented in the vite
+  README; gitignored `src/kavach.d.ts` in the demo.
+
+**Tests/lint:** vite package 17/17; full suite 719/719 green.
+
+**Commits:** `4c579bd` (spec), `a2ea37f`/`3e0eaf8` (plan), `07e0cd7` (Task 1),
+`2026859` (Task 2), `c0dd4a8` + `df13ce1` (Task 3), `5ce05f3` (Task 4), docs/close-out.

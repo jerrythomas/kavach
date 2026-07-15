@@ -6,3 +6,4 @@ No active plan. See archived plans in this directory for past work.
 
 - `2026-03-11-008-fuse-demo-into-learn.md` — Fuse demo into learn site + Supabase local infra (Phase 1 complete: UI fusion, auth flow, RBAC demo, data API, e2e tests)
 - `2026-04-05-dynamic-home-resolver.md` — Dynamic home URL resolution (GitHub #17)
+- `2026-07-14-vite-ambient-dts.md` — @kavach/vite generates ambient `.d.ts` for `$kavach/*` virtual modules (GitHub #22)
