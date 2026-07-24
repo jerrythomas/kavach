@@ -230,3 +230,88 @@ describe('kavach.handle — Response body serialization', () => {
 		expect(body).toHaveProperty('session')
 	})
 })
+
+describe('kavach.handle — logout route', () => {
+	beforeEach(() => {
+		global.Response = OriginalResponse
+	})
+
+	afterEach(() => {
+		vi.restoreAllMocks()
+	})
+
+	function makeAdapter() {
+		return {
+			synchronize: vi.fn(),
+			signOut: vi.fn().mockResolvedValue(undefined),
+			onAuthChange: vi.fn(),
+			parseUrlError: vi.fn(() => null),
+			signIn: vi.fn(),
+			signUp: vi.fn()
+		}
+	}
+
+	it('signs out, clears the session cookie, and redirects to login', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = makeAdapter()
+		const kavachInstance = createKavach(adapter, {
+			app: { login: '/signin', logout: '/logout', session: '/auth/session' },
+			rules: []
+		})
+		const mockEvent = {
+			url: new URL('http://localhost/logout'),
+			cookies: { get: vi.fn(() => 'undefined') },
+			locals: {},
+			request: { method: 'GET' }
+		}
+
+		const result = await kavachInstance.handle({ event: mockEvent, resolve: vi.fn() })
+
+		expect(adapter.signOut).toHaveBeenCalled()
+		expect(result.status).toBe(303)
+		expect(result.headers.get('location')).toBe('http://localhost/signin')
+		expect(result.headers.get('set-cookie')).toBeTruthy()
+	})
+
+	it('serves a custom configured logout path', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = makeAdapter()
+		const kavachInstance = createKavach(adapter, {
+			app: { login: '/signin', logout: '/sign-out', session: '/auth/session' },
+			rules: []
+		})
+		const mockEvent = {
+			url: new URL('http://localhost/sign-out'),
+			cookies: { get: vi.fn(() => 'undefined') },
+			locals: {},
+			request: { method: 'GET' }
+		}
+
+		const result = await kavachInstance.handle({ event: mockEvent, resolve: vi.fn() })
+
+		expect(adapter.signOut).toHaveBeenCalled()
+		expect(result.status).toBe(303)
+		expect(result.headers.get('location')).toBe('http://localhost/signin')
+	})
+
+	it('does not intercept a non-logout path (falls through to protection)', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = makeAdapter()
+		const resolve = vi.fn(() => 'RESOLVED')
+		const kavachInstance = createKavach(adapter, {
+			app: { login: '/signin', logout: '/logout', session: '/auth/session' },
+			rules: [{ path: '/', public: true }]
+		})
+		const mockEvent = {
+			url: new URL('http://localhost/'),
+			cookies: { get: vi.fn(() => 'undefined') },
+			locals: {},
+			request: { method: 'GET' }
+		}
+
+		const result = await kavachInstance.handle({ event: mockEvent, resolve })
+
+		expect(adapter.signOut).not.toHaveBeenCalled()
+		expect(result).toBe('RESOLVED')
+	})
+})

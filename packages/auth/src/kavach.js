@@ -206,6 +206,29 @@ async function handleSessionSync(event, adapter, sentry) {
 }
 
 /**
+ * Handle a hit on the configured logout route (`app.logout`, default `/logout`).
+ * Signs the user out server-side, clears the session cookie, and redirects to
+ * the login route — so a plain `<a href>` to the declared, configurable
+ * `routes.logout` just works, with no per-app endpoint. Mirrors the served
+ * `session` route; reuses `setCookieFromSession(null)` to clear the cookie (the
+ * same mechanism the session route uses on sign-out).
+ *
+ * @param {object} event
+ * @param {import('kavach').AuthAdapter} adapter
+ * @param {import('kavach').Sentry} sentry
+ * @returns {Promise<Response>}
+ */
+async function handleLogout(event, adapter, sentry) {
+	await adapter.signOut()
+	sentry.setSession(null)
+	const headers = setCookieFromSession(null)
+	return new Response('', {
+		status: 303,
+		headers: { ...headers, location: event.url.origin + (sentry.app.login ?? '/') }
+	})
+}
+
+/**
  * Parse session from cookies
  *
  * @param {object}   event
@@ -248,6 +271,10 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 
 	if (sentry.app.session && pathname.startsWith(sentry.app.session)) {
 		return handleSessionSync(event, adapter, sentry)
+	}
+
+	if (sentry.app.logout && pathname.startsWith(sentry.app.logout)) {
+		return handleLogout(event, adapter, sentry)
 	}
 
 	if (agents.dataFn && sentry.app.data && isDataRoute(pathname, sentry.app.data)) {
