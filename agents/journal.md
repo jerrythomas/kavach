@@ -159,3 +159,36 @@ already looks.
 
 **Commits:** `4c579bd` (spec), `a2ea37f`/`3e0eaf8` (plan), `07e0cd7` (Task 1),
 `2026859` (Task 2), `c0dd4a8` + `df13ce1` (Task 3), `5ce05f3` (Task 4), docs/close-out.
+
+---
+
+## 2026-07-28
+
+### Release v1.0.0 — first stable
+
+**Goal:** Promote the `1.0.0-next.*` prerelease line to the first stable `1.0.0`.
+
+**What was done:**
+
+- Fast-forwarded `feat/logout-route` (logout-route feature + its `kavach-server.spec.js`,
+  commit `3dd067d`) into `develop`.
+- Gated on a fully green tree first: **723/723 unit tests pass; lint 0 errors** (62
+  pre-existing warnings, acceptable per policy).
+- `bun run bump --release 1.0.0 --yes` — bumped all 17 `package.json` files to `1.0.0`,
+  committed `chore: release v1.0.0` (`4232780`), tagged `v1.0.0`, and pushed. The tag push
+  triggered `.github/workflows/publish.yml`.
+- Merged `develop` into `main` (`4211150`) so everything is on `main`, then switched back
+  to `develop`. Note: `main` branch protection flags merge commits — the push was bypassed
+  (consistent with the prior `-next.38` merge); worth revisiting whether `main` should be
+  linear going forward.
+
+**Validation:**
+
+- Publish workflow succeeded (run `30397041533`) — packages + adapters published, GitHub
+  release created.
+- All 14 npm packages live at `latest=1.0.0`: `kavach`, `@kavach/{cli,cookie,hashing,logger,query,sentry,ui,vite}`,
+  `@kavach/adapter-{amplify,auth0,convex,firebase,supabase}`.
+- GitHub release `v1.0.0` published (not draft/prerelease).
+
+**Commits:** `3dd067d` (logout feature, via FF to develop), `4232780` (release bump),
+`4211150` (merge develop → main). Tag: `v1.0.0`.
