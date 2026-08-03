@@ -1,6 +1,6 @@
 {
   "name": "@kavach/vite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Vite plugin for Kavach authentication framework",
   "module": "src/index.js",
   "types": "dist/index.d.ts",
