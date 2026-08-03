@@ -77,7 +77,12 @@ Everything goes to `docs/design/README.md`. No inline insertion into current wor
 ## Git Branching
 
 - **All work happens on `develop`** — never commit directly to `main`
-- **After a release:** merge `develop` → `main` (fast-forward), push, then switch back to `develop`
+- **`main` is kept LINEAR** — it must always be a fast-forward prefix of `develop`. Never create a
+  release merge commit (`git merge --no-ff`); `main` branch protection rejects merge commits.
+- **After a release:** fast-forward `main` to the release commit —
+  `git checkout main && git merge --ff-only develop` (or `git push origin develop:main`) — push,
+  then switch back to `develop`. If the FF fails, `main` has diverged: realign it onto `develop`'s
+  line first; do not fall back to a merge commit.
 
 ---
 
