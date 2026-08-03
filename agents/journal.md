@@ -192,3 +192,84 @@ already looks.
 
 **Commits:** `3dd067d` (logout feature, via FF to develop), `4232780` (release bump),
 `4211150` (merge develop → main). Tag: `v1.0.0`.
+
+---
+
+## 2026-08-03
+
+### Ship AI skills + review agents via @kavach/cli (mirrors rokkit #142)
+
+**Goal:** Give AI coding agents first-class guidance on using the Kavach toolkit — how to
+configure it, add a provider, set scopes, change paths, and configure per-role paths/redirects —
+and catch consumers who hand-roll auth instead of using the toolkit. Modeled on rokkit's
+"library owns its skills/agents + published manifest" pattern.
+
+**What was done:**
+
+- **4 skills** (`packages/cli/skills/<name>/SKILL.md`): `kavach-setup` (config, `@kavach/vite`,
+  `$kavach/*` virtual modules, `kavach.handle`, client `createKavach`, changing `routes`),
+  `kavach-providers` (providers[], modes, built-ins, scopes, `@kavach/ui` + `$kavach/providers`
+  - `kavach.signIn`), `kavach-authorization` (rules[], `public`/`roles`/`fallback`, per-role
+    `routes.home` resolver, 401/403 redirect mapping), `kavach-data-access` (`routes.data`/`rpc`,
+    query grammar, `+server.ts` re-export override).
+- **2 review agents** (`packages/cli/agents/*.md`, Claude subagent format, Mindset/Procedure/
+  Verification/Verdict): `kavach-integration-reviewer` and `kavach-authorization-reviewer` —
+  each flags hand-rolled auth vs the toolkit and requires real build + flow evidence.
+- **Source-verified a docs/code divergence:** the shipped `@kavach/sentry` engine does **not**
+  read a rule-level `protected: true` flag (protection comes from `public` defaulting false +
+  `roles` defaulting `'*'`) and does **not** consume `roleHome`. Skills teach the wired API
+  (`roles: '*'`, `routes.home` resolver, `fallback`) and flag the inert fields.
+- **CLI machinery:** ported `packages/cli/src/{skills,agents}.js` (kavach branding, `@clack/prompts`
+  with an injectable `promptImpl`), wired `kavach skills list|add` / `kavach agents list|add`
+  (`--all` / `--force` / `--remote`) into `src/index.js`, added `skills/**` + `agents/**` to the
+  CLI `package.json` `files`.
+- **Manifest + publish:** root `sensei.library.json` (skills/agents/llms with git-relative path +
+  site-relative url); `sites/learn` `sync:assets` (predev/prebuild) copies skills/agents/llms +
+  the manifest into `static/` and `.well-known/`, gitignored the generated copies, added
+  `robots.txt` with a `Sensei-Library:` pointer.
+
+**Validation:**
+
+- New specs `packages/cli/spec/{skills,agents,manifest}.spec.js` — **49 passing**. Full suite
+  **772/772** (was 723; +49). Lint **0 errors** (complexity/max-lines warnings only, per policy).
+- **Real CLI verified** from an unrelated cwd: `kavach skills list` / `agents list` render the
+  catalog; `skills add --all` + `agents add <name>` install into `.claude/`; usage line updated.
+- `sync:assets` verified to emit `static/{skills,agents,.well-known,sensei.library.json}`.
+
+**Note:** manifest `site` / agents `--remote` base use `https://kavach.sensei-hq.com` — the
+confirmed custom domain for the learn Worker (which is otherwise served at `*.workers.dev`).
+
+**Commits:** _(pending — on `develop`)_
+
+### Sync API docs to the wired engine + document UI theming
+
+**Goal:** Fix the docs that diverge from the shipped `@kavach/sentry` engine (the inert
+`protected: true` flag and `roleHome` map), keep all API reference docs in sync, and document
+the `@kavach/ui` theming override via `data-*` attributes.
+
+**What was done:**
+
+- **Authorization docs → wired API.** Replaced every `protected: true` rule with `roles: '*'`
+  and every `roleHome` map with the `routes.home`/`app.home` resolver (+ per-rule `fallback`),
+  and corrected the denial redirect mapping (401→login, 403→`unauthorized ?? home`) across:
+  `docs/llms/{auth,vite,sentry}.txt`, `packages/auth/README.md`, `packages/sentry/README.md`
+  (full rewrite — it had documented an entirely unwired `roles: Record<string, RoleRoute>` map),
+  and the learn docs-site source pages `docs/{quick-start,authorization,sentry,configuration,core-concepts}/+page.svelte`.
+  Verified 0 residual `protected: true` / `roleHome:` config keys in source docs.
+- **UI theming (data-\* attributes).** Documented the real override surface — `@kavach/ui`
+  ships no CSS/vars; consumers target rendered `data-*` attributes (`data-auth`,
+  `data-auth-provider="<name>"`, `data-auth-mode`, `data-login-card`, `data-provider`,
+  `data-passkey`, `data-remove`, `data-auth-page`, `data-other-options`, `data-error`,
+  `data-alert`) nested under rokkit's `data-skin`/`data-mode`, with the demo's `app.css` as the
+  canonical example. Added Theming sections to `docs/llms/ui.txt`, `packages/ui/README.md`, and
+  a §6 in the `kavach-providers` skill (description updated so theming queries trigger it). Also
+  fixed the `ui.txt` `mode` prop to include `'oauth'`.
+- **Left as-is (flagged):** `docs/design/08-handling.md` describes a fully superseded internal
+  interface (`publicRoutes`/`protectedRoutes`/`roleRoutes`/`roleHome`) — a separate rewrite, not
+  touched. Archival `docs/superpowers/{plans,specs}/*` are historical records, left unchanged.
+
+**Validation:** full suite **772/772** green after the doc edits; all changed markdown/Svelte
+prettier-formatted (Svelte pages parse clean); `sync:assets` re-run so the learn `static/` copies
+reflect the corrected docs.
+
+**Commits:** _(pending — on `develop`)_

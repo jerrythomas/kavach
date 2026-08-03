@@ -31,7 +31,7 @@ export default {
   rules: [
     { path: '/auth', public: true },
     { path: '/', public: true },
-    { path: '/dashboard', protected: true }
+    { path: '/dashboard', roles: '*' }
   ],
   env: {
     url: 'PUBLIC_SUPABASE_URL',

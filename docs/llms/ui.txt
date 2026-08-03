@@ -41,7 +41,7 @@ Single sign-in button/form for one provider.
 Props:
 
 - `name: string` — provider name matching `kavach.config.js` providers
-- `mode?: 'password' | 'otp'` — auth mode
+- `mode?: 'oauth' | 'otp' | 'password'` — auth mode (default `'oauth'`)
 - `label?: string` — button/form label
 - `scopes?: string[]` — OAuth scopes
 - `onsuccess?: () => void` — callback on successful sign-in
@@ -72,6 +72,58 @@ Components read the kavach client from Svelte context. Set it up in your root la
   setContext('kavach', kavachInstance)
 </script>
 ```
+
+## Theming (data-* attributes)
+
+`@kavach/ui` components ship no CSS and no CSS variables of their own. They render a stable set
+of `data-*` attributes; you style them from your app's global CSS (UnoCSS/Tailwind `@apply` or
+plain CSS) by targeting those attributes. The skin/mode layer (`data-skin`, `data-mode`) comes
+from rokkit at the app root — nest kavach's attributes under it for per-mode styling.
+
+Kavach-rendered attributes:
+
+| Attribute | Element / component | Value |
+|-----------|---------------------|-------|
+| `data-auth` | AuthProvider root, AuthHandler | — |
+| `data-auth-provider="<name>"` | AuthProvider root + its OAuth/OTP button | provider name (`google`, `github`, `magic`, `email`, …) |
+| `data-auth-mode="oauth\|otp\|password"` | AuthProvider root / submit button | the mode |
+| `data-item-icon` / `data-item-label` | provider icon / label `<span>` | — |
+| `data-auth-page` | AuthPage root | — |
+| `data-other-options` | AuthPage cached-logins `<details>` | — |
+| `data-login-card` | LoginCard root | — |
+| `data-provider="<name>"` | LoginCard badge | provider name |
+| `data-passkey` / `data-remove` | LoginCard passkey mark / remove button | — |
+| `data-error` | AuthError root | — |
+| `data-alert` | AuthResponse root (+ class `hasError`) | — |
+
+Attributes inherited from `@rokkit/ui` that you'll also style: `data-button`, `data-style`
+(`"none"` on OAuth buttons), `data-size`, `data-variant`, and field attrs `data-field`,
+`data-input-icon`.
+
+Override example — per-provider brand colors with dark-mode support (from the demo's
+`app.css`). Note `--provider-*` are variables YOU define; kavach exposes none:
+
+```css
+/* size the icons / make buttons full-width */
+[data-auth-provider] [data-item-icon] { width: 1.25rem; height: 1.25rem; }
+[data-auth-provider] [data-button]    { width: 100%; }
+
+/* declare brand colors per provider, keyed on the attribute value */
+[data-auth-provider='github'] { --provider-bg: #24292e; --provider-text: #fff; --provider-border: #24292e; }
+[data-auth-provider='google'] { --provider-bg: #fff;    --provider-text: #3c4043; --provider-border: #dadce0; }
+
+/* apply them, scoped to rokkit's data-mode */
+[data-mode='light'] [data-auth] > [data-button][data-style='none'] {
+  background: var(--provider-bg); color: var(--provider-text); border-color: var(--provider-border);
+}
+[data-mode='dark'] [data-auth-provider] [data-button] {
+  background: var(--provider-bg); color: var(--provider-text); border-color: var(--provider-border);
+}
+```
+
+Palette/skin tokens (`bg-surface-z*`, `text-primary`, `--color-primary-600`) come from rokkit's
+`presetRokkit` + `rokkit.config.js`, applied via `data-skin` — see the rokkit semantic-styles
+docs. Kavach only contributes the `data-*` hooks above.
 
 ## Related
 

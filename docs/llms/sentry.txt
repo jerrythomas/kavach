@@ -1,7 +1,7 @@
 # Kavach — Sentry (@kavach/sentry)
 
-> Route protection engine. Evaluates route rules against the current session and
-> returns allow/redirect decisions. Used automatically by kavach.handle; also
+> Route protection engine. Evaluates a flat array of route rules against the current session
+> and returns an allow/redirect decision. Used automatically by kavach.handle; also
 > available standalone.
 
 ## Install
@@ -18,19 +18,23 @@ import { createSentry } from '@kavach/sentry'
 const sentry = createSentry({
   rules: [
     { path: '/', public: true },
-    { path: '/dashboard', protected: true },
-    { path: '/admin', roles: ['admin'] }
+    { path: '/dashboard', roles: '*' },     // any authenticated user
+    { path: '/admin', roles: ['admin'] }    // only the 'admin' role
   ],
-  roleHome: { admin: '/admin', user: '/dashboard' },
-  routes: { auth: '/auth', logout: '/logout' }
+  app: {
+    home: '/',            // post-login landing — string OR async (session) => path
+    login: '/auth',       // 401 redirects go here
+    logout: '/logout',
+    unauthorized: null    // 403 target; falls back to `home` when null
+  }
 })
 
 sentry.setSession(session)
 
 const result = sentry.protect('/dashboard')
-// { status: 200 } — allowed
-// { status: 401, redirect: '/auth' } — not authenticated
-// { status: 403, redirect: '/dashboard' } — wrong role
+// { status: 200 }                            — allowed
+// { status: 401, redirect: '/auth' }         — not authenticated (→ app.login)
+// { status: 403, redirect: '/' }             — wrong role (→ app.unauthorized ?? app.home)
 ```
 
 ## API
@@ -39,22 +43,31 @@ const result = sentry.protect('/dashboard')
 
 ```ts
 createSentry({
-  rules: RouteRule[]     // prefix-matched rules, evaluated in order
-  roleHome?: Record<string, string>  // role → home path mapping
+  rules: RoutingRule[]   // prefix-matched rules, evaluated deepest-path first
   app?: {
     home?: string | ((session?: object) => string | Promise<string>)
                          // post-login redirect — string or async function (default: '/')
     login?: string       // sign-in page path (default: '/auth')
     logout?: string      // logout path (default: '/logout')
+    unauthorized?: string | null  // 403 target; falls back to `home` when null (default: null)
+    session?: string     // session-sync endpoint (default: '/auth/session')
+    endpoints?: string[] // endpoint routes that return a bare status, no redirect
   }
+  logger?: Logger        // optional @kavach/logger instance
 })
 ```
 
-`app.home` is always normalised to a function internally. A string value is wrapped automatically so that `await app.home(session)` always works regardless of what was configured.
+`app.home` is always normalised to a function internally. A string value is wrapped
+automatically so `await app.home(session)` always works regardless of what was configured.
+
+There is **no `roleHome` option** — per-role landing is expressed by making `app.home` a
+function (see below). There is **no `protected` flag** — a rule is protected simply by not
+being `public`.
 
 ### sentry.setSession(session)
 
-Set current user session. Call before `protect()`.
+Set the current user session. Call before `protect()`. The role is read from
+`session.user.role`.
 
 ```ts
 sentry.setSession(null) // unauthenticated
@@ -69,31 +82,57 @@ Evaluate route access for the current session.
 const result = sentry.protect('/admin')
 // Returns:
 // { status: 200 }                              — allow
-// { status: 401, redirect: '/auth' }           — unauthenticated
-// { status: 403, redirect: roleHome[role] }    — insufficient role
+// { status: 401, redirect: app.login }         — unauthenticated
+// { status: 403, redirect: app.unauthorized ?? app.home }  — insufficient role
+// { status: 302, redirect: app.home }          — signed in, visiting the login page
 ```
 
-## Rule Matching
+## Route Rules
 
-Rules are prefix-matched in order. The first matching rule wins.
+Rules are prefix-matched, **deepest path first** — the most specific rule wins.
 
 ```js
 rules: [
-  { path: '/admin', roles: ['admin'] }, // matches /admin, /admin/users etc.
+  { path: '/admin', roles: ['admin'] },   // matches /admin, /admin/users, etc.
   { path: '/auth', public: true },
-  { path: '/', protected: true } // catch-all: require auth
+  { path: '/', roles: '*' }               // catch-all: require any authenticated session
 ]
 ```
 
-Rule types:
+Rule fields:
 
-- `public: true` — accessible without authentication
-- `protected: true` — requires any authenticated session
-- `roles: string[]` — requires one of the listed roles
+- `public: true` — accessible without authentication.
+- `roles: '*'` — any authenticated user (this is the default when `roles` is omitted, so a
+  non-public rule with no `roles` already means "must be signed in").
+- `roles: string[]` — requires one of the listed roles.
+- `fallback` — per-rule denial override: a **number** returns that status; a **string**
+  redirects to that path (instead of the default target from the table above).
+
+```js
+rules: [
+  { path: '/beta', roles: ['tester'], fallback: '/waitlist' }, // non-testers → /waitlist
+  { path: '/secret', roles: ['admin'], fallback: 404 }         // non-admins → 404, no redirect
+]
+```
+
+## Per-role landing
+
+Make `app.home` (in the full package, `routes.home`) a function of the session:
+
+```js
+app: {
+  home: async (session) => (session.user.role === 'admin' ? '/admin' : '/dashboard')
+}
+```
+
+If the resolver throws, it falls back to `'/'`.
 
 ## Integration with kavach.handle
 
-When using the full kavach package, Sentry is wired in automatically via `kavach.handle`. You do not need to call `createSentry` directly unless you want standalone route protection without the rest of kavach.
+When using the full kavach package, Sentry is wired in automatically via `kavach.handle` — the
+`rules` and `routes` from `kavach.config.js` become the sentry `rules` and `app`. You do not
+need to call `createSentry` directly unless you want standalone route protection without the
+rest of kavach.
 
 ## Related
 

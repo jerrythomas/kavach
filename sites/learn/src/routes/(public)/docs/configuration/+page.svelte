@@ -11,19 +11,18 @@
     auth: '(public)/auth',
     data: '(server)/data',
     rpc: '(server)/rpc',
-    logout: '/logout'
+    logout: '/logout',
+    // per-role landing after login — string or async (session) => path
+    home: async (session) =>
+      session.user.role === 'admin' ? '/admin' : '/dashboard'
   },
   rules: [
     { path: '/', public: true },
     { path: '/about', public: true },
-    { path: '/dashboard', protected: true },
+    { path: '/dashboard', roles: '*' },
     { path: '/admin', roles: ['admin'] },
     { path: '/api', roles: ['user', 'admin'] }
   ],
-  roleHome: {
-    admin: '/admin',
-    user: '/dashboard'
-  },
   logging: {
     level: 'info',
     table: 'audit_logs'
@@ -78,8 +77,9 @@ PUBLIC_SUPABASE_ANON_KEY=your-anon-key`
 				<h3 class="mb-2 font-semibold">routes</h3>
 				<p class="text-surface-z7 mb-2">
 					Path configuration for auth flows: <code>auth</code>, <code>logout</code>,
-					<code>data</code>
-					(optional), <code>rpc</code> (optional).
+					<code>home</code> (post-login landing — a string or an
+					<code>async (session) =&gt; path</code> resolver for per-role landing),
+					<code>data</code> (optional), <code>rpc</code> (optional).
 				</p>
 			</div>
 
@@ -87,13 +87,10 @@ PUBLIC_SUPABASE_ANON_KEY=your-anon-key`
 				<h3 class="mb-2 font-semibold">rules</h3>
 				<p class="text-surface-z7 mb-2">
 					Route protection rules. Each rule has <code>path</code>, and either
-					<code>public: true</code>, <code>protected: true</code>, or <code>roles</code>.
+					<code>public: true</code>, <code>roles: '*'</code> (any authenticated user), or
+					<code>roles: ['role']</code>. A rule's optional <code>fallback</code> overrides the redirect/status
+					on denial.
 				</p>
-			</div>
-
-			<div>
-				<h3 class="mb-2 font-semibold">roleHome</h3>
-				<p class="text-surface-z7 mb-2">Map of roles to redirect targets after login.</p>
 			</div>
 
 			<div>

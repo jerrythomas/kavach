@@ -28,7 +28,7 @@ export default {
   rules: [
     { path: '/', public: true },
     { path: '/auth', public: true },
-    { path: '/dashboard', protected: true }
+    { path: '/dashboard', roles: '*' }
   ],
   env: {
     url: 'PUBLIC_SUPABASE_URL',
@@ -96,14 +96,24 @@ export default {
   ],
   routes: {
     auth: '(public)/auth',
-    logout: '/logout'
+    logout: '/logout',
+    // per-role landing after login — string or async (session) => path
+    home: async (session) => (session.user.role === 'admin' ? '/admin' : '/dashboard')
   },
-  roles: {
-    '*': { routes: ['/dashboard'] },
-    admin: { routes: ['/admin'] }
-  }
+  rules: [
+    { path: '/', public: true },
+    { path: '/auth', public: true },
+    { path: '/dashboard', roles: '*' }, // any authenticated user
+    { path: '/admin', roles: ['admin'] } // only the 'admin' role
+  ]
 }
 ```
+
+Route protection is expressed as a flat `rules[]` array — `public: true` for open routes,
+`roles: '*'` for any authenticated user, `roles: ['role', …]` for specific roles. Per-role
+landing pages are resolved by the `routes.home` function; per-route redirect overrides use a
+rule's `fallback` (a number overrides the status, a string redirects). See
+[Sentry](../sentry/README.md) for the full route-rule reference.
 
 ## Adapters
 

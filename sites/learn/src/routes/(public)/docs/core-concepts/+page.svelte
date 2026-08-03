@@ -40,13 +40,14 @@ export default {
   rules: [
     { path: '/auth',      public: true },       // no auth needed
     { path: '/',          public: true },
-    { path: '/dashboard', protected: true },     // any authenticated user
+    { path: '/dashboard', roles: '*' },          // any authenticated user
     { path: '/admin',     roles: ['admin'] },    // specific role required
     { path: '/api',       roles: ['user', 'admin'] }
   ],
-  roleHome: {
-    admin: '/admin',     // where admins land after login
-    user:  '/dashboard'
+  routes: {
+    // per-role landing after login — string or async (session) => path
+    home: async (session) =>
+      session.user.role === 'admin' ? '/admin' : '/dashboard'
   }
 }`
 
@@ -145,12 +146,15 @@ export function load({ locals }) {
 
 	<h3 class="mt-6 mb-2 font-semibold">How rules are evaluated</h3>
 	<ul class="text-surface-z7 mb-4 list-inside list-disc space-y-1 text-sm">
-		<li>Rules are prefix-matched in order — first match wins</li>
+		<li>Rules are prefix-matched — the most specific (deepest) path wins</li>
 		<li><code>public: true</code> — accessible without authentication</li>
-		<li><code>protected: true</code> — requires any valid session</li>
+		<li><code>roles: '*'</code> — any valid session (the default for a non-public rule)</li>
 		<li><code>roles: ['admin']</code> — requires one of the listed roles</li>
-		<li>Unauthenticated access to protected route → redirect to auth route</li>
-		<li>Wrong role → redirect to <code>roleHome[role]</code> or auth route</li>
+		<li>Unauthenticated access to a protected route → redirect to the auth route</li>
+		<li>
+			Wrong role → redirect to <code>routes.unauthorized ?? routes.home</code> (or a rule's
+			<code>fallback</code>)
+		</li>
 	</ul>
 
 	<!-- Session -->

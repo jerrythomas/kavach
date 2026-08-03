@@ -6,17 +6,16 @@ const sentry = createSentry({
   rules: [
     { path: '/', public: true },
     { path: '/auth', public: true },
-    { path: '/dashboard', protected: true },
+    { path: '/dashboard', roles: '*' },
     { path: '/admin', roles: ['admin'] },
     { path: '/moderator', roles: ['moderator', 'admin'] }
   ],
-  roleHome: {
-    admin: '/admin',
-    user: '/dashboard'
-  },
-  routes: {
+  app: {
     login: '/auth',
-    unauthorized: '/unauthorized'
+    unauthorized: '/unauthorized',
+    // per-role landing — string or async (session) => path (no roleHome map)
+    home: async (session) =>
+      session.user.role === 'admin' ? '/admin' : '/dashboard'
   }
 })`
 
@@ -98,7 +97,7 @@ export const handle = kavach.handle`
 						<td class="py-2">Public route</td>
 					</tr>
 					<tr class="border-surface-z3 border-b">
-						<td class="py-2"><code>{'{ path: "/dashboard", protected: true }'}</code></td>
+						<td class="py-2"><code>{'{ path: "/dashboard", roles: "*" }'}</code></td>
 						<td class="py-2">Any authenticated user</td>
 					</tr>
 					<tr class="border-surface-z3 border-b">

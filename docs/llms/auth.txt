@@ -36,7 +36,7 @@ If you must set up manually (run `kavach doctor` to verify afterwards):
       rules: [
         { path: '/auth', public: true },
         { path: '/', public: true },
-        { path: '/dashboard', protected: true },
+        { path: '/dashboard', roles: '*' },   // any authenticated user
         { path: '/admin', roles: ['admin'] }
       ],
       env: {
