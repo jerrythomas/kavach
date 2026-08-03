@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Sensei Library manifest — AI skills & review agents for Kavach.
+# Served at /.well-known/sensei.library.json and /sensei.library.json (see sync:assets).
+Sensei-Library: https://kavach.sensei-hq.com/.well-known/sensei.library.json

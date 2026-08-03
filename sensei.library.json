@@ -1,0 +1,57 @@
+{
+  "library": "kavach",
+  "version": ">=1.0",
+  "repo": "https://github.com/jerrythomas/kavach",
+  "branch": "main",
+  "site": "https://kavach.sensei-hq.com",
+  "skills": [
+    {
+      "name": "kavach-setup",
+      "focus": "setup",
+      "path": "packages/cli/skills/kavach-setup/SKILL.md",
+      "url": "/skills/kavach-setup/SKILL.md"
+    },
+    {
+      "name": "kavach-providers",
+      "focus": "providers",
+      "path": "packages/cli/skills/kavach-providers/SKILL.md",
+      "url": "/skills/kavach-providers/SKILL.md"
+    },
+    {
+      "name": "kavach-authorization",
+      "focus": "authorization",
+      "path": "packages/cli/skills/kavach-authorization/SKILL.md",
+      "url": "/skills/kavach-authorization/SKILL.md"
+    },
+    {
+      "name": "kavach-data-access",
+      "focus": "data",
+      "path": "packages/cli/skills/kavach-data-access/SKILL.md",
+      "url": "/skills/kavach-data-access/SKILL.md"
+    }
+  ],
+  "agents": [
+    {
+      "name": "kavach-integration-reviewer",
+      "focus": "integration-review",
+      "path": "packages/cli/agents/kavach-integration-reviewer.md",
+      "url": "/agents/kavach-integration-reviewer.md"
+    },
+    {
+      "name": "kavach-authorization-reviewer",
+      "focus": "authorization-review",
+      "path": "packages/cli/agents/kavach-authorization-reviewer.md",
+      "url": "/agents/kavach-authorization-reviewer.md"
+    }
+  ],
+  "llms": {
+    "focus": "reference corpus — package APIs, guides, adapters",
+    "path": "docs/llms",
+    "url": "/llms",
+    "index": "/llms/llms.txt"
+  },
+  "install": {
+    "skills": "kavach skills add <name>",
+    "agents": "kavach agents add <name>"
+  }
+}

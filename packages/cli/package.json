@@ -31,6 +31,8 @@
   },
   "files": [
     "src/**/*.js",
+    "skills/**",
+    "agents/**",
     "README.md",
     "package.json"
   ]

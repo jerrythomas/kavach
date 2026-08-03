@@ -4,7 +4,9 @@
   "private": true,
   "packageManager": "bun@1.3.10",
   "scripts": {
-    "prebuild": "rm -rf static/llms && cp -r ../../docs/llms static/",
+    "sync:assets": "rm -rf static/llms static/skills static/agents static/sensei.library.json static/.well-known && cp -r ../../docs/llms static/ && cp -r ../../packages/cli/skills static/ && cp -r ../../packages/cli/agents static/ && cp ../../sensei.library.json static/sensei.library.json && mkdir -p static/.well-known && cp ../../sensei.library.json static/.well-known/sensei.library.json",
+    "predev": "npm run sync:assets",
+    "prebuild": "npm run sync:assets",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
