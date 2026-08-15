@@ -1,3 +1,5 @@
+import { ADAPTERS, isLive } from 'showcase-kavach'
+
 export interface Platform {
   id: string
   name: string
@@ -18,74 +20,67 @@ export const KAVACH_FEATURES = [
   'Cached login history'
 ]
 
-export const PLATFORMS: Platform[] = [
-  {
-    id: 'supabase',
-    name: 'Supabase',
+// Learn-only presentation + pedagogy fields, keyed by adapter id. Everything
+// else (label, live, url, capabilities, adapter package) derives from the
+// shared kit config (sites/showcase) — single source of truth.
+const PLATFORM_DETAILS: Record<
+  string,
+  Pick<Platform, 'description' | 'icon' | 'iconFallback' | 'modes'>
+> = {
+  supabase: {
     description: 'Postgres-powered auth with row-level security',
     icon: 'i-auth-supabase',
     iconFallback: 'bg-emerald-500',
-    live: true,
-    modes: ['password', 'magic', 'cached', 'social'],
-    capabilities: ['Email + password', 'Magic link (OTP)', 'Social OAuth', 'PostgREST RLS'],
-    adapterPackage: '@kavach/adapter-supabase'
+    modes: ['password', 'magic', 'cached', 'social']
   },
-  {
-    id: 'firebase',
-    name: 'Firebase',
+  firebase: {
     description: 'Google cloud auth with Firestore security rules',
     icon: 'i-auth-firebase',
     iconFallback: 'bg-orange-500',
-    live: true,
-    modes: ['password', 'magic', 'social'],
-    capabilities: [
-      'Email + password',
-      'Magic link (OTP)',
-      'Google OAuth',
-      'Firestore security rules',
-      'Structured logging'
-    ],
-    adapterPackage: '@kavach/adapter-firebase'
+    modes: ['password', 'magic', 'social']
   },
-  {
-    id: 'convex',
-    name: 'Convex',
+  convex: {
     description: 'Reactive database with built-in auth',
     icon: 'i-auth-convex',
     iconFallback: 'bg-purple-600',
-    live: true,
-    modes: ['social'],
-    capabilities: [
-      'Google OAuth',
-      'Reactive data queries',
-      'Server-side auth functions',
-      'Structured logging'
-    ],
-    adapterPackage: '@kavach/adapter-convex'
+    modes: ['social']
   },
-  {
-    id: 'auth0',
-    name: 'Auth0',
+  auth0: {
     description: 'Auth-as-a-service with universal login',
     icon: 'i-auth-auth0',
     iconFallback: 'bg-orange-700',
-    live: false,
-    modes: ['password', 'social'],
-    capabilities: ['Universal login page', 'Social providers', 'Token-based sessions'],
-    adapterPackage: '@kavach/adapter-auth0'
+    modes: ['password', 'social']
   },
-  {
-    id: 'amplify',
-    name: 'Amplify',
+  amplify: {
     description: 'AWS Cognito with Amplify SDK',
     icon: 'i-auth-amplify',
     iconFallback: 'bg-yellow-600',
-    live: false,
-    modes: ['password', 'social'],
-    capabilities: ['Cognito user pools', 'Social identity providers', 'AWS IAM integration'],
-    adapterPackage: '@kavach/adapter-amplify'
+    modes: ['password', 'social']
   }
-]
+}
+
+const FALLBACK_DETAILS = {
+  description: '',
+  icon: 'i-app-shield',
+  iconFallback: 'bg-surface-z2',
+  modes: []
+} satisfies Pick<Platform, 'description' | 'icon' | 'iconFallback' | 'modes'>
+
+export const PLATFORMS: Platform[] = Object.entries(ADAPTERS).map(([id, adapter]) => {
+  const detail = PLATFORM_DETAILS[id] ?? FALLBACK_DETAILS
+  return {
+    id,
+    name: adapter.label,
+    description: detail.description,
+    icon: detail.icon,
+    iconFallback: detail.iconFallback,
+    live: isLive(id),
+    url: adapter.demoUrl ?? undefined,
+    modes: detail.modes,
+    capabilities: adapter.capabilities,
+    adapterPackage: adapter.pkg
+  }
+})
 
 /** Returns all platforms with URLs injected from runtime env data.
  * env-backed urls are only set for live platforms (supabase, firebase, convex).

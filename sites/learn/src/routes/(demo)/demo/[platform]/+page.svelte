@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores'
+	import { hackerMode } from 'showcase-kavach'
 	import { getPlatformWithUrl } from '$lib/demo/platforms'
 	import { ATHLETES, COACHES, ADMIN, type FitUser } from '$lib/mockups/fitness-data'
 	import WorkoutCard from '$lib/mockups/WorkoutCard.svelte'
@@ -15,7 +16,6 @@
 
 	let screen = $state<Screen>('login')
 	let currentUser = $state<FitUser | null>(null)
-	let hackerMode = $state(false)
 	let selectedAthlete = $state(ATHLETES[0])
 
 	function loginAs(user: FitUser) {
@@ -39,7 +39,7 @@
 	function tryNav(s: Screen, requiredRoles: string[]) {
 		if (requiredRoles.includes(role ?? '')) {
 			screen = s
-		} else if (hackerMode) {
+		} else if (hackerMode.value) {
 			screen = 'hacker'
 		}
 	}
@@ -193,12 +193,17 @@
 					<span>Hacker</span>
 					<div
 						class="relative h-5 w-9 rounded-full transition-colors"
-						style="background:{hackerMode ? '#ef4444' : 'rgba(255,255,255,0.1)'}"
+						style="background:{hackerMode.value ? '#ef4444' : 'rgba(255,255,255,0.1)'}"
 					>
-						<input type="checkbox" class="sr-only" bind:checked={hackerMode} />
+						<input
+							type="checkbox"
+							class="sr-only"
+							checked={hackerMode.value}
+							onchange={(e) => hackerMode.set(e.currentTarget.checked)}
+						/>
 						<div
 							class="absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all"
-							style="left:{hackerMode ? '18px' : '2px'}"
+							style="left:{hackerMode.value ? '18px' : '2px'}"
 						></div>
 					</div>
 				</label>
@@ -294,7 +299,7 @@
 								{/if}
 							</div>
 						</div>
-						{#if hackerMode}
+						{#if hackerMode.value}
 							<div class="mt-6">
 								<p class="mb-2 text-xs tracking-widest text-white/30 uppercase">
 									Attempted blocked routes:

@@ -26,7 +26,9 @@ sharing via bun workspaces (`"workspaces": ["sites/**"]` already exists).
 
 Ports are **copied then adjusted** — the demo kept working while the kit was
 proven; `sites/demo` is now re-wired to consume the kit (2026-08-15).
-`sites/learn` consumption is still a follow-up.
+`sites/learn` consumes the kit's config (`ADAPTERS`, demo URLs) and shared
+state (`hackerMode`); its `/demo` explainer keeps its own FitTrack simulation
+(2026-08-15).
 
 ### State (`src/lib/state/hacker.svelte.ts`)
 
@@ -96,8 +98,8 @@ demoConfig, hackerMode }`.
   ignores; check whether showcase needs an entry).
 - `sites/demo/e2e/` emptied after the move; `sites/demo` now consumes the kit
   (components, state, `demo-config`) and gains `uno.config.js` +
-  `rokkit.config.js` so named tokens render. `sites/learn` re-wiring is a
-  follow-up.
+  `rokkit.config.js` so named tokens render. `sites/learn` consumes the kit's
+  config + shared hacker state (2026-08-15).
 
 ## 6. Open design choices (settled)
 

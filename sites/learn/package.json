@@ -56,6 +56,7 @@
     "@rokkit/themes": "1.3.7",
     "@rokkit/ui": "1.3.7",
     "@rokkit/unocss": "1.3.7",
-    "kavach": "workspace:*"
+    "kavach": "workspace:*",
+    "showcase-kavach": "workspace:*"
   }
 }
