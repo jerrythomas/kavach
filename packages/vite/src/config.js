@@ -18,7 +18,7 @@ const DEFAULTS = {
 		auth: '/auth',
 		data: null,
 		rpc: null,
-		logout: null
+		logout: '/logout'
 	},
 	endpoints: {
 		data: true,

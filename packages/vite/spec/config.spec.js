@@ -39,7 +39,7 @@ describe('parseConfig', () => {
 		expect(result.env.anonKey).toBe('PUBLIC_SUPABASE_ANON_KEY')
 		expect(result.routes.auth).toBe('/auth')
 		expect(result.routes.data).toBe(null)
-		expect(result.routes.logout).toBe(null)
+		expect(result.routes.logout).toBe('/logout')
 		expect(result.rules).toEqual([])
 	})
 

@@ -53,15 +53,14 @@ demo or learn sites. Re-wiring the sites to consume the kit is a follow-up.
 
 - Tokens migrated to named vocabulary during the port.
 - Demo e2e tests move into `sites/showcase/e2e/`.
-- The demo keeps **its own** logout page (`signOut()` → `/`) and data endpoint
-  (SEED_FACTS with role-gated classified facts). Kavach's `routes.data`/`routes.logout`
-  stay unset in the demo config so kavach doesn't shadow them:
-  - `packages/vite` DEFAULTS for `routes.data`/`routes.rpc`/`routes.logout` → `null`
-    (consistent with the 4/6 "enabled explicitly" intent and CLI's `data: ... || null`).
-  - `getAgents` merges `logout` symmetrically with `data`/`rpc`, so an unregistered
-    logout resolves to `undefined` and disables the `handleLogout` 303 redirect.
-  - Demo config adds an explicit `{ path: '/logout', roles: '*' }` rule since no auto-rule
-    is generated for an unregistered logout route.
+- Logout is an **internal action**, not a page: the runtime's `handleLogout`
+  intercepts `sentry.app.logout` before route protection (mirroring the session
+  endpoint). `routes.logout` **defaults to `/logout`** in `packages/vite`
+  (`DEFAULTS.routes`), so any app gets server-side logout with no page and no
+  config. `routes.data`/`routes.rpc` stay `null` by default — they are enabled
+  explicitly (consistent with the "enabled explicitly" intent and CLI's
+  `data: ... || null`). The demo no longer ships a `/logout` page; it relies on
+  the internal handler (`routes.logout: ROUTES.logout`).
 - E2E fixture roles derive from known test email (`admin@test.com` → `admin`), not
   from token claims — GoTrue's token role is always `'authenticated'`.
 - Convex e2e seeds via the `users:seed` mutation (health check) from the demo dir;
