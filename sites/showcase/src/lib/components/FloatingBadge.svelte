@@ -3,6 +3,7 @@
 
 	let { adapterId, adapterLabel } = $props()
 
+	/** @type {Record<string, string>} */
 	const adapterIcons = {
 		supabase: 'i-auth-supabase',
 		firebase: 'i-auth-firebase',

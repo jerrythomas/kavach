@@ -1,6 +1,9 @@
 // Single source of truth for every Kavach demo site.
 // Consumers import these and layer adapter-specific env on top.
 
+/** @typedef {{ label: string, pkg: string, demoUrl: string | null, live?: boolean, capabilities: string[] }} AdapterConfig */
+
+/** @type {Record<string, AdapterConfig>} */
 export const ADAPTERS = {
 	supabase: {
 		label: 'Supabase',
@@ -76,7 +79,10 @@ export const ADAPTER_ENV = {
 	}
 }
 
+/** @typedef {{ name: string, mode?: 'otp' | 'password' | 'oauth', label: string }} ProviderConfig */
+
 // Providers per adapter (what the AuthCard renders)
+/** @type {Record<string, Array<ProviderConfig>>} */
 export const ADAPTER_PROVIDERS = {
 	supabase: [
 		{ name: 'google', label: 'Continue with Google' },
@@ -129,6 +135,7 @@ export const COPY = {
 	}
 }
 
+/** @param {string} adapterId */
 export function isLive(adapterId) {
 	const adapter = ADAPTERS[adapterId]
 	return Boolean(adapter?.live ?? Boolean(adapter?.demoUrl))

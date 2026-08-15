@@ -1,4 +1,6 @@
 <script>
+	import { COPY } from 'showcase-kavach'
+
 	let { data } = $props()
 	const isAdmin = $derived(data?.user?.role === 'admin')
 
@@ -28,9 +30,9 @@
 
 <div class="flex flex-col gap-6">
 	<div>
-		<h1 class="text-2xl font-bold">Space Facts</h1>
-		<p class="text-surface-z7 mt-1 text-sm">
-			Role-gated data — general facts for all users, classified for admins.
+		<h1 class="text-ink text-2xl font-bold">{COPY.demo.data.title}</h1>
+		<p class="text-ink-mute mt-1 text-sm">
+			{COPY.demo.data.subtitle}
 		</p>
 	</div>
 
@@ -38,38 +40,38 @@
 		<button
 			onclick={fetchFacts}
 			disabled={loading}
-			class="bg-primary rounded px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+			class="bg-primary text-on-primary rounded px-4 py-2 text-sm transition-opacity hover:opacity-90 disabled:opacity-50"
 		>
-			{loading ? 'Loading…' : 'Load Facts'}
+			{loading ? COPY.demo.data.loading : COPY.demo.data.load}
 		</button>
 		{#if isAdmin}
-			<span class="bg-warning-100 text-warning-800 rounded px-2 py-1 text-xs font-semibold">
-				👑 Admin — you can see classified facts
+			<span class="bg-warning-soft text-warning rounded px-2 py-1 text-xs font-semibold">
+				{COPY.demo.data.adminBadge}
 			</span>
 		{:else}
-			<span class="rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">
-				🔑 Authenticated — general facts only
+			<span class="bg-info-soft text-info rounded px-2 py-1 text-xs font-semibold">
+				{COPY.demo.data.userBadge}
 			</span>
 		{/if}
 	</div>
 
 	{#if error}
-		<p class="text-error-600 text-sm">{error}</p>
+		<p class="text-danger text-sm">{error}</p>
 	{/if}
 
 	{#if facts.length > 0}
 		<div class="flex flex-col gap-3">
 			{#each facts as item (item.id)}
 				<div
-					class="border-surface-z3 rounded-lg border p-4"
-					class:bg-warning-50={item.tier === 'classified'}
-					class:border-warning-300={item.tier === 'classified'}
+					class="border-paper-edge rounded-lg border p-4"
+					class:bg-warning-soft={item.tier === 'classified'}
+					class:border-warning={item.tier === 'classified'}
 				>
 					<div class="mb-1 flex items-center gap-2">
-						<span class="text-surface-z6 text-xs font-semibold uppercase">{item.category}</span>
+						<span class="text-ink-mute text-xs font-semibold uppercase">{item.category}</span>
 						{#if item.tier === 'classified'}
-							<span class="bg-warning-200 text-warning-800 rounded px-1.5 text-xs font-bold"
-								>CLASSIFIED</span
+							<span class="bg-warning text-ink rounded px-1.5 text-xs font-bold"
+								>{COPY.demo.data.classified}</span
 							>
 						{/if}
 					</div>
@@ -79,11 +81,13 @@
 		</div>
 	{/if}
 
-	<div class="border-surface-z2 bg-surface-z1 rounded-xl border p-4 text-sm">
-		<p class="text-surface-z5 mb-1 text-xs font-semibold tracking-wider uppercase">Kavach rule</p>
+	<div class="border-paper-edge bg-paper-soft rounded-xl border p-4 text-sm">
+		<p class="text-ink-soft mb-1 text-xs font-semibold tracking-wider uppercase">
+			{COPY.demo.data.ruleLabel}
+		</p>
 		<code class="text-primary font-mono">{`{ path: '/data/facts', roles: '*' }`}</code>
-		<p class="text-surface-z6 mt-1 text-xs">
-			The API filters classified facts server-side based on role — no client-side filtering.
+		<p class="text-ink-mute mt-1 text-xs">
+			{COPY.demo.data.ruleNote}
 		</p>
 	</div>
 </div>

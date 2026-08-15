@@ -78,10 +78,10 @@ Module-level features — the **what** and **why**.
 |                              | Capability-Aware CLI Prompts      | - TO DO -       |
 |                              | DDL Generation for Logging        | - TO DO -       |
 |                              | Configuration Validation          | - TO DO -       |
-| Demo                         | Shared Component Kit              | 🔵 Specified    |
-|                              | Shared Config Package             | 🔵 Specified    |
-|                              | Per-Adapter Demo Sites            | 🔵 Specified    |
-|                              | Role-Based Access Showcase        | 🔵 Specified    |
-|                              | Live Adapter Discovery            | 🔵 Specified    |
-|                              | Theme + Density Consistency       | 🔵 Specified    |
-|                              | Demo Verification                 | 🔵 Specified    |
+| Demo                         | Shared Component Kit              | ✅ Implemented  |
+|                              | Shared Config Package             | ✅ Implemented  |
+|                              | Per-Adapter Demo Sites            | - TO DO -       |
+|                              | Role-Based Access Showcase        | ✅ Implemented  |
+|                              | Live Adapter Discovery            | - TO DO -       |
+|                              | Theme + Density Consistency       | 🟡 Partial      |
+|                              | Demo Verification                 | ✅ Implemented  |

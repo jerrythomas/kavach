@@ -24,8 +24,9 @@ sharing via bun workspaces (`"workspaces": ["sites/**"]` already exists).
 | `HackerToggle`      | —                                                                               | port from `sites/demo`    | Toggle bound to `hackerMode`                           |
 | `FloatingBadge`     | `adapterId`, `adapterLabel`                                                     | port from `sites/demo`    | Adapter pill                                           |
 
-Ports are **copied then adjusted** — the demo keeps working while the kit is
-proven; a later step re-wires `sites/demo` and `sites/learn` to consume the kit.
+Ports are **copied then adjusted** — the demo kept working while the kit was
+proven; `sites/demo` is now re-wired to consume the kit (2026-08-15).
+`sites/learn` consumption is still a follow-up.
 
 ### State (`src/lib/state/hacker.svelte.ts`)
 
@@ -93,8 +94,10 @@ layout.
 demoConfig, hackerMode }`.
 - eslint: `sites/showcase` falls under root config (learn/demo have local
   ignores; check whether showcase needs an entry).
-- `sites/demo/e2e/` emptied after the move; `sites/demo` re-wired to consume
-  kit helpers when the re-wiring follow-up lands.
+- `sites/demo/e2e/` emptied after the move; `sites/demo` now consumes the kit
+  (components, state, `demo-config`) and gains `uno.config.js` +
+  `rokkit.config.js` so named tokens render. `sites/learn` re-wiring is a
+  follow-up.
 
 ## 6. Open design choices (settled)
 

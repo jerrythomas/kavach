@@ -6,6 +6,7 @@ const mockKavach = {
 	signIn: vi.fn().mockResolvedValue({ data: { user: { email: 'test@test.com' } } })
 }
 
+/** @param {import('svelte').ComponentProps<typeof AuthCard>} props */
 function renderWithContext(props) {
 	return render(AuthCard, {
 		props,

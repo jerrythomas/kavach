@@ -7,7 +7,14 @@ import DemoNavItem from '../lib/components/DemoNavItem.svelte'
 describe('DemoNavItem', () => {
 	beforeEach(() => {
 		hackerMode.set(false)
-		page.set({ ...page, url: new URL('http://localhost/dashboard') })
+		page.set({
+			url: new URL('http://localhost/dashboard'),
+			params: {},
+			route: { id: '/dashboard' },
+			status: 200,
+			error: null,
+			data: {}
+		})
 	})
 
 	it('renders the label and href', () => {
@@ -96,7 +103,7 @@ describe('DemoNavItem', () => {
 			icon: 'i-app-list'
 		})
 		const link = container.querySelector('a')
-		await fireEvent.click(link)
+		await fireEvent.click(/** @type {HTMLAnchorElement} */ (link))
 		expect(link).toBeDefined()
 	})
 })

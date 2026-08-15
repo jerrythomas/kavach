@@ -11,7 +11,7 @@
 
 <div class="flex min-h-screen flex-col items-center justify-center px-8">
 	<div class="text-center">
-		<h1 class="mb-4 text-2xl font-bold">Signing out...</h1>
-		<p class="text-surface-z7">You will be redirected shortly.</p>
+		<h1 class="text-ink mb-4 text-2xl font-bold">Signing out...</h1>
+		<p class="text-ink-mute">You will be redirected shortly.</p>
 	</div>
 </div>

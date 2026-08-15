@@ -1,7 +1,9 @@
 # Demo — Showcase App (multi-adapter)
 
 **Module:** Demo / Showcase
-**Status:** 🔵 Specified (not yet implemented)
+**Status:** 🟡 Partial — F1/F2/F4/F7 implemented (`sites/showcase` kit + config,
+demo re-wired to consume it); F3/F5 deployments pending; F6 theme wired, density
+pending.
 
 ## Decisions (settled 2026-08-14)
 

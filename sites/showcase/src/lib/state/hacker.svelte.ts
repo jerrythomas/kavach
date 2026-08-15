@@ -8,7 +8,7 @@ export const hackerMode = {
 	toggle() {
 		_hackerMode = !_hackerMode
 	},
-	set(val) {
+	set(val: boolean) {
 		_hackerMode = val
 	}
 }
