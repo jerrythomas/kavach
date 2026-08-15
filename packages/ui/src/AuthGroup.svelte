@@ -2,7 +2,7 @@
 	import AuthProvider from './AuthProvider.svelte'
 	/**
 	 * @typedef {Object} Props
-	 * @property {import('../types).Provider[]} providers
+	 * @property {Array<{name: string; label: string; mode?: string; scopes?: string[]}>} providers
 	 */
 	/** @type {Props} */
 	let { providers } = $props()

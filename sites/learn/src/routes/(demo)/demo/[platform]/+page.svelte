@@ -10,7 +10,7 @@
 
 	let { data } = $props()
 
-	const platformId = $derived($page.params.platform)
+	const platformId = $derived($page.params.platform ?? '')
 	const platform = $derived(getPlatformWithUrl(platformId, data.demoUrls))
 
 	let screen = $state<Screen>('login')

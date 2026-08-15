@@ -24,6 +24,7 @@
     "src/**/*.js",
     "src/**/*.svelte",
     "src/**/*.ddl",
+    "scripts/**/*.mjs",
     "dist/**/*.d.ts",
     "README.md",
     "package.json"
@@ -33,7 +34,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./src/index.js"
-    }
+    },
+    "./scripts/generate-dts.mjs": "./scripts/generate-dts.mjs"
   },
   "dependencies": {
     "magicast": "^0.3.5"

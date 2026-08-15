@@ -8,6 +8,7 @@
 		$page.url.pathname === href || $page.url.pathname.startsWith(href + '/')
 	)
 
+	/** @param {MouseEvent} e */
 	function handleClick(e) {
 		if (locked && !hackerMode.value) {
 			e.preventDefault()

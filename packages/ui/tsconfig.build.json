@@ -7,7 +7,8 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "allowJs": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "jsx": "preserve"
   },
   "include": ["src/**/*"],
   "exclude": ["**/spec/**/*", "**/fixtures/**/*", "node_modules", "dist"]

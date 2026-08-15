@@ -7,10 +7,10 @@
 
 	/**
 	 * @typedef {Object} Props
-	 * @property {'email' | 'phone'} type - The type of input field.
-	 * @property {string} value - The value of the input field.
-	 * @property {string} password - The password value.
-	 * @property {Function} onclick - The function to be called when the button is clicked.
+	 * @property {'email' | 'phone'} [type] - The type of input field. Defaults to `email`.
+	 * @property {string} [value] - The value of the input field.
+	 * @property {string} [password] - The password value.
+	 * @property {Function} [onclick] - The function to be called when the button is clicked.
 	 */
 	const inputTypeMap = { phone: 'tel' }
 

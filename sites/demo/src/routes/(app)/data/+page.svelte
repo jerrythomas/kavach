@@ -2,7 +2,9 @@
 	let { data } = $props()
 	const isAdmin = $derived(data?.user?.role === 'admin')
 
+	/** @type {Array<{ id: number; tier: 'general' | 'classified'; category: string; fact: string }>} */
 	let facts = $state([])
+	/** @type {string | null} */
 	let error = $state(null)
 	let loading = $state(false)
 

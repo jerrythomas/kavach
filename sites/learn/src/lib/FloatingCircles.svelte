@@ -16,6 +16,8 @@
 
 	const animations = ['float-a', 'float-b', 'float-c']
 
+	/** @param {number} min
+	 *  @param {number} max */
 	function rand(min, max) {
 		return min + Math.random() * (max - min)
 	}

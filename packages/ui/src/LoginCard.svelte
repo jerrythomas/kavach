@@ -2,13 +2,13 @@
 	/**
 	 * @typedef {Object} Props
 	 * @property {string} email
-	 * @property {string} name
-	 * @property {string} avatar
-	 * @property {string} provider
-	 * @property {string} mode
-	 * @property {boolean} hasPasskey
-	 * @property {Function} onclick
-	 * @property {Function} onremove
+	 * @property {string} [name]
+	 * @property {string} [avatar]
+	 * @property {string} [provider]
+	 * @property {string} [mode]
+	 * @property {boolean} [hasPasskey]
+	 * @property {Function} [onclick]
+	 * @property {Function} [onremove]
 	 */
 	/** @type {Props} */
 	let { email, name, avatar, provider, mode, hasPasskey = false, onclick, onremove } = $props()

@@ -32,6 +32,7 @@
 
 	let { children } = $props()
 	let selected = $derived($page.url.pathname)
+	/** @type {ReturnType<typeof TableOfContents> | null} */
 	let toc = $state(null)
 
 	afterNavigate(() => toc?.rescan())

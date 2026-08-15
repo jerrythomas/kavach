@@ -91,6 +91,7 @@ exports[`AuthProvider.svelte > otp > should handle errors 1`] = `
     >
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="email"
         data-has-icon="true"
@@ -171,6 +172,7 @@ exports[`AuthProvider.svelte > otp > should render magic link 1`] = `
     >
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="email"
         data-has-icon="true"
@@ -251,6 +253,7 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 1
     >
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="email"
         data-has-icon="true"
@@ -331,6 +334,7 @@ exports[`AuthProvider.svelte > otp > should render magic link wth custom class 2
     >
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="email"
         data-has-icon="true"
@@ -409,6 +413,7 @@ exports[`AuthProvider.svelte > password > should handle errors 1`] = `
     <form>
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="email"
         data-has-icon="true"
@@ -455,6 +460,7 @@ exports[`AuthProvider.svelte > password > should handle errors 1`] = `
        
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="password"
         data-has-icon="true"
@@ -534,6 +540,7 @@ exports[`AuthProvider.svelte > password > should render email/password auth 1`] 
     <form>
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="email"
         data-has-icon="true"
@@ -580,6 +587,7 @@ exports[`AuthProvider.svelte > password > should render email/password auth 1`] 
        
       <div
         data-field-empty="false"
+        data-field-layout="stacked"
         data-field-root="true"
         data-field-type="password"
         data-has-icon="true"

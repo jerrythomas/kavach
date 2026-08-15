@@ -613,7 +613,8 @@ function getAgents(options) {
 		app: {
 			...options.app,
 			data: options.app?.data ?? options.dataRoute,
-			rpc: options.app?.rpc ?? options.rpcRoute
+			rpc: options.app?.rpc ?? options.rpcRoute,
+			logout: options.app?.logout ?? options.logoutRoute
 		}
 	}
 	return {
@@ -632,7 +633,18 @@ function getAgents(options) {
  *
  * @param {import('kavach').AuthAdapter} adapter
  * @param {object} options
- * @returns {object} kavach
+ * @returns {{
+ *   signIn: (credentials: import('kavach').AuthCredentials) => Promise<import('kavach').AuthResult>,
+ *   signUp: (credentials: import('kavach').AuthCredentials) => Promise<import('kavach').AuthResult>,
+ *   signOut: () => Promise<void>,
+ *   onAuthChange: (url?: unknown) => void,
+ *   handle: (request: { event: unknown; resolve: (event: unknown) => Promise<Response> }) => Promise<Response>,
+ *   configure: (options?: { invalidateAll?: () => Promise<void>; logger?: unknown }) => void,
+ *   actions: (schema?: import('./types').Schema) => import('./types').ServerActions | undefined,
+ *   getCachedLogins: () => unknown,
+ *   removeCachedLogin: (email: string) => void,
+ *   clearCachedLogins: () => void
+ * }} kavach
  */
 export function createKavach(adapter, options = {}) {
 	const { page } = options

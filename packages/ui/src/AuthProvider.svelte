@@ -7,17 +7,16 @@
 	const kavach = getContext('kavach')
 
 	/**
-	 * @typedef {Object } Props
-	 * @property {string} class
-	 * @property {'otp'|'oauth'|'password'} mode
-	 * @property {string} name
-	 * @property {string} label
-	 * @property {Array<string>} scopes
-	 * @property {string} value
-	 * @property {string} password
-	 * @property {Object} result
-	 * @property {Function} onerror
-	 * @property {Function} onsuccess
+	 * @typedef {Object} Props
+	 * @property {string} [class] - The class to apply to the container.
+	 * @property {'otp'|'oauth'|'password'} [mode] - The sign-in mode. Defaults to `oauth`.
+	 * @property {string} name - The provider name (also used as the OAuth icon name).
+	 * @property {string} label - The label shown on the sign-in button.
+	 * @property {Array<string>} [scopes] - OAuth scopes to request.
+	 * @property {string} [value] - The email/phone input value.
+	 * @property {string} [password] - The password input value.
+	 * @property {Function} [onerror] - Called with the error when sign-in fails.
+	 * @property {Function} [onsuccess] - Called with the data when sign-in succeeds.
 	 */
 	/** @type {Props} */
 	let {

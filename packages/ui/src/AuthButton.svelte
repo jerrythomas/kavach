@@ -5,8 +5,8 @@
 	 * @typedef {Object} Props
 	 * @property {string} provider
 	 * @property {string} label
-	 * @property {Array<string>} scopes
-	 * @property {Function} onclick
+	 * @property {Array<string>} [scopes] - OAuth scopes to request.
+	 * @property {Function} [onclick] - Called with `{ provider, scopes }` when clicked.
 	 */
 	/** @type {Props} */
 	let { provider, label, scopes = [], onclick } = $props()
