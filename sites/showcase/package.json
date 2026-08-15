@@ -22,7 +22,8 @@
     ".": {
       "svelte": "./src/index.js",
       "import": "./src/index.js"
-    }
+    },
+    "./config": "./src/lib/config/demo-config.js"
   },
   "dependencies": {
     "@kavach/ui": "workspace:*",

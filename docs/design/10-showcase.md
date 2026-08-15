@@ -40,9 +40,9 @@ Module-level `$state` singleton `hackerMode` (port from `sites/demo`).
 
 - `ADAPTERS` — id → label, package (`@kavach/adapter-*`), capabilities, demo URL.
 - `ROUTES` — `auth /data /logout /home`.
-- `RULES` — the 7-rule array (mirrors `sites/demo/kavach.config.js`):
-  `/`, `/auth` public; `/dashboard`, `/data`, `/data/facts` roles `'*'`;
-  `/admin`, `/data/admin-stats` roles `['admin']`.
+- `RULES` — the 8-rule array (`sites/demo/kavach.config.js` derives from it):
+  `/`, `/auth` public; `/logout`, `/dashboard`, `/data`, `/data/facts` roles
+  `'*'`; `/admin`, `/data/admin-stats` roles `['admin']`.
 - `COPY` — demo copy so no strings live in markup (mock's "no strings in
   markup" principle).
 - `ADAPTER_ENV` — env keys per adapter (supabase/firebase/convex).

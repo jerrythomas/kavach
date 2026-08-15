@@ -1,54 +1,32 @@
-const ADAPTER_CONFIGS = {
-	supabase: {
-		env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
-		providers: [
-			{ name: 'google', label: 'Continue with Google' },
-			{ mode: 'otp', name: 'magic', label: 'Email Magic Link' }
-		],
-		logging: { level: 'error', table: 'audit.logs' }
-	},
-	firebase: {
-		env: {
-			apiKey: 'PUBLIC_FIREBASE_API_KEY',
-			projectId: 'PUBLIC_FIREBASE_PROJECT_ID',
-			appId: 'PUBLIC_FIREBASE_APP_ID',
-			authEmulatorHost: 'PUBLIC_FIREBASE_AUTH_EMULATOR_HOST'
-		},
-		providers: [
-			{ name: 'google', label: 'Continue with Google' },
-			{ mode: 'otp', name: 'magic', label: 'Email Magic Link' }
-		],
-		logging: { level: 'error', collection: 'logs' }
-	},
-	convex: {
-		env: { url: 'PUBLIC_CONVEX_URL' },
-		providers: [{ name: 'google', label: 'Continue with Google' }],
-		logging: { level: 'error', entity: 'logs' }
-	}
+import { ADAPTER_ENV, ADAPTER_PROVIDERS, ROUTES, RULES } from 'showcase-kavach/config'
+
+// Deployment-specific per adapter — the demo's audit-log backends. Not shared
+// copy, so it stays here rather than in the kit's demo-config.
+const ADAPTER_LOGGING = {
+	supabase: { level: 'error', table: 'audit.logs' },
+	firebase: { level: 'error', collection: 'logs' },
+	convex: { level: 'error', entity: 'logs' }
 }
 
 const adapter = process.env.KAVACH_ADAPTER ?? 'supabase'
-if (!ADAPTER_CONFIGS[adapter]) {
+if (!ADAPTER_ENV[adapter]) {
 	throw new Error(
-		`Unknown KAVACH_ADAPTER: "${adapter}". Valid options: ${Object.keys(ADAPTER_CONFIGS).join(', ')}`
+		`Unknown KAVACH_ADAPTER: "${adapter}". Valid options: ${Object.keys(ADAPTER_ENV).join(', ')}`
 	)
 }
 
+// Derived from the shared kit config (sites/showcase demo-config.js) so the
+// framework-facing config and the demo UI can never drift. Only `adapter`,
+// `logging`, and `routes` (auth + home — data/logout are app pages, not
+// intercepted by the runtime) are layered on top here.
 export default {
 	adapter,
-	...ADAPTER_CONFIGS[adapter],
+	env: ADAPTER_ENV[adapter],
+	providers: ADAPTER_PROVIDERS[adapter],
+	logging: ADAPTER_LOGGING[adapter],
 	routes: {
-		auth: '/auth',
-		home: '/dashboard'
+		auth: ROUTES.auth,
+		home: ROUTES.home
 	},
-	rules: [
-		{ path: '/', public: true },
-		{ path: '/auth', public: true },
-		{ path: '/logout', roles: '*' },
-		{ path: '/dashboard', roles: '*' },
-		{ path: '/admin', roles: ['admin'] },
-		{ path: '/data', roles: '*' },
-		{ path: '/data/facts', roles: '*' },
-		{ path: '/data/admin-stats', roles: ['admin'] }
-	]
+	rules: RULES
 }
