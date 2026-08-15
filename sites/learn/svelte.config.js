@@ -12,7 +12,7 @@ import adapterCloudflare from '@sveltejs/adapter-cloudflare'
 //   - Do NOT set CF_PAGES=1: it forces adapter-cloudflare into Pages-style
 //     output (_routes.json, no .assetsignore) which breaks `wrangler deploy`.
 //     CF_PAGES is left in the guard below only as a harmless fallback.
-//   - Everywhere else (local, Vercel, CI) adapter-auto picks the right target.
+//   - Everywhere else (local, CI) adapter-auto picks the right target.
 const onCloudflare = Boolean(process.env.WORKERS_CI) || Boolean(process.env.CF_PAGES)
 const adapter = onCloudflare ? adapterCloudflare() : adapterAuto()
 

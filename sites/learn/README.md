@@ -26,7 +26,7 @@ Explore various demo pages to see Kavach in action. Understand how to set up pro
 - Custom unauthorized access page.
 - Example applications like Wordle (non-persistent) and Todos (backend-persisted).
 
-- [Supabase](https://kavach-supabase.vercel.app/)
+- [Supabase](https://supabase.kavach.sensei-hq.com)
 
 ## Developing
 

@@ -106,7 +106,7 @@ export default {
 ## Learn More
 
 - [Documentation](docs/README.md)
-- [Kavach Website](https://kavach.vercel.app)
+- [Kavach Website](https://kavach.sensei-hq.com)
 
 ## License
 
