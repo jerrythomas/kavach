@@ -85,9 +85,11 @@ export function getAuthorizedRoutes(config, userRole) {
 	let routes = [...config.public]
 
 	if (userRole) {
-		routes = [...routes, ...(config.protected[userRole] || []), ...config.protected['*']].sort(
-			(a, b) => routeDepth(b.path) - routeDepth(a.path)
-		)
+		routes = [
+			...routes,
+			...(config.protected[userRole] || []),
+			...(config.protected['*'] || [])
+		].sort((a, b) => routeDepth(b.path) - routeDepth(a.path))
 	}
 
 	return routes

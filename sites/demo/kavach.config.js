@@ -39,13 +39,12 @@ export default {
 	...ADAPTER_CONFIGS[adapter],
 	routes: {
 		auth: '/auth',
-		data: '/data',
-		logout: '/logout',
 		home: '/dashboard'
 	},
 	rules: [
 		{ path: '/', public: true },
 		{ path: '/auth', public: true },
+		{ path: '/logout', roles: '*' },
 		{ path: '/dashboard', roles: '*' },
 		{ path: '/admin', roles: ['admin'] },
 		{ path: '/data', roles: '*' },

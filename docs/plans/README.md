@@ -1,9 +1,51 @@
 # Active Plan
 
-No active plan. See archived plans in this directory for past work.
+## Showcase Kit — v1 (components + config + tests)
 
-## Archived Plans
+**Feature:** `docs/features/demo.md` (F1 Shared Kit, F2 Shared Config, F7 Verification)
+**Design:** `docs/design/10-showcase.md`
+**Status:** Complete — all 9 tasks done, e2e green across all 3 adapters
 
-- `2026-03-11-008-fuse-demo-into-learn.md` — Fuse demo into learn site + Supabase local infra (Phase 1 complete: UI fusion, auth flow, RBAC demo, data API, e2e tests)
-- `2026-04-05-dynamic-home-resolver.md` — Dynamic home URL resolution (GitHub #17)
-- `2026-07-14-vite-ambient-dts.md` — @kavach/vite generates ambient `.d.ts` for `$kavach/*` virtual modules (GitHub #22)
+### Goal
+
+Stand up `sites/showcase` (`showcase-kavach`): shared Svelte components, shared
+config, and the vitest + playwright test setup, without breaking the existing
+demo or learn sites. Re-wiring the sites to consume the kit is a follow-up.
+
+### Tasks (in order)
+
+| #   | Task                                 | Deliverable                                                                                                                                                             | Verify                                    |
+| --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| 1   | Scaffold `sites/showcase` workspace  | `package.json` (`showcase-kavach`), `svelte.config.js`, `tsconfig.json`, `vite.config.js`, `src/index.js` barrel                                                        | `bun install` resolves workspace          |
+| 2   | Shared config                        | `src/lib/config/demo-config.js` — `ADAPTERS`, `ROUTES`, `RULES`, `COPY`, `ADAPTER_ENV`                                                                                  | `npm run test:unit`                       |
+| 3   | Hacker state                         | `src/lib/state/hacker.svelte.ts` singleton                                                                                                                              | unit tests                                |
+| 4   | Port components with token migration | `src/lib/components/*.svelte` — ports of RoleCard, DemoNavItem, SentryConfigPanel, SentryAnnotation, HackerToggle, FloatingBadge, converted `surface-z*` → named tokens | unit tests                                |
+| 5   | New `AuthCard`                       | `src/lib/components/AuthCard.svelte`                                                                                                                                    | unit tests                                |
+| 6   | Vitest wiring                        | add `showcase` project to `config/vitest.config.js`                                                                                                                     | `test:unit` green                         |
+| 7   | Component unit suites                | `src/spec/*.spec.js` (RoleCard, DemoNavItem, AuthCard, SentryConfigPanel, hacker, demo-config)                                                                          | `vitest run` green                        |
+| 8   | Move demo e2e into kit               | `sites/showcase/e2e/` — fixtures, globalSetup, per-adapter env, `demo.e2e.ts` (moved from `sites/demo/e2e/`)                                                            | 12/12 green on supabase, firebase, convex |
+| 9   | Lint + format                        | zero lint errors across showcase                                                                                                                                        | `npm run lint`                            |
+
+### Out of scope (follow-ups)
+
+- Re-wiring `sites/demo` / `sites/learn` to consume the kit (they currently
+  keep their own copies; the kit is proven first).
+- Per-adapter site deployments + CI (feature F3/F5).
+
+### Decisions (2026-08-14)
+
+- Tokens migrated to named vocabulary during the port.
+- Demo e2e tests move into `sites/showcase/e2e/`.
+- The demo keeps **its own** logout page (`signOut()` → `/`) and data endpoint
+  (SEED_FACTS with role-gated classified facts). Kavach's `routes.data`/`routes.logout`
+  stay unset in the demo config so kavach doesn't shadow them:
+  - `packages/vite` DEFAULTS for `routes.data`/`routes.rpc`/`routes.logout` → `null`
+    (consistent with the 4/6 "enabled explicitly" intent and CLI's `data: ... || null`).
+  - `getAgents` merges `logout` symmetrically with `data`/`rpc`, so an unregistered
+    logout resolves to `undefined` and disables the `handleLogout` 303 redirect.
+  - Demo config adds an explicit `{ path: '/logout', roles: '*' }` rule since no auto-rule
+    is generated for an unregistered logout route.
+- E2E fixture roles derive from known test email (`admin@test.com` → `admin`), not
+  from token claims — GoTrue's token role is always `'authenticated'`.
+- Convex e2e seeds via the `users:seed` mutation (health check) from the demo dir;
+  the demo's convex-auth exposes no sign-up HTTP route, so no HTTP user creation.

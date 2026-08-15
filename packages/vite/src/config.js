@@ -16,9 +16,9 @@ const DEFAULTS = {
 	logging: { level: 'error', table: 'logs' },
 	routes: {
 		auth: '/auth',
-		data: '/data',
-		rpc: '/rpc',
-		logout: '/logout'
+		data: null,
+		rpc: null,
+		logout: null
 	},
 	endpoints: {
 		data: true,

@@ -10,10 +10,10 @@ inspire
 .env
 .env.*
 !.env.example
+!.env.test.example
 dist
 lcov.info
 *.code-workspace
-.vercel
 .worktrees
 .tmp
 test-results/

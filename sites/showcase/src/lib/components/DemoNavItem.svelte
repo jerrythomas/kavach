@@ -1,0 +1,39 @@
+<script>
+	import { page } from '$app/stores'
+	import { hackerMode } from '../state/hacker.svelte'
+
+	let { href, label, icon, locked = false } = $props()
+
+	const isActive = $derived(
+		$page.url.pathname === href || $page.url.pathname.startsWith(href + '/')
+	)
+
+	function handleClick(e) {
+		if (locked && !hackerMode.value) {
+			e.preventDefault()
+		}
+	}
+</script>
+
+<a
+	{href}
+	onclick={handleClick}
+	class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
+    {isActive
+		? 'bg-primary text-on-primary'
+		: locked && !hackerMode.value
+			? 'text-ink-faint cursor-not-allowed'
+			: 'text-ink-mute hover:bg-paper-soft hover:text-ink'}"
+>
+	<span class="{icon} h-4 w-4 shrink-0" aria-hidden="true"></span>
+	<span class="flex-1">{label}</span>
+	{#if locked}
+		<span
+			class="h-3 w-3 shrink-0 {hackerMode.value
+				? 'i-app-code-visible text-warning'
+				: 'i-app-shield text-ink-faint'}"
+			title={hackerMode.value ? 'Hacker Mode: navigation enabled' : 'Admin only'}
+			aria-hidden="true"
+		></span>
+	{/if}
+</a>

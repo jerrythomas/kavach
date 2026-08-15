@@ -12,6 +12,7 @@ Module-level features — the **what** and **why**.
 - [Verification](07-Verification.md) — Automated checks for multi-platform reliability
 - [Publish](08-Publish.md) — Public learn site, documentation, and demo releases
 - [Platform Aware Configuration](09-PlatformAwareConfiguration.md) — CLI platform capabilities, smart prompts
+- [Demo](demo.md) — Multi-adapter showcase apps, shared demo kit/config
 
 ## Feature Status
 
@@ -77,3 +78,10 @@ Module-level features — the **what** and **why**.
 |                              | Capability-Aware CLI Prompts      | - TO DO -       |
 |                              | DDL Generation for Logging        | - TO DO -       |
 |                              | Configuration Validation          | - TO DO -       |
+| Demo                         | Shared Component Kit              | 🔵 Specified    |
+|                              | Shared Config Package             | 🔵 Specified    |
+|                              | Per-Adapter Demo Sites            | 🔵 Specified    |
+|                              | Role-Based Access Showcase        | 🔵 Specified    |
+|                              | Live Adapter Discovery            | 🔵 Specified    |
+|                              | Theme + Density Consistency       | 🔵 Specified    |
+|                              | Demo Verification                 | 🔵 Specified    |

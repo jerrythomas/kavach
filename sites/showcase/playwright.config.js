@@ -18,9 +18,11 @@ export default defineConfig({
 	projects: [{ name: adapter, use: { baseURL: `http://localhost:${port}` } }],
 
 	webServer: {
-		command: `set -a && . ./${envFile} && set +a && npm run build && npm run preview -- --port ${port}`,
+		// The e2e suite exercises the demo app in its real context — build + preview it.
+		// env files live in this workspace; source them so the demo build/preview sees them.
+		command: `set -a && . ../showcase/${envFile} && set +a && npm run build && npm run preview -- --port ${port}`,
 		port,
 		reuseExistingServer: !process.env.CI,
-		envFile
+		cwd: '../demo'
 	}
 })

@@ -10,17 +10,11 @@
     "check": "bun node_modules/@kavach/vite/scripts/generate-dts.mjs && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
-    "test:e2e": "playwright test",
-    "test:e2e:supabase": "KAVACH_ADAPTER=supabase playwright test",
-    "test:e2e:firebase": "KAVACH_ADAPTER=firebase playwright test",
-    "test:e2e:convex": "KAVACH_ADAPTER=convex playwright test",
-    "test:e2e:all": "npm run test:e2e:supabase && npm run test:e2e:firebase && npm run test:e2e:convex",
     "emulators": "bunx firebase emulators:start",
     "convex:dev": "bunx convex dev --local"
   },
   "devDependencies": {
     "@kavach/vite": "workspace:*",
-    "@playwright/test": "^1.58.2",
     "@sveltejs/adapter-auto": "^7.0.1",
     "@sveltejs/kit": "^2.54.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
