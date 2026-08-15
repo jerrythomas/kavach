@@ -6,28 +6,33 @@ on:
   pull_request:
     branches: [develop]
 
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: code-climate-reporter
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
-      - uses: actions/setup-node@v4
+          no-cache: true
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.x
+          cache: false
 
       - name: Install dependencies
         run: bun install
       - name: Run code coverage
         run: bun run coverage
-      - uses: qltysh/qlty-action/coverage@v2
+      - uses: qltysh/qlty-action@08a0a862c159eae9b9003081da6663d96efef637 # coverage@v2.3.0
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/lcov.info
