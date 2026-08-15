@@ -32,7 +32,7 @@
   "dependencies": {
     "@kavach/query": "workspace:*",
     "kavach": "workspace:*",
-    "@convex-dev/auth": "^0.0.80",
+    "@convex-dev/auth": "^0.0.95",
     "convex": "^1.21.0"
   },
   "exports": {

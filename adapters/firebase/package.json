@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@kavach/query": "workspace:*",
-    "firebase": "^11.0.0",
+    "firebase": "^12.0.0",
     "kavach": "workspace:*",
     "ramda": "^0.30.1"
   },
