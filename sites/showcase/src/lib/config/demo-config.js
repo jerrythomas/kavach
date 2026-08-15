@@ -49,7 +49,6 @@ export const ROUTES = {
 export const RULES = [
 	{ path: '/', public: true },
 	{ path: '/auth', public: true },
-	{ path: '/logout', roles: '*' },
 	{ path: '/dashboard', roles: '*' },
 	{ path: '/admin', roles: ['admin'] },
 	{ path: '/data', roles: '*' },

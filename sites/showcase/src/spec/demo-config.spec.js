@@ -36,7 +36,6 @@ describe('demo-config', () => {
 	it('rule set matches the feature spec', () => {
 		expect(RULES).toContainEqual({ path: '/', public: true })
 		expect(RULES).toContainEqual({ path: '/auth', public: true })
-		expect(RULES).toContainEqual({ path: '/logout', roles: '*' })
 		expect(RULES).toContainEqual({ path: '/dashboard', roles: '*' })
 		expect(RULES).toContainEqual({ path: '/admin', roles: ['admin'] })
 		expect(RULES).toContainEqual({ path: '/data', roles: '*' })

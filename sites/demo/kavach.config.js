@@ -17,8 +17,10 @@ if (!ADAPTER_ENV[adapter]) {
 
 // Derived from the shared kit config (sites/showcase demo-config.js) so the
 // framework-facing config and the demo UI can never drift. Only `adapter`,
-// `logging`, and `routes` (auth + home — data/logout are app pages, not
-// intercepted by the runtime) are layered on top here.
+// `logging`, and `routes` are layered on top here. `routes.logout` is set so
+// the runtime's internal logout handler intercepts `/logout` (no page needed,
+// mirroring the session endpoint); `data` stays unset — it's an app page, not
+// intercepted by the runtime.
 export default {
 	adapter,
 	env: ADAPTER_ENV[adapter],
@@ -26,7 +28,8 @@ export default {
 	logging: ADAPTER_LOGGING[adapter],
 	routes: {
 		auth: ROUTES.auth,
-		home: ROUTES.home
+		home: ROUTES.home,
+		logout: ROUTES.logout
 	},
 	rules: RULES
 }

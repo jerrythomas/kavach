@@ -54,11 +54,11 @@ test.describe('Authenticated user', () => {
 		await expect(page).toHaveURL(/\/dashboard/)
 	})
 
-	test('logout signs out and redirects to landing', async ({ page }) => {
+	test('logout signs out and redirects to the auth route', async ({ page }) => {
 		// Unroute session intercept so the real signout can clear the server-side cookie
 		await page.unroute('**/auth/session')
 		await page.goto('/logout')
-		await expect(page).toHaveURL(/\/$/, { timeout: 5000 })
+		await expect(page).toHaveURL(/\/auth/, { timeout: 5000 })
 	})
 })
 
