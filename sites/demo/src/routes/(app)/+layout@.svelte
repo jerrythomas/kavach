@@ -1,5 +1,6 @@
 <script>
 	import { ThemeSwitcherToggle } from '@rokkit/app'
+	import DensitySwitcherToggle from '$lib/components/DensitySwitcherToggle.svelte'
 	import { setContext, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import { env } from '$env/dynamic/public'
@@ -55,7 +56,9 @@
 
 <div class="bg-paper text-ink flex h-screen flex-col overflow-hidden">
 	<!-- Top bar -->
-	<header class="border-paper-edge bg-paper-soft flex h-14 shrink-0 items-center border-b px-4">
+	<header
+		class="border-paper-edge bg-paper-soft px-gutter flex h-14 shrink-0 items-center border-b"
+	>
 		<div class="flex items-center gap-2">
 			<span class="text-ink font-bold">{COPY.demo.appName}</span>
 			<span class="text-ink-faint">·</span>
@@ -64,6 +67,7 @@
 		<div class="flex-1"></div>
 		<div class="flex items-center gap-3">
 			<ThemeSwitcherToggle />
+			<DensitySwitcherToggle />
 			{#if user}
 				<div class="flex items-center gap-2">
 					<div
@@ -114,7 +118,7 @@
 		</aside>
 
 		<!-- Main -->
-		<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+		<main class="p-card flex-1 overflow-y-auto">
 			{@render children()}
 		</main>
 	</div>

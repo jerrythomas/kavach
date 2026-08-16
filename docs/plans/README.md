@@ -21,7 +21,11 @@ svelte-checks 0 errors, eslint 0 errors, demo build green). See
 - Generate `sites/demo/kavach.config.js` from kit `demo-config.js` (single
   source for rules/env).
 - Per-adapter site deployments + CI (feature F3/F5).
-- F6: density toggle in demo sites.
+
+### Completed follow-ups
+
+- F6 density toggle in demo sites — `[data-density]` axis + `DensitySwitcherToggle`
+  (2026-08-15).
 
 ### Goal
 

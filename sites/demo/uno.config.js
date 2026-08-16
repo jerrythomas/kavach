@@ -4,7 +4,20 @@ import { presetRokkit } from '@rokkit/unocss'
 import config from './rokkit.config.js'
 import { DEFAULT_AUTH_ICONS } from 'kavach'
 
+// Density axis — layout rhythm driven by the `data-density` attribute that
+// @rokkit/actions `themable` writes (comfortable | compact | cozy).
+const DENSITY_AXIS = `:root, [data-density='comfortable'] { --demo-section-y: 80px; --demo-gutter: 40px; --demo-card-p: 24px; }
+[data-density='compact'] { --demo-section-y: 52px; --demo-gutter: 24px; --demo-card-p: 18px; }
+[data-density='cozy'] { --demo-section-y: 36px; --demo-gutter: 16px; --demo-card-p: 12px; }`
+
 export default defineConfig({
+	theme: {
+		spacing: {
+			section: 'var(--demo-section-y)',
+			gutter: 'var(--demo-gutter)',
+			card: 'var(--demo-card-p)'
+		}
+	},
 	extractors: [extractorSvelte()],
 	presets: [presetRokkit(config)],
 	safelist: [
@@ -87,5 +100,6 @@ export default defineConfig({
 		'backdrop-blur',
 		'backdrop-blur-sm'
 	],
+	preflights: [{ getCSS: () => DENSITY_AXIS }],
 	transformers: [transformerDirectives(), transformerVariantGroup()]
 })
