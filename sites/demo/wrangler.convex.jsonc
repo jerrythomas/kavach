@@ -1,0 +1,31 @@
+{
+	// Per-adapter demo deploy config (Workers Static Assets). Mirrors
+	// sites/learn/wrangler.jsonc: build with WORKERS_CI (or run the committed
+	// deploy script) so @sveltejs/adapter-cloudflare emits
+	// .svelte-kit/cloudflare/ (_worker.js + .assetsignore), then:
+	//
+	//   bunx wrangler deploy -c wrangler.convex.jsonc
+	//
+	// `name` must match the Cloudflare Worker project name. Bind the custom
+	// domain with:
+	//
+	//   bunx wrangler domains add kavach-convex convex.kavach.sensei-hq.com
+	//
+	// PUBLIC_* vars in `vars` are runtime values for $env/dynamic/public; the
+	// build-time env (KAVACH_ADAPTER, PUBLIC_CONVEX_URL) is provided by
+	// sites/showcase/deploy-demo.sh from .env.convex.
+	"name": "kavach-convex",
+	"compatibility_date": "2026-06-13",
+	"compatibility_flags": ["nodejs_compat"],
+	"workers_dev": true,
+	"preview_urls": true,
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"vars": {
+		"PUBLIC_KAVACH_ADAPTER": "convex"
+	},
+	"observability": { "enabled": true }
+}

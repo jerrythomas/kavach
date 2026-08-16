@@ -110,6 +110,8 @@ export const COPY = {
 			admin: 'Admin Panel',
 			signOut: 'Sign Out'
 		},
+		otherAdapters: 'Other demos',
+		comingSoon: 'Coming soon',
 		roleCard: {
 			title: 'Your Role',
 			unauthenticated: 'unauthenticated',

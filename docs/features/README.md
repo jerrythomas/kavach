@@ -80,8 +80,8 @@ Module-level features — the **what** and **why**.
 |                              | Configuration Validation          | - TO DO -       |
 | Demo                         | Shared Component Kit              | ✅ Implemented  |
 |                              | Shared Config Package             | ✅ Implemented  |
-|                              | Per-Adapter Demo Sites            | - TO DO -       |
+|                              | Per-Adapter Demo Sites            | 🟡 Partial      |
 |                              | Role-Based Access Showcase        | ✅ Implemented  |
-|                              | Live Adapter Discovery            | - TO DO -       |
+|                              | Live Adapter Discovery            | 🟡 Partial      |
 |                              | Theme + Density Consistency       | 🟡 Partial      |
 |                              | Demo Verification                 | ✅ Implemented  |

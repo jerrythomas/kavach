@@ -27,6 +27,31 @@ svelte-checks 0 errors, eslint 0 errors, demo build green). See
 - F6 density toggle in demo sites — `[data-density]` axis + `DensitySwitcherToggle`
   (2026-08-15).
 
+## Per-adapter demo deployments (F3/F5)
+
+**Feature:** `docs/features/demo.md` (F3, F5)
+**Design:** `docs/design/11-demo-deploy.md`
+**Status:** 🟡 Scaffold ready — adapter switch, `wrangler.<adapter>.jsonc` x3,
+`deploy-demo.sh`, CI workflow, sibling links. **Live deploys pending** the
+user's Cloudflare account/DNS + secrets.
+
+### Tasks
+
+| #   | Task                              | Deliverable                                                     | Verify                                    |
+| --- | --------------------------------- | --------------------------------------------------------------- | ----------------------------------------- | ------------------------------------- | ----------------------------- |
+| 1   | Adapter selection in `sites/demo` | `svelte.config.js` `WORKERS_CI → adapter-cloudflare` + devDeps  | local build still green                   |
+| 2   | Per-adapter wrangler configs      | `wrangler.supabase                                              | firebase                                  | convex.jsonc` (Workers Static Assets) | `wrangler deploy -c` dry-runs |
+| 3   | Deploy script                     | `sites/showcase/deploy-demo.sh` (build + deploy + domain)       | `SKIP_DEPLOY=1 ./deploy-demo.sh supabase` |
+| 4   | CI workflow                       | `.github/workflows/deploy-demos.yml` (workflow_dispatch matrix) | workflow parses                           |
+| 5   | F5 sibling links in demo          | "Other demos" sidebar block using `ADAPTERS` + `isLive()`       | demo build green                          |
+| 6   | Docs + status                     | `docs/design/11-demo-deploy.md`; feature + dashboard status     | doc links resolve                         |
+
+### Out of scope (follow-ups)
+
+- Actually running `wrangler deploy` (needs credentials/DNS).
+- Auth0/Amplify demo sites (blocked on `packages/vite/src/generate.js` auth
+  generator supporting those adapters).
+
 ### Goal
 
 Stand up `sites/showcase` (`showcase-kavach`): shared Svelte components, shared

@@ -14,7 +14,8 @@
 		ROUTES,
 		ROUTE_ACCESS,
 		RULES,
-		COPY
+		COPY,
+		isLive
 	} from 'showcase-kavach'
 
 	let { children, data } = $props()
@@ -110,6 +111,32 @@
 
 			<div class="border-paper-edge border-t p-3">
 				<SentryConfigPanel rules={sentryRules} />
+			</div>
+
+			<div class="border-paper-edge border-t p-3">
+				<span class="text-ink-faint mb-1.5 block text-xs font-semibold tracking-wide uppercase">
+					{COPY.demo.otherAdapters}
+				</span>
+				<div class="flex flex-col gap-1">
+					{#each Object.entries(ADAPTERS) as [id, a] (id)}
+						{#if id !== adapterId}
+							{#if a.demoUrl && isLive(id)}
+								<a
+									href={a.demoUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="text-ink-mute hover:text-ink text-xs transition-colors"
+								>
+									{a.label} →
+								</a>
+							{:else}
+								<span class="text-ink-faint cursor-default text-xs">
+									{a.label} · {COPY.demo.comingSoon}
+								</span>
+							{/if}
+						{/if}
+					{/each}
+				</div>
 			</div>
 
 			<div class="border-paper-edge mt-auto border-t p-3">

@@ -3,8 +3,10 @@
 **Module:** Demo / Showcase
 **Status:** 🟡 Partial — F1/F2/F4/F7 implemented (`sites/showcase` kit + config;
 demo re-wired to consume it; `sites/learn` consumes kit config + shared state);
-F3/F5 deployments pending; F6 theme + density toggles wired, reduced-motion
-scenario pending verification.
+F3/F5 deployment **scaffold ready** (adapter switch, per-adapter wrangler
+configs, `deploy-demo.sh`, CI workflow, sibling links) — live deploys pending
+Cloudflare creds/DNS; F6 theme + density toggles wired, reduced-motion scenario
+pending verification.
 
 ## Decisions (settled 2026-08-14)
 
@@ -302,6 +304,12 @@ Feature: Demo verification
 
 - Does the marketing site's `(demo)/demo` platform switcher (AUTH_MODES) stay
   as-is, or migrate to consume `sites/showcase` too? (Likely yes for
-  consistency, but it is an interactive explainer, not a live demo.)
-- Who provisions the Cloudflare Worker projects + custom domains — wrangler CLI
-  per site, or a script (`sites/showcase/deploy.sh`)?
+  consistency, but it is an interactive explainer, not a live demo.) **Settled
+  2026-08-16:** stays as-is for now — it is a learning simulator, not a demo.
+- ~~Who provisions the Cloudflare Worker projects + custom domains — wrangler
+  CLI per site, or a script (`sites/showcase/deploy.sh`)?~~ **Settled
+  2026-08-16:** `sites/showcase/deploy-demo.sh` (per-adapter build + deploy +
+  domain) plus a manual-only CI workflow. See `docs/design/11-demo-deploy.md`.
+- Auth0/Amplify demo sites are blocked on the Vite plugin's auth generator
+  (supabase/firebase/convex only) — until it supports them, those adapters
+  render as "coming soon" everywhere. See `docs/design/11-demo-deploy.md` §5.

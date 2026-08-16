@@ -1,0 +1,55 @@
+name: Deploy Demos
+
+# Manual-only for now — deploys are gated on the human providing secrets
+# (CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID + per-adapter DEMO_ENV_*).
+# Usage: Actions → Deploy Demos → Run workflow → pick adapter.
+
+on:
+  workflow_dispatch:
+    inputs:
+      adapter:
+        description: "Demo adapter to deploy"
+        required: true
+        type: choice
+        options:
+          - supabase
+          - firebase
+          - convex
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+          no-cache: true
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Write adapter env
+        env:
+          ADAPTER: ${{ github.event.inputs.adapter }}
+          DEMO_ENV: ${{ secrets[format('DEMO_ENV_{0}', github.event.inputs.adapter)] }}
+        run: |
+          if [ -z "$DEMO_ENV" ]; then
+            echo "Missing secret DEMO_ENV_${ADAPTER} — create it with the adapter's PUBLIC_* values (see sites/demo/.env.example)." >&2
+            exit 1
+          fi
+          printf '%s' "$DEMO_ENV" > "sites/demo/.env.$ADAPTER"
+
+      - name: Build + deploy demo
+        run: ./sites/showcase/deploy-demo.sh "$ADAPTER"
+        env:
+          ADAPTER: ${{ github.event.inputs.adapter }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SKIP_DOMAIN: "1"

@@ -188,6 +188,7 @@
       "devDependencies": {
         "@kavach/vite": "workspace:*",
         "@sveltejs/adapter-auto": "^7.0.1",
+        "@sveltejs/adapter-cloudflare": "^7.2.8",
         "@sveltejs/kit": "^2.54.0",
         "@sveltejs/vite-plugin-svelte": "^6.2.4",
         "@unocss/extractor-svelte": "66.6.6",
@@ -204,6 +205,7 @@
         "typescript": "^5.9.3",
         "unocss": "66.6.6",
         "vite": "^7.3.1",
+        "wrangler": "^4.100.0",
       },
     },
     "sites/learn": {
@@ -2004,7 +2006,7 @@
 
     "kind-of": ["kind-of@3.2.2", "", { "dependencies": { "is-buffer": "^1.1.5" } }, "sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ=="],
 
-    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#1b4fa21", {}, "sveltejs-kit-1b4fa21", "sha512-tX095VK+pKSVDCeKeuoNwKEc+v4iCZT5H6wj7A1x0MMVB0YZbifDzYwlA5ipN/8lTZt6s8Vr+LMrSnOGSocxEQ=="],
+    "kit-monorepo": ["kit-monorepo@github:sveltejs/kit#6539e6a", {}, "sveltejs-kit-6539e6a", "sha512-6R5v2ADHxT1GZD9C7tb0xEgo0cJQAerwBvZ63cZKgH1vJDbS3dh1GK1udHDIe64B3617qL5FTF3lw0JXtyfnEA=="],
 
     "kleur": ["kleur@4.1.5", "", {}, "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ=="],
 
