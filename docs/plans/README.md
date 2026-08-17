@@ -1,30 +1,46 @@
 # Active Plan
 
-## Local supabase stack + real-auth demo e2e (2026-08-16)
+## Fix Convex adapter auth flow (2026-08-17)
 
 **Feature:** `docs/features/demo.md` (F7 Verification)
+**Design:** `docs/plans/2026-08-17-convex-auth-flow-fix.md`
 **Status:** 🟡 **Active**
 
 ### Goal
 
-The demo's Playwright suite only exercised stubbed cookies; real UI-driven
-sign-in was impossible because (a) the local supabase stack collided with the
-`sensei-dojo` stack (both on the default 5432x ports), and (b) the UI had bugs
-that only surface against a real provider (uninitialized client click race,
-info/error messages never rendered, session not synced before navigation).
+The Convex adapter has a fundamental auth gap: `signIn()` returns `{ signingIn: true }`
+(no user/session), `onAuthChange()` is a no-op, and no session cookie is ever set.
+All e2e tests bypass this by intercepting `**/auth/session` and setting cookie directly.
 
 ### Tasks
 
-| #   | Task                                     | Deliverable                                                                                                                                   | Verify                                                              |
-| --- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| 1   | Repoint supabase ports off `sensei-dojo` | `supabase/config.toml` (api 54331, db 54332, studio 54333, mailpit 54334); demo env files; e2e fixtures                                       | `supabase start` clean; password sign-in via curl                   |
-| 2   | Seed users that survive GoTrue scan      | `supabase/seed.sql` sets token/flag columns non-null (GoTrue v2.192 "converting NULL to string")                                              | `curl` token exchange 200 for test/admin                            |
-| 3   | Allow magic-link redirect to the app     | `auth.additional_redirect_urls += http://localhost:4173`; adapter's `emailRedirectTo` already sends `redirect_to` query                       | mailpit link carries `redirect_to=http://localhost:4173`            |
-| 4   | Client-ready gating + shared bootstrap   | `$lib/client-kavach.js`; root layout sets `kavach` + `kavach-ready` context; `(app)` layout reuses helper; `/auth` gates providers on `ready` | auth page renders providers only once client is hydrated            |
-| 5   | AuthProvider result surfacing            | render `result.message` inline (`data-auth-result`); don't navigate on `type: 'info'`                                                         | magic-link "sent" message visible; wrong-password error inline      |
-| 6   | Session sync before navigation           | `handleSignIn` awaits `syncSessionWithServer` when the adapter returns a session                                                              | dashboard reachable after password sign-in without a logout/refresh |
-| 7   | Auth-aware landing CTA                   | `+page.svelte` shows "Go to dashboard" when `data.user`, else "Sign in to try it"                                                             | both states verified in e2e                                         |
-| 8   | Real-auth e2e suite                      | `sites/showcase/e2e/auth-ui.e2e.ts` (landing CTA, password sign-in, wrong password, magic link via mailpit)                                   | `bun run test:e2e:supabase` green                                   |
+| #   | Task                                | Deliverable                                                                                                        | Verify                                            |
+| --- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| 1   | Add JWT decode utility              | `decodeJwtPayload()` in `adapters/convex/src/adapter.js` (base64, no crypto)                                       | unit test: decodes mock JWT payload               |
+| 2   | Add `fetchSession()` helper         | `ConvexAuthAdapter.fetchSession()` — checks `isAuthenticated()`, fetches token, decodes JWT, returns session shape | unit test: returns `{ user, session }` when auth  |
+| 3   | Update `signIn()` to return session | After `signIn()`, if `isAuthenticated()`, call `fetchSession()` and return session-like object                     | unit test: password signIn has `result.data.user` |
+| 4   | Implement `onAuthChange()`          | Check auth state on mount, sync if authenticated (handles OAuth redirect return)                                   | unit test: calls callback with SIGNED_IN          |
+| 5   | Update mock for valid JWT           | `spec/mock.js` returns base64-encoded JWT payload from `fetchAccessToken()`                                        | tests pass with decoded user info                 |
+| 6   | Add new test cases                  | Tests for `fetchSession`, `signIn` with session, `onAuthChange` callback                                           | all tests green                                   |
+| 7   | Run full test suite                 | `bun run test:ci` + `bunx eslint adapters/convex/`                                                                 | 0 errors, all tests pass                          |
+
+### Approach
+
+Follow the Firebase adapter pattern: `signIn()` returns user data → `handleSignIn`
+triggers sync. For OAuth, `onAuthChange` handles the sync after redirect.
+
+### Follow-ups
+
+- Real Convex auth e2e tests (currently all use `loginAsUser` fixture).
+- Convex OAuth redirect e2e test.
+
+---
+
+## Local supabase stack + real-auth demo e2e (2026-08-16)
+
+**Feature:** `docs/features/demo.md` (F7 Verification)
+**Status:** **Archived** — completed 2026-08-16 (commit `70cbde8`). All tasks done:
+supabase ports remapped, seed fixed, e2e suite green, lifecycle scripts wired.
 
 ### Follow-ups
 
