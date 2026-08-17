@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
+	import { getContext } from 'svelte'
 	import { AuthProvider } from '@kavach/ui'
 	import { ThemeSwitcherToggle } from '@rokkit/app'
 	import DensitySwitcherToggle from '$lib/components/DensitySwitcherToggle.svelte'
@@ -9,6 +10,11 @@
 
 	const adapterId = env.PUBLIC_KAVACH_ADAPTER ?? 'supabase'
 	const adapter = ADAPTERS[adapterId] ?? { label: adapterId }
+
+	// Set by the root layout once the browser kavach instance is hydrated. Until
+	// then signIn would throw on an uninitialized instance, so keep the provider
+	// buttons behind this gate.
+	const kavachReady = getContext('kavach-ready')
 
 	function onSuccess() {
 		goto(ROUTES.home)
@@ -37,14 +43,18 @@
 			</div>
 
 			<div class="bg-paper-soft border-paper-edge gap-card p-card flex flex-col rounded-2xl border">
-				{#each providers as p (p.name)}
-					<AuthProvider
-						name={p.name}
-						mode={p.mode ?? 'oauth'}
-						onsuccess={onSuccess}
-						label={p.label}
-					/>
-				{/each}
+				{#if kavachReady?.value}
+					{#each providers as p (p.name)}
+						<AuthProvider
+							name={p.name}
+							mode={p.mode ?? 'oauth'}
+							onsuccess={onSuccess}
+							label={p.label}
+						/>
+					{/each}
+				{:else}
+					<p class="text-ink-mute py-4 text-center text-sm" data-auth-loading>Loading sign-in…</p>
+				{/if}
 			</div>
 
 			<p class="text-ink-soft mt-4 text-center text-xs">

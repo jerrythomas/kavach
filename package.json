@@ -24,7 +24,16 @@
     "publish:packages": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
     "publish:adapters": "find ./adapters -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
     "publish:all": "bun run publish:packages && bun run publish:adapters",
-    "release": "bun run publish:all"
+    "release": "bun run publish:all",
+    "e2e:supabase": "bash scripts/e2e-supabase.sh test",
+    "e2e:supabase:start": "bash scripts/e2e-supabase.sh start",
+    "e2e:supabase:stop": "bash scripts/e2e-supabase.sh stop",
+    "e2e:firebase": "bash scripts/e2e-firebase.sh test",
+    "e2e:firebase:start": "bash scripts/e2e-firebase.sh start",
+    "e2e:firebase:stop": "bash scripts/e2e-firebase.sh stop",
+    "e2e:convex": "bash scripts/e2e-convex.sh test",
+    "e2e:convex:start": "bash scripts/e2e-convex.sh start",
+    "e2e:convex:stop": "bash scripts/e2e-convex.sh stop"
   },
   "author": "Jerry Thomas<me@jerrythomas.name",
   "license": "MIT",

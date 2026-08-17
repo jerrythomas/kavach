@@ -22,3 +22,5 @@ test-results/
 sites/learn/static/llms/
 .playwright-mcp
 mockups/
+# E2E runtime artifacts (scripts/e2e-*.sh)
+*.pid

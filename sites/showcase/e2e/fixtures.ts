@@ -15,7 +15,7 @@ async function setCookie(page: Page, session: object) {
 }
 
 async function loginSupabase(page: Page, email: string, password: string) {
-	const SUPABASE_URL = 'http://127.0.0.1:54321'
+	const SUPABASE_URL = 'http://127.0.0.1:54331'
 	const ANON_KEY = 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
 
 	const response = await page

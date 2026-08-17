@@ -31,7 +31,7 @@
 		onsuccess
 	} = $props()
 
-	let result
+	let result = $state()
 
 	async function signIn() {
 		if (mode === 'password') {
@@ -47,6 +47,9 @@
 		if (result) {
 			if (result.error) {
 				onerror?.(result.error)
+			} else if (result.type === 'info') {
+				// e.g. "Magic link has been sent" — nothing to navigate to; the
+				// message is rendered inline below.
 			} else {
 				onsuccess?.(result.data)
 			}
@@ -80,5 +83,10 @@
 			/>
 			<Button type="submit" data-auth-provider={name}>{label}</Button>
 		</form>
+	{/if}
+	{#if result?.message}
+		<p class="text-xs {result.type === 'error' ? 'text-danger' : 'text-success'}" data-auth-result>
+			{result.message}
+		</p>
 	{/if}
 </div>

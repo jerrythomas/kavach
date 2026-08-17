@@ -85,10 +85,12 @@ export const ADAPTER_ENV = {
 /** @type {Record<string, Array<ProviderConfig>>} */
 export const ADAPTER_PROVIDERS = {
 	supabase: [
+		{ mode: 'password', name: 'email', label: 'Email + Password' },
 		{ name: 'google', label: 'Continue with Google' },
 		{ mode: 'otp', name: 'magic', label: 'Email Magic Link' }
 	],
 	firebase: [
+		{ mode: 'password', name: 'email', label: 'Email + Password' },
 		{ name: 'google', label: 'Continue with Google' },
 		{ mode: 'otp', name: 'magic', label: 'Email Magic Link' }
 	],

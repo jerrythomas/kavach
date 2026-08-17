@@ -54,6 +54,13 @@ async function handleSignIn(adapter, agents, credentials) {
 	if (result.error) logger.error({ message: result.error.message, error: result.error })
 	if (RUNNING_ON === 'browser' && result.type === 'success' && result.data?.user) {
 		cacheLogin(result.data.user, credentials)
+		// Adapters that return a full session (e.g. supabase password sign-in)
+		// sync it to the server before resolving so the session cookie is set
+		// before the app navigates to a protected route. Adapters that return a
+		// bare user rely on the SDK's SIGNED_IN event sync in handleAuthChange.
+		if (result.data.session) {
+			await syncSessionWithServer(agents, 'SIGNED_IN', result.data.session)
+		}
 	}
 	return result
 }

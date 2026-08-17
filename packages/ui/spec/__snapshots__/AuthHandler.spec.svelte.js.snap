@@ -51,6 +51,8 @@ exports[`AuthHandler.svelte > should render multiple providers 1`] = `
         </button>
         
         <!---->
+         
+        <!---->
       </div>
       
     </div>

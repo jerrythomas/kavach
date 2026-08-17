@@ -1,5 +1,38 @@
 # Active Plan
 
+## Local supabase stack + real-auth demo e2e (2026-08-16)
+
+**Feature:** `docs/features/demo.md` (F7 Verification)
+**Status:** 🟡 **Active**
+
+### Goal
+
+The demo's Playwright suite only exercised stubbed cookies; real UI-driven
+sign-in was impossible because (a) the local supabase stack collided with the
+`sensei-dojo` stack (both on the default 5432x ports), and (b) the UI had bugs
+that only surface against a real provider (uninitialized client click race,
+info/error messages never rendered, session not synced before navigation).
+
+### Tasks
+
+| #   | Task                                     | Deliverable                                                                                                                                   | Verify                                                              |
+| --- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 1   | Repoint supabase ports off `sensei-dojo` | `supabase/config.toml` (api 54331, db 54332, studio 54333, mailpit 54334); demo env files; e2e fixtures                                       | `supabase start` clean; password sign-in via curl                   |
+| 2   | Seed users that survive GoTrue scan      | `supabase/seed.sql` sets token/flag columns non-null (GoTrue v2.192 "converting NULL to string")                                              | `curl` token exchange 200 for test/admin                            |
+| 3   | Allow magic-link redirect to the app     | `auth.additional_redirect_urls += http://localhost:4173`; adapter's `emailRedirectTo` already sends `redirect_to` query                       | mailpit link carries `redirect_to=http://localhost:4173`            |
+| 4   | Client-ready gating + shared bootstrap   | `$lib/client-kavach.js`; root layout sets `kavach` + `kavach-ready` context; `(app)` layout reuses helper; `/auth` gates providers on `ready` | auth page renders providers only once client is hydrated            |
+| 5   | AuthProvider result surfacing            | render `result.message` inline (`data-auth-result`); don't navigate on `type: 'info'`                                                         | magic-link "sent" message visible; wrong-password error inline      |
+| 6   | Session sync before navigation           | `handleSignIn` awaits `syncSessionWithServer` when the adapter returns a session                                                              | dashboard reachable after password sign-in without a logout/refresh |
+| 7   | Auth-aware landing CTA                   | `+page.svelte` shows "Go to dashboard" when `data.user`, else "Sign in to try it"                                                             | both states verified in e2e                                         |
+| 8   | Real-auth e2e suite                      | `sites/showcase/e2e/auth-ui.e2e.ts` (landing CTA, password sign-in, wrong password, magic link via mailpit)                                   | `bun run test:e2e:supabase` green                                   |
+
+### Follow-ups
+
+- Port `sites/learn` to the showcase kit.
+- Per-adapter site deployments + CI (feature F3/F5).
+
+---
+
 ## Showcase Kit — v1 (components + config + tests)
 
 **Feature:** `docs/features/demo.md` (F1 Shared Kit, F2 Shared Config, F7 Verification)

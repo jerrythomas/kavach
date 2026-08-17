@@ -37,6 +37,8 @@ exports[`AuthGroup.svelte > should render multiple providers 1`] = `
       </button>
       
       <!---->
+       
+      <!---->
     </div>
     
   </div>

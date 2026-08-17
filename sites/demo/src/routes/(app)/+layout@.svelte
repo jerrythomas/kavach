@@ -4,6 +4,7 @@
 	import { setContext, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import { env } from '$env/dynamic/public'
+	import { mountKavach } from '$lib/client-kavach.js'
 	import {
 		DemoNavItem,
 		RoleCard,
@@ -24,10 +25,7 @@
 	setContext('kavach', kavach)
 
 	onMount(async () => {
-		const { createKavach } = await import('kavach')
-		const { adapter: authAdapter, logger } = await import('$kavach/auth')
-		const { invalidateAll } = await import('$app/navigation')
-		const instance = createKavach(authAdapter, { logger, invalidateAll })
+		const { instance } = await mountKavach()
 		Object.assign(kavach, instance)
 		instance.onAuthChange($page.url)
 	})
