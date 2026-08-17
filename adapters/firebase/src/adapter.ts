@@ -210,24 +210,69 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 	}
 
 	/**
-	 * Tests expect `synchronize()` to return the current user object synchronously
-	 * (or null) instead of an AuthResult promise. Return the raw `currentUser` or null.
+	 * Return a session-like object matching the shape `handleSessionSync`
+	 * expects: `{ type: 'success', data: { session: { user, expires_in } } }`.
 	 *
-	 * Note: this intentionally returns a plain value to match the test-suite expectations.
+	 * On the client, `this.client.currentUser` is populated after sign-in and
+	 * is the authoritative source. On the server (Node, where Firebase Auth
+	 * is unavailable), `currentUser` is always null — so we convert the session
+	 * argument (a raw Firebase User or fabricated session) into the expected shape.
 	 */
 	public synchronize(session?: unknown): any {
-		// Best-effort: attempt to set session if client exposes setSession (but do not await)
-		try {
-			// @ts-ignore
-			if (this.client && typeof this.client.setSession === 'function') {
-				// @ts-ignore
-				this.client.setSession(session)
+		// Client-side: prefer the live currentUser (already authenticated)
+		const liveUser = this.client?.currentUser ?? null
+		if (liveUser) {
+			return {
+				type: 'success',
+				data: {
+					session: {
+						user: {
+							id: liveUser.uid,
+							email: liveUser.email,
+							role: 'user',
+							user_metadata: {
+								full_name: liveUser.displayName ?? undefined,
+								avatar_url: liveUser.photoURL ?? undefined
+							}
+						},
+						expires_in: 3600
+					}
+				}
 			}
-		} catch {
-			// ignore inability to set session
 		}
-		const user = (this.client && (this.client.currentUser ?? null)) ?? null
-		return user
+
+		// Server-side: convert whatever the client sent into the expected shape.
+		// Raw Firebase User objects have `uid`/`email` but no `user` wrapper.
+		// Fabricated sessions have `{ user: { id, email, role }, expires_in }`.
+		if (session && typeof session === 'object') {
+			const s = session as Record<string, unknown>
+			// Raw Firebase User: has `uid` but no `user`
+			if ('uid' in s && !('user' in s)) {
+				return {
+					type: 'success',
+					data: {
+						session: {
+							user: {
+								id: s.uid,
+								email: s.email,
+								role: 'user',
+								user_metadata: {
+									full_name: s.displayName ?? undefined,
+									avatar_url: s.photoURL ?? undefined
+								}
+							},
+							expires_in: 3600
+						}
+					}
+				}
+			}
+			// Fabricated session: already has `{ user, expires_in }`
+			if ('user' in s) {
+				return { type: 'success', data: { session } }
+			}
+		}
+
+		return { type: 'success', data: { session: null } }
 	}
 
 	public onAuthChange(callback: AuthCallback): () => void {

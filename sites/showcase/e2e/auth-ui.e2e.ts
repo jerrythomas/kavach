@@ -1,9 +1,16 @@
 import { expect, test, type Page } from './fixtures.js'
 
-// Real Supabase (GoTrue) + mailpit — these tests exercise the demo UI against
-// the live local stack, not stubbed cookies. Requires `supabase start` and
-// seeds: test@test.com / admin@test.com (password123).
+// Real-backend auth flows — exercise the demo UI against live providers, not
+// stubbed cookies. Each adapter must have a local backend running.
+//
+// - supabase:  supabase start (GoTrue + mailpit on :54331/:54334)
+// - firebase:  firebase emulators:start (auth on :9099)
+// - convex:    convex dev --local (:3210) — no password provider, only landing CTA tested
+
 const MAILPIT = 'http://127.0.0.1:54334'
+
+const ADAPTER = process.env.KAVACH_ADAPTER ?? 'supabase'
+const HAS_PASSWORD = ADAPTER === 'supabase' || ADAPTER === 'firebase'
 
 async function clearMailbox(page: Page) {
 	await page.context().request.delete(`${MAILPIT}/api/v1/messages`)
@@ -22,6 +29,9 @@ async function lastVerifyLink(page: Page): Promise<string> {
 	throw new Error('No magic link found in mailpit mailbox')
 }
 
+// ---------------------------------------------------------------------------
+// Landing page CTA — runs on all adapters
+// ---------------------------------------------------------------------------
 test.describe('Landing page CTA', () => {
 	test('shows sign-in CTA when unauthenticated', async ({ page }) => {
 		await page.goto('/')
@@ -35,8 +45,11 @@ test.describe('Landing page CTA', () => {
 	})
 })
 
-test.describe('Password sign-in (real Supabase)', () => {
-	test.skip(process.env.KAVACH_ADAPTER !== 'supabase', 'requires the local supabase stack')
+// ---------------------------------------------------------------------------
+// Password sign-in — supabase + firebase (both have Email+Password provider)
+// ---------------------------------------------------------------------------
+test.describe('Password sign-in', () => {
+	test.skip(!HAS_PASSWORD, 'adapter does not have a password provider')
 
 	test('signs in with email + password and reaches the dashboard', async ({ page }) => {
 		await page.goto('/auth')
@@ -66,15 +79,18 @@ test.describe('Password sign-in (real Supabase)', () => {
 		await password.fill('wrong-password')
 		await form.locator('button[data-auth-mode="password"]').click()
 
-		await expect(page.locator('[data-auth-result]')).toContainText('Invalid credentials', {
-			timeout: 10000
-		})
+		// Adapter-specific error text — both are rendered inline via data-auth-result
+		const errorText = ADAPTER === 'firebase' ? 'wrong-password' : 'Invalid credentials'
+		await expect(page.locator('[data-auth-result]')).toContainText(errorText, { timeout: 10000 })
 		await expect(page).toHaveURL(/\/auth/)
 	})
 })
 
-test.describe('Magic link sign-in (real Supabase)', () => {
-	test.skip(process.env.KAVACH_ADAPTER !== 'supabase', 'requires the local supabase stack + mailpit')
+// ---------------------------------------------------------------------------
+// Magic link sign-in — supabase only (uses mailpit for email verification)
+// ---------------------------------------------------------------------------
+test.describe('Magic link sign-in', () => {
+	test.skip(ADAPTER !== 'supabase', 'requires the local supabase stack + mailpit')
 
 	test.beforeEach(async ({ page }) => {
 		await clearMailbox(page)

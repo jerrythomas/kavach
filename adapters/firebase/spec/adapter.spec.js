@@ -39,7 +39,7 @@ describe('getAdapter', () => {
 
 	describe('signIn', () => {
 		it('should handle password sign in via signInWithEmailAndPassword', async () => {
-			const mockUser = { uid: 'user-1', email: 'a@b.com' }
+			const mockUser = { uid: 'user-1', email: 'a@b.com', displayName: null, photoURL: null }
 			mockSignInWithEmailAndPassword.mockResolvedValue({ user: mockUser })
 
 			const credentials = { email: 'a@b.com', password: 'secret123' }
@@ -52,7 +52,7 @@ describe('getAdapter', () => {
 		})
 
 		it('should handle OAuth sign in (google) via signInWithPopup', async () => {
-			const mockUser = { uid: 'user-2', email: 'user@gmail.com' }
+			const mockUser = { uid: 'user-2', email: 'user@gmail.com', displayName: null, photoURL: null }
 			mockSignInWithPopup.mockResolvedValue({ user: mockUser })
 
 			const credentials = { provider: 'google' }
@@ -105,7 +105,12 @@ describe('getAdapter', () => {
 		})
 
 		it('should handle OAuth sign in with github provider', async () => {
-			const mockUser = { uid: 'user-3', email: 'user@github.com' }
+			const mockUser = {
+				uid: 'user-3',
+				email: 'user@github.com',
+				displayName: null,
+				photoURL: null
+			}
 			mockSignInWithPopup.mockResolvedValue({ user: mockUser })
 
 			const credentials = { provider: 'github' }
@@ -170,20 +175,61 @@ describe('getAdapter', () => {
 	})
 
 	describe('synchronize', () => {
-		it('should return currentUser when authenticated', () => {
+		it('should return a session-like AuthResult when authenticated', () => {
 			const result = adapter.synchronize()
 			expect(result).toEqual({
-				uid: 'user-123',
-				email: 'test@example.com',
-				displayName: 'Test User'
+				type: 'success',
+				data: {
+					session: {
+						user: {
+							id: 'user-123',
+							email: 'test@example.com',
+							role: 'user',
+							user_metadata: {
+								full_name: 'Test User',
+								avatar_url: undefined
+							}
+						},
+						expires_in: 3600
+					}
+				}
 			})
 		})
 
-		it('should return null when not authenticated', () => {
+		it('should return success with null session when not authenticated', () => {
 			const unauthMock = { currentUser: null }
 			const unauthAdapter = getAdapter(unauthMock)
 			const result = unauthAdapter.synchronize()
-			expect(result).toBeNull()
+			expect(result).toEqual({ type: 'success', data: { session: null } })
+		})
+
+		it('should convert a raw Firebase User (server-side) to a session', () => {
+			const unauthMock = { currentUser: null }
+			const unauthAdapter = getAdapter(unauthMock)
+			const rawUser = { uid: 'u1', email: 'a@b.com', displayName: 'A B', photoURL: 'http://img' }
+			const result = unauthAdapter.synchronize(rawUser)
+			expect(result).toEqual({
+				type: 'success',
+				data: {
+					session: {
+						user: {
+							id: 'u1',
+							email: 'a@b.com',
+							role: 'user',
+							user_metadata: { full_name: 'A B', avatar_url: 'http://img' }
+						},
+						expires_in: 3600
+					}
+				}
+			})
+		})
+
+		it('should pass through a fabricated session (server-side)', () => {
+			const unauthMock = { currentUser: null }
+			const unauthAdapter = getAdapter(unauthMock)
+			const session = { user: { id: 'u1', email: 'a@b.com', role: 'user' }, expires_in: 3600 }
+			const result = unauthAdapter.synchronize(session)
+			expect(result).toEqual({ type: 'success', data: { session } })
 		})
 	})
 
