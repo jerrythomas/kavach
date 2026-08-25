@@ -314,4 +314,65 @@ describe('kavach.handle — logout route', () => {
 		expect(adapter.signOut).not.toHaveBeenCalled()
 		expect(result).toBe('RESOLVED')
 	})
+
+	it('resolves a permitted route exactly once', async () => {
+		// A second resolve() is not merely wasteful — SvelteKit reads the request
+		// body during resolve, and a body stream can only be read once. The second
+		// call therefore hands the route handler an EMPTY body.
+		//
+		// This regressed once (1.0.0-next.37): handleUnauthorizedAccess returned
+		// resolve(event) on the allow path, the caller tested `instanceof
+		// Response` — false for a Promise — fell through, and resolved again.
+		// Every POST under a permitted rule silently lost its body, and only
+		// authenticated ones, because unauthenticated calls were rejected on
+		// headers before anything read the body.
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = makeAdapter()
+		const resolve = vi.fn(() => 'RESOLVED')
+		const kavachInstance = createKavach(adapter, {
+			app: { login: '/signin', logout: '/logout', session: '/auth/session' },
+			rules: [{ path: '/v1', public: true }]
+		})
+		const mockEvent = {
+			url: new URL('http://localhost/v1/things'),
+			cookies: { get: vi.fn(() => 'undefined') },
+			locals: {},
+			request: { method: 'POST' }
+		}
+
+		await kavachInstance.handle({ event: mockEvent, resolve })
+
+		expect(resolve).toHaveBeenCalledTimes(1)
+	})
+
+	it('does not read the request body of a route it passes through', async () => {
+		// The stronger statement: kavach must leave the body for the handler. A
+		// body can be consumed exactly once, so any read here — for logging, for
+		// a session probe — takes it away from the route that needs it.
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = makeAdapter()
+		const bodyReads = []
+		const request = {
+			method: 'POST',
+			json: vi.fn(async () => { bodyReads.push('json'); return {} }),
+			text: vi.fn(async () => { bodyReads.push('text'); return '' }),
+			formData: vi.fn(async () => { bodyReads.push('formData'); return new Map() })
+		}
+		const kavachInstance = createKavach(adapter, {
+			app: { login: '/signin', logout: '/logout', session: '/auth/session' },
+			rules: [{ path: '/v1', public: true }]
+		})
+
+		await kavachInstance.handle({
+			event: {
+				url: new URL('http://localhost/v1/things'),
+				cookies: { get: vi.fn(() => 'undefined') },
+				locals: {},
+				request
+			},
+			resolve: vi.fn(() => 'RESOLVED')
+		})
+
+		expect(bodyReads).toEqual([])
+	})
 })
