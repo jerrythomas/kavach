@@ -52,10 +52,27 @@ jobs:
               echo "Skipping ${PKG_NAME}@${VERSION} — already published"
               continue
             fi
-            # bun pm pack rewrites workspace:* deps automatically
             (
               cd "./packages/${name}"
+              # Build FIRST. `bun pm pack` does not run prepublishOnly, and
+              # `npm publish <tarball>` does not either — lifecycle scripts run
+              # only when publishing a directory. Without this, dist/ is never
+              # built in CI and the package ships with no type declarations,
+              # which is exactly how 1.0.2 went out typeless.
+              if node -p "require('./package.json').scripts?.build ? 1 : 0" | grep -q 1; then
+                bun run build
+              fi
+              # bun pm pack rewrites workspace:* deps automatically
               TARBALL=$(bun pm pack | grep '\.tgz$')
+              # Refuse to publish a package that promises types it does not ship.
+              # A missing declaration is invisible at publish time and only
+              # surfaces in a consumer's typecheck, long after the version is
+              # immutable on npm.
+              TYPES=$(node -p "require('./package.json').types ?? ''")
+              if [ -n "$TYPES" ] && ! tar tzf "$TARBALL" | grep -qF "package/${TYPES#./}"; then
+                echo "::error::${PKG_NAME}@${VERSION} declares types at ${TYPES} but the tarball has none"
+                exit 1
+              fi
               bunx npm publish "$TARBALL" --provenance --access public --tag latest
               rm -f "$TARBALL"
             )
@@ -79,10 +96,27 @@ jobs:
               echo "Skipping ${PKG_NAME}@${VERSION} — already published"
               continue
             fi
-            # bun pm pack rewrites workspace:* deps automatically
             (
               cd "./adapters/${name}"
+              # Build FIRST. `bun pm pack` does not run prepublishOnly, and
+              # `npm publish <tarball>` does not either — lifecycle scripts run
+              # only when publishing a directory. Without this, dist/ is never
+              # built in CI and the package ships with no type declarations,
+              # which is exactly how 1.0.2 went out typeless.
+              if node -p "require('./package.json').scripts?.build ? 1 : 0" | grep -q 1; then
+                bun run build
+              fi
+              # bun pm pack rewrites workspace:* deps automatically
               TARBALL=$(bun pm pack | grep '\.tgz$')
+              # Refuse to publish a package that promises types it does not ship.
+              # A missing declaration is invisible at publish time and only
+              # surfaces in a consumer's typecheck, long after the version is
+              # immutable on npm.
+              TYPES=$(node -p "require('./package.json').types ?? ''")
+              if [ -n "$TYPES" ] && ! tar tzf "$TARBALL" | grep -qF "package/${TYPES#./}"; then
+                echo "::error::${PKG_NAME}@${VERSION} declares types at ${TYPES} but the tarball has none"
+                exit 1
+              fi
               bunx npm publish "$TARBALL" --provenance --access public --tag latest
               rm -f "$TARBALL"
             )
