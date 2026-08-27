@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Setup Bun
@@ -23,22 +23,37 @@ jobs:
         with:
           bun-version: latest
           no-cache: true
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.x
-          cache: false
+          # `cache:` names a package manager (npm/yarn/pnpm); `cache: false` is
+          # not a valid value and makes setup-node throw. Disabling automatic
+          # caching is what `package-manager-cache` is for.
+          package-manager-cache: false
 
       - name: Install dependencies
         run: bun install
       - name: Run code coverage
         run: bun run coverage
-      - uses: qltysh/qlty-action@08a0a862c159eae9b9003081da6663d96efef637 # coverage@v2.3.0
+      # The action lives in the repo's `coverage/` subdirectory — `qltysh/qlty-action@<sha>`
+      # alone has no action.yml at the root and fails to resolve at job setup.
+      - uses: qltysh/qlty-action/coverage@08a0a862c159eae9b9003081da6663d96efef637 # coverage@v2.3.0
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/lcov.info
       - name: Report results to DeepSource
         env:
           DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
+          # Pinned release + pinned digest. `curl https://deepsource.io/cli | sh`
+          # executes whatever that endpoint serves at run time, unverified.
+          DEEPSOURCE_VERSION: 0.10.1
+          DEEPSOURCE_SHA256: e415a6a53257457ef1dad900fdb39aeb991dd01c35c4be9cafa88a41f9e50b3b
         run: |
-          curl https://deepsource.io/cli | sh
-          ./bin/deepsource report --analyzer test-coverage --key javascript --value-file ./coverage/lcov.info
+          set -euo pipefail
+          TARBALL="deepsource_${DEEPSOURCE_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL --proto '=https' --tlsv1.2 \
+            -o "$TARBALL" \
+            "https://github.com/deepsourcelabs/cli/releases/download/v${DEEPSOURCE_VERSION}/${TARBALL}"
+          echo "${DEEPSOURCE_SHA256}  ${TARBALL}" | sha256sum -c -
+          tar -xzf "$TARBALL" deepsource
+          ./deepsource report --analyzer test-coverage --key javascript --value-file ./coverage/lcov.info
