@@ -1,48 +1,47 @@
 # Checkpoint
 
-**Slice:** bug fixes — native-ESM packaging, vitest config, auth role precedence
+**Slice:** #25 defect 2 complete — every package resolves under plain Node ESM
 
 ## Done
 
-- **v1.1.1 released** (`8d28481`), all 14 packages on npm, types verified in the
-  shipped tarball. CI repaired (`6c58b5a`) — Coverage green again after failing
-  since 2026-08-03.
-- **#30 closed** — `hot: false` is not a vite-plugin-svelte 7 root option; removed
-  from both vitest projects. Warning lines per test run: 34 → 0.
-- **#21 closed** — the fix already shipped in v1.1.1 (verified in the published
-  tarball). What was missing was the guard: no test covered the
-  `app_metadata.role ?? data.role` precedence branch. Added 3 tests; proved real
-  by reverting `provider.ts` to the pre-fix body and watching them fail.
-- **#25 half fixed** — `logger` and `sentry` now import under plain Node ESM.
-  New `packaging` vitest project guards it and derives its own scope, so blocked
-  packages enrol automatically. Defect 1 (missing `dist` types) confirmed already
-  fixed by 37ae890.
-- `main == develop == origin` at `e13e5f4`, linear.
+- **#25 closed.** All 14 published packages now import by package name through
+  their exports map under plain Node. The six that entered through TypeScript
+  (`kavach`, supabase/firebase/auth0/amplify adapters, convex via a `types.ts`
+  re-export) now emit JS: `emitDeclarationOnly: false`, and
+  `exports['.'].import`/`default` → `./dist/index.js`.
+- `exports['.'].svelte` still points at `src`, so bundlers compile from source —
+  SvelteKit dev loop unchanged, verified by building `sites/demo` with no dist.
+- **Guards:** `spec/packaging.spec.js` covers all 14 packages (static +
+  real Node load); `publish.yml` refuses to publish a package that will not
+  import under Node; `build:all` is dependency-ordered via
+  `scripts/build-all.sh` and now includes adapters.
+- **#30, #21** closed earlier in the session.
+- `main == develop == origin` at `c4eeca8`, linear. CI green.
 
 ## Remaining
 
-**#25 needs a decision, not a fix.** Six packages (`kavach`, adapters
-`supabase`/`firebase`/`auth0`/`amplify`, and `convex` via a `types.ts`
-re-export) enter through TypeScript, which Node cannot load at any extension.
-Making them resolvable means flipping `emitDeclarationOnly` off, emitting JS to
-`dist/`, and repointing `exports['.'].import` at `dist/` — changing what those
-six ship. Left deliberately for a call.
+Nothing on #25.
 
 Tech-debt tickets open and untouched: #26 cli (38), #27 auth (17), #28 vite (9),
 #29 convex/query/sentry (9). Clearing all four unblocks promoting `complexity`
-and `max-lines-per-function` from `warn` to `error`.
+and `max-lines-per-function` from `warn` to `error`. #22 (ambient .d.ts for
+vite virtual modules) also open — overlaps #28, sequence them together.
 
 ## Next command
 
-`bun run test:ci` — new work starts on `develop`.
+`bun run test:ci` — new work starts on `develop`. The ESM fixes are committed
+but **not released**; they ship on the next bump.
 
 ## Open questions
 
-Whether to convert the six TS-entry packages to emit JS (#25 remaining scope).
+None.
 
 ## Known-broken
 
-None. 851 tests pass (was 835); eslint 0 errors, 73 warnings (baseline unchanged);
-semgrep clean on changed files. Pre-existing: 51 semgrep path-traversal /
-child-process audit findings in `packages/cli` and `packages/vite`, untriaged.
-`spec/fixtures/Test Book.epub` is untracked and unrelated — left alone.
+None. 866 tests with dist built, 860 on a clean checkout (the six dist-entry
+packages defer their load check until built, by design). eslint 0 errors,
+73 warnings (baseline unchanged); actionlint and semgrep clean.
+
+Pre-existing, untriaged: 51 semgrep path-traversal / child-process audit
+findings in `packages/cli` and `packages/vite`. `spec/fixtures/Test Book.epub`
+is untracked and unrelated — deliberately left alone.
