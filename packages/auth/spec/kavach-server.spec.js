@@ -354,9 +354,18 @@ describe('kavach.handle — logout route', () => {
 		const bodyReads = []
 		const request = {
 			method: 'POST',
-			json: vi.fn(async () => { bodyReads.push('json'); return {} }),
-			text: vi.fn(async () => { bodyReads.push('text'); return '' }),
-			formData: vi.fn(async () => { bodyReads.push('formData'); return new Map() })
+			json: vi.fn(() => {
+				bodyReads.push('json')
+				return Promise.resolve({})
+			}),
+			text: vi.fn(() => {
+				bodyReads.push('text')
+				return Promise.resolve('')
+			}),
+			formData: vi.fn(() => {
+				bodyReads.push('formData')
+				return Promise.resolve(new Map())
+			})
 		}
 		const kavachInstance = createKavach(adapter, {
 			app: { login: '/signin', logout: '/logout', session: '/auth/session' },
@@ -374,5 +383,151 @@ describe('kavach.handle — logout route', () => {
 		})
 
 		expect(bodyReads).toEqual([])
+	})
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+// onSessionSync — the one moment a provider token exists.
+//
+// The client POSTs the WHOLE provider session to `routes.session`, including
+// fields like `provider_token` (a GitHub/GitLab access token, returned exactly
+// once by the OAuth exchange). `setCookieFromSession` deliberately persists only
+// `access_token` / `refresh_token`, so anything else is discarded — correctly,
+// because a third-party credential has no business living in a cookie for the
+// session's lifetime.
+//
+// But an app often needs it exactly once, server-side: to read the user's
+// organisations at sign-in, for example. Without a hook the only options are to
+// persist the token (bad) or to send it a second time from the browser
+// (needless). This hands the app the incoming session in memory, once, and
+// stores nothing extra.
+describe('onSessionSync', () => {
+	const incoming = {
+		access_token: 'at',
+		refresh_token: 'rt',
+		provider_token: 'gho_forge_token',
+		user: { id: 'u1', role: 'authenticated' }
+	}
+
+	function syncEvent(body) {
+		return {
+			url: new URL('http://localhost/auth/session'),
+			cookies: { get: vi.fn(() => undefined) },
+			locals: {},
+			request: {
+				method: 'POST',
+				headers: { get: () => 'application/json' },
+				json: () => Promise.resolve(body)
+			}
+		}
+	}
+
+	function adapterFor(session) {
+		return {
+			synchronize: vi.fn(() => Promise.resolve({ error: null, data: { session } })),
+			signOut: vi.fn(),
+			onAuthChange: vi.fn(),
+			parseUrlError: vi.fn(() => null),
+			signIn: vi.fn(),
+			signUp: vi.fn()
+		}
+	}
+
+	it('receives the INCOMING session, which is the one carrying provider_token', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const onSessionSync = vi.fn()
+		// What `synchronize` returns is derived from the two tokens and has NO
+		// provider_token — so a hook handed that session would be useless.
+		const adapter = adapterFor({ access_token: 'at', refresh_token: 'rt', user: incoming.user })
+		const kavach = createKavach(adapter, {
+			app: { login: '/auth', home: '/home', session: '/auth/session' },
+			rules: [],
+			onSessionSync
+		})
+
+		await kavach.handle({
+			event: syncEvent({ event: 'SIGNED_IN', session: incoming }),
+			resolve: vi.fn()
+		})
+
+		expect(onSessionSync).toHaveBeenCalledTimes(1)
+		const [session, evt] = onSessionSync.mock.calls[0]
+		expect(session.provider_token).toBe('gho_forge_token')
+		expect(evt).toBe('SIGNED_IN')
+	})
+
+	it('still does not persist provider_token in the cookie', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = adapterFor(incoming)
+		const kavach = createKavach(adapter, {
+			app: { login: '/auth', home: '/home', session: '/auth/session' },
+			rules: [],
+			onSessionSync: vi.fn()
+		})
+
+		const res = await kavach.handle({
+			event: syncEvent({ event: 'SIGNED_IN', session: incoming }),
+			resolve: vi.fn()
+		})
+		const cookie = res.headers.get('set-cookie') ?? ''
+		expect(cookie).not.toContain('gho_forge_token')
+		expect(cookie).not.toContain('provider_token')
+	})
+
+	it('is not called on sign-out, when there is no session', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const onSessionSync = vi.fn()
+		const adapter = adapterFor(null)
+		const kavach = createKavach(adapter, {
+			app: { login: '/auth', home: '/home', session: '/auth/session' },
+			rules: [],
+			onSessionSync
+		})
+
+		await kavach.handle({
+			event: syncEvent({ event: 'SIGNED_OUT', session: null }),
+			resolve: vi.fn()
+		})
+		expect(onSessionSync).not.toHaveBeenCalled()
+		expect(adapter.signOut).toHaveBeenCalled()
+	})
+
+	it('does not fail the sign-in when the hook throws', async () => {
+		// The session is already valid by this point. Losing it over a failure in
+		// an app-side side-effect would force the user to sign in again over
+		// something they cannot act on.
+		const { createKavach } = await import('../src/kavach.js')
+		const adapter = adapterFor(incoming)
+		const kavach = createKavach(adapter, {
+			app: { login: '/auth', home: '/home', session: '/auth/session' },
+			rules: [],
+			onSessionSync: vi.fn(() => Promise.reject(new Error('provisioning is down')))
+		})
+
+		const res = await kavach.handle({
+			event: syncEvent({ event: 'SIGNED_IN', session: incoming }),
+			resolve: vi.fn()
+		})
+		expect(res.status).toBe(200)
+		expect(res.headers.get('set-cookie')).toContain('session=')
+	})
+
+	it('can be registered after construction via configure()', async () => {
+		// hooks.server.ts imports the instance generated by @kavach/vite, so it
+		// cannot pass constructor options — it needs to register the hook later.
+		const { createKavach } = await import('../src/kavach.js')
+		const onSessionSync = vi.fn()
+		const adapter = adapterFor(incoming)
+		const kavach = createKavach(adapter, {
+			app: { login: '/auth', home: '/home', session: '/auth/session' },
+			rules: []
+		})
+		kavach.configure({ onSessionSync })
+
+		await kavach.handle({
+			event: syncEvent({ event: 'SIGNED_IN', session: incoming }),
+			resolve: vi.fn()
+		})
+		expect(onSessionSync).toHaveBeenCalledTimes(1)
 	})
 })

@@ -185,7 +185,41 @@ export function setCookieFromSession(session) {
  * @param {import('kavach').Sentry}   sentry
  * @returns {object} response
  */
-async function handleSessionSync(event, adapter, sentry) {
+/**
+ * Hand the app the INCOMING provider session, once, in memory.
+ *
+ * This is the only moment a provider token exists on the server: the client
+ * POSTs the whole provider session to the session route, and the cookie
+ * deliberately keeps only access_token/refresh_token — a third-party credential
+ * has no business living in a cookie for the session's lifetime, replayed on
+ * every request. An app that needs it (to read the user's organisations at
+ * sign-in, say) would otherwise have to persist it or send it a second time
+ * from the browser; both are worse than using what is already arriving.
+ *
+ * The INCOMING session is passed, not the synchronized one: what the adapter
+ * returns is derived from the two tokens and no longer carries provider_token.
+ *
+ * A throw is logged and swallowed. By this point the session is valid, so
+ * discarding it over an app-side side-effect would make the user sign in again
+ * over something they cannot act on.
+ *
+ * @param {object} agents
+ * @param {object} session the session as the client sent it
+ * @param {string} event   the auth event that triggered the sync
+ */
+async function runSessionSyncHook(agents, session, event) {
+	if (typeof agents.onSessionSync !== 'function') return
+	try {
+		await agents.onSessionSync(session, event)
+	} catch (err) {
+		agents.logger?.error?.({
+			message: 'onSessionSync failed; the session is unaffected',
+			data: { error: err instanceof Error ? err.message : String(err) }
+		})
+	}
+}
+
+async function handleSessionSync(event, adapter, sentry, agents = {}) {
 	const data = await getRequestData(event)
 	let session = null
 	let status = 200
@@ -196,6 +230,7 @@ async function handleSessionSync(event, adapter, sentry) {
 
 		if (!result.error) {
 			session = result.data.session
+			await runSessionSyncHook(agents, data.session, data.event)
 		} else {
 			status = 500
 			error = result.error
@@ -277,7 +312,7 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
 	sentry.setSession(event.locals.session)
 
 	if (sentry.app.session && pathname.startsWith(sentry.app.session)) {
-		return handleSessionSync(event, adapter, sentry)
+		return handleSessionSync(event, adapter, sentry, agents)
 	}
 
 	if (sentry.app.logout && pathname.startsWith(sentry.app.logout)) {
@@ -631,6 +666,7 @@ function getAgents(options) {
 		}),
 		sentry: createSentry(sentryOptions),
 		invalidateAll: options.invalidateAll ?? pass,
+		onSessionSync: options.onSessionSync,
 		dataFn: options.data
 	}
 }
@@ -646,7 +682,7 @@ function getAgents(options) {
  *   signOut: () => Promise<void>,
  *   onAuthChange: (url?: unknown) => void,
  *   handle: (request: { event: unknown; resolve: (event: unknown) => Promise<Response> }) => Promise<Response>,
- *   configure: (options?: { invalidateAll?: () => Promise<void>; logger?: unknown }) => void,
+ *   configure: (options?: { invalidateAll?: () => Promise<void>; logger?: unknown; onSessionSync?: (session: object, event: string) => unknown }) => void,
  *   actions: (schema?: import('./types').Schema) => import('./types').ServerActions | undefined,
  *   getCachedLogins: () => unknown,
  *   removeCachedLogin: (email: string) => void,
@@ -678,9 +714,10 @@ export function createKavach(adapter, options = {}) {
 		signOut: () => handleSignOut(adapter, agents),
 		onAuthChange: () => handleAuthChange(adapter, agents),
 		handle: (request) => handleRouteProtection(adapter, agents, request),
-		configure: ({ invalidateAll: inv, logger: log } = {}) => {
+		configure: ({ invalidateAll: inv, logger: log, onSessionSync: onSync } = {}) => {
 			if (inv) agents.invalidateAll = inv
 			if (log) agents.logger = log
+			if (onSync) agents.onSessionSync = onSync
 		},
 		actions: (schema) => options.data?.(schema),
 		getCachedLogins: () => loginCache.get(),
