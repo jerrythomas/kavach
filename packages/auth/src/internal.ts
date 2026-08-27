@@ -1,4 +1,4 @@
-import { DEFAULT_COOKIE_OPTIONS, type CookieOptions } from './constants'
+import { DEFAULT_COOKIE_OPTIONS, type CookieOptions } from './constants.js'
 import { serialize } from '@kavach/cookie'
 
 export function extractKeyValuePair(data: string, separator = '='): [string, string] {

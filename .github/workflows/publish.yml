@@ -71,6 +71,32 @@ jobs:
                 echo "::error::${PKG_NAME}@${VERSION} declares types at ${TYPES} but the tarball has none"
                 exit 1
               fi
+              # Refuse to publish a package Node cannot import. An extensionless
+              # relative specifier, or an entry that is still TypeScript, resolves
+              # under a bundler and throws under plain Node ESM — invisible at
+              # publish time, fatal in a consumer that does not use a bundler.
+              #
+              # A package blocked solely by a Svelte component is exempt: Node
+              # cannot load .svelte at any extension. That is decided from the
+              # actual failure, not from the presence of .svelte files — @kavach/vite
+              # ships .svelte scaffolding templates it never imports, and a
+              # presence check would wrongly skip a Node-loadable plugin.
+              ENTRY=$(node -p "require('./package.json').exports?.['.']?.import ?? ''")
+              if [ -z "$ENTRY" ]; then
+                echo "${PKG_NAME}: no import condition — skipping ESM check"
+              else
+                ESM_ERR=$(ESM_ENTRY="$PWD/${ENTRY#./}" node --input-type=module \
+                  -e 'await import(process.env.ESM_ENTRY)' 2>&1) || {
+                  if printf '%s' "$ESM_ERR" | grep -q 'ERR_UNKNOWN_FILE_EXTENSION' &&
+                     printf '%s' "$ESM_ERR" | grep -q '\.svelte'; then
+                    echo "${PKG_NAME}: bundler-only (imports a Svelte component) — ESM check exempt"
+                  else
+                    echo "::error::${PKG_NAME}@${VERSION} does not import under plain Node ESM"
+                    printf '%s\n' "$ESM_ERR"
+                    exit 1
+                  fi
+                }
+              fi
               bunx npm publish "$TARBALL" --provenance --access public --tag latest
               rm -f "$TARBALL"
             )
@@ -114,6 +140,32 @@ jobs:
               if [ -n "$TYPES" ] && ! tar tzf "$TARBALL" | grep -qF "package/${TYPES#./}"; then
                 echo "::error::${PKG_NAME}@${VERSION} declares types at ${TYPES} but the tarball has none"
                 exit 1
+              fi
+              # Refuse to publish a package Node cannot import. An extensionless
+              # relative specifier, or an entry that is still TypeScript, resolves
+              # under a bundler and throws under plain Node ESM — invisible at
+              # publish time, fatal in a consumer that does not use a bundler.
+              #
+              # A package blocked solely by a Svelte component is exempt: Node
+              # cannot load .svelte at any extension. That is decided from the
+              # actual failure, not from the presence of .svelte files — @kavach/vite
+              # ships .svelte scaffolding templates it never imports, and a
+              # presence check would wrongly skip a Node-loadable plugin.
+              ENTRY=$(node -p "require('./package.json').exports?.['.']?.import ?? ''")
+              if [ -z "$ENTRY" ]; then
+                echo "${PKG_NAME}: no import condition — skipping ESM check"
+              else
+                ESM_ERR=$(ESM_ENTRY="$PWD/${ENTRY#./}" node --input-type=module \
+                  -e 'await import(process.env.ESM_ENTRY)' 2>&1) || {
+                  if printf '%s' "$ESM_ERR" | grep -q 'ERR_UNKNOWN_FILE_EXTENSION' &&
+                     printf '%s' "$ESM_ERR" | grep -q '\.svelte'; then
+                    echo "${PKG_NAME}: bundler-only (imports a Svelte component) — ESM check exempt"
+                  else
+                    echo "::error::${PKG_NAME}@${VERSION} does not import under plain Node ESM"
+                    printf '%s\n' "$ESM_ERR"
+                    exit 1
+                  fi
+                }
               fi
               bunx npm publish "$TARBALL" --provenance --access public --tag latest
               rm -f "$TARBALL"

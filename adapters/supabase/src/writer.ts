@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
-import { getTableAndSchema } from './utils'
-import type { SupabaseConfig, SupabaseLogWriterOptions } from './types'
+import { getTableAndSchema } from './utils.js'
+import type { SupabaseConfig, SupabaseLogWriterOptions } from './types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSupabaseSchemaClient(config: SupabaseConfig, schema: string | null): any {

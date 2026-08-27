@@ -12,7 +12,7 @@
  * Note: This file depends on the public types exported by the `kavach` package.
  */
 
-import type { AuthAdapter, AuthResult, AuthCallback } from '../types.ts'
+import type { AuthAdapter, AuthResult, AuthCallback } from '../types.js'
 
 /**
  * A lightweight, opinionated base class implementing shared adapter helpers.

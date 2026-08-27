@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { execFileSync } from 'node:child_process'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -47,6 +47,11 @@ function publishedPackages() {
 	)
 }
 
+/** Absolute path of the file a Node consumer resolves for this package. */
+function entryPath({ dir, entry }) {
+	return join(dir, entry.replace(/^\.\//, ''))
+}
+
 /** Relative import specifiers in `src` that carry no file extension. */
 function extensionlessSpecifiers(dir) {
 	return listFiles(join(dir, 'src'))
@@ -59,31 +64,59 @@ function extensionlessSpecifiers(dir) {
 		)
 }
 
-/** True when no file under `src` carries any of the given extensions. */
-function srcHasNone(dir, extensions) {
-	return !listFiles(join(dir, 'src')).some((file) => extensions.some((ext) => file.endsWith(ext)))
+/**
+ * Import `file` in a plain Node ESM process. Returns null on success, or the
+ * failure text — never throws, so the caller can classify the outcome.
+ */
+function importUnderNode(file) {
+	try {
+		execFileSync(
+			process.execPath,
+			['--input-type=module', '-e', `await import(${JSON.stringify(file)})`],
+			{ stdio: 'pipe' }
+		)
+		return null
+	} catch (error) {
+		return `${error.stderr ?? ''}${error.message ?? ''}`
+	}
+}
+
+/**
+ * True when the only thing stopping Node is a Svelte component. Such a package
+ * is bundler-only by nature and cannot be fixed by any extension change.
+ *
+ * Deliberately derived from the actual failure rather than from the presence of
+ * `.svelte` files: `@kavach/vite` ships `.svelte` scaffolding templates it never
+ * imports, and a presence check would wrongly exempt a Node-loadable plugin.
+ */
+function blockedOnlyBySvelteComponent(failure) {
+	return failure.includes('ERR_UNKNOWN_FILE_EXTENSION') && failure.includes('.svelte')
 }
 
 const packages = publishedPackages()
 
-// Extensions are checked wherever they can actually be correct: a JS entry whose
-// source tree holds no TypeScript. A package that re-exports a `.ts` file cannot
-// name a working extension at all — `.ts` is unloadable by Node and the `.js`
-// twin does not exist — so it is blocked on emitting JavaScript (issue #25) and
-// enrols here automatically once it does.
-const extensionChecked = packages.filter(
-	(p) => p.entry.endsWith('.js') && srcHasNone(p.dir, ['.ts'])
-)
+// Every published package is held to extension-correct relative specifiers.
+// This is a source invariant, so it costs nothing and always runs.
+const extensionChecked = packages
 
-// Loading additionally requires no `.svelte` in the tree. A component library is
-// bundler-only by nature — Node cannot load `.svelte` at any extension — so this
-// is a narrower set than the one above, not a gap in it.
-const runtimeLoadable = extensionChecked.filter((p) => srcHasNone(p.dir, ['.svelte']))
+// Loading is checked wherever the declared entry exists on disk. For packages
+// that emit to `dist/` that means after a build, so a cold checkout covers the
+// source-entry packages only. The publish workflow runs this same check against
+// every package once built, which is where the shipped artifact is really gated.
+const runtimeLoadable = packages.filter((p) => existsSync(entryPath(p)))
+const awaitingBuild = packages.filter((p) => !existsSync(entryPath(p)))
 
 describe('published packages resolve under native ESM', () => {
 	it('finds packages to check', () => {
 		expect(packages.length).toBeGreaterThan(0)
 		expect(extensionChecked.length).toBeGreaterThan(0)
+	})
+
+	it('load-checks every package whose entry is source, so a cold run covers something', () => {
+		// Only a dist entry may be deferred to a build. If a package entering
+		// through `src/` ever went unchecked, this run would be reporting a pass
+		// over nothing.
+		expect(awaitingBuild.filter((p) => p.entry.includes('/src/'))).toEqual([])
 		expect(runtimeLoadable.length).toBeGreaterThan(0)
 	})
 
@@ -93,16 +126,11 @@ describe('published packages resolve under native ESM', () => {
 		})
 	})
 
-	describe.each(runtimeLoadable)('$name', ({ dir, entry }) => {
+	describe.each(runtimeLoadable)('$name', (pkg) => {
 		it('imports cleanly under plain Node ESM', () => {
-			const target = join(dir, entry.replace(/^\.\//, ''))
-			expect(() =>
-				execFileSync(
-					process.execPath,
-					['--input-type=module', '-e', `await import(${JSON.stringify(target)})`],
-					{ stdio: 'pipe' }
-				)
-			).not.toThrow()
+			const failure = importUnderNode(entryPath(pkg))
+			if (failure && blockedOnlyBySvelteComponent(failure)) return
+			expect(failure).toBeNull()
 		})
 	})
 })

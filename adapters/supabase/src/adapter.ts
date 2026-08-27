@@ -1,6 +1,6 @@
 import { AuthApiError } from '@supabase/supabase-js'
 import { urlHashToParams, type AuthAdapter, type AuthCallback, type AuthResult, BaseAdapter } from 'kavach'
-import { defaultOrigin } from './constants'
+import { defaultOrigin } from './constants.js'
 import { pick, omit } from 'ramda'
 
 /**

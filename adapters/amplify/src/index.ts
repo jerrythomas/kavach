@@ -1,1 +1,1 @@
-export { getAdapter } from './adapter'
+export { getAdapter } from './adapter.js'

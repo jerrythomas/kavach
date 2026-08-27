@@ -1,3 +1,3 @@
-export { getAdapter, transformResult } from './adapter'
-export { getActions } from './actions'
-export { getLogWriter } from './writer'
+export { getAdapter, transformResult } from './adapter.js'
+export { getActions } from './actions.js'
+export { getLogWriter } from './writer.js'

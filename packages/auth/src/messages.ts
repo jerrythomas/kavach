@@ -1,4 +1,4 @@
-export { HTTP_STATUS_MESSAGES } from './constants'
+export { HTTP_STATUS_MESSAGES } from './constants.js'
 
 export const MESSAGES = {
 	NOT_AUTHENTICATED: 'Not authenticated',

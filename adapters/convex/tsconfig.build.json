@@ -4,10 +4,11 @@
     "noEmit": false,
     "declaration": true,
     "declarationDir": "./dist",
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "outDir": "./dist",
     "allowJs": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "allowImportingTsExtensions": false
   },
   "include": ["src/**/*"],
   "exclude": ["**/spec/**", "**/fixtures/**", "node_modules", "dist"]

@@ -4,12 +4,12 @@ import { zeroLogger } from '@kavach/logger'
 import { sanitizeError } from '@kavach/query'
 import { pick } from 'ramda'
 import { writable } from 'svelte/store'
-import { HTTP_STATUS_MESSAGES, MESSAGES } from './messages'
-import { RUNNING_ON } from './constants'
-import { setHeaderCookies } from './internal'
-import * as loginCache from './loginCache'
-import { getUserInfo } from './provider'
-import { getRequestData } from './request'
+import { HTTP_STATUS_MESSAGES, MESSAGES } from './messages.js'
+import { RUNNING_ON } from './constants.js'
+import { setHeaderCookies } from './internal.js'
+import * as loginCache from './loginCache.js'
+import { getUserInfo } from './provider.js'
+import { getRequestData } from './request.js'
 
 const pass = async () => {
 	/* Used as a placeholder */

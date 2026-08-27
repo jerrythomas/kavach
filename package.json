@@ -17,7 +17,7 @@
     "format": "prettier --config config/.prettierrc --ignore-path config/.prettierignore --write .",
     "lint": "eslint --config config/eslint.config.mjs --fix",
     "lockfile": "bun install",
-    "build:all": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun run build' \\;",
+    "build:all": "bash scripts/build-all.sh",
     "upgrade:all": "bun update --latest",
     "bump": "bun run lockfile && bumpp --configFilePath config/bump.config.js",
     "bump:next": "bumpp --configFilePath config/bump.config.js --preid=next",
