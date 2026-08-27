@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { svelteTesting } from '@testing-library/svelte/vite'
+import { fileURLToPath } from 'node:url'
+
+const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 
 export default defineConfig({
 	test: {
@@ -25,6 +28,14 @@ export default defineConfig({
 		},
 		projects: [
 			{
+				test: {
+					name: 'packaging',
+					root: repoRoot,
+					include: ['spec/packaging.spec.js'],
+					environment: 'node'
+				}
+			},
+			{
 				extends: true,
 				test: {
 					name: 'auth',
@@ -39,7 +50,7 @@ export default defineConfig({
 			{ extends: true, test: { name: 'query', root: 'packages/query' } },
 			{
 				extends: true,
-				plugins: [svelte({ hot: false }), svelteTesting()],
+				plugins: [svelte(), svelteTesting()],
 				test: {
 					name: 'ui',
 					root: 'packages/ui',
@@ -54,7 +65,7 @@ export default defineConfig({
 			{ extends: true, test: { name: 'demo', root: 'sites/demo' } },
 			{
 				extends: true,
-				plugins: [svelte({ hot: false }), svelteTesting()],
+				plugins: [svelte(), svelteTesting()],
 				resolve: {
 					alias: {
 						'$app/stores': new URL(

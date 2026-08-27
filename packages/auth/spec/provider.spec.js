@@ -92,5 +92,45 @@ describe('Provider functions', () => {
 				app_metadata: { plan: 'pro' }
 			})
 		})
+
+		it('should prefer app_metadata.role over the provider JWT role', () => {
+			// Supabase stamps every signed-in user with role: 'authenticated'.
+			// App-level roles live in app_metadata, and the sentry routes on
+			// session.user.role — so without this precedence, role-based rules
+			// like { path: '/platform', roles: ['platform_admin'] } can never match.
+			const user = {
+				id: 1,
+				email: 'admin@example.com',
+				role: 'authenticated',
+				app_metadata: { role: 'platform_admin' }
+			}
+
+			expect(getUserInfo(user).role).toEqual('platform_admin')
+		})
+
+		it('should fall back to the JWT role when app_metadata carries no role', () => {
+			const user = {
+				id: 1,
+				email: 'user@example.com',
+				role: 'authenticated',
+				app_metadata: { plan: 'pro' }
+			}
+
+			expect(getUserInfo(user).role).toEqual('authenticated')
+		})
+
+		it('should read app_metadata from the top level, not from user_metadata', () => {
+			// app_metadata is a top-level field on the Supabase user object.
+			// Reading it out of user_metadata leaves it undefined on the session.
+			const user = {
+				id: 1,
+				email: 'admin@example.com',
+				role: 'authenticated',
+				app_metadata: { role: 'platform_admin' },
+				user_metadata: { full_name: 'Admin' }
+			}
+
+			expect(getUserInfo(user).app_metadata).toEqual({ role: 'platform_admin' })
+		})
 	})
 })

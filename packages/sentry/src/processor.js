@@ -1,5 +1,5 @@
 import { clone, omit, pick } from 'ramda'
-import { routeDepth } from './utils'
+import { routeDepth } from './utils.js'
 
 const appRouteKeys = [
 	'home',

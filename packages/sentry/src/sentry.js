@@ -6,9 +6,9 @@ import {
 	processAppRoutes,
 	processRoutingRules,
 	getRestrictedRoutes
-} from './processor'
-import { validateRoutingRules } from './validations'
-import { findMatchingRoute, isEndpointRoute, getRedirects } from './utils'
+} from './processor.js'
+import { validateRoutingRules } from './validations.js'
+import { findMatchingRoute, isEndpointRoute, getRedirects } from './utils.js'
 
 /**
  * Validate rules, log errors and warnings, and configure the rules.

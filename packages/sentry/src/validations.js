@@ -1,4 +1,4 @@
-import { fillMissingProps } from './utils'
+import { fillMissingProps } from './utils.js'
 
 /**
  * Validates that the path does not have empty sections

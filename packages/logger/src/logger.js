@@ -1,4 +1,4 @@
-import { defaultLogLevel, zeroLogger, loggingLevels, pass, runningOn } from './constants'
+import { defaultLogLevel, zeroLogger, loggingLevels, pass, runningOn } from './constants.js'
 
 /**
  * Converts a value into an object using provided key
