@@ -6,6 +6,16 @@ import { fileURLToPath } from 'node:url'
 const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 
 export default defineConfig({
+	resolve: {
+		// Resolve workspace packages to their SOURCE, not their built output.
+		// Published `exports` send Node consumers to `dist/`, which only exists
+		// after a build — without this, `bun run test:ci` on a clean checkout
+		// fails to resolve `kavach` from the adapters. Tests should read source
+		// anyway: coverage instruments `**/src/**`, and making the suite depend
+		// on a prior build is a trap. `svelte` is the condition these packages
+		// point at `src`.
+		conditions: ['svelte', 'module', 'browser', 'development|production']
+	},
 	test: {
 		globals: true,
 		environment: 'jsdom',
