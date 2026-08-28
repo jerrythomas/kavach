@@ -1,47 +1,55 @@
 # Checkpoint
 
-**Slice:** #25 defect 2 complete — every package resolves under plain Node ESM
+**Slice:** v1.1.3 released — first genuinely installable release
 
 ## Done
 
-- **#25 closed.** All 14 published packages now import by package name through
-  their exports map under plain Node. The six that entered through TypeScript
-  (`kavach`, supabase/firebase/auth0/amplify adapters, convex via a `types.ts`
-  re-export) now emit JS: `emitDeclarationOnly: false`, and
-  `exports['.'].import`/`default` → `./dist/index.js`.
-- `exports['.'].svelte` still points at `src`, so bundlers compile from source —
-  SvelteKit dev loop unchanged, verified by building `sites/demo` with no dist.
-- **Guards:** `spec/packaging.spec.js` covers all 14 packages (static +
-  real Node load); `publish.yml` refuses to publish a package that will not
-  import under Node; `build:all` is dependency-ordered via
-  `scripts/build-all.sh` and now includes adapters.
-- **#30, #21** closed earlier in the session.
-- `main == develop == origin` at `c4eeca8`, linear. CI green.
+- **v1.1.3 published**, all 14 packages. Verified against the **registry**, not
+  just the working tree: `npm install kavach@1.1.3` succeeds, every package
+  imports under plain Node ESM, internal deps resolve to 1.1.3.
+- **v1.1.2 is broken and immutable on npm.** Two long-standing defects, both
+  found by installing the published tarball:
+  - `packages/auth` carried `"kit-monorepo": "sveltejs/kit"` — the whole
+    SvelteKit monorepo, imported nowhere. npm died on its `catalog:` protocol,
+    so `kavach` was uninstallable by npm from 1.0.1 through 1.1.2.
+  - `bun pm pack` rewrites `workspace:*` from the version recorded in bun.lock,
+    which a plain `bun install` never refreshes. Frozen at 1.0.1, so every
+    release from 1.0.2 shipped internal deps pinned to 1.0.1.
+- **Guards:** `publish.yml` now rejects a tarball with a git/url dependency, an
+  unrewritten `workspace:` range, or an internal dep mismatching the release
+  version. Verified it blocks the real published 1.1.2 manifest on all six.
+- **`bumpp execute` runs without a shell** — `rm -f a && b` ran as
+  `rm -f a '&&' 'b'`, which deleted bun.lock during the 1.1.3 bump instead of
+  regenerating it. Now `scripts/refresh-lockfile.sh`, one command, which
+  asserts its result rather than exiting 0 on a no-op. Lockfile restored.
+- `main == develop == origin` at `ad34440`, linear. CI green.
 
 ## Remaining
 
-Nothing on #25.
+Optional, not done: `npm deprecate` 1.0.1–1.1.2 pointing at 1.1.3. Outward
+facing, so left for a decision.
 
-Tech-debt tickets open and untouched: #26 cli (38), #27 auth (17), #28 vite (9),
-#29 convex/query/sentry (9). Clearing all four unblocks promoting `complexity`
-and `max-lines-per-function` from `warn` to `error`. #22 (ambient .d.ts for
-vite virtual modules) also open — overlaps #28, sequence them together.
+Tech-debt tickets open: #26 cli (38), #27 auth (17), #28 vite (9), #29
+convex/query/sentry (9) — clearing all four unblocks promoting `complexity` and
+`max-lines-per-function` from `warn` to `error`. #22 (ambient .d.ts) overlaps #28.
 
 ## Next command
 
-`bun run test:ci` — new work starts on `develop`. The ESM fixes are committed
-but **not released**; they ship on the next bump.
+`bun run test:ci` — new work starts on `develop`.
 
 ## Open questions
 
-None.
+Whether to deprecate the broken published versions.
 
 ## Known-broken
 
-None. 866 tests with dist built, 860 on a clean checkout (the six dist-entry
-packages defer their load check until built, by design). eslint 0 errors,
-73 warnings (baseline unchanged); actionlint and semgrep clean.
+Nothing in the repo. 866 tests with dist built, 860 on a clean checkout;
+eslint 0 errors / 73 warnings (baseline); actionlint and semgrep clean.
 
-Pre-existing, untriaged: 51 semgrep path-traversal / child-process audit
-findings in `packages/cli` and `packages/vite`. `spec/fixtures/Test Book.epub`
-is untracked and unrelated — deliberately left alone.
+Process note: verify the packed artifact BEFORE tagging. Both 1.1.2 defects
+were catchable by `npm install`ing a local `bun pm pack` output; running that
+check only after publishing is what let a broken release reach npm.
+
+Pre-existing, untriaged: 51 semgrep path-traversal / child-process findings in
+`packages/cli` and `packages/vite`. `spec/fixtures/Test Book.epub` is untracked
+and unrelated — deliberately left alone.
