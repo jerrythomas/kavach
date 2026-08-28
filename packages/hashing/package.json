@@ -1,6 +1,6 @@
 {
   "name": "@kavach/hashing",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Hashing functions.",
   "author": "Jerry Thomas <me@jerrythomas.name>",
   "license": "MIT",
