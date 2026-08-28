@@ -71,6 +71,30 @@ jobs:
                 echo "::error::${PKG_NAME}@${VERSION} declares types at ${TYPES} but the tarball has none"
                 exit 1
               fi
+              # Refuse to publish a tarball whose dependencies a consumer cannot
+              # install or which pull stale siblings. `bun pm pack` rewrites
+              # `workspace:*` from the version recorded in bun.lock, which does
+              # not refresh on a plain `bun install` — that shipped 1.0.1 deps in
+              # every release from 1.0.2 to 1.1.2. A git/url dependency is worse
+              # still: `npm install kavach` failed outright on `sveltejs/kit`.
+              tar xzOf "$TARBALL" package/package.json > /tmp/packed.json
+              PKG_JSON=/tmp/packed.json VERSION="$VERSION" node -e '
+                const p = require(process.env.PKG_JSON)
+                const deps = p.dependencies ?? {}
+                const bad = []
+                for (const [name, range] of Object.entries(deps)) {
+                  const label = name + "@" + range
+                  if (/^(git\+|github:|[\w-]+\/[\w-]+$)/.test(range)) bad.push(label + " is a git/url dependency")
+                  if (name.startsWith("@kavach/") || name === "kavach") {
+                    if (range !== process.env.VERSION) bad.push(label + " should be " + process.env.VERSION)
+                  }
+                  if (range.startsWith("workspace:")) bad.push(label + " was not rewritten")
+                }
+                if (bad.length) { console.error(bad.join("\n")); process.exit(1) }
+              ' || {
+                echo "::error::${PKG_NAME}@${VERSION} has unpublishable dependencies (see above)"
+                exit 1
+              }
               # Refuse to publish a package Node cannot import. An extensionless
               # relative specifier, or an entry that is still TypeScript, resolves
               # under a bundler and throws under plain Node ESM — invisible at
@@ -141,6 +165,30 @@ jobs:
                 echo "::error::${PKG_NAME}@${VERSION} declares types at ${TYPES} but the tarball has none"
                 exit 1
               fi
+              # Refuse to publish a tarball whose dependencies a consumer cannot
+              # install or which pull stale siblings. `bun pm pack` rewrites
+              # `workspace:*` from the version recorded in bun.lock, which does
+              # not refresh on a plain `bun install` — that shipped 1.0.1 deps in
+              # every release from 1.0.2 to 1.1.2. A git/url dependency is worse
+              # still: `npm install kavach` failed outright on `sveltejs/kit`.
+              tar xzOf "$TARBALL" package/package.json > /tmp/packed.json
+              PKG_JSON=/tmp/packed.json VERSION="$VERSION" node -e '
+                const p = require(process.env.PKG_JSON)
+                const deps = p.dependencies ?? {}
+                const bad = []
+                for (const [name, range] of Object.entries(deps)) {
+                  const label = name + "@" + range
+                  if (/^(git\+|github:|[\w-]+\/[\w-]+$)/.test(range)) bad.push(label + " is a git/url dependency")
+                  if (name.startsWith("@kavach/") || name === "kavach") {
+                    if (range !== process.env.VERSION) bad.push(label + " should be " + process.env.VERSION)
+                  }
+                  if (range.startsWith("workspace:")) bad.push(label + " was not rewritten")
+                }
+                if (bad.length) { console.error(bad.join("\n")); process.exit(1) }
+              ' || {
+                echo "::error::${PKG_NAME}@${VERSION} has unpublishable dependencies (see above)"
+                exit 1
+              }
               # Refuse to publish a package Node cannot import. An extensionless
               # relative specifier, or an entry that is still TypeScript, resolves
               # under a bundler and throws under plain Node ESM — invisible at

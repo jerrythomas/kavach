@@ -19,7 +19,7 @@
     "lockfile": "bun install",
     "build:all": "bash scripts/build-all.sh",
     "upgrade:all": "bun update --latest",
-    "bump": "bun run lockfile && bumpp --configFilePath config/bump.config.js",
+    "bump": "bumpp --configFilePath config/bump.config.js",
     "bump:next": "bumpp --configFilePath config/bump.config.js --preid=next",
     "publish:packages": "find ./packages -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
     "publish:adapters": "find ./adapters -type d -depth 1 -exec sh -c 'cd \"{}\" && bun publish' \\;",
