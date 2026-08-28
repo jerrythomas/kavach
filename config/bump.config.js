@@ -20,6 +20,12 @@ export default {
 	// Deleting the lockfile forces bun to record the just-bumped versions, and
 	// `all` stages it alongside the bumped manifests so the tag CI packs from
 	// carries a correct lockfile.
-	execute: 'rm -f bun.lock && bun install',
+	//
+	// This MUST be a single command. bumpp tokenizes the string and spawns it
+	// without a shell, so `rm -f bun.lock && bun install` ran as
+	// `rm -f bun.lock '&&' bun install` — `rm -f` ignores the bogus names and
+	// exits 0, so v1.1.3 committed the lockfile as deleted rather than
+	// regenerated. The script asserts the result instead of trusting it.
+	execute: 'bash scripts/refresh-lockfile.sh',
 	all: true
 }
