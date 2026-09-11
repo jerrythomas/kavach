@@ -25,3 +25,7 @@ sites/learn/static/llms/
 mockups/
 # E2E runtime artifacts (scripts/e2e-*.sh)
 *.pid
+# Local test fixtures. Must stay ignored, not merely untracked: bumpp runs with
+# `all: true`, which stages untracked files too — v1.2.0 shipped a stray epub
+# into the release commit that way.
+spec/fixtures/

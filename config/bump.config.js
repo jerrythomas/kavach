@@ -29,5 +29,11 @@ export default {
 	// exits 0, so v1.1.3 committed the lockfile as deleted rather than
 	// regenerated. The script asserts the result instead of trusting it.
 	execute: 'bash scripts/release-prep.sh',
+
+	// Stages whatever `execute` touched (bun.lock, sensei.library.json) so it
+	// lands in the release commit. Caveat: this is `git add -A`, so it also
+	// sweeps UNTRACKED files — v1.2.0 committed a stray `spec/fixtures` epub
+	// that way. Keep the tree clean before releasing, and gitignore local
+	// fixtures rather than leaving them merely untracked.
 	all: true
 }
