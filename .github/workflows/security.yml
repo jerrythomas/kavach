@@ -63,7 +63,7 @@ jobs:
       # Blocks a PR that introduces a newly vulnerable dependency, which is the
       # gap `bun audit` leaves: audit reports the whole tree, so a new moderate
       # is invisible against the existing moderate noise.
-      - uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
           comment-summary-in-pr: always
