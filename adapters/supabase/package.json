@@ -27,7 +27,7 @@
     "@kavach/query": "workspace:*",
     "kavach": "workspace:*",
     "@supabase/supabase-js": "^2.49.4",
-    "ramda": "^0.30.1"
+    "ramda": "^0.32.0"
   },
   "files": [
     "src/**/*.js",

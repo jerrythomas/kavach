@@ -1,57 +1,44 @@
 version: 2
 
+# NOTE ON SCOPE — there is deliberately no `npm` entry here.
+#
+# This workspace locks with bun.lock, and Dependabot's `npm_and_yarn` ecosystem
+# does not read it: a run over this repo mentions bun.lock zero times and its
+# PRs edit package.json alone. The lockfile is then stale against the manifest,
+# so `bun install --frozen-lockfile` fails and every such PR is red on arrival —
+# seven of them were, before this entry was removed.
+#
+# Auto-syncing the lockfile on Dependabot branches was considered and rejected:
+# it needs write access on a PR branch, and the only trigger that grants it
+# (`pull_request_target`) would run `bun install` — and therefore the PR's own
+# postinstall scripts — with a privileged token.
+#
+# So npm currency is handled deliberately instead: `bun run upgrade:all`
+# (`bun update --latest`), then the full gate. Dependabot alerts and security
+# updates stay ENABLED on the repo, so advisories are still reported; they are
+# acted on by running that command rather than by merging a broken PR.
 updates:
-  # Keep the SHA-pinned actions in .github/workflows current. Pinning by SHA is
-  # what makes a workflow tamper-resistant, but it also freezes the action at
-  # that commit — without this, a pinned action never picks up its own security
-  # fixes.
+  # github-actions has no lockfile, so Dependabot handles it correctly — PR #33
+  # (dependency-review-action v4.9.0 -> v5.0.0) went through green.
+  #
+  # This entry earns its place: pinning actions by SHA is what makes a workflow
+  # tamper-resistant, but it also freezes the action at that commit, so without
+  # something moving the pins an action never receives its own security fixes.
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     commit-message:
       prefix: 'chore(actions)'
-    # Wait before adopting a freshly published version. A compromised release is
-    # usually caught and yanked within days, and without this the automation
-    # would open a PR for it within hours of publication.
+    # `default-days` does NOT cascade to the per-bump-type fields — they default
+    # to 0. Setting only the default left majors with no cooldown at all, which
+    # is how five major-bump PRs landed within minutes of this file going live.
+    # Each tier is therefore explicit.
     cooldown:
       default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
     groups:
       actions:
         patterns: ['*']
-
-  # Workspace dependencies. Dependabot alerts + security updates are enabled on
-  # the repo, so vulnerable transitives get their own PRs as soon as a fixed
-  # version exists upstream; this covers routine currency on top of that.
-  #
-  # Grouped by risk rather than one PR per package: a flood of individual PRs
-  # is how dependency updates get ignored.
-  - package-ecosystem: npm
-    directories:
-      - /
-      - /packages/*
-      - /adapters/*
-      - /sites/*
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: 'chore(deps)'
-    # Security updates bypass this, so a real advisory still lands immediately.
-    cooldown:
-      default-days: 7
-    groups:
-      dev-dependencies:
-        dependency-type: development
-        patterns: ['*']
-        update-types: [minor, patch]
-      production-minor-patch:
-        dependency-type: production
-        patterns: ['*']
-        update-types: [minor, patch]
-    ignore:
-      # Held at 6.x deliberately: typescript-eslint refuses to load against
-      # TS 7 and takes `bun run lint` down with it. See
-      # typescript-eslint/typescript-eslint#10940 — remove this when that lands.
-      - dependency-name: typescript
-        versions: ['7.x']
