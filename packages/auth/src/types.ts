@@ -154,7 +154,9 @@ export interface AuthAdapter {
 	signOut: () => Promise<unknown>
 	synchronize: (session: unknown) => Promise<AuthResult>
 	onAuthChange: (callback: AuthCallback) => () => void
-	parseUrlError?: (url: string | { hash?: string; search?: string } | undefined) => AuthResult | null
+	parseUrlError?: (
+		url: string | { hash?: string; search?: string } | undefined
+	) => AuthResult | null
 	capabilities?: string[]
 }
 

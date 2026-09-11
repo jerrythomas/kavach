@@ -47,12 +47,12 @@ const directAccess = client.schema('custom_schema')
 
 ### Key Differences
 
-| Before | After |
-|--------|-------|
-| `getAdapter({ url, anonKey })` | `getAdapter(client)` |
-| `kavach.proxy(schema)` | `client.schema(schema)` |
-| `adapter.actions(schema)` | `getActions(client, schema)` |
-| N/A | `createKavach(adapter, { data })` |
+| Before                         | After                             |
+| ------------------------------ | --------------------------------- |
+| `getAdapter({ url, anonKey })` | `getAdapter(client)`              |
+| `kavach.proxy(schema)`         | `client.schema(schema)`           |
+| `adapter.actions(schema)`      | `getActions(client, schema)`      |
+| N/A                            | `createKavach(adapter, { data })` |
 
 ## New: Convex Adapter
 

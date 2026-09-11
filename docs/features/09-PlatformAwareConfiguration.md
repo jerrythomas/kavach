@@ -23,8 +23,8 @@ Feature: Platform Selection
     And display unsupported features: Data endpoints, RPC, Logging
 ```
 
-| Scenario | Status |
-|----------|--------|
+| Scenario              | Status    |
+| --------------------- | --------- |
 | User selects Supabase | - TO DO - |
 | User selects Firebase | - TO DO - |
 
@@ -73,14 +73,14 @@ Feature: Capability-Aware Configuration
     And suggest alternative (e.g., use platform's native analytics)
 ```
 
-| Scenario | Status |
-|----------|--------|
-| Platform supports data operations | - TO DO - |
+| Scenario                                  | Status    |
+| ----------------------------------------- | --------- |
+| Platform supports data operations         | - TO DO - |
 | Platform does NOT support data operations | - TO DO - |
-| Platform supports RPC | - TO DO - |
-| Platform does NOT support RPC | - TO DO - |
-| Platform supports logging | - TO DO - |
-| Platform does NOT support logging | - TO DO - |
+| Platform supports RPC                     | - TO DO - |
+| Platform does NOT support RPC             | - TO DO - |
+| Platform supports logging                 | - TO DO - |
+| Platform does NOT support logging         | - TO DO - |
 
 ### DDL Generation
 
@@ -111,11 +111,11 @@ Feature: DDL Generation
     Then do not display any DDL instructions
 ```
 
-| Scenario | Status |
-|----------|--------|
+| Scenario                             | Status    |
+| ------------------------------------ | --------- |
 | User configures logging for Supabase | - TO DO - |
-| User specifies custom table name | - TO DO - |
-| User does NOT configure logging | - TO DO - |
+| User specifies custom table name     | - TO DO - |
+| User does NOT configure logging      | - TO DO - |
 
 ### Provider Filtering
 
@@ -147,12 +147,12 @@ Feature: Provider Filtering
     And show tooltip: "Not supported by Auth0"
 ```
 
-| Scenario | Status |
-|----------|--------|
-| Platform supports magic link | - TO DO - |
+| Scenario                             | Status    |
+| ------------------------------------ | --------- |
+| Platform supports magic link         | - TO DO - |
 | Platform does NOT support magic link | - TO DO - |
-| Platform supports passkey | - TO DO - |
-| Platform does NOT support passkey | - TO DO - |
+| Platform supports passkey            | - TO DO - |
+| Platform does NOT support passkey    | - TO DO - |
 
 ### Configuration Validation
 
@@ -174,22 +174,22 @@ Feature: Configuration Validation
     Then display success: "All configured features are supported by Supabase"
 ```
 
-| Scenario | Status |
-|----------|--------|
+| Scenario                                          | Status    |
+| ------------------------------------------------- | --------- |
 | User manually edits config to unsupported feature | - TO DO - |
-| Adapter supports all configured features | - TO DO - |
+| Adapter supports all configured features          | - TO DO - |
 
 ## Platform Capability Reference
 
-| Capability | Supabase | Firebase | Auth0 | Amplify | Convex |
-|------------|:--------:|:--------:|:-----:|:-------:|:------:|
-| **data** (CRUD) | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **rpc** (Procedures) | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **logging** (Audit) | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **magic** (Passwordless) | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **oauth** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **password** | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **passkey** (WebAuthn) | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Capability               | Supabase | Firebase | Auth0 | Amplify | Convex |
+| ------------------------ | :------: | :------: | :---: | :-----: | :----: |
+| **data** (CRUD)          |    ✅    |    ❌    |  ❌   |   ❌    |   ❌   |
+| **rpc** (Procedures)     |    ✅    |    ❌    |  ❌   |   ❌    |   ❌   |
+| **logging** (Audit)      |    ✅    |    ❌    |  ❌   |   ❌    |   ❌   |
+| **magic** (Passwordless) |    ✅    |    ✅    |  ✅   |   ❌    |   ❌   |
+| **oauth**                |    ✅    |    ✅    |  ✅   |   ✅    |   ✅   |
+| **password**             |    ✅    |    ✅    |  ✅   |   ✅    |   ❌   |
+| **passkey** (WebAuthn)   |    ✅    |    ✅    |  ❌   |   ❌    |   ❌   |
 
 ### Notes by Platform
 

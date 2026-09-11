@@ -9,7 +9,7 @@
 </script>
 
 {#if message.length > 0}
-	<div data-alert class="flex flex-col w-full" class:hasError={error}>
+	<div data-alert class="flex w-full flex-col" class:hasError={error}>
 		{message}
 	</div>
 {/if}

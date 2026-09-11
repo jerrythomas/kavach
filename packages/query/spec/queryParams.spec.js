@@ -33,16 +33,12 @@ describe('parseQueryParams', () => {
 
 	it('should parse filters', () => {
 		const result = parseQueryParams({ filter: { status: 'eq.active' } })
-		expect(result.filters).toEqual([
-			{ column: 'status', op: 'eq', value: 'active' }
-		])
+		expect(result.filters).toEqual([{ column: 'status', op: 'eq', value: 'active' }])
 	})
 
 	it('should parse order string', () => {
 		const result = parseQueryParams({ order: 'created_at.desc' })
-		expect(result.orders).toEqual([
-			{ column: 'created_at', ascending: false }
-		])
+		expect(result.orders).toEqual([{ column: 'created_at', ascending: false }])
 	})
 
 	it('should pass through limit as number', () => {

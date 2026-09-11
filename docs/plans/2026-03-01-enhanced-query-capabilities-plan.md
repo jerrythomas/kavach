@@ -13,6 +13,7 @@
 ### Task 1: Create `packages/query` package scaffold
 
 **Files:**
+
 - Create: `packages/query/package.json`
 - Create: `packages/query/src/index.js`
 
@@ -42,12 +43,7 @@
     "clean": "rm -rf dist",
     "build": "bun prepublishOnly"
   },
-  "files": [
-    "src/**/*.js",
-    "dist/**/*.d.ts",
-    "README.md",
-    "package.json"
-  ],
+  "files": ["src/**/*.js", "dist/**/*.d.ts", "README.md", "package.json"],
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -82,6 +78,7 @@ git commit -m "chore: scaffold @kavach/query package"
 ### Task 2: Implement operator definitions
 
 **Files:**
+
 - Create: `packages/query/src/operators.js`
 - Test: `packages/query/spec/operators.spec.js`
 
@@ -92,30 +89,41 @@ import { describe, expect, it } from 'vitest'
 import { OPERATORS, ALL_OPERATORS, isValidOperator } from '../src/operators.js'
 
 describe('operators', () => {
-	it('should define core operators', () => {
-		expect(OPERATORS.core).toEqual(['eq', 'neq', 'gt', 'gte', 'lt', 'lte'])
-	})
+  it('should define core operators', () => {
+    expect(OPERATORS.core).toEqual(['eq', 'neq', 'gt', 'gte', 'lt', 'lte'])
+  })
 
-	it('should define extended operators', () => {
-		expect(OPERATORS.extended).toEqual(['like', 'ilike', 'in', 'is'])
-	})
+  it('should define extended operators', () => {
+    expect(OPERATORS.extended).toEqual(['like', 'ilike', 'in', 'is'])
+  })
 
-	it('should export all operators as flat array', () => {
-		expect(ALL_OPERATORS).toEqual(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'like', 'ilike', 'in', 'is'])
-	})
+  it('should export all operators as flat array', () => {
+    expect(ALL_OPERATORS).toEqual([
+      'eq',
+      'neq',
+      'gt',
+      'gte',
+      'lt',
+      'lte',
+      'like',
+      'ilike',
+      'in',
+      'is'
+    ])
+  })
 
-	it('should validate known operators', () => {
-		expect(isValidOperator('eq')).toBe(true)
-		expect(isValidOperator('gt')).toBe(true)
-		expect(isValidOperator('in')).toBe(true)
-		expect(isValidOperator('is')).toBe(true)
-	})
+  it('should validate known operators', () => {
+    expect(isValidOperator('eq')).toBe(true)
+    expect(isValidOperator('gt')).toBe(true)
+    expect(isValidOperator('in')).toBe(true)
+    expect(isValidOperator('is')).toBe(true)
+  })
 
-	it('should reject unknown operators', () => {
-		expect(isValidOperator('foo')).toBe(false)
-		expect(isValidOperator('match')).toBe(false)
-		expect(isValidOperator('')).toBe(false)
-	})
+  it('should reject unknown operators', () => {
+    expect(isValidOperator('foo')).toBe(false)
+    expect(isValidOperator('match')).toBe(false)
+    expect(isValidOperator('')).toBe(false)
+  })
 })
 ```
 
@@ -132,8 +140,8 @@ Expected: FAIL — module not found
  * Extended operators — adapter-specific support
  */
 export const OPERATORS = {
-	core: ['eq', 'neq', 'gt', 'gte', 'lt', 'lte'],
-	extended: ['like', 'ilike', 'in', 'is']
+  core: ['eq', 'neq', 'gt', 'gte', 'lt', 'lte'],
+  extended: ['like', 'ilike', 'in', 'is']
 }
 
 export const ALL_OPERATORS = [...OPERATORS.core, ...OPERATORS.extended]
@@ -143,7 +151,7 @@ export const ALL_OPERATORS = [...OPERATORS.core, ...OPERATORS.extended]
  * @returns {boolean}
  */
 export function isValidOperator(op) {
-	return ALL_OPERATORS.includes(op)
+  return ALL_OPERATORS.includes(op)
 }
 ```
 
@@ -164,6 +172,7 @@ git commit -m "feat(query): add operator definitions and validation"
 ### Task 3: Implement filter parser — core operators
 
 **Files:**
+
 - Create: `packages/query/src/parser.js`
 - Test: `packages/query/spec/parser.spec.js`
 
@@ -174,67 +183,57 @@ import { describe, expect, it } from 'vitest'
 import { parseFilter } from '../src/parser.js'
 
 describe('parseFilter', () => {
-	it('should return empty array for empty filter', () => {
-		expect(parseFilter({})).toEqual([])
-	})
+  it('should return empty array for empty filter', () => {
+    expect(parseFilter({})).toEqual([])
+  })
 
-	it('should return empty array for undefined/null', () => {
-		expect(parseFilter(undefined)).toEqual([])
-		expect(parseFilter(null)).toEqual([])
-	})
+  it('should return empty array for undefined/null', () => {
+    expect(parseFilter(undefined)).toEqual([])
+    expect(parseFilter(null)).toEqual([])
+  })
 
-	it('should parse eq operator', () => {
-		expect(parseFilter({ status: 'eq.success' })).toEqual([
-			{ column: 'status', op: 'eq', value: 'success' }
-		])
-	})
+  it('should parse eq operator', () => {
+    expect(parseFilter({ status: 'eq.success' })).toEqual([
+      { column: 'status', op: 'eq', value: 'success' }
+    ])
+  })
 
-	it('should parse neq operator', () => {
-		expect(parseFilter({ status: 'neq.failed' })).toEqual([
-			{ column: 'status', op: 'neq', value: 'failed' }
-		])
-	})
+  it('should parse neq operator', () => {
+    expect(parseFilter({ status: 'neq.failed' })).toEqual([
+      { column: 'status', op: 'neq', value: 'failed' }
+    ])
+  })
 
-	it('should parse gt operator', () => {
-		expect(parseFilter({ cost: 'gt.0.01' })).toEqual([
-			{ column: 'cost', op: 'gt', value: '0.01' }
-		])
-	})
+  it('should parse gt operator', () => {
+    expect(parseFilter({ cost: 'gt.0.01' })).toEqual([{ column: 'cost', op: 'gt', value: '0.01' }])
+  })
 
-	it('should parse gte operator', () => {
-		expect(parseFilter({ cost: 'gte.100' })).toEqual([
-			{ column: 'cost', op: 'gte', value: '100' }
-		])
-	})
+  it('should parse gte operator', () => {
+    expect(parseFilter({ cost: 'gte.100' })).toEqual([{ column: 'cost', op: 'gte', value: '100' }])
+  })
 
-	it('should parse lt operator', () => {
-		expect(parseFilter({ age: 'lt.18' })).toEqual([
-			{ column: 'age', op: 'lt', value: '18' }
-		])
-	})
+  it('should parse lt operator', () => {
+    expect(parseFilter({ age: 'lt.18' })).toEqual([{ column: 'age', op: 'lt', value: '18' }])
+  })
 
-	it('should parse lte operator', () => {
-		expect(parseFilter({ age: 'lte.65' })).toEqual([
-			{ column: 'age', op: 'lte', value: '65' }
-		])
-	})
+  it('should parse lte operator', () => {
+    expect(parseFilter({ age: 'lte.65' })).toEqual([{ column: 'age', op: 'lte', value: '65' }])
+  })
 
-	it('should parse multiple filters', () => {
-		expect(parseFilter({ status: 'eq.active', cost: 'gt.0' })).toEqual([
-			{ column: 'status', op: 'eq', value: 'active' },
-			{ column: 'cost', op: 'gt', value: '0' }
-		])
-	})
+  it('should parse multiple filters', () => {
+    expect(parseFilter({ status: 'eq.active', cost: 'gt.0' })).toEqual([
+      { column: 'status', op: 'eq', value: 'active' },
+      { column: 'cost', op: 'gt', value: '0' }
+    ])
+  })
 
-	it('should preserve dots in value after operator', () => {
-		expect(parseFilter({ cost: 'gt.0.01' })).toEqual([
-			{ column: 'cost', op: 'gt', value: '0.01' }
-		])
-	})
+  it('should preserve dots in value after operator', () => {
+    expect(parseFilter({ cost: 'gt.0.01' })).toEqual([{ column: 'cost', op: 'gt', value: '0.01' }])
+  })
 
-	it('should throw on unknown operator', () => {
-		expect(() => parseFilter({ status: 'foo.bar' })).toThrow('Unknown operator: foo')
-	})
+  it('should throw on unknown operator', () => {
+    expect(() => parseFilter({ status: 'foo.bar' })).toThrow('Unknown operator: foo')
+  })
 })
 ```
 
@@ -262,23 +261,23 @@ import { isValidOperator } from './operators.js'
  * @returns {FilterDescriptor[]}
  */
 export function parseFilter(filter) {
-	if (!filter) return []
+  if (!filter) return []
 
-	return Object.entries(filter).map(([column, raw]) => {
-		const dotIndex = raw.indexOf('.')
-		if (dotIndex === -1) {
-			throw new Error(`Invalid filter value for "${column}": expected "op.value" format`)
-		}
+  return Object.entries(filter).map(([column, raw]) => {
+    const dotIndex = raw.indexOf('.')
+    if (dotIndex === -1) {
+      throw new Error(`Invalid filter value for "${column}": expected "op.value" format`)
+    }
 
-		const op = raw.slice(0, dotIndex)
-		const rawValue = raw.slice(dotIndex + 1)
+    const op = raw.slice(0, dotIndex)
+    const rawValue = raw.slice(dotIndex + 1)
 
-		if (!isValidOperator(op)) {
-			throw new Error(`Unknown operator: ${op}`)
-		}
+    if (!isValidOperator(op)) {
+      throw new Error(`Unknown operator: ${op}`)
+    }
 
-		return { column, op, value: parseValue(op, rawValue) }
-	})
+    return { column, op, value: parseValue(op, rawValue) }
+  })
 }
 
 /**
@@ -287,14 +286,14 @@ export function parseFilter(filter) {
  * @returns {string|string[]|null}
  */
 function parseValue(op, raw) {
-	if (op === 'in') {
-		const inner = raw.replace(/^\(/, '').replace(/\)$/, '')
-		return inner.split(',').map((s) => s.trim())
-	}
-	if (op === 'is') {
-		return raw === 'null' ? null : raw
-	}
-	return raw
+  if (op === 'in') {
+    const inner = raw.replace(/^\(/, '').replace(/\)$/, '')
+    return inner.split(',').map((s) => s.trim())
+  }
+  if (op === 'is') {
+    return raw === 'null' ? null : raw
+  }
+  return raw
 }
 ```
 
@@ -315,6 +314,7 @@ git commit -m "feat(query): implement filter parser for core operators"
 ### Task 4: Add extended operator tests (like, ilike, in, is)
 
 **Files:**
+
 - Modify: `packages/query/spec/parser.spec.js`
 
 **Step 1: Add failing tests for extended operators**
@@ -322,47 +322,47 @@ git commit -m "feat(query): implement filter parser for core operators"
 Append to the `parseFilter` describe block in `packages/query/spec/parser.spec.js`:
 
 ```js
-	it('should parse like operator', () => {
-		expect(parseFilter({ name: 'like.%deploy%' })).toEqual([
-			{ column: 'name', op: 'like', value: '%deploy%' }
-		])
-	})
+it('should parse like operator', () => {
+  expect(parseFilter({ name: 'like.%deploy%' })).toEqual([
+    { column: 'name', op: 'like', value: '%deploy%' }
+  ])
+})
 
-	it('should parse ilike operator', () => {
-		expect(parseFilter({ name: 'ilike.%Deploy%' })).toEqual([
-			{ column: 'name', op: 'ilike', value: '%Deploy%' }
-		])
-	})
+it('should parse ilike operator', () => {
+  expect(parseFilter({ name: 'ilike.%Deploy%' })).toEqual([
+    { column: 'name', op: 'ilike', value: '%Deploy%' }
+  ])
+})
 
-	it('should parse in operator with list', () => {
-		expect(parseFilter({ status: 'in.(success,pending)' })).toEqual([
-			{ column: 'status', op: 'in', value: ['success', 'pending'] }
-		])
-	})
+it('should parse in operator with list', () => {
+  expect(parseFilter({ status: 'in.(success,pending)' })).toEqual([
+    { column: 'status', op: 'in', value: ['success', 'pending'] }
+  ])
+})
 
-	it('should parse in operator with single value', () => {
-		expect(parseFilter({ status: 'in.(active)' })).toEqual([
-			{ column: 'status', op: 'in', value: ['active'] }
-		])
-	})
+it('should parse in operator with single value', () => {
+  expect(parseFilter({ status: 'in.(active)' })).toEqual([
+    { column: 'status', op: 'in', value: ['active'] }
+  ])
+})
 
-	it('should parse is.null', () => {
-		expect(parseFilter({ deleted_at: 'is.null' })).toEqual([
-			{ column: 'deleted_at', op: 'is', value: null }
-		])
-	})
+it('should parse is.null', () => {
+  expect(parseFilter({ deleted_at: 'is.null' })).toEqual([
+    { column: 'deleted_at', op: 'is', value: null }
+  ])
+})
 
-	it('should parse is.true', () => {
-		expect(parseFilter({ active: 'is.true' })).toEqual([
-			{ column: 'active', op: 'is', value: 'true' }
-		])
-	})
+it('should parse is.true', () => {
+  expect(parseFilter({ active: 'is.true' })).toEqual([
+    { column: 'active', op: 'is', value: 'true' }
+  ])
+})
 
-	it('should parse is.false', () => {
-		expect(parseFilter({ active: 'is.false' })).toEqual([
-			{ column: 'active', op: 'is', value: 'false' }
-		])
-	})
+it('should parse is.false', () => {
+  expect(parseFilter({ active: 'is.false' })).toEqual([
+    { column: 'active', op: 'is', value: 'false' }
+  ])
+})
 ```
 
 **Step 2: Run tests**
@@ -382,6 +382,7 @@ git commit -m "test(query): add extended operator test coverage"
 ### Task 5: Update supabase adapter to use parseFilter
 
 **Files:**
+
 - Modify: `adapters/supabase/src/actions.js`
 - Modify: `adapters/supabase/package.json`
 
@@ -405,14 +406,14 @@ import { parseFilter } from '@kavach/query'
 // ... inside getActions():
 
 async function get(entity, data) {
-	const { columns = '*', filter = {} } = data ?? {}
-	let query = schemaClient.from(entity).select(columns)
+  const { columns = '*', filter = {} } = data ?? {}
+  let query = schemaClient.from(entity).select(columns)
 
-	for (const { column, op, value } of parseFilter(filter)) {
-		query = query[op](column, value)
-	}
+  for (const { column, op, value } of parseFilter(filter)) {
+    query = query[op](column, value)
+  }
 
-	return await query
+  return await query
 }
 ```
 
@@ -428,6 +429,7 @@ git commit -m "feat(supabase): use parseFilter in get() action"
 ### Task 6: Update supabase adapter tests
 
 **Files:**
+
 - Modify: `adapters/supabase/spec/actions.spec.js`
 
 **Step 1: Update mock to support chained operator methods**
@@ -475,71 +477,71 @@ describe('actions', () => {
 **Step 2: Rewrite get() tests for operator-based filtering**
 
 ```js
-	describe('get', () => {
-		it('should select data without input', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity')
-			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.select).toHaveBeenCalledWith('*')
-		})
+describe('get', () => {
+  it('should select data without input', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity')
+    expect(client.from).toHaveBeenCalledWith('entity')
+    expect(client.select).toHaveBeenCalledWith('*')
+  })
 
-		it('should select specific columns', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', { columns: 'a,b' })
-			expect(client.select).toHaveBeenCalledWith('a,b')
-		})
+  it('should select specific columns', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', { columns: 'a,b' })
+    expect(client.select).toHaveBeenCalledWith('a,b')
+  })
 
-		it('should apply eq filter', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', { filter: { status: 'eq.active' } })
-			expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
-		})
+  it('should apply eq filter', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', { filter: { status: 'eq.active' } })
+    expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
+  })
 
-		it('should apply gt filter', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', { filter: { cost: 'gt.100' } })
-			expect(client._query.gt).toHaveBeenCalledWith('cost', '100')
-		})
+  it('should apply gt filter', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', { filter: { cost: 'gt.100' } })
+    expect(client._query.gt).toHaveBeenCalledWith('cost', '100')
+  })
 
-		it('should apply multiple filters', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', {
-				filter: { status: 'eq.active', cost: 'gt.0' }
-			})
-			expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
-			expect(client._query.gt).toHaveBeenCalledWith('cost', '0')
-		})
+  it('should apply multiple filters', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', {
+      filter: { status: 'eq.active', cost: 'gt.0' }
+    })
+    expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
+    expect(client._query.gt).toHaveBeenCalledWith('cost', '0')
+  })
 
-		it('should apply in filter with array value', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', { filter: { status: 'in.(a,b)' } })
-			expect(client._query.in).toHaveBeenCalledWith('status', ['a', 'b'])
-		})
+  it('should apply in filter with array value', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', { filter: { status: 'in.(a,b)' } })
+    expect(client._query.in).toHaveBeenCalledWith('status', ['a', 'b'])
+  })
 
-		it('should apply is.null filter', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', { filter: { deleted_at: 'is.null' } })
-			expect(client._query.is).toHaveBeenCalledWith('deleted_at', null)
-		})
+  it('should apply is.null filter', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', { filter: { deleted_at: 'is.null' } })
+    expect(client._query.is).toHaveBeenCalledWith('deleted_at', null)
+  })
 
-		it('should apply columns and filters together', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.get('entity', {
-				columns: 'id,name',
-				filter: { status: 'eq.active' }
-			})
-			expect(client.select).toHaveBeenCalledWith('id,name')
-			expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
-		})
-	})
+  it('should apply columns and filters together', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.get('entity', {
+      columns: 'id,name',
+      filter: { status: 'eq.active' }
+    })
+    expect(client.select).toHaveBeenCalledWith('id,name')
+    expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
+  })
+})
 ```
 
 **Step 3: Update remaining action tests to use createClient()**
@@ -547,67 +549,67 @@ describe('actions', () => {
 The `put`, `post`, `patch`, `delete`, `call` tests need to use `createClient()` instead of the old shared `client`:
 
 ```js
-	it('should return an object with actions', () => {
-		const client = createClient()
-		const actions = getActions(client)
-		expect(actions).toEqual({
-			get: expect.any(Function),
-			put: expect.any(Function),
-			post: expect.any(Function),
-			patch: expect.any(Function),
-			delete: expect.any(Function),
-			call: expect.any(Function),
-			connection: client
-		})
-	})
+it('should return an object with actions', () => {
+  const client = createClient()
+  const actions = getActions(client)
+  expect(actions).toEqual({
+    get: expect.any(Function),
+    put: expect.any(Function),
+    post: expect.any(Function),
+    patch: expect.any(Function),
+    delete: expect.any(Function),
+    call: expect.any(Function),
+    connection: client
+  })
+})
 
-	describe('put', () => {
-		it('should insert data', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.put('entity', { data: 'value' })
-			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.insert).toHaveBeenCalledWith({ data: 'value' })
-		})
-	})
+describe('put', () => {
+  it('should insert data', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.put('entity', { data: 'value' })
+    expect(client.from).toHaveBeenCalledWith('entity')
+    expect(client.insert).toHaveBeenCalledWith({ data: 'value' })
+  })
+})
 
-	describe('post', () => {
-		it('should upsert data', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.post('entity', { data: 'value' })
-			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.upsert).toHaveBeenCalledWith({ data: 'value' })
-		})
-	})
+describe('post', () => {
+  it('should upsert data', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.post('entity', { data: 'value' })
+    expect(client.from).toHaveBeenCalledWith('entity')
+    expect(client.upsert).toHaveBeenCalledWith({ data: 'value' })
+  })
+})
 
-	describe('patch', () => {
-		it('should update data', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.patch('entity', { data: 'value' })
-			expect(client.from).toHaveBeenCalledWith('entity')
-			expect(client.update).toHaveBeenCalledWith({ data: 'value' })
-		})
-	})
+describe('patch', () => {
+  it('should update data', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.patch('entity', { data: 'value' })
+    expect(client.from).toHaveBeenCalledWith('entity')
+    expect(client.update).toHaveBeenCalledWith({ data: 'value' })
+  })
+})
 
-	describe('delete', () => {
-		it('should delete data', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.delete('entity', { filter: 'value' })
-			expect(client.from).toHaveBeenCalledWith('entity')
-		})
-	})
+describe('delete', () => {
+  it('should delete data', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.delete('entity', { filter: 'value' })
+    expect(client.from).toHaveBeenCalledWith('entity')
+  })
+})
 
-	describe('call', () => {
-		it('should call a stored procedure', async () => {
-			const client = createClient()
-			const actions = getActions(client)
-			await actions.call('entity', { data: 'value' })
-			expect(client.rpc).toHaveBeenCalledWith('entity', { data: 'value' })
-		})
-	})
+describe('call', () => {
+  it('should call a stored procedure', async () => {
+    const client = createClient()
+    const actions = getActions(client)
+    await actions.call('entity', { data: 'value' })
+    expect(client.rpc).toHaveBeenCalledWith('entity', { data: 'value' })
+  })
+})
 ```
 
 **Step 4: Run all tests**

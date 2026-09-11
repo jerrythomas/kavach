@@ -42,7 +42,13 @@ export interface UserInfo {
 	app_metadata?: Record<string, unknown>
 }
 
-export function getUserInfo(data: { id: string; role: string; email?: string; app_metadata?: Record<string, unknown>; user_metadata?: { avatar_url?: string; full_name?: string } }): UserInfo {
+export function getUserInfo(data: {
+	id: string
+	role: string
+	email?: string
+	app_metadata?: Record<string, unknown>
+	user_metadata?: { avatar_url?: string; full_name?: string }
+}): UserInfo {
 	const { id, email } = data
 	const app_metadata = data.app_metadata
 	const role = (app_metadata?.role as string | undefined) ?? data.role

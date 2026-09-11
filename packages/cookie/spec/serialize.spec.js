@@ -8,18 +8,10 @@ describe('Cookie Serialize', () => {
 		expect(serialize('foo', 'bar')).toEqual('foo=bar')
 		expect(serialize('foo', 'bar baz')).toEqual('foo=bar%20baz')
 		expect(serialize('foo', '')).toEqual('foo=')
-		expect(() => serialize('foo\n', 'bar')).toThrowError(
-			/argument name is invalid/
-		)
-		expect(() => serialize('foo\n', 'bar')).toThrowError(
-			/argument name is invalid/
-		)
-		expect(() => serialize('foo\u280a', 'bar')).toThrowError(
-			/argument name is invalid/
-		)
-		expect(() => serialize('foo', 'bar', { encode: 42 })).toThrowError(
-			/option encode is invalid/
-		)
+		expect(() => serialize('foo\n', 'bar')).toThrowError(/argument name is invalid/)
+		expect(() => serialize('foo\n', 'bar')).toThrowError(/argument name is invalid/)
+		expect(() => serialize('foo\u280a', 'bar')).toThrowError(/argument name is invalid/)
+		expect(() => serialize('foo', 'bar', { encode: 42 })).toThrowError(/option encode is invalid/)
 	})
 
 	it('path', () => {
@@ -48,9 +40,7 @@ describe('Cookie Serialize', () => {
 	})
 
 	it('httpOnly', () => {
-		expect(serialize('foo', 'bar', { httpOnly: true })).toEqual(
-			'foo=bar; HttpOnly'
-		)
+		expect(serialize('foo', 'bar', { httpOnly: true })).toEqual('foo=bar; HttpOnly')
 	})
 
 	it('maxAge', () => {
@@ -66,21 +56,13 @@ describe('Cookie Serialize', () => {
 			})
 		).toThrowError(/option maxAge is invalid/)
 
-		expect(serialize('foo', 'bar', { maxAge: 1000 })).toEqual(
-			'foo=bar; Max-Age=1000'
-		)
-		expect(serialize('foo', 'bar', { maxAge: '1000' })).toEqual(
-			'foo=bar; Max-Age=1000'
-		)
+		expect(serialize('foo', 'bar', { maxAge: 1000 })).toEqual('foo=bar; Max-Age=1000')
+		expect(serialize('foo', 'bar', { maxAge: '1000' })).toEqual('foo=bar; Max-Age=1000')
 		expect(serialize('foo', 'bar', { maxAge: 0 })).toEqual('foo=bar; Max-Age=0')
-		expect(serialize('foo', 'bar', { maxAge: '0' })).toEqual(
-			'foo=bar; Max-Age=0'
-		)
+		expect(serialize('foo', 'bar', { maxAge: '0' })).toEqual('foo=bar; Max-Age=0')
 		expect(serialize('foo', 'bar', { maxAge: null })).toEqual('foo=bar')
 		expect(serialize('foo', 'bar')).toEqual('foo=bar')
-		expect(serialize('foo', 'bar', { maxAge: 3.14 })).toEqual(
-			'foo=bar; Max-Age=3'
-		)
+		expect(serialize('foo', 'bar', { maxAge: 3.14 })).toEqual('foo=bar; Max-Age=3')
 	})
 
 	it('expires', () => {
@@ -98,27 +80,13 @@ describe('Cookie Serialize', () => {
 	})
 
 	it('sameSite', () => {
-		expect(serialize('foo', 'bar', { sameSite: true })).toEqual(
-			'foo=bar; SameSite=Strict'
-		)
-		expect(serialize('foo', 'bar', { sameSite: 'Strict' })).toEqual(
-			'foo=bar; SameSite=Strict'
-		)
-		expect(serialize('foo', 'bar', { sameSite: 'strict' })).toEqual(
-			'foo=bar; SameSite=Strict'
-		)
-		expect(serialize('foo', 'bar', { sameSite: 'Lax' })).toEqual(
-			'foo=bar; SameSite=Lax'
-		)
-		expect(serialize('foo', 'bar', { sameSite: 'lax' })).toEqual(
-			'foo=bar; SameSite=Lax'
-		)
-		expect(serialize('foo', 'bar', { sameSite: 'None' })).toEqual(
-			'foo=bar; SameSite=None'
-		)
-		expect(serialize('foo', 'bar', { sameSite: 'none' })).toEqual(
-			'foo=bar; SameSite=None'
-		)
+		expect(serialize('foo', 'bar', { sameSite: true })).toEqual('foo=bar; SameSite=Strict')
+		expect(serialize('foo', 'bar', { sameSite: 'Strict' })).toEqual('foo=bar; SameSite=Strict')
+		expect(serialize('foo', 'bar', { sameSite: 'strict' })).toEqual('foo=bar; SameSite=Strict')
+		expect(serialize('foo', 'bar', { sameSite: 'Lax' })).toEqual('foo=bar; SameSite=Lax')
+		expect(serialize('foo', 'bar', { sameSite: 'lax' })).toEqual('foo=bar; SameSite=Lax')
+		expect(serialize('foo', 'bar', { sameSite: 'None' })).toEqual('foo=bar; SameSite=None')
+		expect(serialize('foo', 'bar', { sameSite: 'none' })).toEqual('foo=bar; SameSite=None')
 		expect(serialize('foo', 'bar', { sameSite: false })).toEqual('foo=bar')
 
 		expect(() =>

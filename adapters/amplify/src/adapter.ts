@@ -52,7 +52,7 @@ export function getAuthMode(credentials: Record<string, unknown>): 'magic' | 'pa
 
 export function parseUrlError(url: string | { search?: string } | undefined): AuthResult | null {
 	try {
-		const search = typeof url === 'string' ? url : url?.search ?? ''
+		const search = typeof url === 'string' ? url : (url?.search ?? '')
 		const params = new URLSearchParams(search)
 		const errorCode = params.get('error')
 		const errorMessage = params.get('error_description')
@@ -155,12 +155,14 @@ export class AmplifyAuthAdapter extends BaseAdapter implements AuthAdapter {
 	public onAuthChange(callback: AuthCallback): () => void {
 		// Use BaseAdapter subscription helper to normalize Hub.listen into AuthCallback contract.
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		return this.handleSubscription((cb) =>
-			Hub.listen('auth', ({ payload }: any) => {
-				const event = payload.event === 'signedIn' ? 'SIGNED_IN' : 'SIGNED_OUT'
-				void cb(event, payload.data)
-			})
-		, callback)
+		return this.handleSubscription(
+			(cb) =>
+				Hub.listen('auth', ({ payload }: any) => {
+					const event = payload.event === 'signedIn' ? 'SIGNED_IN' : 'SIGNED_OUT'
+					void cb(event, payload.data)
+				}),
+			callback
+		)
 	}
 
 	public parseUrlError(url: string | { search?: string } | undefined) {

@@ -50,7 +50,7 @@ test.describe('Home Page Links', () => {
 test.describe('Home Page Rendering', () => {
 	test('no console errors on home page', async ({ page }) => {
 		const errors: string[] = []
-		page.on('console', msg => {
+		page.on('console', (msg) => {
 			if (msg.type() === 'error') {
 				errors.push(msg.text())
 			}
@@ -59,6 +59,6 @@ test.describe('Home Page Rendering', () => {
 		await page.goto('/')
 		await page.waitForLoadState('networkidle')
 
-		expect(errors.filter(e => !e.includes('hydration') && !e.includes('404'))).toHaveLength(0)
+		expect(errors.filter((e) => !e.includes('hydration') && !e.includes('404'))).toHaveLength(0)
 	})
 })

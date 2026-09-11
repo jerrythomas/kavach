@@ -24,27 +24,19 @@ describe('parseFilter', () => {
 	})
 
 	it('should parse gt operator', () => {
-		expect(parseFilter({ cost: 'gt.0.01' })).toEqual([
-			{ column: 'cost', op: 'gt', value: '0.01' }
-		])
+		expect(parseFilter({ cost: 'gt.0.01' })).toEqual([{ column: 'cost', op: 'gt', value: '0.01' }])
 	})
 
 	it('should parse gte operator', () => {
-		expect(parseFilter({ cost: 'gte.100' })).toEqual([
-			{ column: 'cost', op: 'gte', value: '100' }
-		])
+		expect(parseFilter({ cost: 'gte.100' })).toEqual([{ column: 'cost', op: 'gte', value: '100' }])
 	})
 
 	it('should parse lt operator', () => {
-		expect(parseFilter({ age: 'lt.18' })).toEqual([
-			{ column: 'age', op: 'lt', value: '18' }
-		])
+		expect(parseFilter({ age: 'lt.18' })).toEqual([{ column: 'age', op: 'lt', value: '18' }])
 	})
 
 	it('should parse lte operator', () => {
-		expect(parseFilter({ age: 'lte.65' })).toEqual([
-			{ column: 'age', op: 'lte', value: '65' }
-		])
+		expect(parseFilter({ age: 'lte.65' })).toEqual([{ column: 'age', op: 'lte', value: '65' }])
 	})
 
 	it('should parse multiple filters', () => {
@@ -55,9 +47,7 @@ describe('parseFilter', () => {
 	})
 
 	it('should preserve dots in value after operator', () => {
-		expect(parseFilter({ cost: 'gt.0.01' })).toEqual([
-			{ column: 'cost', op: 'gt', value: '0.01' }
-		])
+		expect(parseFilter({ cost: 'gt.0.01' })).toEqual([{ column: 'cost', op: 'gt', value: '0.01' }])
 	})
 
 	it('should throw on unknown operator', () => {

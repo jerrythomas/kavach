@@ -7,6 +7,7 @@ Modernize the `@kavach/ui` component library with passkey support, cached login 
 ## Current State
 
 The UI package (`packages/ui/`) has 6 exported Svelte components:
+
 - `AuthProvider` — orchestrates OAuth/OTP/password modes
 - `AuthPassword` — email + password form
 - `AuthButton` — provider button
@@ -21,10 +22,12 @@ All auth modes render in a single `AuthProvider` component. No caching of previo
 **New auth mode:** `passkey` alongside `otp`, `oauth`, `password`
 
 **Components:**
+
 - New `AuthPasskey.svelte` — passkey registration and authentication UI
 - Update `AuthProvider.svelte` to handle `mode: 'passkey'`
 
 **Adapter contract:** Add optional `AuthAdapter` methods:
+
 ```js
 /** @property {(options?: any) => Promise<AuthResult>} [registerPasskey] */
 /** @property {(options?: any) => Promise<AuthResult>} [authenticatePasskey] */
@@ -35,6 +38,7 @@ All auth modes render in a single `AuthProvider` component. No caching of previo
 ### 2. Split Auth Mode Sections
 
 Currently `AuthProvider` renders all modes inline. Redesign to visually separate:
+
 - **Social auth section** — OAuth provider buttons (Google, GitHub, etc.)
 - **Password section** — email/password form
 - **Magic link section** — email-only OTP form
@@ -47,6 +51,7 @@ Use horizontal dividers ("or") between sections. Each section is independently h
 ### 3. Cached Login Cards
 
 Cache the last N successful logins in localStorage:
+
 - Provider type (oauth/password/passkey)
 - Provider name (google, github, email)
 - User avatar URL
@@ -101,10 +106,12 @@ AuthHandler
 Considered moving auth UI to `@rokkit/auth` (or `@rokkit/app`). Decision: **keep in `@kavach/ui`**.
 
 Rationale:
+
 - Avoids cross-repo coordination and release complexity
 - Auth icons from `@rokkit/icons` and form primitives from `@rokkit/forms` are already available as dependencies
 
 **Upgrade to Svelte 5** as part of this redesign:
+
 - Migrate from Svelte 4 slots/events to Svelte 5 runes (`$props`, `$derived`, `$state`)
 - Follow `@rokkit/app` component patterns (TypeScript, typed props interfaces, composition)
 - Use `$props()` destructuring with defaults

@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-	getRequestData,
-	getRequestBody,
-	splitAuthData,
-	asURLWithParams
-} from '../src/request'
+import { getRequestData, getRequestBody, splitAuthData, asURLWithParams } from '../src/request'
 import { createMockEvent } from './mock'
 
 describe('Request functions', () => {
@@ -114,14 +109,11 @@ describe('Request functions', () => {
 		)
 	})
 	describe('splitAuthData', () => {
-		it.each(params)(
-			'Should split auth params $msg',
-			async ({ input, expected }) => {
-				const event = createMockEvent(input)
-				const result = await splitAuthData(event)
-				expect(result).toEqual(expected)
-			}
-		)
+		it.each(params)('Should split auth params $msg', async ({ input, expected }) => {
+			const event = createMockEvent(input)
+			const result = await splitAuthData(event)
+			expect(result).toEqual(expected)
+		})
 	})
 	describe('asURLWithParams', () => {
 		it('should build url with params', () => {

@@ -7,6 +7,7 @@ Transform the learn site into a comprehensive documentation hub with modern desi
 ## Current State
 
 The learn site (`sites/learn/`) is a slide-based presentation using `@rokkit` components. It has:
+
 - A `Slide.svelte` component with `slides.json` content
 - `@rokkit/themes` for styling
 - Playwright + Vitest configured but likely minimal test coverage
@@ -55,6 +56,7 @@ src/routes/
 ### 4. llms.txt
 
 Generate `llms.txt` at build time from documentation content:
+
 ```
 # kavach - Authentication library for SvelteKit
 
@@ -73,6 +75,7 @@ createKavach(adapter, options) → { signIn, signUp, signOut, ... }
 ### 5. Live Supabase Auth Example
 
 Port key pages from `sites/supabase/` into the learn site as a working demo:
+
 - Login page with OAuth + password
 - Protected dashboard page
 - Session handling
@@ -82,6 +85,7 @@ This serves as both documentation and proof that kavach works end-to-end.
 ### 6. Update Design Documents
 
 Review and update all files in `docs/`:
+
 - `docs/design/` — verify against current code
 - `docs/scenarios/` — update to match implemented features
 - Remove outdated references to pre-plugin architecture
@@ -89,11 +93,13 @@ Review and update all files in `docs/`:
 ### 7. Performance and Security
 
 **Performance:**
+
 - Lighthouse audit on built site
 - Ensure SSR works correctly for SEO
 - Lazy-load heavy content (code examples, live demos)
 
 **Security verification:**
+
 - Document kavach's security model (session handling, CSRF, XSS prevention)
 - Add a "Security" page to docs covering:
   - How sessions are stored (httpOnly cookies)
@@ -103,6 +109,7 @@ Review and update all files in `docs/`:
 ## Tech Stack
 
 Keep existing: SvelteKit + @rokkit + @unocss. Add:
+
 - `mdsvex` — markdown content with Svelte components (already used in supabase site)
 - Code highlighting already available via Prism.js
 

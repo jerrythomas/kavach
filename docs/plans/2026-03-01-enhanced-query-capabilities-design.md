@@ -27,11 +27,11 @@ Real applications need comparison operators, ordering, pagination, and aggregati
 
 ## Phases
 
-| Phase | Scope | Status |
-|-------|-------|--------|
-| 1 | Comparison operators (`eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `like`, `ilike`, `in`, `is`) | Done |
-| 2 | Ordering, pagination & count (`order`, `limit`, `offset`, `count`) | Current |
-| 3 | Logical operators (`or`, `not`) | Planned |
+| Phase | Scope                                                                                     | Status  |
+| ----- | ----------------------------------------------------------------------------------------- | ------- |
+| 1     | Comparison operators (`eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `like`, `ilike`, `in`, `is`) | Done    |
+| 2     | Ordering, pagination & count (`order`, `limit`, `offset`, `count`)                        | Current |
+| 3     | Logical operators (`or`, `not`)                                                           | Planned |
 
 ## API Shape
 
@@ -134,10 +134,8 @@ async function get(entity, data) {
 **Convex** (future) — maps IR to filter builder:
 
 ```js
-query.filter(q => {
-  const conditions = filters.map(({ column, op, value }) =>
-    q[op](q.field(column), value)
-  )
+query.filter((q) => {
+  const conditions = filters.map(({ column, op, value }) => q[op](q.field(column), value))
   return q.and(...conditions)
 })
 ```
@@ -154,13 +152,13 @@ The route passes `{ status: 'eq.success', cost: 'gt.0.01' }` as the filter objec
 
 ## Affected Files
 
-| File | Change |
-|------|--------|
-| `packages/query/` (new) | Shared parser package |
-| `adapters/supabase/src/actions.js` | `get()` uses `parseFilter` instead of `.match()` |
-| `adapters/supabase/spec/actions.spec.js` | Updated tests for operator-based filtering |
-| `packages/auth/src/types.js` | Document filter shape in `Action` typedef |
-| `sites/supabase/.../[...slug]/+server.js` | No change needed (pass-through works as-is) |
+| File                                      | Change                                           |
+| ----------------------------------------- | ------------------------------------------------ |
+| `packages/query/` (new)                   | Shared parser package                            |
+| `adapters/supabase/src/actions.js`        | `get()` uses `parseFilter` instead of `.match()` |
+| `adapters/supabase/spec/actions.spec.js`  | Updated tests for operator-based filtering       |
+| `packages/auth/src/types.js`              | Document filter shape in `Action` typedef        |
+| `sites/supabase/.../[...slug]/+server.js` | No change needed (pass-through works as-is)      |
 
 ## Phase 2: Ordering, Pagination & Count
 
@@ -182,6 +180,7 @@ All options are additive and backward-compatible — existing `{ columns, filter
 ### Order Syntax
 
 String format: `'column.direction'`, comma-separated for multi-column:
+
 - `'created_at.desc'` — single column descending
 - `'status.asc,created_at.desc'` — multi-column
 - `'name'` — direction defaults to `asc` if omitted
@@ -189,14 +188,23 @@ String format: `'column.direction'`, comma-separated for multi-column:
 ### New parsers in `@kavach/query`
 
 **`parseOrder(string)`** — parses order string into descriptors:
+
 ```js
 parseOrder('created_at.desc,status.asc')
 // → [{ column: 'created_at', ascending: false }, { column: 'status', ascending: true }]
 ```
 
 **`parseQueryParams(data)`** — extracts and parses all query options from the flat input:
+
 ```js
-parseQueryParams({ columns: 'id,name', filter: { status: 'eq.active' }, order: 'created_at.desc', limit: 50, offset: 100, count: 'exact' })
+parseQueryParams({
+  columns: 'id,name',
+  filter: { status: 'eq.active' },
+  order: 'created_at.desc',
+  limit: 50,
+  offset: 100,
+  count: 'exact'
+})
 // → { columns: 'id,name', filters: [...], orders: [...], limit: 50, offset: 100, count: 'exact' }
 ```
 
@@ -227,19 +235,20 @@ async function get(entity, data) {
 
 ### URL param conventions
 
-| URL Param | Maps to | Example |
-|-----------|---------|---------|
-| `:select` | `columns` | `:select=id,name,status` |
-| `:order` | `order` | `:order=created_at.desc,status.asc` |
-| `:limit` | `limit` | `:limit=50` |
-| `:offset` | `offset` | `:offset=100` |
-| `:count` | `count` | `:count=exact` |
+| URL Param | Maps to   | Example                             |
+| --------- | --------- | ----------------------------------- |
+| `:select` | `columns` | `:select=id,name,status`            |
+| `:order`  | `order`   | `:order=created_at.desc,status.asc` |
+| `:limit`  | `limit`   | `:limit=50`                         |
+| `:offset` | `offset`  | `:offset=100`                       |
+| `:count`  | `count`   | `:count=exact`                      |
 
 All non-`:` prefixed params remain filters.
 
 ### Type changes
 
 `ActionResponse` gains optional `count`:
+
 ```js
 /**
  * @typedef ActionResponse
@@ -256,15 +265,15 @@ When count is requested, response wraps data: `{ data, count }`. Without count, 
 
 ## Cross-Adapter Compatibility
 
-| Operator | Supabase | Convex | Notes |
-|----------|----------|--------|-------|
-| eq | `.eq()` | `q.eq()` | Universal |
-| neq | `.neq()` | `q.neq()` | Universal |
-| gt | `.gt()` | `q.gt()` | Universal |
-| gte | `.gte()` | `q.gte()` | Universal |
-| lt | `.lt()` | `q.lt()` | Universal |
-| lte | `.lte()` | `q.lte()` | Universal |
-| like | `.like()` | Unsupported | Supabase/SQL only |
-| ilike | `.ilike()` | Unsupported | Supabase/SQL only |
-| in | `.in()` | `q.or(q.eq(...), ...)` | Convex polyfills via OR |
-| is | `.is()` | `q.eq(field, null)` | Convex maps to equality |
+| Operator | Supabase   | Convex                 | Notes                   |
+| -------- | ---------- | ---------------------- | ----------------------- |
+| eq       | `.eq()`    | `q.eq()`               | Universal               |
+| neq      | `.neq()`   | `q.neq()`              | Universal               |
+| gt       | `.gt()`    | `q.gt()`               | Universal               |
+| gte      | `.gte()`   | `q.gte()`              | Universal               |
+| lt       | `.lt()`    | `q.lt()`               | Universal               |
+| lte      | `.lte()`   | `q.lte()`              | Universal               |
+| like     | `.like()`  | Unsupported            | Supabase/SQL only       |
+| ilike    | `.ilike()` | Unsupported            | Supabase/SQL only       |
+| in       | `.in()`    | `q.or(q.eq(...), ...)` | Convex polyfills via OR |
+| is       | `.is()`    | `q.eq(field, null)`    | Convex maps to equality |

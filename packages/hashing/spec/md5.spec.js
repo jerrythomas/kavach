@@ -13,10 +13,7 @@ describe('hashing', () => {
 		['a'.repeat(56), '3b0c8ac703f828b04c6c197006d17218']
 	]
 
-	it.each(md5Values)(
-		'should generate the md5 hash input provided',
-		(input, expectedHash) => {
-			expect(md5(input)).toEqual(expectedHash)
-		}
-	)
+	it.each(md5Values)('should generate the md5 hash input provided', (input, expectedHash) => {
+		expect(md5(input)).toEqual(expectedHash)
+	})
 })

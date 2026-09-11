@@ -65,7 +65,9 @@ test.describe('Password sign-in', () => {
 		await expect(page.locator('h1')).toContainText('Welcome back')
 		await expect(page.locator('main')).toContainText('test@test.com')
 
-		const session = (await page.context().cookies('http://localhost:4173')).find((c) => c.name === 'session')
+		const session = (await page.context().cookies('http://localhost:4173')).find(
+			(c) => c.name === 'session'
+		)
 		expect(session).toBeTruthy()
 	})
 
@@ -117,7 +119,9 @@ test.describe('Magic link sign-in', () => {
 		await expect(page.locator('a[href="/dashboard"]', { hasText: 'Go to dashboard' })).toBeVisible({
 			timeout: 15000
 		})
-		const session = (await page.context().cookies('http://localhost:4173')).find((c) => c.name === 'session')
+		const session = (await page.context().cookies('http://localhost:4173')).find(
+			(c) => c.name === 'session'
+		)
 		expect(session).toBeTruthy()
 
 		await page.goto('/dashboard')

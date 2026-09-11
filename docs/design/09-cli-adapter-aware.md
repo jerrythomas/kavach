@@ -154,7 +154,7 @@ import { capabilities as firebaseCapabilities } from '@kavach/adapter-firebase'
 
 const ADAPTER_REGISTRY = {
   supabase: supabaseCapabilities,
-  firebase: firebaseCapabilities,
+  firebase: firebaseCapabilities
   // ...
 }
 
@@ -175,13 +175,17 @@ export function getSupportedFeatures(capabilities) {
 // packages/cli/src/prompts.js
 export async function promptAdapterSelection() {
   const adapters = [
-    { value: 'supabase', label: 'Supabase', hint: 'Supports: OAuth, Password, Magic, Data, RPC, Logging' },
+    {
+      value: 'supabase',
+      label: 'Supabase',
+      hint: 'Supports: OAuth, Password, Magic, Data, RPC, Logging'
+    },
     { value: 'firebase', label: 'Firebase', hint: 'Supports: OAuth, Password, Magic' },
     { value: 'auth0', label: 'Auth0', hint: 'Supports: OAuth, Password, Magic' },
     { value: 'amplify', label: 'AWS Amplify', hint: 'Supports: OAuth, Password' },
     { value: 'convex', label: 'Convex', hint: 'Supports: OAuth, Password (data via Convex)' }
   ]
-  
+
   return await select('Select auth adapter:', { options: adapters })
 }
 
@@ -193,7 +197,7 @@ export async function promptDataRoute(capabilities) {
       path: null
     }
   }
-  
+
   return await promptDataRouteConfig()
 }
 
@@ -206,7 +210,7 @@ export async function promptLoggingConfig(capabilities) {
       level: null
     }
   }
-  
+
   return await promptLoggingConfigWithDDL(capabilities.ddl.logging)
 }
 
@@ -218,7 +222,7 @@ export async function promptRPCRoute(capabilities) {
       path: null
     }
   }
-  
+
   return await promptRPCRouteConfig()
 }
 ```
@@ -231,10 +235,10 @@ export function generateDDLInstructions(capabilities, config) {
   if (!capabilities.ddl?.logging || !config.logging?.enabled) {
     return null
   }
-  
+
   const tableName = config.logging.table || capabilities.ddl.logging.table
   const schema = capabilities.ddl.logging.getSchema(tableName)
-  
+
   return {
     title: 'DDL Required',
     message: `Run the following SQL in your ${capabilities.displayName} dashboard to enable logging:`,
@@ -245,7 +249,7 @@ export function generateDDLInstructions(capabilities, config) {
 
 export function formatDDLOutput(ddl) {
   if (!ddl) return ''
-  
+
   return `
 ┌─────────────────────────────────────────────────────────────┐
 │  ${ddl.title}                                              │
@@ -268,7 +272,7 @@ ${ddl.hint}
 // packages/cli/src/generators.js
 export function generateConfigFile(config, capabilities) {
   const supportedFeatures = capabilities.supports
-  
+
   // Only include config for supported features
   const filteredConfig = {
     adapter: config.adapter,
@@ -280,14 +284,14 @@ export function generateConfigFile(config, capabilities) {
     // Only add if supported
     ...(supportedFeatures.data && { dataRoute: config.dataRoute }),
     ...(supportedFeatures.rpc && { rpcRoute: config.rpcRoute }),
-    ...(supportedFeatures.logging && { 
+    ...(supportedFeatures.logging && {
       logging: {
         level: config.logging?.level,
         table: config.logging?.table
       }
     })
   }
-  
+
   return `export default ${serializeJS(filteredConfig, 0)}`
 }
 ```
@@ -299,20 +303,20 @@ export function generateConfigFile(config, capabilities) {
 export function validateConfig(config, capabilities) {
   const warnings = []
   const errors = []
-  
+
   // Check unsupported features
   if (config.dataRoute && !capabilities.supports.data) {
     warnings.push('Data route configured but not supported by adapter')
   }
-  
+
   if (config.rpcRoute && !capabilities.supports.rpc) {
     warnings.push('RPC route configured but not supported by adapter')
   }
-  
+
   if (config.logging && !capabilities.supports.logging) {
     warnings.push('Logging configured but not supported by adapter')
   }
-  
+
   return { warnings, errors }
 }
 ```
@@ -321,22 +325,22 @@ export function validateConfig(config, capabilities) {
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
+| File                                  | Purpose                        |
+| ------------------------------------- | ------------------------------ |
 | `adapters/<name>/src/capabilities.ts` | Adapter capability definitions |
-| `packages/cli/src/adapters.js` | Adapter registry and loader |
-| `packages/cli/src/ddl.js` | DDL generation |
-| `packages/cli/src/validation.js` | Config validation |
+| `packages/cli/src/adapters.js`        | Adapter registry and loader    |
+| `packages/cli/src/ddl.js`             | DDL generation                 |
+| `packages/cli/src/validation.js`      | Config validation              |
 
 ### Modified Files
 
-| File | Change |
-|------|--------|
-| `packages/cli/src/prompts.js` | Add capability-aware prompts |
-| `packages/cli/src/generators.js` | Filter config by capabilities |
-| `packages/cli/src/commands/init.js` | Use new capability flow |
-| `docs/features/09-AdapterAwareConfiguration.md` | Feature documentation |
-| `docs/design/08-cli-adapter-aware.md` | This design |
+| File                                            | Change                        |
+| ----------------------------------------------- | ----------------------------- |
+| `packages/cli/src/prompts.js`                   | Add capability-aware prompts  |
+| `packages/cli/src/generators.js`                | Filter config by capabilities |
+| `packages/cli/src/commands/init.js`             | Use new capability flow       |
+| `docs/features/09-AdapterAwareConfiguration.md` | Feature documentation         |
+| `docs/design/08-cli-adapter-aware.md`           | This design                   |
 
 ## Testing Strategy
 

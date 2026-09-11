@@ -1,9 +1,10 @@
 enum RUN_CONTEXT {
 	SERVER = 'server',
-	BROWSER = 'browser',
+	BROWSER = 'browser'
 }
 export const APP_AUTH_CONTEXT = 'app:context:auth'
-export const RUNNING_ON: RUN_CONTEXT = typeof window === 'undefined' ? RUN_CONTEXT.SERVER : RUN_CONTEXT.BROWSER
+export const RUNNING_ON: RUN_CONTEXT =
+	typeof window === 'undefined' ? RUN_CONTEXT.SERVER : RUN_CONTEXT.BROWSER
 
 export const HTTP_STATUS_MESSAGES = {
 	401: 'Unauthorized',

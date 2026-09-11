@@ -13,6 +13,7 @@
 ### Task 1: Add DataAdapter typedef and update AuthAdapter typedef
 
 **Files:**
+
 - Modify: `solution/packages/auth/src/types.js:162-185`
 
 **Step 1: Write the typedef changes**
@@ -67,6 +68,7 @@ git commit -m "feat: add DataAdapter typedef, remove proxy/actions from AuthAdap
 ### Task 2: Update createKavach to accept `data` option
 
 **Files:**
+
 - Modify: `solution/packages/auth/src/kavach.js:253-281`
 - Test: `solution/packages/auth/spec/kavach-browser.spec.js:36-53`
 
@@ -77,29 +79,29 @@ In `solution/packages/auth/spec/kavach-browser.spec.js`, update the existing tes
 Replace the test at line 36-53 with:
 
 ```js
-	it('should create kavach using an adapter', () => {
-		const kavach = createKavach(adapter)
-		expect(kavach).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			onAuthChange: expect.any(Function),
-			handle: expect.any(Function),
-			actions: expect.any(Function)
-		})
-	})
+it('should create kavach using an adapter', () => {
+  const kavach = createKavach(adapter)
+  expect(kavach).toEqual({
+    signIn: expect.any(Function),
+    signUp: expect.any(Function),
+    signOut: expect.any(Function),
+    onAuthChange: expect.any(Function),
+    handle: expect.any(Function),
+    actions: expect.any(Function)
+  })
+})
 
-	it('should return the server actions using data option', () => {
-		const mockData = vi.fn().mockImplementation((schema) => ({ connection: `${schema} connection` }))
-		const kavach = createKavach(adapter, { data: mockData })
-		expect(kavach.actions('public')).toEqual({ connection: 'public connection' })
-		expect(mockData).toHaveBeenCalledWith('public')
-	})
+it('should return the server actions using data option', () => {
+  const mockData = vi.fn().mockImplementation((schema) => ({ connection: `${schema} connection` }))
+  const kavach = createKavach(adapter, { data: mockData })
+  expect(kavach.actions('public')).toEqual({ connection: 'public connection' })
+  expect(mockData).toHaveBeenCalledWith('public')
+})
 
-	it('should return undefined actions when no data option provided', () => {
-		const kavach = createKavach(adapter)
-		expect(kavach.actions()).toBeUndefined()
-	})
+it('should return undefined actions when no data option provided', () => {
+  const kavach = createKavach(adapter)
+  expect(kavach.actions()).toBeUndefined()
+})
 ```
 
 **Step 2: Run test to verify it fails**
@@ -112,17 +114,18 @@ Expected: FAIL — kavach still returns `proxy`, and `actions` still delegates t
 In `solution/packages/auth/src/kavach.js`, modify `createKavach` (lines 272-281):
 
 ```js
-	return {
-		signIn: (credentials) => handleSignIn(adapter, agents, credentials),
-		signUp: (credentials) => handleSignUp(adapter, agents, credentials),
-		signOut: () => handleSignOut(adapter, agents),
-		onAuthChange: () => handleAuthChange(adapter, agents),
-		handle: (request) => handleRouteProtection(adapter, agents, request),
-		actions: (schema) => options.data?.(schema)
-	}
+return {
+  signIn: (credentials) => handleSignIn(adapter, agents, credentials),
+  signUp: (credentials) => handleSignUp(adapter, agents, credentials),
+  signOut: () => handleSignOut(adapter, agents),
+  onAuthChange: () => handleAuthChange(adapter, agents),
+  handle: (request) => handleRouteProtection(adapter, agents, request),
+  actions: (schema) => options.data?.(schema)
+}
 ```
 
 Changes:
+
 - Remove `proxy: (schema) => adapter.proxy(schema)`
 - Change `actions` from `adapter.actions(schema)` to `options.data?.(schema)`
 
@@ -143,6 +146,7 @@ git commit -m "feat: createKavach accepts data option, removes proxy"
 ### Task 3: Update mock adapter and remaining kavach tests
 
 **Files:**
+
 - Modify: `solution/packages/auth/spec/mock/adapter.js`
 
 **Step 1: Update mock adapter to remove proxy and actions**
@@ -153,28 +157,28 @@ In `solution/packages/auth/spec/mock/adapter.js`, remove `proxy` and `actions`:
 import { vi } from 'vitest'
 
 function mockSignIn(credentials) {
-	return credentials.provider === 'magic' ? { data: 'success' } : { error: 'invalid data' }
+  return credentials.provider === 'magic' ? { data: 'success' } : { error: 'invalid data' }
 }
 
 export function createMockAdapter(options) {
-	return {
-		signIn: vi.fn().mockImplementation(mockSignIn),
-		signOut: vi.fn(),
-		synchronize: vi.fn().mockImplementation((session) => {
-			if (options?.invalidSession) return { error: 'invalid session' }
-			else
-				return {
-					data: {
-						session
-					},
-					error: null
-				}
-		}),
-		verifyOtp: vi.fn(),
-		onAuthChange: vi.fn(),
-		parseUrlError: vi.fn(),
-		signUp: vi.fn()
-	}
+  return {
+    signIn: vi.fn().mockImplementation(mockSignIn),
+    signOut: vi.fn(),
+    synchronize: vi.fn().mockImplementation((session) => {
+      if (options?.invalidSession) return { error: 'invalid session' }
+      else
+        return {
+          data: {
+            session
+          },
+          error: null
+        }
+    }),
+    verifyOtp: vi.fn(),
+    onAuthChange: vi.fn(),
+    parseUrlError: vi.fn(),
+    signUp: vi.fn()
+  }
 }
 ```
 
@@ -195,6 +199,7 @@ git commit -m "refactor: remove proxy and actions from mock adapter"
 ### Task 4: Refactor supabase adapter — remove actions and proxy, accept client
 
 **Files:**
+
 - Modify: `solution/adapters/supabase/src/adapter.js:182-211`
 - Modify: `solution/adapters/supabase/src/index.js`
 - Test: `solution/adapters/supabase/spec/adapter.spec.js`
@@ -206,17 +211,17 @@ In `solution/adapters/supabase/spec/adapter.spec.js`:
 a) Update the shape test (line 56-68) — remove `proxy` and `actions`, expect only auth methods:
 
 ```js
-	it('should create a client and define auth functions', () => {
-		const adapter = getAdapter(options)
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function),
-			parseUrlError: expect.any(Function)
-		})
-	})
+it('should create a client and define auth functions', () => {
+  const adapter = getAdapter(options)
+  expect(adapter).toEqual({
+    signIn: expect.any(Function),
+    signUp: expect.any(Function),
+    signOut: expect.any(Function),
+    synchronize: expect.any(Function),
+    onAuthChange: expect.any(Function),
+    parseUrlError: expect.any(Function)
+  })
+})
 ```
 
 b) Remove the entire `describe('actions', ...)` block (lines 70-98) — these tests belong to `actions.spec.js` now.
@@ -226,6 +231,7 @@ c) Remove the test at line 100-103 that tests `adapter.actions()` across schemas
 d) In all sign-in/sign-up/sign-out tests, replace `adapter.actions().connection.auth.xxx` with a direct reference. The tests currently call `adapter.actions().connection` to access the underlying client's auth — this path no longer exists. Instead, import `createClient` from the mock and access it directly.
 
 The sign-in tests (lines 105-210) call things like:
+
 ```js
 expect(adapter.actions().connection.auth.signInWithOtp).toHaveBeenCalledWith(...)
 ```
@@ -233,6 +239,7 @@ expect(adapter.actions().connection.auth.signInWithOtp).toHaveBeenCalledWith(...
 Since `adapter.actions()` will no longer exist, these assertions need to use the mocked `createClient` return value directly. The mock at line 10 already creates the client — we just need to capture it:
 
 Add after the mock definition (after line 48):
+
 ```js
 import { createClient } from '@supabase/supabase-js'
 ```
@@ -257,6 +264,7 @@ Expected: FAIL — adapter still returns `proxy` and `actions`
 In `solution/adapters/supabase/src/adapter.js`:
 
 a) Remove `getActions` import (line 4):
+
 ```js
 // Remove: import { getActions } from './actions'
 ```
@@ -264,14 +272,14 @@ a) Remove `getActions` import (line 4):
 b) Update `getAdapter` return (lines 201-211) — remove `proxy` and `actions`:
 
 ```js
-	return {
-		signIn: (credentials) => handleSignIn(client, credentials),
-		signUp: (credentials) => handleSignUp(client, credentials),
-		signOut: () => client.auth.signOut(),
-		synchronize,
-		onAuthChange: (callback) => handleAuthChange(client, callback),
-		parseUrlError
-	}
+return {
+  signIn: (credentials) => handleSignIn(client, credentials),
+  signUp: (credentials) => handleSignUp(client, credentials),
+  signOut: () => client.auth.signOut(),
+  synchronize,
+  onAuthChange: (callback) => handleAuthChange(client, callback),
+  parseUrlError
+}
 ```
 
 c) Update `solution/adapters/supabase/src/index.js` — export `getActions`:
@@ -306,6 +314,7 @@ git commit -m "refactor: supabase adapter returns auth only, exports getActions 
 ### Task 5: Update supabase site consumer code
 
 **Files:**
+
 - Modify: `solution/sites/supabase/src/lib/auth.js`
 
 **Step 1: Update consumer to use new pattern**
@@ -327,16 +336,17 @@ const data = (schema) => getActions(client, schema)
 const writer = getLogWriter(appConfig.supabase, appConfig.logging)
 export const logger = getLogger(writer, appConfig.logging)
 export const kavach = createKavach(adapter, {
-	data,
-	logger,
-	...routes,
-	goto,
-	invalidate,
-	invalidateAll
+  data,
+  logger,
+  ...routes,
+  goto,
+  invalidate,
+  invalidateAll
 })
 ```
 
 Changes:
+
 - Import `getActions` from adapter-supabase
 - Import `createClient` from `@supabase/supabase-js`
 - Create `client` explicitly
@@ -359,11 +369,13 @@ export function getAdapter(client) {
 ```
 
 Remove the `createClient` call inside (line 183):
+
 ```js
 // Remove: const client = createClient(options.url, options.anonKey)
 ```
 
 Also remove the `createClient` import from the top of the file since it's no longer needed by `getAdapter` (but `AuthApiError` is still used):
+
 ```js
 import { AuthApiError } from '@supabase/supabase-js'
 ```
@@ -373,6 +385,7 @@ import { AuthApiError } from '@supabase/supabase-js'
 In `solution/adapters/supabase/spec/adapter.spec.js`, the `createClient` mock returns a mock client. Tests call `getAdapter(options)` where options is `{ url, anonKey }`. After the change, tests should call `getAdapter(mockClient)` where `mockClient` is the return value of the mocked `createClient`.
 
 Update the test setup:
+
 ```js
 import { createClient } from '@supabase/supabase-js'
 
@@ -412,6 +425,7 @@ git commit -m "refactor: supabase getAdapter accepts client, consumer creates cl
 ### Task 6: Build Convex auth adapter — package scaffold
 
 **Files:**
+
 - Create: `solution/adapters/convex/package.json`
 - Create: `solution/adapters/convex/src/index.js`
 - Create: `solution/adapters/convex/src/types.js`
@@ -476,16 +490,16 @@ Create `solution/adapters/convex/src/constants.js`:
 
 ```js
 export const AUTH_MODES = {
-	PASSWORD: 'password',
-	OAUTH: 'oauth',
-	OTP: 'otp',
-	MAGIC: 'magic'
+  PASSWORD: 'password',
+  OAUTH: 'oauth',
+  OTP: 'otp',
+  MAGIC: 'magic'
 }
 
 export const DEFAULT_PROVIDERS = {
-	password: true,
-	oauth: [],
-	otp: false
+  password: true,
+  oauth: [],
+  otp: false
 }
 ```
 
@@ -515,6 +529,7 @@ git commit -m "feat: scaffold @kavach/adapter-convex package"
 ### Task 7: Build Convex auth adapter — implementation + tests
 
 **Files:**
+
 - Create: `solution/adapters/convex/src/adapter.js`
 - Create: `solution/adapters/convex/spec/adapter.spec.js`
 - Create: `solution/adapters/convex/spec/mock.js`
@@ -527,21 +542,21 @@ Create `solution/adapters/convex/spec/mock.js`:
 import { vi } from 'vitest'
 
 export function createMockConvexAuth() {
-	return {
-		signIn: vi.fn().mockResolvedValue({ signingIn: true }),
-		signOut: vi.fn().mockResolvedValue(undefined),
-		isAuthenticated: vi.fn().mockReturnValue(true),
-		isLoading: vi.fn().mockReturnValue(false),
-		fetchAccessToken: vi.fn().mockResolvedValue('mock-access-token')
-	}
+  return {
+    signIn: vi.fn().mockResolvedValue({ signingIn: true }),
+    signOut: vi.fn().mockResolvedValue(undefined),
+    isAuthenticated: vi.fn().mockReturnValue(true),
+    isLoading: vi.fn().mockReturnValue(false),
+    fetchAccessToken: vi.fn().mockResolvedValue('mock-access-token')
+  }
 }
 
 export function createMockConvexClient() {
-	return {
-		query: vi.fn(),
-		mutation: vi.fn(),
-		action: vi.fn()
-	}
+  return {
+    query: vi.fn(),
+    mutation: vi.fn(),
+    action: vi.fn()
+  }
 }
 ```
 
@@ -555,137 +570,137 @@ import { getAdapter, transformResult } from '../src/adapter.js'
 import { createMockConvexAuth } from './mock.js'
 
 describe('getAdapter', () => {
-	let mockAuth
+  let mockAuth
 
-	beforeEach(() => {
-		mockAuth = createMockConvexAuth()
-	})
+  beforeEach(() => {
+    mockAuth = createMockConvexAuth()
+  })
 
-	it('should create an adapter with auth functions', () => {
-		const adapter = getAdapter(mockAuth)
-		expect(adapter).toEqual({
-			signIn: expect.any(Function),
-			signUp: expect.any(Function),
-			signOut: expect.any(Function),
-			synchronize: expect.any(Function),
-			onAuthChange: expect.any(Function)
-		})
-	})
+  it('should create an adapter with auth functions', () => {
+    const adapter = getAdapter(mockAuth)
+    expect(adapter).toEqual({
+      signIn: expect.any(Function),
+      signUp: expect.any(Function),
+      signOut: expect.any(Function),
+      synchronize: expect.any(Function),
+      onAuthChange: expect.any(Function)
+    })
+  })
 
-	describe('signIn', () => {
-		it('should handle password sign in', async () => {
-			const adapter = getAdapter(mockAuth)
-			const credentials = { provider: 'password', email: 'a@b.com', password: '123456' }
-			await adapter.signIn(credentials)
-			expect(mockAuth.signIn).toHaveBeenCalledWith('password', {
-				email: 'a@b.com',
-				password: '123456',
-				flow: 'signIn'
-			})
-		})
+  describe('signIn', () => {
+    it('should handle password sign in', async () => {
+      const adapter = getAdapter(mockAuth)
+      const credentials = { provider: 'password', email: 'a@b.com', password: '123456' }
+      await adapter.signIn(credentials)
+      expect(mockAuth.signIn).toHaveBeenCalledWith('password', {
+        email: 'a@b.com',
+        password: '123456',
+        flow: 'signIn'
+      })
+    })
 
-		it('should handle OAuth sign in', async () => {
-			const adapter = getAdapter(mockAuth)
-			const credentials = { provider: 'github' }
-			await adapter.signIn(credentials)
-			expect(mockAuth.signIn).toHaveBeenCalledWith('github')
-		})
+    it('should handle OAuth sign in', async () => {
+      const adapter = getAdapter(mockAuth)
+      const credentials = { provider: 'github' }
+      await adapter.signIn(credentials)
+      expect(mockAuth.signIn).toHaveBeenCalledWith('github')
+    })
 
-		it('should handle magic link / OTP sign in', async () => {
-			const adapter = getAdapter(mockAuth)
-			const credentials = { provider: 'magic', email: 'a@b.com' }
-			await adapter.signIn(credentials)
-			expect(mockAuth.signIn).toHaveBeenCalledWith('resend-otp', {
-				email: 'a@b.com'
-			})
-		})
+    it('should handle magic link / OTP sign in', async () => {
+      const adapter = getAdapter(mockAuth)
+      const credentials = { provider: 'magic', email: 'a@b.com' }
+      await adapter.signIn(credentials)
+      expect(mockAuth.signIn).toHaveBeenCalledWith('resend-otp', {
+        email: 'a@b.com'
+      })
+    })
 
-		it('should return error result on failure', async () => {
-			mockAuth.signIn.mockRejectedValue(new Error('Invalid credentials'))
-			const adapter = getAdapter(mockAuth)
-			const credentials = { provider: 'password', email: 'a@b.com', password: 'wrong' }
-			const result = await adapter.signIn(credentials)
-			expect(result.type).toBe('error')
-			expect(result.error.message).toBe('Invalid credentials')
-		})
-	})
+    it('should return error result on failure', async () => {
+      mockAuth.signIn.mockRejectedValue(new Error('Invalid credentials'))
+      const adapter = getAdapter(mockAuth)
+      const credentials = { provider: 'password', email: 'a@b.com', password: 'wrong' }
+      const result = await adapter.signIn(credentials)
+      expect(result.type).toBe('error')
+      expect(result.error.message).toBe('Invalid credentials')
+    })
+  })
 
-	describe('signUp', () => {
-		it('should handle password sign up', async () => {
-			const adapter = getAdapter(mockAuth)
-			const credentials = { email: 'a@b.com', password: '123456' }
-			await adapter.signUp(credentials)
-			expect(mockAuth.signIn).toHaveBeenCalledWith('password', {
-				email: 'a@b.com',
-				password: '123456',
-				flow: 'signUp'
-			})
-		})
+  describe('signUp', () => {
+    it('should handle password sign up', async () => {
+      const adapter = getAdapter(mockAuth)
+      const credentials = { email: 'a@b.com', password: '123456' }
+      await adapter.signUp(credentials)
+      expect(mockAuth.signIn).toHaveBeenCalledWith('password', {
+        email: 'a@b.com',
+        password: '123456',
+        flow: 'signUp'
+      })
+    })
 
-		it('should return error result on failure', async () => {
-			mockAuth.signIn.mockRejectedValue(new Error('Email already exists'))
-			const adapter = getAdapter(mockAuth)
-			const credentials = { email: 'a@b.com', password: '123456' }
-			const result = await adapter.signUp(credentials)
-			expect(result.type).toBe('error')
-			expect(result.error.message).toBe('Email already exists')
-		})
-	})
+    it('should return error result on failure', async () => {
+      mockAuth.signIn.mockRejectedValue(new Error('Email already exists'))
+      const adapter = getAdapter(mockAuth)
+      const credentials = { email: 'a@b.com', password: '123456' }
+      const result = await adapter.signUp(credentials)
+      expect(result.type).toBe('error')
+      expect(result.error.message).toBe('Email already exists')
+    })
+  })
 
-	describe('signOut', () => {
-		it('should call signOut on the auth client', async () => {
-			const adapter = getAdapter(mockAuth)
-			await adapter.signOut()
-			expect(mockAuth.signOut).toHaveBeenCalled()
-		})
-	})
+  describe('signOut', () => {
+    it('should call signOut on the auth client', async () => {
+      const adapter = getAdapter(mockAuth)
+      await adapter.signOut()
+      expect(mockAuth.signOut).toHaveBeenCalled()
+    })
+  })
 
-	describe('synchronize', () => {
-		it('should return session data', async () => {
-			const session = { access_token: 'xyz', refresh_token: 'abc' }
-			const adapter = getAdapter(mockAuth)
-			const result = await adapter.synchronize(session)
-			expect(result).toEqual({ data: { session }, error: null })
-		})
-	})
+  describe('synchronize', () => {
+    it('should return session data', async () => {
+      const session = { access_token: 'xyz', refresh_token: 'abc' }
+      const adapter = getAdapter(mockAuth)
+      const result = await adapter.synchronize(session)
+      expect(result).toEqual({ data: { session }, error: null })
+    })
+  })
 
-	describe('onAuthChange', () => {
-		it('should be a function', () => {
-			const adapter = getAdapter(mockAuth)
-			expect(adapter.onAuthChange).toEqual(expect.any(Function))
-		})
-	})
+  describe('onAuthChange', () => {
+    it('should be a function', () => {
+      const adapter = getAdapter(mockAuth)
+      expect(adapter.onAuthChange).toEqual(expect.any(Function))
+    })
+  })
 })
 
 describe('transformResult', () => {
-	it('should transform successful result', () => {
-		const result = transformResult({ data: { user: 'test' } }, { provider: 'password' })
-		expect(result).toEqual({
-			type: 'success',
-			data: { user: 'test' },
-			credentials: { provider: 'password' }
-		})
-	})
+  it('should transform successful result', () => {
+    const result = transformResult({ data: { user: 'test' } }, { provider: 'password' })
+    expect(result).toEqual({
+      type: 'success',
+      data: { user: 'test' },
+      credentials: { provider: 'password' }
+    })
+  })
 
-	it('should transform error result', () => {
-		const error = new Error('Something failed')
-		const result = transformResult({ error }, { provider: 'password' })
-		expect(result).toEqual({
-			type: 'error',
-			error: { message: 'Something failed' },
-			message: 'Something failed'
-		})
-	})
+  it('should transform error result', () => {
+    const error = new Error('Something failed')
+    const result = transformResult({ error }, { provider: 'password' })
+    expect(result).toEqual({
+      type: 'error',
+      error: { message: 'Something failed' },
+      message: 'Something failed'
+    })
+  })
 
-	it('should transform magic link result', () => {
-		const result = transformResult({ data: {} }, { provider: 'magic', email: 'a@b.com' })
-		expect(result).toEqual({
-			type: 'info',
-			data: {},
-			credentials: { provider: 'magic', email: 'a@b.com' },
-			message: 'Magic link has been sent to "a@b.com".'
-		})
-	})
+  it('should transform magic link result', () => {
+    const result = transformResult({ data: {} }, { provider: 'magic', email: 'a@b.com' })
+    expect(result).toEqual({
+      type: 'info',
+      data: {},
+      credentials: { provider: 'magic', email: 'a@b.com' },
+      message: 'Magic link has been sent to "a@b.com".'
+    })
+  })
 })
 ```
 
@@ -707,25 +722,25 @@ Create `solution/adapters/convex/src/adapter.js`:
  * @returns {import('kavach').AuthResult}
  */
 export function transformResult({ data, error }, credentials) {
-	if (error) {
-		const message = error.message || 'An error occurred'
-		return {
-			type: 'error',
-			error: { message },
-			message
-		}
-	}
+  if (error) {
+    const message = error.message || 'An error occurred'
+    return {
+      type: 'error',
+      error: { message },
+      message
+    }
+  }
 
-	if (credentials.provider === 'magic') {
-		return {
-			type: 'info',
-			data,
-			credentials,
-			message: `Magic link has been sent to "${credentials.email}".`
-		}
-	}
+  if (credentials.provider === 'magic') {
+    return {
+      type: 'info',
+      data,
+      credentials,
+      message: `Magic link has been sent to "${credentials.email}".`
+    }
+  }
 
-	return { type: 'success', data, credentials }
+  return { type: 'success', data, credentials }
 }
 
 /**
@@ -735,10 +750,10 @@ export function transformResult({ data, error }, credentials) {
  * @returns {string}
  */
 function getAuthMode(credentials) {
-	const { password, provider } = credentials
-	if (provider === 'magic') return 'magic'
-	if (password) return 'password'
-	return 'oauth'
+  const { password, provider } = credentials
+  if (provider === 'magic') return 'magic'
+  if (password) return 'password'
+  return 'oauth'
 }
 
 /**
@@ -748,63 +763,63 @@ function getAuthMode(credentials) {
  * @returns {import('kavach').AuthAdapter}
  */
 export function getAdapter(convexAuth) {
-	async function signIn(credentials) {
-		const mode = getAuthMode(credentials)
-		try {
-			const signInActions = {
-				magic: () =>
-					convexAuth.signIn('resend-otp', {
-						email: credentials.email
-					}),
-				password: () =>
-					convexAuth.signIn('password', {
-						email: credentials.email,
-						password: credentials.password,
-						flow: 'signIn'
-					}),
-				oauth: () => convexAuth.signIn(credentials.provider)
-			}
-			const data = await signInActions[mode]()
-			return transformResult({ data }, credentials)
-		} catch (error) {
-			return transformResult({ error }, credentials)
-		}
-	}
+  async function signIn(credentials) {
+    const mode = getAuthMode(credentials)
+    try {
+      const signInActions = {
+        magic: () =>
+          convexAuth.signIn('resend-otp', {
+            email: credentials.email
+          }),
+        password: () =>
+          convexAuth.signIn('password', {
+            email: credentials.email,
+            password: credentials.password,
+            flow: 'signIn'
+          }),
+        oauth: () => convexAuth.signIn(credentials.provider)
+      }
+      const data = await signInActions[mode]()
+      return transformResult({ data }, credentials)
+    } catch (error) {
+      return transformResult({ error }, credentials)
+    }
+  }
 
-	async function signUp(credentials) {
-		try {
-			const data = await convexAuth.signIn('password', {
-				email: credentials.email,
-				password: credentials.password,
-				flow: 'signUp'
-			})
-			return transformResult({ data }, credentials)
-		} catch (error) {
-			return transformResult({ error }, credentials)
-		}
-	}
+  async function signUp(credentials) {
+    try {
+      const data = await convexAuth.signIn('password', {
+        email: credentials.email,
+        password: credentials.password,
+        flow: 'signUp'
+      })
+      return transformResult({ data }, credentials)
+    } catch (error) {
+      return transformResult({ error }, credentials)
+    }
+  }
 
-	async function signOut() {
-		await convexAuth.signOut()
-	}
+  async function signOut() {
+    await convexAuth.signOut()
+  }
 
-	async function synchronize(session) {
-		return { data: { session }, error: null }
-	}
+  async function synchronize(session) {
+    return { data: { session }, error: null }
+  }
 
-	function onAuthChange(callback) {
-		// Convex handles auth state internally via its reactive system.
-		// The consumer should use Convex's useConvexAuth() hook for state changes.
-		// This is a no-op placeholder for the interface contract.
-	}
+  function onAuthChange(callback) {
+    // Convex handles auth state internally via its reactive system.
+    // The consumer should use Convex's useConvexAuth() hook for state changes.
+    // This is a no-op placeholder for the interface contract.
+  }
 
-	return {
-		signIn,
-		signUp,
-		signOut,
-		synchronize,
-		onAuthChange
-	}
+  return {
+    signIn,
+    signUp,
+    signOut,
+    synchronize,
+    onAuthChange
+  }
 }
 ```
 
@@ -830,13 +845,14 @@ git commit -m "feat: implement @kavach/adapter-convex auth adapter"
 ### Task 8: Write migration documentation
 
 **Files:**
+
 - Create: `docs/plans/2026-03-02-plugin-migration-guide.md`
 
 **Step 1: Write the migration guide**
 
 Create `docs/plans/2026-03-02-plugin-migration-guide.md`:
 
-```markdown
+````markdown
 # Migration Guide: Plugin Architecture
 
 ## Overview
@@ -865,6 +881,7 @@ const kavach = createKavach(adapter, { invalidateAll })
 const actions = kavach.actions(schema)
 const proxy = kavach.proxy(schema)
 ```
+````
 
 ### After (auth + data plugin)
 
@@ -886,26 +903,28 @@ const directAccess = client.schema('custom_schema')
 
 ### Key Differences
 
-| Before | After |
-|--------|-------|
-| `getAdapter({ url, anonKey })` | `getAdapter(client)` |
-| `kavach.proxy(schema)` | `client.schema(schema)` |
-| `adapter.actions(schema)` | `getActions(client, schema)` |
-| N/A | `createKavach(adapter, { data })` |
-```
+| Before                         | After                             |
+| ------------------------------ | --------------------------------- |
+| `getAdapter({ url, anonKey })` | `getAdapter(client)`              |
+| `kavach.proxy(schema)`         | `client.schema(schema)`           |
+| `adapter.actions(schema)`      | `getActions(client, schema)`      |
+| N/A                            | `createKavach(adapter, { data })` |
+
+````
 
 **Step 2: Commit**
 
 ```bash
 git add docs/plans/2026-03-02-plugin-migration-guide.md
 git commit -m "docs: add plugin architecture migration guide"
-```
+````
 
 ---
 
 ### Task 9: Final cleanup and verification
 
 **Files:**
+
 - Verify all files are consistent
 
 **Step 1: Run full test suite**

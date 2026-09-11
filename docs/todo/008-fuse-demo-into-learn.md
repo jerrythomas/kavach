@@ -25,17 +25,18 @@ This story focuses on design, scaffolding, and implementation tasks to fuse demo
 
 See the target unification design in [docs/design/07-website.md](../design/07-website.md) for the full future-state blueprint that this story implements.
 
-| Site | Strengths | Gaps / Issues |
-|------|-----------|---------------|
-| `sites/demo` | Latest SvelteKit structure, feature-complete demo flows, role switching. | Needs TypeScript alignment; informational content minimal; siloed layout/components. |
-| `sites/learn` | Informational copy, high-level documentation intent, tests skeleton. | Outdated structure vs. `demo`; lacks integrations; duplicate logic; underpowered demo flows. |
-| `sites/skeleton` | Minimal starter for downstream reuse. | Redundant relative to unified learn site; duplicative config; not actively maintained. |
+| Site             | Strengths                                                                | Gaps / Issues                                                                                |
+| ---------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `sites/demo`     | Latest SvelteKit structure, feature-complete demo flows, role switching. | Needs TypeScript alignment; informational content minimal; siloed layout/components.         |
+| `sites/learn`    | Informational copy, high-level documentation intent, tests skeleton.     | Outdated structure vs. `demo`; lacks integrations; duplicate logic; underpowered demo flows. |
+| `sites/skeleton` | Minimal starter for downstream reuse.                                    | Redundant relative to unified learn site; duplicative config; not actively maintained.       |
 
 Key concerns to address in this story: fragmentation, duplicated layouts, inconsistent navigation, and absence of a canonical home for verification/publish metadata.
 
 ## Goals & Non-goals
 
 Goals
+
 - Fuse the UI and routes from `sites/demo` into `sites/learn`.
 - Provide a `/demo` route inside `learn` that:
   - Shows an auth page (sign-in, sign-up, magic link).
@@ -49,6 +50,7 @@ Goals
 - Provide documentation and update `docs/stories/README.md` index (task included).
 
 Non-goals
+
 - Full migration of serverless deployment infra or production secrets management (we will provide instructions and env expectations).
 - Implementing real OAuth flows for external providers using live credentials (we will mock/simulate these in e2e where appropriate).
 
@@ -166,6 +168,7 @@ Non-goals
 ## Detailed deliverables
 
 Files to add/modify (examples)
+
 - `kavach/docs/stories/008-fuse-demo-into-learn.md` (this file)
 - Branch: `feature/008-fuse-demo-into-learn`
 - `solution/sites/learn/src/routes/demo/+page.svelte` — demo auth page

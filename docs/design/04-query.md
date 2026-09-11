@@ -6,14 +6,14 @@ The query package (`@kavach/query`) parses flat key-value query parameters into 
 
 ## Internal Modules
 
-| Module | Purpose |
-|--------|---------|
-| `parser.js` | Filter parsing — splits `column: "op.value"` into IR |
-| `order.js` | Order clause parsing — `"col.desc"` to `{ column, ascending }` |
-| `operators.js` | Operator registry and validation |
-| `validation.js` | Column name validation (regex-based) |
+| Module           | Purpose                                                            |
+| ---------------- | ------------------------------------------------------------------ |
+| `parser.js`      | Filter parsing — splits `column: "op.value"` into IR               |
+| `order.js`       | Order clause parsing — `"col.desc"` to `{ column, ascending }`     |
+| `operators.js`   | Operator registry and validation                                   |
+| `validation.js`  | Column name validation (regex-based)                               |
 | `queryParams.js` | Unified entry point — combines filter, order, limit, offset, count |
-| `sanitize.js` | Error sanitization — strips internal fields before client exposure |
+| `sanitize.js`    | Error sanitization — strips internal fields before client exposure |
 
 ## Architecture
 
@@ -42,16 +42,19 @@ parseQueryParams(data)
 ### Intermediate Representation
 
 **FilterDescriptor:**
+
 ```
 { column: string, op: string, value: string | string[] | boolean | null }
 ```
 
 **OrderDescriptor:**
+
 ```
 { column: string, ascending: boolean }
 ```
 
 **QueryParams:**
+
 ```
 {
   columns: string,               // column projection (default '*')
@@ -67,10 +70,10 @@ parseQueryParams(data)
 
 Two tiers ensure adapters can implement at their own pace:
 
-| Tier | Operators | Contract |
-|------|-----------|----------|
-| Core | eq, neq, gt, gte, lt, lte | All adapters must support |
-| Extended | like, ilike, in, is | Adapter-specific; may throw or degrade |
+| Tier     | Operators                 | Contract                               |
+| -------- | ------------------------- | -------------------------------------- |
+| Core     | eq, neq, gt, gte, lt, lte | All adapters must support              |
+| Extended | like, ilike, in, is       | Adapter-specific; may throw or degrade |
 
 Operators are validated at parse time. Unknown operators throw immediately — no invalid IR reaches the adapter.
 
@@ -101,11 +104,11 @@ Output: { message, code?, status? }
 
 ## Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
+| Decision                      | Rationale                                                                                            |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | String-based IR, not executed | Package stays adapter-agnostic; adapters translate IR to Supabase `.eq()`, Firebase `.where()`, etc. |
-| Flat input format | Compatible with URL query strings and form data; no nested JSON needed |
-| Two-tier operators | Core set guarantees cross-adapter compatibility; extended set allows adapter-specific features |
-| Parse-time validation | Fail fast — invalid queries never reach the database |
-| No semantic validation | No column existence checks — that's the adapter/database's job |
-| PostgREST-style syntax | Familiar to Supabase users; concise string format avoids JSON nesting |
+| Flat input format             | Compatible with URL query strings and form data; no nested JSON needed                               |
+| Two-tier operators            | Core set guarantees cross-adapter compatibility; extended set allows adapter-specific features       |
+| Parse-time validation         | Fail fast — invalid queries never reach the database                                                 |
+| No semantic validation        | No column existence checks — that's the adapter/database's job                                       |
+| PostgREST-style syntax        | Familiar to Supabase users; concise string format avoids JSON nesting                                |

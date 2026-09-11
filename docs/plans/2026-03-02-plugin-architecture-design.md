@@ -43,11 +43,11 @@ Same signature as the current `adapter.actions()` method.
 ```js
 // Before
 createKavach(adapter, { invalidateAll, logger, page })
-kavach.actions(schema)  // → adapter.actions(schema)
+kavach.actions(schema) // → adapter.actions(schema)
 
 // After
 createKavach(adapter, { data, invalidateAll, logger, page })
-kavach.actions(schema)  // → options.data(schema)
+kavach.actions(schema) // → options.data(schema)
 ```
 
 ## Supabase Adapter Refactor
@@ -57,6 +57,7 @@ kavach.actions(schema)  // → options.data(schema)
 **index.js**: Already exports `getActions` — no change needed.
 
 **Consumer migration**:
+
 ```js
 // Before
 import { getAdapter } from '@kavach/adapter-supabase'
@@ -82,6 +83,7 @@ const kavach = createKavach(auth, { data, invalidateAll })
 **Auth modes**: password, OAuth, OTP/magic link (all four)
 
 **Structure**:
+
 ```
 adapters/convex/
 ├── src/
@@ -96,6 +98,7 @@ adapters/convex/
 ```
 
 **Auth mode mapping**:
+
 - password → Convex Password provider
 - OAuth → Convex configured OAuth providers
 - OTP/magic link → Convex email OTP flow

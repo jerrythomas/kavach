@@ -11,21 +11,15 @@ describe('parseOrder', () => {
 	})
 
 	it('should parse single column ascending', () => {
-		expect(parseOrder('name.asc')).toEqual([
-			{ column: 'name', ascending: true }
-		])
+		expect(parseOrder('name.asc')).toEqual([{ column: 'name', ascending: true }])
 	})
 
 	it('should parse single column descending', () => {
-		expect(parseOrder('created_at.desc')).toEqual([
-			{ column: 'created_at', ascending: false }
-		])
+		expect(parseOrder('created_at.desc')).toEqual([{ column: 'created_at', ascending: false }])
 	})
 
 	it('should default to ascending when direction omitted', () => {
-		expect(parseOrder('name')).toEqual([
-			{ column: 'name', ascending: true }
-		])
+		expect(parseOrder('name')).toEqual([{ column: 'name', ascending: true }])
 	})
 
 	it('should parse multiple columns', () => {
@@ -47,6 +41,6 @@ describe('parseOrder', () => {
 	})
 
 	it('should throw on invalid column name', () => {
-		expect(() => parseOrder("col;DROP.asc")).toThrow('Invalid column name')
+		expect(() => parseOrder('col;DROP.asc')).toThrow('Invalid column name')
 	})
 })

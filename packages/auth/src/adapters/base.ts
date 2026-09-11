@@ -137,7 +137,12 @@ export abstract class BaseAdapter implements AuthAdapter {
 		// Some SDKs (e.g. Supabase) return a shape like:
 		//   { data: { subscription } }
 		// where the actual unsubscribe function is on subscription.unsubscribe()
-		if (sub && sub.data && sub.data.subscription && typeof sub.data.subscription.unsubscribe === 'function') {
+		if (
+			sub &&
+			sub.data &&
+			sub.data.subscription &&
+			typeof sub.data.subscription.unsubscribe === 'function'
+		) {
 			return () => {
 				try {
 					sub.data.subscription.unsubscribe()

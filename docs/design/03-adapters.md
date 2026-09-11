@@ -52,22 +52,22 @@ Apps can configure how UI logs are processed. Logs can be sent to a backend endp
 All adapters provide authentication as the primary capability. Beyond auth, Kavach offers optional layers for data, files, and logging that leverage the underlying platform's built-in services.
 
 | Provider | Auth | Data | File | Logger |
-|----------|:----:|:----:|:----:|:------:|
-| Supabase | ✓ | ✓ | ✓ | ✓ |
-| Firebase | ✓ | ✓ | ✓ | TODO |
-| Auth0 | ✓ | -NA- | -NA- | -NA- |
-| Amplify | ✓ | -NA- | -NA- | -NA- |
-| Convex | ✓ | TODO | -NA- | -NA- |
+| -------- | :--: | :--: | :--: | :----: |
+| Supabase |  ✓   |  ✓   |  ✓   |   ✓    |
+| Firebase |  ✓   |  ✓   |  ✓   |  TODO  |
+| Auth0    |  ✓   | -NA- | -NA- |  -NA-  |
+| Amplify  |  ✓   | -NA- | -NA- |  -NA-  |
+| Convex   |  ✓   | TODO | -NA- |  -NA-  |
 
 ### Auth Flows
 
 | Provider | OAuth | Password | Passwordless | Passkey |
-|----------|:-----:|:--------:|:-----------:|:-------:|
-| Supabase | ✓ | ✓ | ✓ | -NA- |
-| Firebase | ✓ | ✓ | -NA- | -NA- |
-| Auth0 | ✓ | ✓ | ✓ | -NA- |
-| Amplify | ✓ | ✓ | -NA- | -NA- |
-| Convex | ✓ | ✓ | -NA- | -NA- |
+| -------- | :---: | :------: | :----------: | :-----: |
+| Supabase |   ✓   |    ✓     |      ✓       |  -NA-   |
+| Firebase |   ✓   |    ✓     |     -NA-     |  -NA-   |
+| Auth0    |   ✓   |    ✓     |      ✓       |  -NA-   |
+| Amplify  |   ✓   |    ✓     |     -NA-     |  -NA-   |
+| Convex   |   ✓   |    ✓     |     -NA-     |  -NA-   |
 
 ## Demo Mode
 

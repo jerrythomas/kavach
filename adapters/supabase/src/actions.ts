@@ -1,11 +1,11 @@
 import { parseFilter, parseQueryParams } from '@kavach/query'
 import type { ActionResponse } from 'kavach'
 
-function normalizeResponse(result: { 
-	data?: unknown; 
-	error?: Error | null; 
-	status?: number; 
-	count?: number 
+function normalizeResponse(result: {
+	data?: unknown
+	error?: Error | null
+	status?: number
+	count?: number
 }): ActionResponse {
 	return {
 		data: result.data ?? null,
@@ -37,7 +37,10 @@ export function getActions(client: any, schema?: string) {
 		return normalizeResponse(await query)
 	}
 
-	async function patch(entity: string, input?: { data?: Record<string, unknown>; filter?: Record<string, string> }): Promise<ActionResponse> {
+	async function patch(
+		entity: string,
+		input?: { data?: Record<string, unknown>; filter?: Record<string, string> }
+	): Promise<ActionResponse> {
 		const { data, filter = {} } = input ?? {}
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let query: any = schemaClient.from(entity).update(data)
@@ -49,7 +52,10 @@ export function getActions(client: any, schema?: string) {
 		return normalizeResponse(await query.select())
 	}
 
-	async function del(entity: string, input?: { filter?: Record<string, string> }): Promise<ActionResponse> {
+	async function del(
+		entity: string,
+		input?: { filter?: Record<string, string> }
+	): Promise<ActionResponse> {
 		const { filter = {} } = input ?? {}
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let query: any = schemaClient.from(entity).delete()
@@ -63,11 +69,14 @@ export function getActions(client: any, schema?: string) {
 
 	return {
 		get,
-		put: async (entity: string, data: Record<string, unknown>) => normalizeResponse(await schemaClient.from(entity).insert(data).select()),
-		post: async (entity: string, data: Record<string, unknown>) => normalizeResponse(await schemaClient.from(entity).upsert(data).select()),
+		put: async (entity: string, data: Record<string, unknown>) =>
+			normalizeResponse(await schemaClient.from(entity).insert(data).select()),
+		post: async (entity: string, data: Record<string, unknown>) =>
+			normalizeResponse(await schemaClient.from(entity).upsert(data).select()),
 		patch,
 		delete: del,
-		call: async (entity: string, data: Record<string, unknown>) => normalizeResponse(await schemaClient.rpc(entity, data)),
+		call: async (entity: string, data: Record<string, unknown>) =>
+			normalizeResponse(await schemaClient.rpc(entity, data)),
 		connection: schemaClient
 	}
 }

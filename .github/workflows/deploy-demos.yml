@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       adapter:
-        description: "Demo adapter to deploy"
+        description: 'Demo adapter to deploy'
         required: true
         type: choice
         options:
@@ -50,4 +50,4 @@ jobs:
           ADAPTER: ${{ github.event.inputs.adapter }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          SKIP_DOMAIN: "1"
+          SKIP_DOMAIN: '1'

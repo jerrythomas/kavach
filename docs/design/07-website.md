@@ -11,17 +11,15 @@ Define the target architecture, content topology, and delivery workflows for a u
 
 ## Goals & Non‑Goals
 
-| Type      | Description                                                                                   |
-|-----------|-----------------------------------------------------------------------------------------------|
+| Type      | Description                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------------ |
 | Goals     | Single SvelteKit codebase delivering informational content, docs, demos, and verification stats. |
-|           | Shared UI/UX language with reusable layouts and components.                                   |
-|           | Clear separation between content (markdown, config) and presentation (Svelte wrappers).       |
-|           | Automation hooks for verification outputs and publish-time metadata.                          |
-| Non-goals | Rewrite of adapter core libraries; use existing packages (`@kavach/*`).                       |
-|           | Implementing actual verification harnesses (covered by separate stories).                     |
-|           | Introducing new CI/CD tooling beyond integration points described below.                      |
-
-
+|           | Shared UI/UX language with reusable layouts and components.                                      |
+|           | Clear separation between content (markdown, config) and presentation (Svelte wrappers).          |
+|           | Automation hooks for verification outputs and publish-time metadata.                             |
+| Non-goals | Rewrite of adapter core libraries; use existing packages (`@kavach/*`).                          |
+|           | Implementing actual verification harnesses (covered by separate stories).                        |
+|           | Introducing new CI/CD tooling beyond integration points described below.                         |
 
 ## Target Architecture
 
@@ -96,14 +94,14 @@ solution/sites/learn/
 
 ## Content Architecture
 
-| Content Type         | Source / Storage                                         | Render Strategy                                             |
-|----------------------|----------------------------------------------------------|-------------------------------------------------------------|
-| Public copy          | `src/lib/content/public/*.ts` or `.md`                   | Static import into home page components.                    |
-| Documentation        | Markdown files under `docs/` (existing repo)             | Use `docs` route loader; allow cross-linking and search.    |
-| Demo scenarios       | Svelte components referencing shared stores/context.     | Role-aware components; instrumentation for telemetry.       |
-| Verification stats   | JSON artifacts+`src/lib/verification` utilities.         | Banner + `/verification` page + embed in demos.             |
-| Publish metadata     | JSON generated at build/publish.                         | Footer display + optional `/status` API.                    |
-| llms manifest        | Derived from docs index builder at publish time.         | Deployed to `static/llms.txt`.                              |
+| Content Type       | Source / Storage                                     | Render Strategy                                          |
+| ------------------ | ---------------------------------------------------- | -------------------------------------------------------- |
+| Public copy        | `src/lib/content/public/*.ts` or `.md`               | Static import into home page components.                 |
+| Documentation      | Markdown files under `docs/` (existing repo)         | Use `docs` route loader; allow cross-linking and search. |
+| Demo scenarios     | Svelte components referencing shared stores/context. | Role-aware components; instrumentation for telemetry.    |
+| Verification stats | JSON artifacts+`src/lib/verification` utilities.     | Banner + `/verification` page + embed in demos.          |
+| Publish metadata   | JSON generated at build/publish.                     | Footer display + optional `/status` API.                 |
+| llms manifest      | Derived from docs index builder at publish time.     | Deployed to `static/llms.txt`.                           |
 
 ## Verification Alignment
 
@@ -210,24 +208,22 @@ solution/sites/learn/
 
 ## Implementation Phases (High-Level)
 
-| Phase | Focus                                                                                  | Outputs                                                                                 |
-|-------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| 1     | Architecture setup                                                                      | Unified `learn` project skeleton, layout scaffolding, shared UI extraction.             |
-| 2     | Content migration                                                                       | Port landing, docs, and demos; ensure markdown + demos functional.                      |
-| 3     | Verification integration                                                                | JSON artifact loaders, verification banner/page, telemetry hooks, test harness support. |
-| 4     | Publish pipeline integration                                                            | Publish metadata generation, llms manifest, atomic deploy scripts.                      |
-| 5     | QA & handover                                                                           | Playwright coverage, documentation of processes, retire old site directories.           |
+| Phase | Focus                        | Outputs                                                                                 |
+| ----- | ---------------------------- | --------------------------------------------------------------------------------------- |
+| 1     | Architecture setup           | Unified `learn` project skeleton, layout scaffolding, shared UI extraction.             |
+| 2     | Content migration            | Port landing, docs, and demos; ensure markdown + demos functional.                      |
+| 3     | Verification integration     | JSON artifact loaders, verification banner/page, telemetry hooks, test harness support. |
+| 4     | Publish pipeline integration | Publish metadata generation, llms manifest, atomic deploy scripts.                      |
+| 5     | QA & handover                | Playwright coverage, documentation of processes, retire old site directories.           |
 
 ## Risks & Mitigations
 
-| Risk                                   | Mitigation                                                                                         |
-|----------------------------------------|----------------------------------------------------------------------------------------------------|
-| Inconsistent TypeScript definitions    | Establish shared `tsconfig.base.json` and run strict type checks during migration.                 |
-| Duplicated components during migration | Track audit list; remove legacy components once unified versions are proven.                       |
+| Risk                                   | Mitigation                                                                                            |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Inconsistent TypeScript definitions    | Establish shared `tsconfig.base.json` and run strict type checks during migration.                    |
+| Duplicated components during migration | Track audit list; remove legacy components once unified versions are proven.                          |
 | Verification data staleness            | Force publish pipeline to fail if verification artifacts older than configured threshold (e.g., 24h). |
-| llms manifest drift                    | Add verification step ensuring `llms.txt` references actual content; fail build on mismatch.       |
-| Demo environment drift                 | Provide environment config validation script (ensures Supabase seed, env vars exist).             |
-
-
+| llms manifest drift                    | Add verification step ensuring `llms.txt` references actual content; fail build on mismatch.          |
+| Demo environment drift                 | Provide environment config validation script (ensures Supabase seed, env vars exist).                 |
 
 This design should guide the engineering effort to consolidate the Learn site, satisfy verification and publish requirements, and provide a maintainable structure for future expansion.

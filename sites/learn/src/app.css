@@ -16,10 +16,10 @@ html {
   @apply bg-surface-z1 text-surface-z8;
 }
 body {
-  @apply flex flex-col font-body font-extralight w-screen h-screen overflow-hidden;
+  @apply font-body flex h-screen w-screen flex-col overflow-hidden font-extralight;
 }
 body > app {
-  @apply flex flex-col h-full w-full relative overflow-hidden;
+  @apply relative flex h-full w-full flex-col overflow-hidden;
 }
 
 /*[data-item-icon] {
@@ -34,7 +34,7 @@ body > app {
 }
 [data-auth-provider] [data-input-icon],
 [data-auth-provider] [data-item-icon] {
-  @apply w-5 h-5;
+  @apply h-5 w-5;
 }
 [data-auth-provider] [data-button] {
   @apply w-full;
@@ -43,7 +43,7 @@ body > app {
 /* Provider button colors */
 [data-auth-provider='azure'] {
   --provider-bg: #ffffff;
-  --provider-text: #0078D4;
+  --provider-text: #0078d4;
   --provider-border: #8c8c8c;
 }
 [data-auth-provider='google'] {
@@ -57,9 +57,9 @@ body > app {
   --provider-border: #24292e;
 }
 [data-auth-provider='facebook'] {
-  --provider-bg: #1877F2;
+  --provider-bg: #1877f2;
   --provider-text: #ffffff;
-  --provider-border: #1877F2;
+  --provider-border: #1877f2;
 }
 [data-auth-provider='twitter'],
 [data-auth-provider='x'] {
@@ -106,9 +106,9 @@ body > app {
 }
 
 [data-mode='dark'] [data-auth-provider='azure'] {
-  --provider-bg: #0078D4;
+  --provider-bg: #0078d4;
   --provider-text: #ffffff;
-  --provider-border: #0078D4;
+  --provider-border: #0078d4;
 }
 
 /* Hover states */

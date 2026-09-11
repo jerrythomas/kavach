@@ -9,7 +9,7 @@ function getSupabaseSchemaClient(config: SupabaseConfig, schema: string | null):
 		const client: any = config.client
 		return schema ? client.schema(schema) : client
 	}
-	
+
 	// Otherwise require url and anonKey
 	if (!config.url || !config.anonKey) {
 		throw new Error('Supabase config requires url and anonKey')

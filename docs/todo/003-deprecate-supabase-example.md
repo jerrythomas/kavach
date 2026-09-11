@@ -1,6 +1,5 @@
 # Deprecate supabase exampe
 
-
 Supabase example can be deprecated in favor of instuctions using cli.
 
 - Use sv create to set up new project

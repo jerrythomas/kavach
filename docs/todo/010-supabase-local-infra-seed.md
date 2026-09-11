@@ -3,6 +3,7 @@
 ## Summary
 
 Provide a reproducible local Supabase developer experience for the demo/learn site:
+
 - Scripts to start a local Supabase instance (CLI or Docker).
 - Seed scripts to create demo users, roles, and example data.
 - Helpers for CI to run Supabase in ephemeral runners.
@@ -179,6 +180,7 @@ This story enables developers to run the full demo locally (including RBAC examp
   - `update`/`delete` policies: owner or admin only.
 
 Notes:
+
 - Supabase RLS uses `auth.uid()` and `current_setting('jwt.claims.role')` (or custom JWT claims) depending on approach. For demo, we can keep role checks in application logic and provide a simple RLS example for illustration.
 
 ---
@@ -219,6 +221,7 @@ Total: ~4 — 5 work days.
 ## Next steps
 
 When you confirm this story, I will:
+
 1. Create branch `feature/010-supabase-local-infra-seed`.
 2. Add the scripts and seed files as listed.
 3. Add documentation and example CI snippet.
@@ -226,6 +229,7 @@ When you confirm this story, I will:
 5. Open a PR and link it back to the story.
 
 If you prefer I can also:
+
 - Implement a quick proof-of-concept seed immediately (small JS script + few SQL statements).
 - Or prioritize the Docker Compose fallback first so CI can run without installing the supabase CLI.
 

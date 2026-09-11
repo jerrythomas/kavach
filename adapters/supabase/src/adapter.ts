@@ -1,5 +1,11 @@
 import { AuthApiError } from '@supabase/supabase-js'
-import { urlHashToParams, type AuthAdapter, type AuthCallback, type AuthResult, BaseAdapter } from 'kavach'
+import {
+	urlHashToParams,
+	type AuthAdapter,
+	type AuthCallback,
+	type AuthResult,
+	BaseAdapter
+} from 'kavach'
 import { defaultOrigin } from './constants.js'
 import { pick, omit } from 'ramda'
 
@@ -7,7 +13,10 @@ import { pick, omit } from 'ramda'
  * Module-level transformResult kept for canonical mapping and reuse.
  * Concrete adapter also exposes an instance method that delegates to this function.
  */
-export function transformResult(result: { data?: unknown; error?: { status?: number; name?: string; message?: string } }, creds: Record<string, unknown>): AuthResult {
+export function transformResult(
+	result: { data?: unknown; error?: { status?: number; name?: string; message?: string } },
+	creds: Record<string, unknown>
+): AuthResult {
 	let message = ''
 	const credentials = omit(['password'], creds)
 
@@ -18,7 +27,11 @@ export function transformResult(result: { data?: unknown; error?: { status?: num
 				: 'Server error. Try again later.'
 		return {
 			type: 'error',
-			error: { status: result.error.status, name: result.error.name, message: result.error.message },
+			error: {
+				status: result.error.status,
+				name: result.error.name,
+				message: result.error.message
+			},
 			message
 		}
 	} else if (credentials.provider === 'magic') {
@@ -29,14 +42,17 @@ export function transformResult(result: { data?: unknown; error?: { status?: num
 }
 
 export function parseUrlError(url: string | { hash?: string } | undefined) {
-	const urlString = typeof url === 'string' ? url : url?.hash ?? ''
+	const urlString = typeof url === 'string' ? url : (url?.hash ?? '')
 	const result = urlHashToParams(urlString)
 	if (result && result.error) {
 		// Normalize status as a string and make the error name human-friendly
 		return {
 			type: 'error' as const,
 			status: result.error_code ? String(result.error_code) : undefined,
-			name: typeof result.error === 'string' ? (result.error as string).replace(/_/g, ' ').toLowerCase() : result.error,
+			name:
+				typeof result.error === 'string'
+					? (result.error as string).replace(/_/g, ' ').toLowerCase()
+					: result.error,
 			message: result.error_description
 		}
 	}
@@ -54,7 +70,10 @@ export class SupabaseAuthAdapter extends BaseAdapter implements AuthAdapter {
 	}
 
 	// Delegate to module-level transform for canonical behavior
-	protected transformResult(result: { data?: unknown; error?: { status?: number; name?: string; message?: string } }, creds: Record<string, unknown> = {}): AuthResult {
+	protected transformResult(
+		result: { data?: unknown; error?: { status?: number; name?: string; message?: string } },
+		creds: Record<string, unknown> = {}
+	): AuthResult {
 		return transformResult(result, creds)
 	}
 
@@ -95,7 +114,9 @@ export class SupabaseAuthAdapter extends BaseAdapter implements AuthAdapter {
 
 	public async signUp(credentials: Record<string, unknown>): Promise<AuthResult> {
 		const client = this.client
-		const result = await client.auth.signUp(pick(['email', 'password'], credentials) as Record<string, unknown>)
+		const result = await client.auth.signUp(
+			pick(['email', 'password'], credentials) as Record<string, unknown>
+		)
 		return this.transformResult(result, credentials)
 	}
 
@@ -116,7 +137,9 @@ export class SupabaseAuthAdapter extends BaseAdapter implements AuthAdapter {
 		// Use BaseAdapter helper to adapt the provider subscription API
 		return this.handleSubscription((cb) => {
 			// supabase client returns { data: { subscription } } from onAuthStateChange
-			return this.client.auth.onAuthStateChange((event: string, session: unknown) => cb(event, session))
+			return this.client.auth.onAuthStateChange((event: string, session: unknown) =>
+				cb(event, session)
+			)
 		}, callback)
 	}
 

@@ -17,11 +17,11 @@ Bring Firebase, Auth0, and Amplify adapters to parity with Supabase: plugin arch
 
 ## Package Changes
 
-| Adapter | Remove | Add |
-|---------|--------|-----|
-| Firebase | `@firebase/app`, `@firebase/auth` | `firebase` |
-| Amplify | (same package) | `aws-amplify` v6 (major bump) |
-| Auth0 | (no change) | `@auth0/auth0-spa-js` (keep current) |
+| Adapter  | Remove                            | Add                                  |
+| -------- | --------------------------------- | ------------------------------------ |
+| Firebase | `@firebase/app`, `@firebase/auth` | `firebase`                           |
+| Amplify  | (same package)                    | `aws-amplify` v6 (major bump)        |
+| Auth0    | (no change)                       | `@auth0/auth0-spa-js` (keep current) |
 
 ## Deferred to Backlog
 

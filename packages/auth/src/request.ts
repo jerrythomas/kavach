@@ -49,7 +49,11 @@ export async function splitAuthData(event: EventLike) {
 	return { mode, credentials, options }
 }
 
-export function asURLWithParams(host: string, path = '', data: Record<string, unknown> = {}): string {
+export function asURLWithParams(
+	host: string,
+	path = '',
+	data: Record<string, unknown> = {}
+): string {
 	let params = ''
 	if (data && typeof data === 'object') {
 		params = Object.entries(data)

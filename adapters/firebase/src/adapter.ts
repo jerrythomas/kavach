@@ -92,7 +92,9 @@ export function transformResult(result: any, credentials: Record<string, unknown
 /**
  * Determine auth mode from provided credentials.
  */
-export function getAuthMode(credentials: Record<string, unknown>): 'magic' | 'password' | 'oauth' | 'passkey' {
+export function getAuthMode(
+	credentials: Record<string, unknown>
+): 'magic' | 'password' | 'oauth' | 'passkey' {
 	if (credentials.mode === 'passkey') return 'passkey'
 	const { password, provider } = credentials
 	if (provider === 'magic') return 'magic'
@@ -107,7 +109,7 @@ export function getAuthMode(credentials: Record<string, unknown>): 'magic' | 'pa
  */
 export function parseUrlError(url: string | { search?: string } | undefined): AuthResult | null {
 	try {
-		const search = typeof url === 'string' ? url : url?.search ?? ''
+		const search = typeof url === 'string' ? url : (url?.search ?? '')
 		const params = new URLSearchParams(search)
 		const errorCode = params.get('error')
 		const errorMessage = params.get('error_description') || params.get('error_message')
@@ -124,17 +126,20 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 	return null
 }
 
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
- export class FirebaseAuthAdapter extends BaseAdapter implements AuthAdapter {
- 	constructor(auth: any, options?: any) {
- 		super(auth, options)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class FirebaseAuthAdapter extends BaseAdapter implements AuthAdapter {
+	constructor(auth: any, options?: any) {
+		super(auth, options)
 		this.capabilities = ['passkey']
- 	}
+	}
 
 	// Ensure the adapter uses the exported normalizer so class-based flows and the
 	// standalone function behave identically.
 	// Keep accessibility compatible with BaseAdapter (protected).
-	protected transformResult(raw: { data?: unknown; error?: any } | unknown, creds?: Record<string, unknown>): AuthResult | any {
+	protected transformResult(
+		raw: { data?: unknown; error?: any } | unknown,
+		creds?: Record<string, unknown>
+	): AuthResult | any {
 		// Delegate to exported helper which returns shapes expected by tests.
 		return transformResult(raw as any, creds ?? {})
 	}
@@ -146,13 +151,20 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 		try {
 			const signInActions: Record<string, () => Promise<any>> = {
 				password: async () => {
-					const result = await signInWithEmailAndPassword(this.client, email as string, password as string)
+					const result = await signInWithEmailAndPassword(
+						this.client,
+						email as string,
+						password as string
+					)
 					return result.user
 				},
 				oauth: async () => {
 					const providerFactory = authProviders[provider as string]
 					if (!providerFactory) {
-						throw { code: 'auth/unsupported-provider', message: `Unsupported provider: ${provider}` }
+						throw {
+							code: 'auth/unsupported-provider',
+							message: `Unsupported provider: ${provider}`
+						}
 					}
 					const authProvider = providerFactory()
 					const result = await signInWithPopup(this.client, authProvider)
@@ -169,7 +181,10 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 					return { data: null }
 				},
 				passkey: async () => {
-					throw { code: 'auth/passkey-not-supported', message: 'Passkey authentication is not yet supported by this adapter' }
+					throw {
+						code: 'auth/passkey-not-supported',
+						message: 'Passkey authentication is not yet supported by this adapter'
+					}
 				}
 			}
 
@@ -185,7 +200,11 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 	private async handleSignUp(credentials: Record<string, unknown>): Promise<AuthResult | any> {
 		const { email, password } = credentials
 		try {
-			const result = await createUserWithEmailAndPassword(this.client, email as string, password as string)
+			const result = await createUserWithEmailAndPassword(
+				this.client,
+				email as string,
+				password as string
+			)
 			return this.transformResult({ data: result.user }, credentials)
 		} catch (error) {
 			return this.transformResult({ error }, credentials)
@@ -276,13 +295,16 @@ export function parseUrlError(url: string | { search?: string } | undefined): Au
 	}
 
 	public onAuthChange(callback: AuthCallback): () => void {
-		return this.handleSubscription((cb) => onAuthStateChanged(this.client, (user) => cb(user ? 'SIGNED_IN' : 'SIGNED_OUT', user)), callback)
+		return this.handleSubscription(
+			(cb) =>
+				onAuthStateChanged(this.client, (user) => cb(user ? 'SIGNED_IN' : 'SIGNED_OUT', user)),
+			callback
+		)
 	}
 
 	public parseUrlError(url: string | { search?: string } | undefined): AuthResult | null {
 		return parseUrlError(url)
 	}
-
 }
 
 /**

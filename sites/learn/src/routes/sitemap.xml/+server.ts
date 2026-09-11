@@ -43,12 +43,7 @@ const LLMS_FILES = [
 export const GET: RequestHandler = ({ url }) => {
 	const base = url.origin
 
-	const pages = [
-		'/',
-		...DOC_PAGES,
-		'/demo',
-		...LLMS_FILES
-	]
+	const pages = ['/', ...DOC_PAGES, '/demo', ...LLMS_FILES]
 
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

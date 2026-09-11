@@ -45,7 +45,12 @@ export function asBoolean(value: string | null | undefined): boolean {
 	return ['1', 'yes', 'true', ''].includes(normalized)
 }
 
-export function gravatar(email: string | null | undefined, size = 256, d = 'identicon', rating = 'G'): string {
+export function gravatar(
+	email: string | null | undefined,
+	size = 256,
+	d = 'identicon',
+	rating = 'G'
+): string {
 	const hash = md5((email || '').trim().toLowerCase())
 	return `//www.gravatar.com/avatar/${hash}?d=${d}&r=${rating}&s=${size}`
 }

@@ -36,4 +36,3 @@ export { GET, POST, PUT, PATCH, DELETE } from 'kavach'
 // 2. Cookie: lang=fr
 // 3. Accept-Language header
 // 4. First available language or 'en'
-

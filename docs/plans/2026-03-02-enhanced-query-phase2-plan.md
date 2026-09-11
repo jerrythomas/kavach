@@ -13,6 +13,7 @@
 ### Task 1: Add `parseOrder` to `@kavach/query`
 
 **Files:**
+
 - Create: `solution/packages/query/src/order.js`
 - Test: `solution/packages/query/spec/order.spec.js`
 
@@ -25,49 +26,43 @@ import { describe, expect, it } from 'vitest'
 import { parseOrder } from '../src/order.js'
 
 describe('parseOrder', () => {
-	it('should return empty array for undefined', () => {
-		expect(parseOrder(undefined)).toEqual([])
-	})
+  it('should return empty array for undefined', () => {
+    expect(parseOrder(undefined)).toEqual([])
+  })
 
-	it('should return empty array for empty string', () => {
-		expect(parseOrder('')).toEqual([])
-	})
+  it('should return empty array for empty string', () => {
+    expect(parseOrder('')).toEqual([])
+  })
 
-	it('should parse single column ascending', () => {
-		expect(parseOrder('name.asc')).toEqual([
-			{ column: 'name', ascending: true }
-		])
-	})
+  it('should parse single column ascending', () => {
+    expect(parseOrder('name.asc')).toEqual([{ column: 'name', ascending: true }])
+  })
 
-	it('should parse single column descending', () => {
-		expect(parseOrder('created_at.desc')).toEqual([
-			{ column: 'created_at', ascending: false }
-		])
-	})
+  it('should parse single column descending', () => {
+    expect(parseOrder('created_at.desc')).toEqual([{ column: 'created_at', ascending: false }])
+  })
 
-	it('should default to ascending when direction omitted', () => {
-		expect(parseOrder('name')).toEqual([
-			{ column: 'name', ascending: true }
-		])
-	})
+  it('should default to ascending when direction omitted', () => {
+    expect(parseOrder('name')).toEqual([{ column: 'name', ascending: true }])
+  })
 
-	it('should parse multiple columns', () => {
-		expect(parseOrder('status.asc,created_at.desc')).toEqual([
-			{ column: 'status', ascending: true },
-			{ column: 'created_at', ascending: false }
-		])
-	})
+  it('should parse multiple columns', () => {
+    expect(parseOrder('status.asc,created_at.desc')).toEqual([
+      { column: 'status', ascending: true },
+      { column: 'created_at', ascending: false }
+    ])
+  })
 
-	it('should handle mixed explicit and default directions', () => {
-		expect(parseOrder('name,created_at.desc')).toEqual([
-			{ column: 'name', ascending: true },
-			{ column: 'created_at', ascending: false }
-		])
-	})
+  it('should handle mixed explicit and default directions', () => {
+    expect(parseOrder('name,created_at.desc')).toEqual([
+      { column: 'name', ascending: true },
+      { column: 'created_at', ascending: false }
+    ])
+  })
 
-	it('should throw on invalid direction', () => {
-		expect(() => parseOrder('name.up')).toThrow('Invalid order direction')
-	})
+  it('should throw on invalid direction', () => {
+    expect(() => parseOrder('name.up')).toThrow('Invalid order direction')
+  })
 })
 ```
 
@@ -96,30 +91,30 @@ Add `solution/packages/query/src/order.js`:
  * @returns {OrderDescriptor[]}
  */
 export function parseOrder(order) {
-	if (!order) return []
+  if (!order) return []
 
-	return order.split(',').map((part) => {
-		const trimmed = part.trim()
-		const dotIndex = trimmed.lastIndexOf('.')
-		const suffix = dotIndex !== -1 ? trimmed.slice(dotIndex + 1) : null
+  return order.split(',').map((part) => {
+    const trimmed = part.trim()
+    const dotIndex = trimmed.lastIndexOf('.')
+    const suffix = dotIndex !== -1 ? trimmed.slice(dotIndex + 1) : null
 
-		if (suffix === 'asc' || suffix === 'desc') {
-			return {
-				column: trimmed.slice(0, dotIndex),
-				ascending: suffix === 'asc'
-			}
-		}
+    if (suffix === 'asc' || suffix === 'desc') {
+      return {
+        column: trimmed.slice(0, dotIndex),
+        ascending: suffix === 'asc'
+      }
+    }
 
-		if (suffix !== null && suffix !== 'asc' && suffix !== 'desc') {
-			// Could be column name with dots (e.g., 'table.column') or invalid direction
-			// Check if suffix looks like a direction attempt
-			if (/^[a-z]+$/.test(suffix) && suffix !== trimmed.slice(0, dotIndex)) {
-				throw new Error(`Invalid order direction: "${suffix}" (expected "asc" or "desc")`)
-			}
-		}
+    if (suffix !== null && suffix !== 'asc' && suffix !== 'desc') {
+      // Could be column name with dots (e.g., 'table.column') or invalid direction
+      // Check if suffix looks like a direction attempt
+      if (/^[a-z]+$/.test(suffix) && suffix !== trimmed.slice(0, dotIndex)) {
+        throw new Error(`Invalid order direction: "${suffix}" (expected "asc" or "desc")`)
+      }
+    }
 
-		return { column: trimmed, ascending: true }
-	})
+    return { column: trimmed, ascending: true }
+  })
 }
 ```
 
@@ -140,6 +135,7 @@ git commit -m "feat(query): add parseOrder for order string parsing"
 ### Task 2: Add `parseQueryParams` to `@kavach/query`
 
 **Files:**
+
 - Create: `solution/packages/query/src/queryParams.js`
 - Test: `solution/packages/query/spec/queryParams.spec.js`
 - Modify: `solution/packages/query/src/index.js`
@@ -153,93 +149,89 @@ import { describe, expect, it } from 'vitest'
 import { parseQueryParams } from '../src/queryParams.js'
 
 describe('parseQueryParams', () => {
-	it('should return defaults for undefined input', () => {
-		const result = parseQueryParams(undefined)
-		expect(result).toEqual({
-			columns: '*',
-			filters: [],
-			orders: [],
-			limit: undefined,
-			offset: undefined,
-			count: undefined
-		})
-	})
+  it('should return defaults for undefined input', () => {
+    const result = parseQueryParams(undefined)
+    expect(result).toEqual({
+      columns: '*',
+      filters: [],
+      orders: [],
+      limit: undefined,
+      offset: undefined,
+      count: undefined
+    })
+  })
 
-	it('should return defaults for empty object', () => {
-		const result = parseQueryParams({})
-		expect(result).toEqual({
-			columns: '*',
-			filters: [],
-			orders: [],
-			limit: undefined,
-			offset: undefined,
-			count: undefined
-		})
-	})
+  it('should return defaults for empty object', () => {
+    const result = parseQueryParams({})
+    expect(result).toEqual({
+      columns: '*',
+      filters: [],
+      orders: [],
+      limit: undefined,
+      offset: undefined,
+      count: undefined
+    })
+  })
 
-	it('should pass through columns', () => {
-		const result = parseQueryParams({ columns: 'id,name' })
-		expect(result.columns).toBe('id,name')
-	})
+  it('should pass through columns', () => {
+    const result = parseQueryParams({ columns: 'id,name' })
+    expect(result.columns).toBe('id,name')
+  })
 
-	it('should parse filters', () => {
-		const result = parseQueryParams({ filter: { status: 'eq.active' } })
-		expect(result.filters).toEqual([
-			{ column: 'status', op: 'eq', value: 'active' }
-		])
-	})
+  it('should parse filters', () => {
+    const result = parseQueryParams({ filter: { status: 'eq.active' } })
+    expect(result.filters).toEqual([{ column: 'status', op: 'eq', value: 'active' }])
+  })
 
-	it('should parse order string', () => {
-		const result = parseQueryParams({ order: 'created_at.desc' })
-		expect(result.orders).toEqual([
-			{ column: 'created_at', ascending: false }
-		])
-	})
+  it('should parse order string', () => {
+    const result = parseQueryParams({ order: 'created_at.desc' })
+    expect(result.orders).toEqual([{ column: 'created_at', ascending: false }])
+  })
 
-	it('should pass through limit as number', () => {
-		expect(parseQueryParams({ limit: 50 }).limit).toBe(50)
-	})
+  it('should pass through limit as number', () => {
+    expect(parseQueryParams({ limit: 50 }).limit).toBe(50)
+  })
 
-	it('should coerce string limit to number', () => {
-		expect(parseQueryParams({ limit: '50' }).limit).toBe(50)
-	})
+  it('should coerce string limit to number', () => {
+    expect(parseQueryParams({ limit: '50' }).limit).toBe(50)
+  })
 
-	it('should pass through offset as number', () => {
-		expect(parseQueryParams({ offset: 100 }).offset).toBe(100)
-	})
+  it('should pass through offset as number', () => {
+    expect(parseQueryParams({ offset: 100 }).offset).toBe(100)
+  })
 
-	it('should coerce string offset to number', () => {
-		expect(parseQueryParams({ offset: '100' }).offset).toBe(100)
-	})
+  it('should coerce string offset to number', () => {
+    expect(parseQueryParams({ offset: '100' }).offset).toBe(100)
+  })
 
-	it('should pass through count', () => {
-		expect(parseQueryParams({ count: 'exact' }).count).toBe('exact')
-	})
+  it('should pass through count', () => {
+    expect(parseQueryParams({ count: 'exact' }).count).toBe('exact')
+  })
 
-	it('should parse all options together', () => {
-		const result = parseQueryParams({
-			columns: 'id,name',
-			filter: { status: 'eq.active', cost: 'gt.0' },
-			order: 'created_at.desc,status.asc',
-			limit: 50,
-			offset: 100,
-			count: 'exact'
-		})
-		expect(result).toEqual({
-			columns: 'id,name',
-			filters: [
-				{ column: 'status', op: 'eq', value: 'active' },
-				{ column: 'cost', op: 'gt', value: '0' }
-			],
-			orders: [
-				{ column: 'created_at', ascending: false },
-				{ column: 'status', ascending: true }
-			],
-			limit: 50,
-			offset: 100,
-			count: 'exact'
-		})
-	})
+  it('should parse all options together', () => {
+    const result = parseQueryParams({
+      columns: 'id,name',
+      filter: { status: 'eq.active', cost: 'gt.0' },
+      order: 'created_at.desc,status.asc',
+      limit: 50,
+      offset: 100,
+      count: 'exact'
+    })
+    expect(result).toEqual({
+      columns: 'id,name',
+      filters: [
+        { column: 'status', op: 'eq', value: 'active' },
+        { column: 'cost', op: 'gt', value: '0' }
+      ],
+      orders: [
+        { column: 'created_at', ascending: false },
+        { column: 'status', ascending: true }
+      ],
+      limit: 50,
+      offset: 100,
+      count: 'exact'
+    })
+  })
 })
 ```
 
@@ -273,16 +265,16 @@ import { parseOrder } from './order.js'
  * @returns {QueryParams}
  */
 export function parseQueryParams(data) {
-	const { columns = '*', filter, order, limit, offset, count } = data ?? {}
+  const { columns = '*', filter, order, limit, offset, count } = data ?? {}
 
-	return {
-		columns,
-		filters: parseFilter(filter),
-		orders: parseOrder(order),
-		limit: limit !== undefined ? Number(limit) : undefined,
-		offset: offset !== undefined ? Number(offset) : undefined,
-		count: count || undefined
-	}
+  return {
+    columns,
+    filters: parseFilter(filter),
+    orders: parseOrder(order),
+    limit: limit !== undefined ? Number(limit) : undefined,
+    offset: offset !== undefined ? Number(offset) : undefined,
+    count: count || undefined
+  }
 }
 ```
 
@@ -319,6 +311,7 @@ git commit -m "feat(query): add parseQueryParams for order, limit, offset, count
 ### Task 3: Update Supabase adapter `get()` to use `parseQueryParams`
 
 **Files:**
+
 - Modify: `solution/adapters/supabase/src/actions.js`
 - Modify: `solution/adapters/supabase/spec/actions.spec.js`
 
@@ -328,21 +321,21 @@ In `solution/adapters/supabase/spec/actions.spec.js`, add `order`, `limit`, and 
 
 ```js
 const query = {
-	eq: vi.fn().mockReturnThis(),
-	neq: vi.fn().mockReturnThis(),
-	gt: vi.fn().mockReturnThis(),
-	gte: vi.fn().mockReturnThis(),
-	lt: vi.fn().mockReturnThis(),
-	lte: vi.fn().mockReturnThis(),
-	like: vi.fn().mockReturnThis(),
-	ilike: vi.fn().mockReturnThis(),
-	in: vi.fn().mockReturnThis(),
-	is: vi.fn().mockReturnThis(),
-	order: vi.fn().mockReturnThis(),
-	limit: vi.fn().mockReturnThis(),
-	range: vi.fn().mockReturnThis(),
-	select: vi.fn().mockReturnThis(),
-	then: vi.fn((resolve) => resolve(result))
+  eq: vi.fn().mockReturnThis(),
+  neq: vi.fn().mockReturnThis(),
+  gt: vi.fn().mockReturnThis(),
+  gte: vi.fn().mockReturnThis(),
+  lt: vi.fn().mockReturnThis(),
+  lte: vi.fn().mockReturnThis(),
+  like: vi.fn().mockReturnThis(),
+  ilike: vi.fn().mockReturnThis(),
+  in: vi.fn().mockReturnThis(),
+  is: vi.fn().mockReturnThis(),
+  order: vi.fn().mockReturnThis(),
+  limit: vi.fn().mockReturnThis(),
+  range: vi.fn().mockReturnThis(),
+  select: vi.fn().mockReturnThis(),
+  then: vi.fn((resolve) => resolve(result))
 }
 ```
 
@@ -352,72 +345,72 @@ Add these tests inside the existing `describe('get', ...)` block:
 
 ```js
 it('should apply order', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', { order: 'created_at.desc' })
-	expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', { order: 'created_at.desc' })
+  expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
 })
 
 it('should apply multiple orders', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', { order: 'status.asc,created_at.desc' })
-	expect(client._query.order).toHaveBeenCalledTimes(2)
-	expect(client._query.order).toHaveBeenCalledWith('status', { ascending: true })
-	expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', { order: 'status.asc,created_at.desc' })
+  expect(client._query.order).toHaveBeenCalledTimes(2)
+  expect(client._query.order).toHaveBeenCalledWith('status', { ascending: true })
+  expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
 })
 
 it('should apply limit', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', { limit: 50 })
-	expect(client._query.limit).toHaveBeenCalledWith(50)
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', { limit: 50 })
+  expect(client._query.limit).toHaveBeenCalledWith(50)
 })
 
 it('should apply offset via range', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', { limit: 50, offset: 100 })
-	expect(client._query.range).toHaveBeenCalledWith(100, 149)
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', { limit: 50, offset: 100 })
+  expect(client._query.range).toHaveBeenCalledWith(100, 149)
 })
 
 it('should apply offset with default limit', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', { offset: 100 })
-	expect(client._query.range).toHaveBeenCalledWith(100, 1099)
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', { offset: 100 })
+  expect(client._query.range).toHaveBeenCalledWith(100, 1099)
 })
 
 it('should pass count option to select', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', { count: 'exact' })
-	expect(client.select).toHaveBeenCalledWith('*', { count: 'exact' })
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', { count: 'exact' })
+  expect(client.select).toHaveBeenCalledWith('*', { count: 'exact' })
 })
 
 it('should not pass count option when not specified', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity')
-	expect(client.select).toHaveBeenCalledWith('*', undefined)
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity')
+  expect(client.select).toHaveBeenCalledWith('*', undefined)
 })
 
 it('should apply all options together', async () => {
-	const client = createClient()
-	const actions = getActions(client)
-	await actions.get('entity', {
-		columns: 'id,name',
-		filter: { status: 'eq.active' },
-		order: 'created_at.desc',
-		limit: 25,
-		offset: 50,
-		count: 'exact'
-	})
-	expect(client.select).toHaveBeenCalledWith('id,name', { count: 'exact' })
-	expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
-	expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
-	expect(client._query.limit).toHaveBeenCalledWith(25)
-	expect(client._query.range).toHaveBeenCalledWith(50, 74)
+  const client = createClient()
+  const actions = getActions(client)
+  await actions.get('entity', {
+    columns: 'id,name',
+    filter: { status: 'eq.active' },
+    order: 'created_at.desc',
+    limit: 25,
+    offset: 50,
+    count: 'exact'
+  })
+  expect(client.select).toHaveBeenCalledWith('id,name', { count: 'exact' })
+  expect(client._query.eq).toHaveBeenCalledWith('status', 'active')
+  expect(client._query.order).toHaveBeenCalledWith('created_at', { ascending: false })
+  expect(client._query.limit).toHaveBeenCalledWith(25)
+  expect(client._query.range).toHaveBeenCalledWith(50, 74)
 })
 ```
 
@@ -436,20 +429,20 @@ import { parseFilter, parseQueryParams } from '@kavach/query'
 // ... inside getActions():
 
 async function get(entity, data) {
-	const { columns, filters, orders, limit, offset, count } = parseQueryParams(data)
+  const { columns, filters, orders, limit, offset, count } = parseQueryParams(data)
 
-	let query = schemaClient.from(entity).select(columns, count ? { count } : undefined)
+  let query = schemaClient.from(entity).select(columns, count ? { count } : undefined)
 
-	for (const { column, op, value } of filters) {
-		query = query[op](column, value)
-	}
-	for (const { column, ascending } of orders) {
-		query = query.order(column, { ascending })
-	}
-	if (limit !== undefined) query = query.limit(limit)
-	if (offset !== undefined) query = query.range(offset, offset + (limit ?? 1000) - 1)
+  for (const { column, op, value } of filters) {
+    query = query[op](column, value)
+  }
+  for (const { column, ascending } of orders) {
+    query = query.order(column, { ascending })
+  }
+  if (limit !== undefined) query = query.limit(limit)
+  if (offset !== undefined) query = query.range(offset, offset + (limit ?? 1000) - 1)
 
-	return await query
+  return await query
 }
 ```
 
@@ -477,6 +470,7 @@ git commit -m "feat(supabase): add order, limit, offset, count support to get()"
 ### Task 4: Update types — add `count` to `ActionResponse`
 
 **Files:**
+
 - Modify: `solution/packages/auth/src/types.js`
 
 **Step 1: Add count to ActionResponse typedef**
@@ -510,6 +504,7 @@ git commit -m "feat(auth): add count field to ActionResponse typedef"
 ### Task 5: Update CRUD route to extract query params from URL
 
 **Files:**
+
 - Modify: `solution/sites/supabase/src/routes/(server)/data/[...slug]/+server.js`
 
 **Step 1: Update GET handler**
@@ -520,21 +515,21 @@ Replace the GET handler:
 const RESERVED = [':select', ':order', ':limit', ':offset', ':count']
 
 export async function GET({ params, url }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = kavach.server(schema)
-	const body = Object.fromEntries(url.searchParams.entries())
+  const { schema, entity } = getEntity(params.slug)
+  const actions = kavach.server(schema)
+  const body = Object.fromEntries(url.searchParams.entries())
 
-	const { data, error, count, status } = await actions.get(entity, {
-		columns: body[':select'],
-		order: body[':order'],
-		limit: body[':limit'] ? Number(body[':limit']) : undefined,
-		offset: body[':offset'] ? Number(body[':offset']) : undefined,
-		count: body[':count'],
-		filter: omit(RESERVED, body)
-	})
+  const { data, error, count, status } = await actions.get(entity, {
+    columns: body[':select'],
+    order: body[':order'],
+    limit: body[':limit'] ? Number(body[':limit']) : undefined,
+    offset: body[':offset'] ? Number(body[':offset']) : undefined,
+    count: body[':count'],
+    filter: omit(RESERVED, body)
+  })
 
-	if (error) return json({ error }, { status })
-	return json(count !== undefined ? { data, count } : data)
+  if (error) return json({ error }, { status })
+  return json(count !== undefined ? { data, count } : data)
 }
 ```
 

@@ -6,15 +6,15 @@ Replace separate per-adapter example sites with a single `sites/demo/` SvelteKit
 
 ## Decisions
 
-| Decision | Choice |
-|----------|--------|
-| Adapter priority | Supabase (Phase 1) → Convex + Firebase (Phase 2) → Auth0/Amplify (later) |
-| Scope | Auth flows primary, full demo app is the goal |
-| Switching mechanism | Build-time for production, runtime switcher in dev mode |
-| Architecture | Adapter registry with lazy-loaded factory functions |
-| Site location | `sites/demo/` |
-| Existing sites | Keep `skeleton` as starter template, delete `supabase` after demo works |
-| E2E location | `e2e/` directory |
+| Decision            | Choice                                                                   |
+| ------------------- | ------------------------------------------------------------------------ |
+| Adapter priority    | Supabase (Phase 1) → Convex + Firebase (Phase 2) → Auth0/Amplify (later) |
+| Scope               | Auth flows primary, full demo app is the goal                            |
+| Switching mechanism | Build-time for production, runtime switcher in dev mode                  |
+| Architecture        | Adapter registry with lazy-loaded factory functions                      |
+| Site location       | `sites/demo/`                                                            |
+| Existing sites      | Keep `skeleton` as starter template, delete `supabase` after demo works  |
+| E2E location        | `e2e/` directory                                                         |
 
 ---
 
@@ -35,32 +35,35 @@ Production mode: Env var only — URL param and switcher UI are disabled when `P
 ## 2. Adapter Registry & Factory Pattern
 
 **Registry** (`lib/adapters/index.js`):
+
 ```js
 export const adapters = {
   supabase: () => import('./supabase.js'),
   firebase: () => import('./firebase.js'),
-  convex:   () => import('./convex.js'),
+  convex: () => import('./convex.js')
 }
 ```
 
 Each adapter module exports a uniform shape:
+
 ```js
 // lib/adapters/supabase.js
 export function create(config) {
   const client = createClient(config.url, config.anonKey)
   return {
     adapter: getAdapter(client),
-    data: (schema) => getActions(client, schema),
+    data: (schema) => getActions(client, schema)
   }
 }
 ```
 
 **Config** (`lib/config.js`): Flat config keyed by adapter name, all from env vars:
+
 ```js
 export const appConfig = {
   supabase: { url: env.PUBLIC_SUPABASE_URL, anonKey: env.PUBLIC_SUPABASE_ANON_KEY },
   firebase: { apiKey: env.PUBLIC_FIREBASE_API_KEY, projectId: env.PUBLIC_FIREBASE_PROJECT_ID },
-  convex:   { url: env.PUBLIC_CONVEX_URL },
+  convex: { url: env.PUBLIC_CONVEX_URL }
 }
 ```
 
@@ -71,6 +74,7 @@ Adapters without data support omit `data` from the return. CRUD routes return `{
 ## 3. Route Structure
 
 **Server routes** (adapter-agnostic):
+
 ```
 routes/
   (server)/data/[...slug]/+server.js   — CRUD (unsupported message if no data plugin)
@@ -78,6 +82,7 @@ routes/
 ```
 
 **Public routes:**
+
 ```
 routes/
   (public)/auth/+page.svelte           — Login page (@kavach/ui components)
@@ -85,6 +90,7 @@ routes/
 ```
 
 **Protected routes:**
+
 ```
 routes/
   (app)/+page.svelte                   — Dashboard / home
@@ -93,6 +99,7 @@ routes/
 ```
 
 **Layouts:**
+
 - Root `+layout.svelte` — initializes kavach `onAuthChange`, provides auth context
 - `(app)/+layout.svelte` — protected layout with header, nav, adapter indicator
 - Dev-mode switcher in the header
@@ -129,6 +136,7 @@ Server routes access kavach via `event.locals.kavach` instead of a module-level 
 ## 6. Playwright E2E Testing
 
 **Structure:**
+
 ```
 e2e/
   auth.spec.js        — signIn, signUp, signOut, protected route redirect
@@ -136,6 +144,7 @@ e2e/
 ```
 
 **Env files per adapter:**
+
 ```
 .env.supabase          — PUBLIC_AUTH_ADAPTER=supabase + Supabase local config
 .env.firebase          — PUBLIC_AUTH_ADAPTER=firebase + Firebase emulator config
@@ -151,6 +160,7 @@ Data tests use `test.skip` when the adapter doesn't support data.
 ## 7. Scope
 
 ### Phase 1 (this backlog item)
+
 - `sites/demo/` with adapter registry (Supabase wired)
 - Per-request kavach in hooks
 - Auth pages (login, logout, protected redirect)
@@ -161,12 +171,14 @@ Data tests use `test.skip` when the adapter doesn't support data.
 - Delete `sites/supabase/`
 
 ### Phase 2 (future)
+
 - Firebase adapter wiring
 - Convex adapter + CRUD
 - RPC demo page
 - Additional e2e coverage
 
 ### Later
+
 - Auth0/Amplify wiring
 - Full demo app with rich CRUD UI
 - Runtime switcher polish

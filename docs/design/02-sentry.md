@@ -8,13 +8,13 @@ The Sentry package (`@kavach/sentry`) enforces role-based access control through
 
 ## Internal Modules
 
-| Module | Purpose |
-|--------|---------|
-| `sentry.js` | Main API — createSentry, configureRules, protectRoute |
-| `processor.js` | Rule organization — sort by depth, group by role, encode paths |
-| `validations.js` | Rule validation — redundancy detection, path format checks |
-| `utils.js` | Path matching — depth calculation, prefix matching |
-| `types.js` | JSDoc type definitions |
+| Module           | Purpose                                                        |
+| ---------------- | -------------------------------------------------------------- |
+| `sentry.js`      | Main API — createSentry, configureRules, protectRoute          |
+| `processor.js`   | Rule organization — sort by depth, group by role, encode paths |
+| `validations.js` | Rule validation — redundancy detection, path format checks     |
+| `utils.js`       | Path matching — depth calculation, prefix matching             |
+| `types.js`       | JSDoc type definitions                                         |
 
 ## Architecture
 
@@ -116,14 +116,14 @@ Validation issues are logged but don't prevent startup. Errors are surfaced thro
 
 ## Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| All rules in memory, O(n) matching | Rule sets are small (typically <50); no need for trie/radix trees |
-| Depth-first sorting | Specific paths checked before general ones; `/admin/public` can override `/admin` |
-| Path encoding/decoding | Handles special characters in URLs safely |
-| Immutable rule reconfiguration | `setSession()` creates new route lists rather than mutating; thread-safe |
-| Fail-secure default | Unmatched paths are denied; only explicit rules grant access |
-| Endpoint vs page distinction | API routes get status codes (for programmatic clients); pages get redirects (for browsers) |
+| Decision                           | Rationale                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| All rules in memory, O(n) matching | Rule sets are small (typically <50); no need for trie/radix trees                          |
+| Depth-first sorting                | Specific paths checked before general ones; `/admin/public` can override `/admin`          |
+| Path encoding/decoding             | Handles special characters in URLs safely                                                  |
+| Immutable rule reconfiguration     | `setSession()` creates new route lists rather than mutating; thread-safe                   |
+| Fail-secure default                | Unmatched paths are denied; only explicit rules grant access                               |
+| Endpoint vs page distinction       | API routes get status codes (for programmatic clients); pages get redirects (for browsers) |
 
 ## Implementation Checklist
 

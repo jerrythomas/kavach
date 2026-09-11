@@ -7,6 +7,7 @@ Replace the standalone supabase example site with CLI-based setup instructions, 
 ## Current State
 
 `sites/supabase/` is a full SvelteKit app with:
+
 - Auth pages (login, logout)
 - Server routes (data CRUD, RPC)
 - Session handling hooks
@@ -27,6 +28,7 @@ Before deprecating, ensure all patterns from the supabase site are captured:
 ### Phase 2: Add Deprecation Notice
 
 Add a README.md to `sites/supabase/` explaining:
+
 - This site is deprecated in favor of `kavach init`
 - Link to learn site for documentation
 - Link to CLI instructions for setting up a new project
@@ -51,12 +53,12 @@ This item should be executed **after** the CLI package (#02) and learn site (#03
 
 ## What Replaces It
 
-| Current (supabase site) | Replacement |
-|------------------------|-------------|
-| Reference wiring code | CLI-generated scaffolding |
-| Live example | Learn site demo |
-| Route patterns | CLI templates |
-| Configuration example | `kavach.config.js` from CLI |
+| Current (supabase site) | Replacement                 |
+| ----------------------- | --------------------------- |
+| Reference wiring code   | CLI-generated scaffolding   |
+| Live example            | Learn site demo             |
+| Route patterns          | CLI templates               |
+| Configuration example   | `kavach.config.js` from CLI |
 
 ## Open Questions
 

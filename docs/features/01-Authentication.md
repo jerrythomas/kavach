@@ -187,6 +187,3 @@ Feature: Password Policy Enforcement
     Then the UI marks each requirement as complete in real time
     And the user can submit the password update
 ```
-
-
-

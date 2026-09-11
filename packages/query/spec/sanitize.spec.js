@@ -3,7 +3,13 @@ import { sanitizeError } from '../src/sanitize.js'
 
 describe('sanitizeError', () => {
 	it('strips details and hint from errors', () => {
-		const raw = { message: 'not found', code: 'PGRST116', details: 'Row not found', hint: null, status: 406 }
+		const raw = {
+			message: 'not found',
+			code: 'PGRST116',
+			details: 'Row not found',
+			hint: null,
+			status: 406
+		}
 		expect(sanitizeError(raw)).toEqual({ message: 'not found', code: 'PGRST116', status: 406 })
 	})
 
@@ -23,6 +29,10 @@ describe('sanitizeError', () => {
 	})
 
 	it('provides default message when none present', () => {
-		expect(sanitizeError({})).toEqual({ message: 'An error occurred', code: undefined, status: undefined })
+		expect(sanitizeError({})).toEqual({
+			message: 'An error occurred',
+			code: undefined,
+			status: undefined
+		})
 	})
 })

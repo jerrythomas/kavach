@@ -70,8 +70,11 @@ export function generateDataRoute() {
 }
 
 export function generateRpcRoute() {
-	return templates.rpcRoute || `import { RPC } from 'kavach'
+	return (
+		templates.rpcRoute ||
+		`import { RPC } from 'kavach'
 
 export const { GET, POST, PUT, PATCH, DELETE } = RPC
 `
+	)
 }

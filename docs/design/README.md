@@ -19,17 +19,17 @@ sequenceDiagram
     Adapter->>Platform: Platform SDK signIn
     Platform-->>Adapter: AuthResult
     Adapter-->>Browser: AuthResult
-    
+
     Note over Browser: Update authStatus store
     Note over Browser: Cache login
-    
+
     Browser->>SvelteKit: POST /auth/session
     SvelteKit->>Adapter: synchronize(session)
     Adapter-->>SvelteKit: Updated session
-    
+
     Note over SvelteKit: Set httpOnly cookie
     SvelteKit-->>Browser: Session JSON
-    
+
     Note over Browser,Platform: onAuthChange listener active
 ```
 
@@ -44,29 +44,29 @@ flowchart TB
         Store["authStatus store"]
         Cache["Login Cache"]
     end
-    
+
     subgraph Core["kavach"]
         Auth["Auth Module"]
         Hook["handle() hook"]
     end
-    
+
     subgraph Sentry["@kavach/sentry"]
         Protect["Route Protection"]
     end
-    
+
     subgraph Adapters["Adapters"]
         Base["BaseAdapter"]
         Supabase["Supabase"]
         Firebase["Firebase"]
         Auth0["Auth0"]
     end
-    
+
     UI --> Auth
     Store --> Auth
     Cache --> Auth
     Auth --> Hook
     Hook --> Protect
-    
+
     Auth --> Base
     Base --> Supabase
     Base --> Firebase
@@ -80,10 +80,12 @@ flowchart TB
 The adapter pattern provides a unified interface across different auth platforms. Each adapter wraps a platform-specific SDK.
 
 **Attributes**
+
 - `client` — The platform SDK instance
 - `options` — Configuration options for the adapter
 
 **Methods**
+
 - `signIn(credentials)` — Authenticate user with provided credentials
 - `signUp(credentials)` — Create a new user account
 - `signOut()` — End the current session
@@ -92,6 +94,7 @@ The adapter pattern provides a unified interface across different auth platforms
 - `parseUrlError(url)` — Extract errors from OAuth redirect URLs
 
 **Types**
+
 - `AuthCredentials` — Input for signIn/signUp: provider (OAuth provider name), email, password, redirectTo, scopes
 - `AuthResult` — Response envelope: type (success/error/info), message, data, error
 - `AuthSession` — Session data: user, access_token, refresh_token, expires_in

@@ -72,7 +72,7 @@ This will be sent to the writer as
 ### Including errors
 
 ```js
-logger.info('foo', { path: 'bar' }, {code: 404})
+logger.info('foo', { path: 'bar' }, { code: 404 })
 ```
 
 This will be sent to the writer as
@@ -84,7 +84,7 @@ This will be sent to the writer as
   "logged_at": "2022-11-05T08:00:00.000Z",
   "message": "foo",
   "data": { "path": "bar" },
-  "error": { "code": 404}
+  "error": { "code": 404 }
 }
 ```
 

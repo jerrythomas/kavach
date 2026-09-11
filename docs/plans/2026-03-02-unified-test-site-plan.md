@@ -17,6 +17,7 @@
 Create the bare SvelteKit project with all config files, copying from the supabase site as a base.
 
 **Files:**
+
 - Create: `sites/demo/package.json`
 - Create: `sites/demo/svelte.config.js`
 - Create: `sites/demo/vite.config.js`
@@ -24,7 +25,7 @@ Create the bare SvelteKit project with all config files, copying from the supaba
 - Create: `sites/demo/jsconfig.json`
 - Create: `sites/demo/src/app.html`
 - Create: `sites/demo/src/app.css`
-- Copy:   `sites/supabase/static/` → `sites/demo/static/`
+- Copy: `sites/supabase/static/` → `sites/demo/static/`
 
 **Step 1: Create `sites/demo/package.json`**
 
@@ -93,9 +94,9 @@ import adapter from '@sveltejs/adapter-auto'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	kit: {
-		adapter: adapter()
-	}
+  kit: {
+    adapter: adapter()
+  }
 }
 
 export default config
@@ -114,10 +115,10 @@ const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
 
 /** @type {import('vite').UserConfig} */
 const config = {
-	plugins: [unocss(), sveltekit()],
-	define: {
-		__APP_VERSION__: JSON.stringify(pkg.version)
-	}
+  plugins: [unocss(), sveltekit()],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version)
+  }
 }
 
 export default config
@@ -192,6 +193,7 @@ git commit -m "feat(demo): scaffold demo site with SvelteKit + UnoCSS config"
 The resolver determines which adapter to use. This is pure logic and fully testable.
 
 **Files:**
+
 - Create: `sites/demo/src/lib/resolveAdapter.js`
 - Create: `sites/demo/spec/resolveAdapter.spec.js`
 
@@ -204,61 +206,61 @@ import { describe, it, expect } from 'vitest'
 import { resolveAdapterName } from '../src/lib/resolveAdapter.js'
 
 describe('resolveAdapterName', () => {
-	it('returns adapter from URL search param', () => {
-		const result = resolveAdapterName({
-			url: new URL('http://localhost?adapter=firebase'),
-			cookies: { get: () => undefined },
-			env: {}
-		})
-		expect(result).toBe('firebase')
-	})
+  it('returns adapter from URL search param', () => {
+    const result = resolveAdapterName({
+      url: new URL('http://localhost?adapter=firebase'),
+      cookies: { get: () => undefined },
+      env: {}
+    })
+    expect(result).toBe('firebase')
+  })
 
-	it('falls back to cookie when no URL param', () => {
-		const result = resolveAdapterName({
-			url: new URL('http://localhost'),
-			cookies: { get: (name) => (name === 'kavach-adapter' ? 'convex' : undefined) },
-			env: {}
-		})
-		expect(result).toBe('convex')
-	})
+  it('falls back to cookie when no URL param', () => {
+    const result = resolveAdapterName({
+      url: new URL('http://localhost'),
+      cookies: { get: (name) => (name === 'kavach-adapter' ? 'convex' : undefined) },
+      env: {}
+    })
+    expect(result).toBe('convex')
+  })
 
-	it('falls back to env var when no URL param or cookie', () => {
-		const result = resolveAdapterName({
-			url: new URL('http://localhost'),
-			cookies: { get: () => undefined },
-			env: { PUBLIC_AUTH_ADAPTER: 'auth0' }
-		})
-		expect(result).toBe('auth0')
-	})
+  it('falls back to env var when no URL param or cookie', () => {
+    const result = resolveAdapterName({
+      url: new URL('http://localhost'),
+      cookies: { get: () => undefined },
+      env: { PUBLIC_AUTH_ADAPTER: 'auth0' }
+    })
+    expect(result).toBe('auth0')
+  })
 
-	it('defaults to supabase when nothing is set', () => {
-		const result = resolveAdapterName({
-			url: new URL('http://localhost'),
-			cookies: { get: () => undefined },
-			env: {}
-		})
-		expect(result).toBe('supabase')
-	})
+  it('defaults to supabase when nothing is set', () => {
+    const result = resolveAdapterName({
+      url: new URL('http://localhost'),
+      cookies: { get: () => undefined },
+      env: {}
+    })
+    expect(result).toBe('supabase')
+  })
 
-	it('ignores URL param when dev mode is off', () => {
-		const result = resolveAdapterName({
-			url: new URL('http://localhost?adapter=firebase'),
-			cookies: { get: () => undefined },
-			env: { PUBLIC_AUTH_ADAPTER: 'supabase' },
-			devMode: false
-		})
-		expect(result).toBe('supabase')
-	})
+  it('ignores URL param when dev mode is off', () => {
+    const result = resolveAdapterName({
+      url: new URL('http://localhost?adapter=firebase'),
+      cookies: { get: () => undefined },
+      env: { PUBLIC_AUTH_ADAPTER: 'supabase' },
+      devMode: false
+    })
+    expect(result).toBe('supabase')
+  })
 
-	it('ignores cookie when dev mode is off', () => {
-		const result = resolveAdapterName({
-			url: new URL('http://localhost'),
-			cookies: { get: (name) => (name === 'kavach-adapter' ? 'firebase' : undefined) },
-			env: { PUBLIC_AUTH_ADAPTER: 'supabase' },
-			devMode: false
-		})
-		expect(result).toBe('supabase')
-	})
+  it('ignores cookie when dev mode is off', () => {
+    const result = resolveAdapterName({
+      url: new URL('http://localhost'),
+      cookies: { get: (name) => (name === 'kavach-adapter' ? 'firebase' : undefined) },
+      env: { PUBLIC_AUTH_ADAPTER: 'supabase' },
+      devMode: false
+    })
+    expect(result).toBe('supabase')
+  })
 })
 ```
 
@@ -284,15 +286,15 @@ Create `sites/demo/src/lib/resolveAdapter.js`:
  * @returns {string} adapter name
  */
 export function resolveAdapterName({ url, cookies, env, devMode = true }) {
-	if (devMode) {
-		const fromUrl = url.searchParams.get('adapter')
-		if (fromUrl) return fromUrl
+  if (devMode) {
+    const fromUrl = url.searchParams.get('adapter')
+    if (fromUrl) return fromUrl
 
-		const fromCookie = cookies.get('kavach-adapter')
-		if (fromCookie) return fromCookie
-	}
+    const fromCookie = cookies.get('kavach-adapter')
+    if (fromCookie) return fromCookie
+  }
 
-	return env.PUBLIC_AUTH_ADAPTER || 'supabase'
+  return env.PUBLIC_AUTH_ADAPTER || 'supabase'
 }
 ```
 
@@ -320,6 +322,7 @@ git commit -m "feat(demo): add adapter resolution with URL > cookie > env preced
 The registry maps adapter names to lazy-loaded factory modules. Each factory returns `{ adapter, data }`.
 
 **Files:**
+
 - Create: `sites/demo/src/lib/adapters/index.js`
 - Create: `sites/demo/src/lib/adapters/supabase.js`
 
@@ -331,7 +334,7 @@ The registry maps adapter names to lazy-loaded factory modules. Each factory ret
  * Each module must export: create(config) => { adapter, data? }
  */
 export const registry = {
-	supabase: () => import('./supabase.js')
+  supabase: () => import('./supabase.js')
 }
 
 /**
@@ -342,18 +345,18 @@ export const registry = {
  * @returns {Promise<{ adapter: object, data?: function }>}
  */
 export async function loadAdapter(name, config) {
-	const factory = registry[name]
-	if (!factory) {
-		throw new Error(`Unknown adapter: "${name}". Available: ${Object.keys(registry).join(', ')}`)
-	}
+  const factory = registry[name]
+  if (!factory) {
+    throw new Error(`Unknown adapter: "${name}". Available: ${Object.keys(registry).join(', ')}`)
+  }
 
-	const mod = await factory()
-	const adapterConfig = config[name]
-	if (!adapterConfig) {
-		throw new Error(`No config found for adapter "${name}". Check your environment variables.`)
-	}
+  const mod = await factory()
+  const adapterConfig = config[name]
+  if (!adapterConfig) {
+    throw new Error(`No config found for adapter "${name}". Check your environment variables.`)
+  }
 
-	return mod.create(adapterConfig)
+  return mod.create(adapterConfig)
 }
 
 /**
@@ -363,7 +366,7 @@ export async function loadAdapter(name, config) {
  * @returns {string[]}
  */
 export function getAvailableAdapters(config) {
-	return Object.keys(registry).filter((name) => config[name])
+  return Object.keys(registry).filter((name) => config[name])
 }
 ```
 
@@ -384,15 +387,15 @@ import { createClient } from '@supabase/supabase-js'
  * @returns {{ adapter: object, data: function, logger: object }}
  */
 export function create(config) {
-	const client = createClient(config.url, config.anonKey)
+  const client = createClient(config.url, config.anonKey)
 
-	return {
-		adapter: getAdapter(client),
-		data: (schema) => getActions(client, schema),
-		logger: config.logging
-			? getLogger(getLogWriter(config, config.logging), config.logging)
-			: undefined
-	}
+  return {
+    adapter: getAdapter(client),
+    data: (schema) => getActions(client, schema),
+    logger: config.logging
+      ? getLogger(getLogWriter(config, config.logging), config.logging)
+      : undefined
+  }
 }
 ```
 
@@ -410,6 +413,7 @@ git commit -m "feat(demo): add adapter registry with supabase factory"
 App config, db helper, routes config — adapted from supabase site.
 
 **Files:**
+
 - Create: `sites/demo/src/lib/config.js`
 - Create: `sites/demo/src/lib/db.js`
 - Create: `sites/demo/src/lib/routes.js`
@@ -421,22 +425,22 @@ App config, db helper, routes config — adapted from supabase site.
 import { env } from '$env/dynamic/public'
 
 export const appConfig = {
-	devMode: env.PUBLIC_DEV_MODE === 'true',
-	defaultAdapter: env.PUBLIC_AUTH_ADAPTER || 'supabase',
-	logging: {
-		level: env.PUBLIC_LOG_LEVEL || 'info',
-		table: env.PUBLIC_LOG_TABLE || 'logs'
-	},
-	supabase: env.PUBLIC_SUPABASE_URL
-		? {
-				url: env.PUBLIC_SUPABASE_URL,
-				anonKey: env.PUBLIC_SUPABASE_ANON_KEY,
-				logging: {
-					level: env.PUBLIC_LOG_LEVEL || 'info',
-					table: env.PUBLIC_LOG_TABLE || 'logs'
-				}
-			}
-		: undefined
+  devMode: env.PUBLIC_DEV_MODE === 'true',
+  defaultAdapter: env.PUBLIC_AUTH_ADAPTER || 'supabase',
+  logging: {
+    level: env.PUBLIC_LOG_LEVEL || 'info',
+    table: env.PUBLIC_LOG_TABLE || 'logs'
+  },
+  supabase: env.PUBLIC_SUPABASE_URL
+    ? {
+        url: env.PUBLIC_SUPABASE_URL,
+        anonKey: env.PUBLIC_SUPABASE_ANON_KEY,
+        logging: {
+          level: env.PUBLIC_LOG_LEVEL || 'info',
+          table: env.PUBLIC_LOG_TABLE || 'logs'
+        }
+      }
+    : undefined
 }
 ```
 
@@ -456,8 +460,8 @@ Note: Each adapter config is only present when the required env vars exist. `get
  * @returns {Entity}
  */
 export function getEntity(slug) {
-	if (slug.length === 1) return { entity: slug[0] }
-	else return { schema: slug[0], entity: slug[1] }
+  if (slug.length === 1) return { entity: slug[0] }
+  else return { schema: slug[0], entity: slug[1] }
 }
 ```
 
@@ -465,7 +469,7 @@ export function getEntity(slug) {
 
 ```js
 export const routes = {
-	rules: [{ path: '/public', public: true }]
+  rules: [{ path: '/public', public: true }]
 }
 ```
 
@@ -493,6 +497,7 @@ git commit -m "feat(demo): add config, db helper, routes, and lib index"
 The core architectural change: kavach is created per-request based on the resolved adapter.
 
 **Files:**
+
 - Create: `sites/demo/src/hooks.server.js`
 - Create: `sites/demo/src/routes/+layout.server.js`
 
@@ -507,38 +512,38 @@ import { loadAdapter, getAvailableAdapters } from '$lib/adapters'
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
-	const adapterName = resolveAdapterName({
-		url: event.url,
-		cookies: event.cookies,
-		env: { PUBLIC_AUTH_ADAPTER: appConfig.defaultAdapter },
-		devMode: appConfig.devMode
-	})
+  const adapterName = resolveAdapterName({
+    url: event.url,
+    cookies: event.cookies,
+    env: { PUBLIC_AUTH_ADAPTER: appConfig.defaultAdapter },
+    devMode: appConfig.devMode
+  })
 
-	const { adapter, data, logger } = await loadAdapter(adapterName, appConfig)
+  const { adapter, data, logger } = await loadAdapter(adapterName, appConfig)
 
-	const kavach = createKavach(adapter, {
-		data,
-		logger,
-		...routes
-	})
+  const kavach = createKavach(adapter, {
+    data,
+    logger,
+    ...routes
+  })
 
-	event.locals.kavach = kavach
-	event.locals.adapter = adapterName
-	event.locals.adapters = getAvailableAdapters(appConfig)
-	event.locals.devMode = appConfig.devMode
+  event.locals.kavach = kavach
+  event.locals.adapter = adapterName
+  event.locals.adapters = getAvailableAdapters(appConfig)
+  event.locals.devMode = appConfig.devMode
 
-	// Persist adapter choice in cookie (dev mode only)
-	if (appConfig.devMode) {
-		event.cookies.set('kavach-adapter', adapterName, {
-			path: '/',
-			httpOnly: false,
-			secure: false,
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 24 * 30
-		})
-	}
+  // Persist adapter choice in cookie (dev mode only)
+  if (appConfig.devMode) {
+    event.cookies.set('kavach-adapter', adapterName, {
+      path: '/',
+      httpOnly: false,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30
+    })
+  }
 
-	return kavach.handle({ event, resolve })
+  return kavach.handle({ event, resolve })
 }
 ```
 
@@ -547,15 +552,15 @@ export async function handle({ event, resolve }) {
 ```js
 /** @type {import('./$types').LayoutServerLoad} */
 export function load({ locals }) {
-	return {
-		// @ts-ignore
-		version: __APP_VERSION__,
-		title: 'Kavach Demo',
-		adapter: locals.adapter,
-		adapters: locals.adapters,
-		devMode: locals.devMode,
-		...locals
-	}
+  return {
+    // @ts-ignore
+    version: __APP_VERSION__,
+    title: 'Kavach Demo',
+    adapter: locals.adapter,
+    adapters: locals.adapters,
+    devMode: locals.devMode,
+    ...locals
+  }
 }
 ```
 
@@ -573,6 +578,7 @@ git commit -m "feat(demo): add per-request kavach hooks and layout server load"
 Root layout that initializes auth state on the client and renders header + slot.
 
 **Files:**
+
 - Create: `sites/demo/src/routes/+layout.svelte`
 - Create: `sites/demo/src/routes/Header.svelte`
 
@@ -580,53 +586,53 @@ Root layout that initializes auth state on the client and renders header + slot.
 
 ```svelte
 <script>
-	import 'uno.css'
-	import '../app.css'
+  import 'uno.css'
+  import '../app.css'
 
-	import Header from './Header.svelte'
-	import { onMount, setContext } from 'svelte'
-	import { writable } from 'svelte/store'
-	import { page } from '$app/states'
-	import { media } from '$lib'
+  import Header from './Header.svelte'
+  import { onMount, setContext } from 'svelte'
+  import { writable } from 'svelte/store'
+  import { page } from '$app/states'
+  import { media } from '$lib'
 
-	const site = writable({
-		sidebar: $media.large
-	})
-	export let data
+  const site = writable({
+    sidebar: $media.large
+  })
+  export let data
 
-	setContext('site', site)
-	setContext('media', media)
+  setContext('site', site)
+  setContext('media', media)
 
-	onMount(async () => {
-		// Dynamically import and initialize kavach on the client
-		const adapterName = data.adapter
-		const { loadAdapter } = await import('$lib/adapters')
-		const { appConfig } = await import('$lib/config')
-		const { createKavach } = await import('kavach')
-		const { routes } = await import('$lib/routes')
-		const { goto, invalidateAll, invalidate } = await import('$app/navigation')
+  onMount(async () => {
+    // Dynamically import and initialize kavach on the client
+    const adapterName = data.adapter
+    const { loadAdapter } = await import('$lib/adapters')
+    const { appConfig } = await import('$lib/config')
+    const { createKavach } = await import('kavach')
+    const { routes } = await import('$lib/routes')
+    const { goto, invalidateAll, invalidate } = await import('$app/navigation')
 
-		const { adapter, data: dataPlugin, logger } = await loadAdapter(adapterName, appConfig)
-		const kavach = createKavach(adapter, {
-			data: dataPlugin,
-			logger,
-			...routes,
-			goto,
-			invalidate,
-			invalidateAll
-		})
+    const { adapter, data: dataPlugin, logger } = await loadAdapter(adapterName, appConfig)
+    const kavach = createKavach(adapter, {
+      data: dataPlugin,
+      logger,
+      ...routes,
+      goto,
+      invalidate,
+      invalidateAll
+    })
 
-		setContext('kavach', kavach)
-		kavach.onAuthChange($page.url)
-	})
+    setContext('kavach', kavach)
+    kavach.onAuthChange($page.url)
+  })
 </script>
 
 <Header
-	user={data.session?.user}
-	title={data.title}
-	adapter={data.adapter}
-	adapters={data.adapters}
-	devMode={data.devMode}
+  user={data.session?.user}
+  title={data.title}
+  adapter={data.adapter}
+  adapters={data.adapters}
+  devMode={data.devMode}
 />
 <slot />
 ```
@@ -635,58 +641,58 @@ Root layout that initializes auth state on the client and renders header + slot.
 
 ```svelte
 <script>
-	import { afterNavigate, beforeNavigate } from '$app/navigation'
+  import { afterNavigate, beforeNavigate } from '$app/navigation'
 
-	export let title
-	export let user
-	export let adapter = 'supabase'
-	export let adapters = []
-	export let devMode = false
+  export let title
+  export let user
+  export let adapter = 'supabase'
+  export let adapters = []
+  export let devMode = false
 
-	let loading = false
+  let loading = false
 
-	beforeNavigate(() => (loading = true))
-	afterNavigate(() => (loading = false))
+  beforeNavigate(() => (loading = true))
+  afterNavigate(() => (loading = false))
 </script>
 
 <header
-	class="flex min-h-14 w-full bg-neutral-base items-center justify-between relative border-b border-neutral-inset"
+  class="bg-neutral-base border-neutral-inset relative flex min-h-14 w-full items-center justify-between border-b"
 >
-	{#if loading}
-		<div class="absolute top-0 left-0 w-full h-1 bg-primary animate-pulse"></div>
-	{/if}
-	<div class="flex items-center gap-2 px-4">
-		<a href="/" class="flex items-center">
-			<img src="favicon.png" alt="logo" class="aspect-square h-8" />
-		</a>
-		<p>{title}</p>
-	</div>
+  {#if loading}
+    <div class="bg-primary absolute top-0 left-0 h-1 w-full animate-pulse"></div>
+  {/if}
+  <div class="flex items-center gap-2 px-4">
+    <a href="/" class="flex items-center">
+      <img src="favicon.png" alt="logo" class="aspect-square h-8" />
+    </a>
+    <p>{title}</p>
+  </div>
 
-	<div class="flex items-center gap-4 pr-4">
-		{#if devMode && adapters.length > 1}
-			<div class="flex items-center gap-2 text-sm">
-				<span class="text-neutral-500">Adapter:</span>
-				<select
-					class="bg-neutral-base border border-neutral-300 rounded px-2 py-1 text-sm"
-					value={adapter}
-					onchange={(e) => {
-						document.cookie = `kavach-adapter=${e.target.value};path=/;max-age=2592000`
-						window.location.reload()
-					}}
-				>
-					{#each adapters as name}
-						<option value={name} selected={name === adapter}>{name}</option>
-					{/each}
-				</select>
-			</div>
-		{:else}
-			<span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">{adapter}</span>
-		{/if}
+  <div class="flex items-center gap-4 pr-4">
+    {#if devMode && adapters.length > 1}
+      <div class="flex items-center gap-2 text-sm">
+        <span class="text-neutral-500">Adapter:</span>
+        <select
+          class="bg-neutral-base rounded border border-neutral-300 px-2 py-1 text-sm"
+          value={adapter}
+          onchange={(e) => {
+            document.cookie = `kavach-adapter=${e.target.value};path=/;max-age=2592000`
+            window.location.reload()
+          }}
+        >
+          {#each adapters as name}
+            <option value={name} selected={name === adapter}>{name}</option>
+          {/each}
+        </select>
+      </div>
+    {:else}
+      <span class="rounded bg-neutral-100 px-2 py-1 text-xs text-neutral-400">{adapter}</span>
+    {/if}
 
-		{#if user}
-			<a href="/logout" class="text-sm text-neutral-600 hover:text-neutral-800">Logout</a>
-		{/if}
-	</div>
+    {#if user}
+      <a href="/logout" class="text-sm text-neutral-600 hover:text-neutral-800">Logout</a>
+    {/if}
+  </div>
 </header>
 ```
 
@@ -704,6 +710,7 @@ git commit -m "feat(demo): add root layout with client-side kavach init and head
 ### Task 7: Public Routes — Auth & Public Pages
 
 **Files:**
+
 - Create: `sites/demo/src/routes/(public)/auth/+layout.svelte`
 - Create: `sites/demo/src/routes/(public)/auth/+page.svelte`
 - Create: `sites/demo/src/routes/(public)/public/+page.svelte`
@@ -712,9 +719,9 @@ git commit -m "feat(demo): add root layout with client-side kavach init and head
 
 ```svelte
 <div
-	class="flex flex-row w-full border border-neutral-200 md:rounded-md md:shadow-lg md:max-w-100 md:mx-auto mt-10"
+  class="mt-10 flex w-full flex-row border border-neutral-200 md:mx-auto md:max-w-100 md:rounded-md md:shadow-lg"
 >
-	<slot />
+  <slot />
 </div>
 ```
 
@@ -722,22 +729,22 @@ git commit -m "feat(demo): add root layout with client-side kavach init and head
 
 ```svelte
 <script>
-	import { AuthProvider } from '@kavach/ui'
+  import { AuthProvider } from '@kavach/ui'
 </script>
 
-<nav class="flex flex-col flex-grow items-center p-8 gap-2">
-	<section class="flex flex-col w-full gap-2 py-2">
-		<AuthProvider name="azure" label="Continue With Azure" scopes={['email', 'profile']} />
-	</section>
+<nav class="flex flex-grow flex-col items-center gap-2 p-8">
+  <section class="flex w-full flex-col gap-2 py-2">
+    <AuthProvider name="azure" label="Continue With Azure" scopes={['email', 'profile']} />
+  </section>
 </nav>
 ```
 
 **Step 3: Create `sites/demo/src/routes/(public)/public/+page.svelte`**
 
 ```svelte
-<div class="flex flex-col p-8 gap-4">
-	<p>This is a public page</p>
-	<a href="/" class="p-2 bg-primary-600 text-white rounded text-center">Home</a>
+<div class="flex flex-col gap-4 p-8">
+  <p>This is a public page</p>
+  <a href="/" class="bg-primary-600 rounded p-2 text-center text-white">Home</a>
 </div>
 ```
 
@@ -753,6 +760,7 @@ git commit -m "feat(demo): add public auth and landing pages"
 ### Task 8: Protected Routes — Dashboard, Logout, Data
 
 **Files:**
+
 - Create: `sites/demo/src/routes/(app)/+page.svelte`
 - Create: `sites/demo/src/routes/(app)/logout/+page.svelte`
 - Create: `sites/demo/src/routes/(app)/data/+page.svelte`
@@ -761,16 +769,16 @@ git commit -m "feat(demo): add public auth and landing pages"
 
 ```svelte
 <script>
-	export let data
+  export let data
 </script>
 
-<div class="flex flex-col p-8 gap-4">
-	<h1 class="text-xl">Welcome!</h1>
-	<p class="text-neutral-500">Adapter: <strong>{data.adapter}</strong></p>
-	<nav class="flex gap-4">
-		<a href="/data" class="p-2 bg-primary-600 text-white rounded text-center">CRUD Demo</a>
-		<a href="/public" class="p-2 bg-neutral-200 rounded text-center">Public Page</a>
-	</nav>
+<div class="flex flex-col gap-4 p-8">
+  <h1 class="text-xl">Welcome!</h1>
+  <p class="text-neutral-500">Adapter: <strong>{data.adapter}</strong></p>
+  <nav class="flex gap-4">
+    <a href="/data" class="bg-primary-600 rounded p-2 text-center text-white">CRUD Demo</a>
+    <a href="/public" class="rounded bg-neutral-200 p-2 text-center">Public Page</a>
+  </nav>
 </div>
 ```
 
@@ -778,12 +786,12 @@ git commit -m "feat(demo): add public auth and landing pages"
 
 ```svelte
 <script>
-	import { getContext, onMount } from 'svelte'
+  import { getContext, onMount } from 'svelte'
 
-	onMount(async () => {
-		const kavach = getContext('kavach')
-		if (kavach) await kavach.signOut()
-	})
+  onMount(async () => {
+    const kavach = getContext('kavach')
+    if (kavach) await kavach.signOut()
+  })
 </script>
 
 <p class="m-auto text-lg">Logging out...</p>
@@ -797,56 +805,55 @@ A basic CRUD demo page — fetches data from the server route and displays it. P
 
 ```svelte
 <script>
-	let entity = 'todos'
-	let rows = []
-	let error = null
-	let loading = false
+  let entity = 'todos'
+  let rows = []
+  let error = null
+  let loading = false
 
-	async function fetchData() {
-		loading = true
-		error = null
-		try {
-			const res = await fetch(`/data/${entity}`)
-			if (!res.ok) {
-				const body = await res.json()
-				error = body.error || `HTTP ${res.status}`
-			} else {
-				rows = await res.json()
-			}
-		} catch (e) {
-			error = e.message
-		}
-		loading = false
-	}
+  async function fetchData() {
+    loading = true
+    error = null
+    try {
+      const res = await fetch(`/data/${entity}`)
+      if (!res.ok) {
+        const body = await res.json()
+        error = body.error || `HTTP ${res.status}`
+      } else {
+        rows = await res.json()
+      }
+    } catch (e) {
+      error = e.message
+    }
+    loading = false
+  }
 </script>
 
-<div class="flex flex-col p-8 gap-4">
-	<h1 class="text-xl">CRUD Demo</h1>
+<div class="flex flex-col gap-4 p-8">
+  <h1 class="text-xl">CRUD Demo</h1>
 
-	<div class="flex gap-2 items-center">
-		<input
-			type="text"
-			bind:value={entity}
-			placeholder="Entity name (e.g. todos)"
-			class="border border-neutral-300 rounded px-3 py-2"
-		/>
-		<button
-			onclick={fetchData}
-			class="px-4 py-2 bg-primary-600 text-white rounded"
-		>
-			Fetch
-		</button>
-	</div>
+  <div class="flex items-center gap-2">
+    <input
+      type="text"
+      bind:value={entity}
+      placeholder="Entity name (e.g. todos)"
+      class="rounded border border-neutral-300 px-3 py-2"
+    />
+    <button onclick={fetchData} class="bg-primary-600 rounded px-4 py-2 text-white"> Fetch </button>
+  </div>
 
-	{#if loading}
-		<p class="text-neutral-500">Loading...</p>
-	{:else if error}
-		<p class="text-red-600">{error}</p>
-	{:else if rows.length > 0}
-		<pre class="bg-neutral-100 p-4 rounded overflow-auto text-sm">{JSON.stringify(rows, null, 2)}</pre>
-	{:else}
-		<p class="text-neutral-400">No data. Enter an entity name and click Fetch.</p>
-	{/if}
+  {#if loading}
+    <p class="text-neutral-500">Loading...</p>
+  {:else if error}
+    <p class="text-red-600">{error}</p>
+  {:else if rows.length > 0}
+    <pre class="overflow-auto rounded bg-neutral-100 p-4 text-sm">{JSON.stringify(
+        rows,
+        null,
+        2
+      )}</pre>
+  {:else}
+    <p class="text-neutral-400">No data. Enter an entity name and click Fetch.</p>
+  {/if}
 </div>
 ```
 
@@ -864,6 +871,7 @@ git commit -m "feat(demo): add protected dashboard, logout, and CRUD demo pages"
 Data and RPC server routes, accessing kavach from `event.locals`. Returns "unsupported" if the adapter has no data plugin.
 
 **Files:**
+
 - Create: `sites/demo/src/routes/(server)/data/[...slug]/+server.js`
 - Create: `sites/demo/src/routes/(server)/rpc/[...slug]/+server.js`
 
@@ -877,81 +885,86 @@ import { omit } from 'ramda'
 const RESERVED = [':select', ':order', ':limit', ':offset', ':count']
 
 function getActions(locals, schema) {
-	const actions = locals.kavach.actions(schema)
-	if (!actions) return null
-	return actions
+  const actions = locals.kavach.actions(schema)
+  if (!actions) return null
+  return actions
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function GET({ params, url, locals }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+  const { schema, entity } = getEntity(params.slug)
+  const actions = getActions(locals, schema)
+  if (!actions)
+    return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
 
-	const body = Object.fromEntries(url.searchParams.entries())
-	const { data, error, count, status } = await actions.get(entity, {
-		columns: body[':select'],
-		order: body[':order'],
-		limit: body[':limit'] ? Number(body[':limit']) : undefined,
-		offset: body[':offset'] ? Number(body[':offset']) : undefined,
-		count: body[':count'],
-		filter: omit(RESERVED, body)
-	})
+  const body = Object.fromEntries(url.searchParams.entries())
+  const { data, error, count, status } = await actions.get(entity, {
+    columns: body[':select'],
+    order: body[':order'],
+    limit: body[':limit'] ? Number(body[':limit']) : undefined,
+    offset: body[':offset'] ? Number(body[':offset']) : undefined,
+    count: body[':count'],
+    filter: omit(RESERVED, body)
+  })
 
-	if (error) return json({ error }, { status })
-	return json(count !== undefined ? { data, count } : data)
+  if (error) return json({ error }, { status })
+  return json(count !== undefined ? { data, count } : data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function POST({ params, request, locals }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+  const { schema, entity } = getEntity(params.slug)
+  const actions = getActions(locals, schema)
+  if (!actions)
+    return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
 
-	const body = await request.json()
-	const { data, error, status } = await actions.post(entity, body)
+  const body = await request.json()
+  const { data, error, status } = await actions.post(entity, body)
 
-	if (error) return json({ error }, { status })
-	return json(data)
+  if (error) return json({ error }, { status })
+  return json(data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function PUT({ params, request, locals }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+  const { schema, entity } = getEntity(params.slug)
+  const actions = getActions(locals, schema)
+  if (!actions)
+    return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
 
-	const body = await request.json()
-	const { data, error, status } = await actions.put(entity, body)
+  const body = await request.json()
+  const { data, error, status } = await actions.put(entity, body)
 
-	if (error) return json({ error }, { status })
-	return json(data)
+  if (error) return json({ error }, { status })
+  return json(data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function PATCH({ params, request, locals }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+  const { schema, entity } = getEntity(params.slug)
+  const actions = getActions(locals, schema)
+  if (!actions)
+    return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
 
-	const body = await request.json()
-	const { data, error, status } = await actions.patch(entity, body)
+  const body = await request.json()
+  const { data, error, status } = await actions.patch(entity, body)
 
-	if (error) return json({ error }, { status })
-	return json(data)
+  if (error) return json({ error }, { status })
+  return json(data)
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function DELETE({ params, request, locals }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = getActions(locals, schema)
-	if (!actions) return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
+  const { schema, entity } = getEntity(params.slug)
+  const actions = getActions(locals, schema)
+  if (!actions)
+    return json({ error: 'Data operations not supported for this adapter' }, { status: 501 })
 
-	const body = await request.json()
-	const { data, error, status } = await actions.delete(entity, body)
+  const body = await request.json()
+  const { data, error, status } = await actions.delete(entity, body)
 
-	if (error) return json({ error }, { status })
-	return json(data)
+  if (error) return json({ error }, { status })
+  return json(data)
 }
 ```
 
@@ -963,15 +976,15 @@ import { getEntity } from '$lib/db'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function POST({ params, request, locals }) {
-	const { schema, entity } = getEntity(params.slug)
-	const actions = locals.kavach.actions(schema)
-	if (!actions) return json({ error: 'RPC not supported for this adapter' }, { status: 501 })
+  const { schema, entity } = getEntity(params.slug)
+  const actions = locals.kavach.actions(schema)
+  if (!actions) return json({ error: 'RPC not supported for this adapter' }, { status: 501 })
 
-	const body = await request.json()
-	const { data, error, status } = await actions.call(entity, body)
+  const body = await request.json()
+  const { data, error, status } = await actions.call(entity, body)
 
-	if (error) return json({ error }, { status })
-	return json(data)
+  if (error) return json({ error }, { status })
+  return json(data)
 }
 ```
 
@@ -989,6 +1002,7 @@ git commit -m "feat(demo): add CRUD and RPC server routes with unsupported adapt
 Create adapter-specific env files and verify the dev server starts.
 
 **Files:**
+
 - Create: `sites/demo/.env.supabase`
 - Create: `sites/demo/.env`
 
@@ -1038,6 +1052,7 @@ git commit -m "feat(demo): add env files for supabase adapter"
 Configure Playwright with per-adapter projects. Write initial auth smoke test.
 
 **Files:**
+
 - Create: `sites/demo/playwright.config.js`
 - Create: `sites/demo/e2e/auth.spec.js`
 
@@ -1047,27 +1062,27 @@ Configure Playwright with per-adapter projects. Write initial auth smoke test.
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-	testDir: './e2e',
-	fullyParallel: true,
-	forbidOnly: !!process.env.CI,
-	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 1 : undefined,
-	reporter: 'html',
-	use: {
-		baseURL: 'http://localhost:4173',
-		trace: 'on-first-retry'
-	},
-	projects: [
-		{
-			name: 'supabase',
-			use: { ...devices['Desktop Chrome'] }
-		}
-	],
-	webServer: {
-		command: 'bun run build && bun run preview',
-		port: 4173,
-		reuseExistingServer: !process.env.CI
-	}
+  testDir: './e2e',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+  use: {
+    baseURL: 'http://localhost:4173',
+    trace: 'on-first-retry'
+  },
+  projects: [
+    {
+      name: 'supabase',
+      use: { ...devices['Desktop Chrome'] }
+    }
+  ],
+  webServer: {
+    command: 'bun run build && bun run preview',
+    port: 4173,
+    reuseExistingServer: !process.env.CI
+  }
 })
 ```
 
@@ -1077,20 +1092,20 @@ export default defineConfig({
 import { test, expect } from '@playwright/test'
 
 test.describe('Auth flows', () => {
-	test('redirects unauthenticated user to /auth', async ({ page }) => {
-		await page.goto('/')
-		await expect(page).toHaveURL(/\/auth/)
-	})
+  test('redirects unauthenticated user to /auth', async ({ page }) => {
+    await page.goto('/')
+    await expect(page).toHaveURL(/\/auth/)
+  })
 
-	test('public page is accessible without auth', async ({ page }) => {
-		await page.goto('/public')
-		await expect(page.locator('text=This is a public page')).toBeVisible()
-	})
+  test('public page is accessible without auth', async ({ page }) => {
+    await page.goto('/public')
+    await expect(page.locator('text=This is a public page')).toBeVisible()
+  })
 
-	test('auth page renders login form', async ({ page }) => {
-		await page.goto('/auth')
-		await expect(page.locator('text=Continue With Azure')).toBeVisible()
-	})
+  test('auth page renders login form', async ({ page }) => {
+    await page.goto('/auth')
+    await expect(page.locator('text=Continue With Azure')).toBeVisible()
+  })
 })
 ```
 
@@ -1108,6 +1123,7 @@ git commit -m "feat(demo): add Playwright config and auth e2e smoke tests"
 Add demo site to workspace config, verify everything works, then remove the supabase site.
 
 **Files:**
+
 - Modify: `solution/package.json` (add demo to workspaces if needed)
 - Delete: `sites/supabase/` (entire directory)
 

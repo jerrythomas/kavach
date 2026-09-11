@@ -6,16 +6,16 @@ The `kavach` package (`@kavach/auth`) orchestrates authentication through adapte
 
 ## Internal Modules
 
-| Module | Purpose |
-|--------|---------|
-| `kavach.js` | Main factory and orchestration — createKavach, signIn/signUp/signOut, handle hook |
-| `provider.js` | Provider configuration, user data extraction from adapter responses |
-| `request.js` | Request body/data parsing for SvelteKit endpoints |
-| `loginCache.js` | Client-side login history in localStorage |
-| `internal.js` | Low-level utilities — URL hash parsing, cookie read/write |
-| `avatar.js` | Gravatar URL and display name derivation |
-| `constants.js` | Configuration defaults |
-| `types.js` | JSDoc type definitions |
+| Module          | Purpose                                                                           |
+| --------------- | --------------------------------------------------------------------------------- |
+| `kavach.js`     | Main factory and orchestration — createKavach, signIn/signUp/signOut, handle hook |
+| `provider.js`   | Provider configuration, user data extraction from adapter responses               |
+| `request.js`    | Request body/data parsing for SvelteKit endpoints                                 |
+| `loginCache.js` | Client-side login history in localStorage                                         |
+| `internal.js`   | Low-level utilities — URL hash parsing, cookie read/write                         |
+| `avatar.js`     | Gravatar URL and display name derivation                                          |
+| `constants.js`  | Configuration defaults                                                            |
+| `types.js`      | JSDoc type definitions                                                            |
 
 ## Architecture
 
@@ -68,6 +68,7 @@ handle({ event, resolve })
 **Cookie-based, stateless.** No in-memory session store.
 
 Session shape in cookies (httpOnly, secure, sameSite=strict):
+
 ```
 {
   refresh_token: string,
@@ -88,6 +89,7 @@ Browser-only module (`loginCache.js`) using localStorage under `kavach:logins`.
 - **Server:** all operations no-op on server (SSR safe)
 
 Entry shape:
+
 ```
 { email, name, avatar, provider, mode, lastLogin, hasPasskey? }
 ```
@@ -104,10 +106,10 @@ UI components subscribe to this store for reactive feedback. Updated after every
 
 ## Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| Stateless cookies over server sessions | No server state to manage; scales horizontally; works with SvelteKit's edge-first model |
-| Adapter receives credentials as-is | No credential transformation — preserves provider-specific options without kavach needing to know about them |
-| Sentry + logger created once at init | Avoid per-request allocation; configuration doesn't change between requests |
-| Login cache in localStorage | Survives page refreshes; no server round-trip; private to the browser |
-| `invalidateAll()` after auth change | SvelteKit's load functions re-run, ensuring all server data reflects the new session |
+| Decision                               | Rationale                                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Stateless cookies over server sessions | No server state to manage; scales horizontally; works with SvelteKit's edge-first model                      |
+| Adapter receives credentials as-is     | No credential transformation — preserves provider-specific options without kavach needing to know about them |
+| Sentry + logger created once at init   | Avoid per-request allocation; configuration doesn't change between requests                                  |
+| Login cache in localStorage            | Survives page refreshes; no server round-trip; private to the browser                                        |
+| `invalidateAll()` after auth change    | SvelteKit's load functions re-run, ensuring all server data reflects the new session                         |

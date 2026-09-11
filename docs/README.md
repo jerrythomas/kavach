@@ -15,12 +15,12 @@ Building authentication from scratch is hard. Every platform has a different API
 
 Kavach supports multiple authentication flows:
 
-| Flow | Description |
-|------|-------------|
-| OAuth | Social login (Google, GitHub, etc.) |
-| Magic Link / OTP | Passwordless via email or SMS |
-| Password | Traditional email/password |
-| Passkey | WebAuthn/FIDO2 |
+| Flow             | Description                         |
+| ---------------- | ----------------------------------- |
+| OAuth            | Social login (Google, GitHub, etc.) |
+| Magic Link / OTP | Passwordless via email or SMS       |
+| Password         | Traditional email/password          |
+| Passkey          | WebAuthn/FIDO2                      |
 
 ## Features
 

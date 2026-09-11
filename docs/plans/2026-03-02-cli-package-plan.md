@@ -13,6 +13,7 @@
 ### Task 1: Package scaffold
 
 **Files:**
+
 - Create: `solution/packages/cli/package.json`
 - Create: `solution/packages/cli/src/index.js`
 - Create: `solution/packages/cli/src/vite.js`
@@ -55,12 +56,14 @@
 **Step 2: Create placeholder entry files**
 
 `src/index.js`:
+
 ```js
 #!/usr/bin/env node
 console.log('kavach cli')
 ```
 
 `src/vite.js`:
+
 ```js
 export function kavach() {
   return { name: 'kavach' }
@@ -70,6 +73,7 @@ export function kavach() {
 **Step 3: Add to vitest.config.js**
 
 Add to the projects array:
+
 ```js
 { extends: true, test: { name: 'cli', root: 'packages/cli' } }
 ```
@@ -94,6 +98,7 @@ feat(cli): scaffold @kavach/cli package
 ### Task 2: Config loader
 
 **Files:**
+
 - Create: `solution/packages/cli/src/config.js`
 - Create: `solution/packages/cli/spec/config.spec.js`
 
@@ -156,10 +161,12 @@ describe('validateConfig', () => {
   })
 
   it('should reject invalid provider shape', () => {
-    expect(() => validateConfig({
-      adapter: 'supabase',
-      providers: [{ label: 'no name' }]
-    })).toThrow('name is required')
+    expect(() =>
+      validateConfig({
+        adapter: 'supabase',
+        providers: [{ label: 'no name' }]
+      })
+    ).toThrow('name is required')
   })
 
   it('should accept valid config', () => {
@@ -176,6 +183,7 @@ Expected: FAIL — `parseConfig` not found.
 **Step 3: Write implementation**
 
 `src/config.js`:
+
 ```js
 const KNOWN_ADAPTERS = ['supabase']
 
@@ -245,6 +253,7 @@ feat(cli): add config loader with validation and defaults
 ### Task 3: Vite plugin — virtual module resolution
 
 **Files:**
+
 - Modify: `solution/packages/cli/src/vite.js`
 - Create: `solution/packages/cli/spec/vite.spec.js`
 
@@ -290,6 +299,7 @@ Expected: FAIL — `resolveId` not a function.
 **Step 3: Write implementation**
 
 `src/vite.js`:
+
 ```js
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
@@ -304,7 +314,8 @@ export function kavach(options = {}) {
     name: 'kavach',
 
     configResolved(viteConfig) {
-      const configPath = options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
+      const configPath =
+        options.configPath ?? resolve(viteConfig.root ?? process.cwd(), 'kavach.config.js')
       try {
         // Config loading happens at buildStart via dynamic import
         this._configPath = configPath
@@ -331,7 +342,10 @@ export function kavach(options = {}) {
 
     load(id) {
       if (!id.startsWith('\0$kavach/')) return
-      if (!config) throw new Error('kavach.config.js not found or invalid. Run `npx @kavach/cli init` to create one.')
+      if (!config)
+        throw new Error(
+          'kavach.config.js not found or invalid. Run `npx @kavach/cli init` to create one.'
+        )
 
       const name = id.slice('\0$kavach/'.length)
       return generateModule(name, config)
@@ -356,6 +370,7 @@ feat(cli): add Vite plugin with virtual module resolution
 ### Task 4: Virtual module code generation
 
 **Files:**
+
 - Create: `solution/packages/cli/src/generate.js`
 - Create: `solution/packages/cli/spec/generate.spec.js`
 - Modify: `solution/packages/cli/src/vite.js` (import generateModule)
@@ -377,7 +392,10 @@ const config = {
   logging: { level: 'info', table: 'audit.logs' },
   env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' },
   routes: { auth: '(public)/auth', data: '(server)/data', logout: '/logout' },
-  rules: [{ path: '/public', public: true }, { path: '/data', roles: '*' }]
+  rules: [
+    { path: '/public', public: true },
+    { path: '/data', roles: '*' }
+  ]
 }
 
 describe('generateModule', () => {
@@ -435,6 +453,7 @@ Expected: FAIL — `generateModule` not found.
 This is the core of the Vite plugin. Each `generateModule(name, config)` returns a valid ES module string.
 
 For supabase auth module (generated from config with `env: { url: 'PUBLIC_SUPABASE_URL', anonKey: 'PUBLIC_SUPABASE_ANON_KEY' }` and `logging: { level: 'info', table: 'audit.logs' }`):
+
 ```js
 import { createKavach } from 'kavach'
 import { getAdapter, getActions, getLogWriter } from '@kavach/adapter-supabase'
@@ -445,7 +464,10 @@ import { env } from '$env/dynamic/public'
 const client = createClient(env.PUBLIC_SUPABASE_URL, env.PUBLIC_SUPABASE_ANON_KEY)
 const adapter = getAdapter(client)
 const data = (schema) => getActions(client, schema)
-const writer = getLogWriter({ url: env.PUBLIC_SUPABASE_URL, anonKey: env.PUBLIC_SUPABASE_ANON_KEY }, { table: 'audit.logs' })
+const writer = getLogWriter(
+  { url: env.PUBLIC_SUPABASE_URL, anonKey: env.PUBLIC_SUPABASE_ANON_KEY },
+  { table: 'audit.logs' }
+)
 const logger = getLogger(writer, { level: 'info' })
 
 export const kavach = createKavach(adapter, {
@@ -478,6 +500,7 @@ feat(cli): add virtual module code generation for all $kavach/* modules
 ### Task 5: CLI init — prompts and config generation
 
 **Files:**
+
 - Create: `solution/packages/cli/src/commands/init.js`
 - Create: `solution/packages/cli/src/prompts.js`
 - Create: `solution/packages/cli/spec/prompts.spec.js`
@@ -505,7 +528,11 @@ describe('buildConfig', () => {
     expect(config.adapter).toBe('supabase')
     expect(config.providers).toHaveLength(4)
     expect(config.providers[0]).toEqual({ name: 'google', label: 'Continue with Google' })
-    expect(config.providers[2]).toEqual({ mode: 'otp', name: 'magic', label: 'Email for Magic Link' })
+    expect(config.providers[2]).toEqual({
+      mode: 'otp',
+      name: 'magic',
+      label: 'Email for Magic Link'
+    })
     expect(config.providers[3]).toEqual({ mode: 'password', name: 'email', label: 'Sign in using' })
     expect(config.logging.level).toBe('info')
     expect(config.logging.table).toBe('audit.logs')
@@ -560,6 +587,7 @@ feat(cli): add init command with interactive prompts
 ### Task 6: File generators — new files
 
 **Files:**
+
 - Create: `solution/packages/cli/src/generators.js`
 - Create: `solution/packages/cli/spec/generators.spec.js`
 
@@ -641,6 +669,7 @@ feat(cli): add file generators for config, auth page, and data route
 ### Task 7: File patchers — surgical edits
 
 **Files:**
+
 - Create: `solution/packages/cli/src/patchers.js`
 - Create: `solution/packages/cli/spec/patchers.spec.js`
 
@@ -648,7 +677,12 @@ feat(cli): add file generators for config, auth page, and data route
 
 ```js
 import { describe, it, expect } from 'vitest'
-import { patchViteConfig, patchHooksServer, patchLayoutServer, patchEnvFile } from '../src/patchers.js'
+import {
+  patchViteConfig,
+  patchHooksServer,
+  patchLayoutServer,
+  patchEnvFile
+} from '../src/patchers.js'
 
 describe('patchViteConfig', () => {
   it('should add kavach plugin to existing vite config', () => {
@@ -744,12 +778,14 @@ feat(cli): add surgical file patchers for vite, hooks, layout, and env
 ### Task 8: Wire init command end-to-end
 
 **Files:**
+
 - Modify: `solution/packages/cli/src/commands/init.js`
 - Create: `solution/packages/cli/src/fs.js` (file read/write helpers)
 
 **Step 1: Wire the complete init flow**
 
 `src/commands/init.js` ties everything together:
+
 1. Detect SvelteKit project (check for `svelte.config.js`)
 2. Run prompts (from `prompts.js`)
 3. Build config (from `prompts.js`)
@@ -777,6 +813,7 @@ feat(cli): wire init command end-to-end
 ### Task 9: Add subcommands
 
 **Files:**
+
 - Create: `solution/packages/cli/src/commands/add.js`
 - Modify: `solution/packages/cli/src/index.js` (wire add command)
 
@@ -831,6 +868,7 @@ Walk through prompts, select supabase + google + magic link + password, enable c
 **Step 3: Verify generated files**
 
 Check that these exist and have correct content:
+
 - `kavach.config.js`
 - `src/hooks.server.js` (patched)
 - `src/routes/(public)/auth/+page.svelte`
@@ -867,9 +905,7 @@ Based on the existing demo site config, create `solution/sites/demo/kavach.confi
 ```js
 export default {
   adapter: 'supabase',
-  providers: [
-    { name: 'azure', label: 'Continue With Azure', scopes: ['email', 'profile'] }
-  ],
+  providers: [{ name: 'azure', label: 'Continue With Azure', scopes: ['email', 'profile'] }],
   cachedLogins: false,
   logging: {
     level: 'info',
@@ -928,16 +964,16 @@ feat(demo): migrate to kavach.config.js + Vite plugin
 
 ## Summary
 
-| Task | What | Tests |
-|------|------|-------|
-| 1 | Package scaffold | — |
-| 2 | Config loader | config.spec.js |
-| 3 | Vite plugin resolution | vite.spec.js |
-| 4 | Virtual module generation | generate.spec.js |
-| 5 | CLI prompts → config | prompts.spec.js |
-| 6 | File generators | generators.spec.js |
-| 7 | File patchers | patchers.spec.js |
-| 8 | Wire init end-to-end | Manual test |
-| 9 | Add subcommands | Manual test |
-| 10 | Verify on new project | Manual test |
-| 11 | Migrate demo site | Existing test suite |
+| Task | What                      | Tests               |
+| ---- | ------------------------- | ------------------- |
+| 1    | Package scaffold          | —                   |
+| 2    | Config loader             | config.spec.js      |
+| 3    | Vite plugin resolution    | vite.spec.js        |
+| 4    | Virtual module generation | generate.spec.js    |
+| 5    | CLI prompts → config      | prompts.spec.js     |
+| 6    | File generators           | generators.spec.js  |
+| 7    | File patchers             | patchers.spec.js    |
+| 8    | Wire init end-to-end      | Manual test         |
+| 9    | Add subcommands           | Manual test         |
+| 10   | Verify on new project     | Manual test         |
+| 11   | Migrate demo site         | Existing test suite |

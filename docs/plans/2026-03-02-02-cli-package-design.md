@@ -32,23 +32,24 @@ kavach update        # Update kavach packages to latest
 4. **Configure routes** — prompt: login path (`/auth`), home path (`/`), session endpoint (`/auth/session`)
 5. **Generate files:**
 
-| File | Purpose |
-|------|---------|
-| `src/lib/auth.js` | Kavach instance setup (adapter + options) |
-| `src/lib/config.js` | Env var configuration |
-| `src/routes/(public)/auth/+page.svelte` | Login page with UI components |
-| `src/routes/(public)/auth/+layout.svelte` | Auth layout |
-| `src/routes/(app)/+layout.svelte` | Protected layout |
-| `src/routes/(server)/data/[...slug]/+server.js` | CRUD data routes |
-| `src/routes/(server)/rpc/[...slug]/+server.js` | RPC route |
-| `src/hooks.server.js` | Server hook for session handling |
-| `.env.example` | Required env vars for chosen adapter |
+| File                                            | Purpose                                   |
+| ----------------------------------------------- | ----------------------------------------- |
+| `src/lib/auth.js`                               | Kavach instance setup (adapter + options) |
+| `src/lib/config.js`                             | Env var configuration                     |
+| `src/routes/(public)/auth/+page.svelte`         | Login page with UI components             |
+| `src/routes/(public)/auth/+layout.svelte`       | Auth layout                               |
+| `src/routes/(app)/+layout.svelte`               | Protected layout                          |
+| `src/routes/(server)/data/[...slug]/+server.js` | CRUD data routes                          |
+| `src/routes/(server)/rpc/[...slug]/+server.js`  | RPC route                                 |
+| `src/hooks.server.js`                           | Server hook for session handling          |
+| `.env.example`                                  | Required env vars for chosen adapter      |
 
 6. **Install deps** — `bun add` / `npm install` kavach packages + adapter
 
 ### `kavach add <adapter>` Flow
 
 For projects that already have kavach but want to add/switch adapters:
+
 1. Install adapter package
 2. Update `src/lib/auth.js` with new adapter wiring
 3. Update `.env.example` with adapter-specific vars
@@ -56,6 +57,7 @@ For projects that already have kavach but want to add/switch adapters:
 ### Templates
 
 Templates live in `packages/cli/templates/`:
+
 ```
 templates/
 ├── auth.js.ejs        # per-adapter auth setup
@@ -72,6 +74,7 @@ Use EJS or simple string interpolation for templates — no heavy templating eng
 ### Configuration File
 
 After init, save config to `kavach.config.js` at project root:
+
 ```js
 export default {
   adapter: 'supabase',

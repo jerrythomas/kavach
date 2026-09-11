@@ -86,14 +86,14 @@ user's Cloudflare account/DNS + secrets.
 
 ### Tasks
 
-| #   | Task                              | Deliverable                                                     | Verify                                    |
+| # | Task | Deliverable | Verify |
 | --- | --------------------------------- | --------------------------------------------------------------- | ----------------------------------------- | ------------------------------------- | ----------------------------- |
-| 1   | Adapter selection in `sites/demo` | `svelte.config.js` `WORKERS_CI → adapter-cloudflare` + devDeps  | local build still green                   |
-| 2   | Per-adapter wrangler configs      | `wrangler.supabase                                              | firebase                                  | convex.jsonc` (Workers Static Assets) | `wrangler deploy -c` dry-runs |
-| 3   | Deploy script                     | `sites/showcase/deploy-demo.sh` (build + deploy + domain)       | `SKIP_DEPLOY=1 ./deploy-demo.sh supabase` |
-| 4   | CI workflow                       | `.github/workflows/deploy-demos.yml` (workflow_dispatch matrix) | workflow parses                           |
-| 5   | F5 sibling links in demo          | "Other demos" sidebar block using `ADAPTERS` + `isLive()`       | demo build green                          |
-| 6   | Docs + status                     | `docs/design/11-demo-deploy.md`; feature + dashboard status     | doc links resolve                         |
+| 1 | Adapter selection in `sites/demo` | `svelte.config.js` `WORKERS_CI → adapter-cloudflare` + devDeps | local build still green |
+| 2 | Per-adapter wrangler configs | `wrangler.supabase                                              | firebase                                  | convex.jsonc` (Workers Static Assets) | `wrangler deploy -c` dry-runs |
+| 3 | Deploy script | `sites/showcase/deploy-demo.sh` (build + deploy + domain) | `SKIP_DEPLOY=1 ./deploy-demo.sh supabase` |
+| 4 | CI workflow | `.github/workflows/deploy-demos.yml` (workflow_dispatch matrix) | workflow parses |
+| 5 | F5 sibling links in demo | "Other demos" sidebar block using `ADAPTERS` + `isLive()` | demo build green |
+| 6 | Docs + status | `docs/design/11-demo-deploy.md`; feature + dashboard status | doc links resolve |
 
 ### Out of scope (follow-ups)
 

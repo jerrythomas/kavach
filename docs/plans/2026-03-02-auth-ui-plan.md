@@ -15,6 +15,7 @@
 Add `loginCache.js` to `packages/auth` — a pure utility for managing cached login entries in localStorage. Browser-only (no-ops on server).
 
 **Files:**
+
 - Create: `solution/packages/auth/src/loginCache.js`
 - Create: `solution/packages/auth/spec/loginCache.spec.js`
 - Modify: `solution/packages/auth/src/index.js` (add export)
@@ -34,8 +35,12 @@ describe('loginCache', () => {
     storage = {}
     vi.stubGlobal('localStorage', {
       getItem: vi.fn((key) => storage[key] ?? null),
-      setItem: vi.fn((key, val) => { storage[key] = val }),
-      removeItem: vi.fn((key) => { delete storage[key] })
+      setItem: vi.fn((key, val) => {
+        storage[key] = val
+      }),
+      removeItem: vi.fn((key) => {
+        delete storage[key]
+      })
     })
   })
 
@@ -210,6 +215,7 @@ git commit -m "feat(auth): add loginCache module for cached login entries"
 Expose `getCachedLogins()`, `removeCachedLogin()`, `clearCachedLogins()` on the kavach instance. Auto-cache after successful `signIn` and `onAuthChange`.
 
 **Files:**
+
 - Modify: `solution/packages/auth/src/kavach.js`
 - Modify: `solution/packages/auth/spec/kavach-browser.spec.js`
 
@@ -227,8 +233,12 @@ describe('login cache', () => {
     storage = {}
     vi.stubGlobal('localStorage', {
       getItem: vi.fn((key) => storage[key] ?? null),
-      setItem: vi.fn((key, val) => { storage[key] = val }),
-      removeItem: vi.fn((key) => { delete storage[key] })
+      setItem: vi.fn((key, val) => {
+        storage[key] = val
+      }),
+      removeItem: vi.fn((key) => {
+        delete storage[key]
+      })
     })
   })
 
@@ -242,7 +252,9 @@ describe('login cache', () => {
   it('should cache login after successful signIn', async () => {
     adapter.signIn = vi.fn().mockResolvedValue({
       type: 'success',
-      data: { user: { email: 'a@b.com', user_metadata: { full_name: 'A B', avatar_url: 'http://img' } } }
+      data: {
+        user: { email: 'a@b.com', user_metadata: { full_name: 'A B', avatar_url: 'http://img' } }
+      }
     })
     const kavach = createKavach(adapter, { invalidateAll })
     await kavach.signIn({ provider: 'google' })
@@ -297,11 +309,13 @@ cd solution && NODE_OPTIONS='--disable-warning=DEP0040' npx vitest run --project
 Modify `solution/packages/auth/src/kavach.js`:
 
 1. Add import at top:
+
 ```js
 import { loginCache } from './loginCache'
 ```
 
 2. Add a helper function to extract cache entry from signIn result:
+
 ```js
 function cacheLoginFromResult(result, credentials) {
   if (RUNNING_ON !== 'browser') return
@@ -315,7 +329,9 @@ function cacheLoginFromResult(result, credentials) {
     name: meta.full_name ?? user.email?.split('@')[0] ?? '',
     avatar: meta.avatar_url ?? '',
     provider: credentials.provider ?? 'email',
-    mode: credentials.mode ?? (credentials.password ? 'password' : credentials.provider === 'magic' ? 'otp' : 'oauth'),
+    mode:
+      credentials.mode ??
+      (credentials.password ? 'password' : credentials.provider === 'magic' ? 'otp' : 'oauth'),
     hasPasskey: false,
     lastLogin: Date.now()
   })
@@ -323,11 +339,13 @@ function cacheLoginFromResult(result, credentials) {
 ```
 
 3. Call `cacheLoginFromResult` at end of `handleSignIn`, after `authStatus.set(result)`:
+
 ```js
 cacheLoginFromResult(result, credentials)
 ```
 
 4. Add cache methods to the returned object in `createKavach`:
+
 ```js
 return {
   signIn: (credentials) => handleSignIn(adapter, agents, credentials),
@@ -351,6 +369,7 @@ cd solution && NODE_OPTIONS='--disable-warning=DEP0040' npx vitest run --project
 **Step 5: Update existing test**
 
 The existing test `should create kavach using an adapter` asserts the shape of kavach. Update it to include the new methods:
+
 ```js
 expect(kavach).toEqual({
   signIn: expect.any(Function),
@@ -385,6 +404,7 @@ git commit -m "feat(auth): wire loginCache into kavach instance"
 A single cached login entry card.
 
 **Files:**
+
 - Create: `solution/packages/ui/src/LoginCard.svelte`
 - Create: `solution/packages/ui/spec/LoginCard.spec.svelte.js`
 
@@ -478,16 +498,28 @@ cd solution && NODE_OPTIONS='--disable-warning=DEP0040' npx vitest run --project
   }
 </script>
 
-<login-card data-login-card class="flex items-center gap-3 p-3 rounded cursor-pointer hover:bg-neutral-100" onclick={handleClick} role="button" tabindex="0">
-  <img src={avatar} alt={name} class="w-10 h-10 rounded-full" />
-  <span class="flex flex-col flex-grow">
+<login-card
+  data-login-card
+  class="flex cursor-pointer items-center gap-3 rounded p-3 hover:bg-neutral-100"
+  onclick={handleClick}
+  role="button"
+  tabindex="0"
+>
+  <img src={avatar} alt={name} class="h-10 w-10 rounded-full" />
+  <span class="flex flex-grow flex-col">
     <span class="font-medium">{name}</span>
   </span>
   <span data-provider={provider} class="i-auth-{provider}" aria-label={provider}></span>
   {#if hasPasskey}
     <span data-passkey class="i-auth-passkey" aria-label="passkey available"></span>
   {/if}
-  <button data-remove type="button" onclick={handleRemove} aria-label="Remove login" class="ml-2 text-neutral-400 hover:text-neutral-700">&times;</button>
+  <button
+    data-remove
+    type="button"
+    onclick={handleRemove}
+    aria-label="Remove login"
+    class="ml-2 text-neutral-400 hover:text-neutral-700">&times;</button
+  >
 </login-card>
 ```
 
@@ -511,6 +543,7 @@ git commit -m "feat(ui): add LoginCard component"
 Renders a list of LoginCard components. Empty state renders nothing.
 
 **Files:**
+
 - Create: `solution/packages/ui/src/LoginCardList.svelte`
 - Create: `solution/packages/ui/spec/LoginCardList.spec.svelte.js`
 
@@ -526,8 +559,24 @@ describe('LoginCardList.svelte', () => {
   const onremove = vi.fn()
 
   const logins = [
-    { email: 'a@b.com', name: 'A', avatar: 'http://a', provider: 'google', mode: 'oauth', hasPasskey: false, lastLogin: 2000 },
-    { email: 'b@b.com', name: 'B', avatar: 'http://b', provider: 'azure', mode: 'oauth', hasPasskey: true, lastLogin: 1000 }
+    {
+      email: 'a@b.com',
+      name: 'A',
+      avatar: 'http://a',
+      provider: 'google',
+      mode: 'oauth',
+      hasPasskey: false,
+      lastLogin: 2000
+    },
+    {
+      email: 'b@b.com',
+      name: 'B',
+      avatar: 'http://b',
+      provider: 'azure',
+      mode: 'oauth',
+      hasPasskey: true,
+      lastLogin: 1000
+    }
   ]
 
   beforeEach(() => {
@@ -604,6 +653,7 @@ git commit -m "feat(ui): add LoginCardList component"
 Smart layout orchestrator. Shows cached cards first (if any), then expandable "Other sign-in options" with provider groups.
 
 **Files:**
+
 - Create: `solution/packages/ui/src/AuthPage.svelte`
 - Create: `solution/packages/ui/spec/AuthPage.spec.svelte.js`
 
@@ -644,7 +694,14 @@ describe('AuthPage.svelte', () => {
     const kavach = {
       signIn: vi.fn().mockResolvedValue({ data: {} }),
       getCachedLogins: vi.fn().mockReturnValue([
-        { email: 'a@b.com', name: 'A', avatar: 'http://a', provider: 'google', mode: 'oauth', hasPasskey: false }
+        {
+          email: 'a@b.com',
+          name: 'A',
+          avatar: 'http://a',
+          provider: 'google',
+          mode: 'oauth',
+          hasPasskey: false
+        }
       ]),
       removeCachedLogin: vi.fn()
     }
@@ -660,7 +717,14 @@ describe('AuthPage.svelte', () => {
     const kavach = {
       signIn: vi.fn().mockResolvedValue({ data: {} }),
       getCachedLogins: vi.fn().mockReturnValue([
-        { email: 'a@b.com', name: 'A', avatar: 'http://a', provider: 'google', mode: 'oauth', hasPasskey: false }
+        {
+          email: 'a@b.com',
+          name: 'A',
+          avatar: 'http://a',
+          provider: 'google',
+          mode: 'oauth',
+          hasPasskey: false
+        }
       ]),
       removeCachedLogin: vi.fn()
     }
@@ -675,7 +739,14 @@ describe('AuthPage.svelte', () => {
     const kavach = {
       signIn: vi.fn().mockResolvedValue({ type: 'success', data: {} }),
       getCachedLogins: vi.fn().mockReturnValue([
-        { email: 'a@b.com', name: 'A', avatar: 'http://a', provider: 'google', mode: 'oauth', hasPasskey: false }
+        {
+          email: 'a@b.com',
+          name: 'A',
+          avatar: 'http://a',
+          provider: 'google',
+          mode: 'oauth',
+          hasPasskey: false
+        }
       ]),
       removeCachedLogin: vi.fn()
     }
@@ -692,7 +763,14 @@ describe('AuthPage.svelte', () => {
     const kavach = {
       signIn: vi.fn().mockResolvedValue({ data: {} }),
       getCachedLogins: vi.fn().mockReturnValue([
-        { email: 'a@b.com', name: 'A', avatar: 'http://a', provider: 'google', mode: 'oauth', hasPasskey: false }
+        {
+          email: 'a@b.com',
+          name: 'A',
+          avatar: 'http://a',
+          provider: 'google',
+          mode: 'oauth',
+          hasPasskey: false
+        }
       ]),
       removeCachedLogin: vi.fn()
     }
@@ -800,6 +878,7 @@ git commit -m "feat(ui): add AuthPage smart layout component"
 Add exports for the three new components and update the index test.
 
 **Files:**
+
 - Modify: `solution/packages/ui/src/index.js`
 - Modify: `solution/packages/ui/spec/index.spec.js`
 
@@ -810,6 +889,7 @@ Read `solution/packages/ui/spec/index.spec.js` to see current assertion.
 **Step 2: Update exports**
 
 Add to `solution/packages/ui/src/index.js`:
+
 ```js
 export { default as LoginCard } from './LoginCard.svelte'
 export { default as LoginCardList } from './LoginCardList.svelte'
@@ -838,6 +918,7 @@ git commit -m "feat(ui): export LoginCard, LoginCardList, AuthPage"
 Add optional `capabilities` array to adapter interface. Update Firebase adapter to declare passkey capability and handle `mode: 'passkey'` in signIn.
 
 **Files:**
+
 - Modify: `solution/adapters/firebase/src/adapter.js`
 - Modify: `solution/adapters/firebase/spec/adapter.spec.js`
 - Modify: `solution/packages/auth/src/types.js` (update AuthAdapter typedef)
@@ -875,6 +956,7 @@ cd solution && NODE_OPTIONS='--disable-warning=DEP0040' npx vitest run --project
 In `solution/adapters/firebase/src/adapter.js`:
 
 1. Update `getAuthMode` to recognize passkey:
+
 ```js
 export function getAuthMode(credentials) {
   const { password, provider, mode } = credentials
@@ -886,13 +968,18 @@ export function getAuthMode(credentials) {
 ```
 
 2. Add passkey handler in `signInActions` inside `handleSignIn`:
+
 ```js
 passkey: async () => {
-  throw { code: 'auth/passkey-not-supported', message: 'Passkey authentication is not yet supported by this adapter' }
+  throw {
+    code: 'auth/passkey-not-supported',
+    message: 'Passkey authentication is not yet supported by this adapter'
+  }
 }
 ```
 
 3. Add `capabilities` to the returned adapter object:
+
 ```js
 return {
   signIn: handleSignIn,
@@ -906,6 +993,7 @@ return {
 ```
 
 4. Update `AuthAdapter` typedef in `solution/packages/auth/src/types.js` — add:
+
 ```js
  * @property {string[]} [capabilities]
 ```

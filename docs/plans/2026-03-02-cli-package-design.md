@@ -53,10 +53,10 @@ export default {
 
 Controls the logger setup in the `$kavach/auth` virtual module.
 
-| Field | Default | Notes |
-|-------|---------|-------|
-| `level` | `'error'` | One of: error, warn, info, debug, trace |
-| `table` | `'logs'` | Supports `schema.table` format (e.g. `'audit.logs'`) |
+| Field   | Default   | Notes                                                |
+| ------- | --------- | ---------------------------------------------------- |
+| `level` | `'error'` | One of: error, warn, info, debug, trace              |
+| `table` | `'logs'`  | Supports `schema.table` format (e.g. `'audit.logs'`) |
 
 The Vite plugin generates logger initialization code using these values. At runtime the logger writes to the adapter's log writer (e.g. Supabase table).
 
@@ -64,9 +64,9 @@ The Vite plugin generates logger initialization code using these values. At runt
 
 Maps adapter config keys to environment variable names. Each adapter has sensible defaults.
 
-| Adapter | Key | Default env var |
-|---------|-----|-----------------|
-| supabase | `url` | `PUBLIC_SUPABASE_URL` |
+| Adapter  | Key       | Default env var            |
+| -------- | --------- | -------------------------- |
+| supabase | `url`     | `PUBLIC_SUPABASE_URL`      |
 | supabase | `anonKey` | `PUBLIC_SUPABASE_ANON_KEY` |
 
 The CLI uses `env` to know which vars to append to `.env`. The Vite plugin uses it to generate `import { env } from '$env/dynamic/public'` lookups in `$kavach/auth`.
@@ -77,12 +77,12 @@ Import: `import { kavach } from '@kavach/cli/vite'`
 
 Reads `kavach.config.js` and provides virtual modules:
 
-| Module | Provides | Consumed by |
-|--------|----------|-------------|
-| `$kavach/auth` | Pre-wired kavach instance, adapter, logger | `hooks.server.js`, `+layout.svelte` |
-| `$kavach/config` | Parsed config (adapter, providers, cached logins) | Auth page, layout |
-| `$kavach/routes` | Route protection rules, route paths | `hooks.server.js` |
-| `$kavach/providers` | Provider array for auth page | Auth `+page.svelte` |
+| Module              | Provides                                          | Consumed by                         |
+| ------------------- | ------------------------------------------------- | ----------------------------------- |
+| `$kavach/auth`      | Pre-wired kavach instance, adapter, logger        | `hooks.server.js`, `+layout.svelte` |
+| `$kavach/config`    | Parsed config (adapter, providers, cached logins) | Auth page, layout                   |
+| `$kavach/routes`    | Route protection rules, route paths               | `hooks.server.js`                   |
+| `$kavach/providers` | Provider array for auth page                      | Auth `+page.svelte`                 |
 
 ### vite.config.js integration
 
@@ -111,6 +111,7 @@ export const handle = sequence(kavach.handle)
 Interactive setup. Assumes SvelteKit project exists (from `sv create` or similar).
 
 **Prompts:**
+
 1. Which adapter? (supabase — extensible later)
 2. Which auth providers? (multi-select: Google, GitHub, Azure, Magic Link, Password)
 3. Enable cached logins? (y/n)
@@ -123,17 +124,17 @@ Interactive setup. Assumes SvelteKit project exists (from `sv create` or similar
 
 **Files generated/patched:**
 
-| File | Action | Notes |
-|------|--------|-------|
-| `kavach.config.js` | Create | Single source of truth |
-| `vite.config.js` | Patch | Add `kavach()` plugin via AST |
-| `src/hooks.server.js` | Patch | Import from `$kavach/auth`, add to `sequence()` |
-| `src/routes/+layout.server.js` | Patch | Add `locals.session` to load return |
-| `src/routes/+layout.svelte` | Patch | Add kavach context + onAuthChange |
-| `<auth-route>/+page.svelte` | Create | Auth page with selected providers. `AuthPage` if cached logins, `AuthProvider` list otherwise. |
-| `<data-route>/[...slug]/+server.js` | Create | Data CRUD endpoint (GET/POST/PUT/DELETE) |
-| `.env` | Append | Adapter env vars (never overwrite existing) |
-| `package.json` | Patch | Install deps via detected package manager |
+| File                                | Action | Notes                                                                                          |
+| ----------------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
+| `kavach.config.js`                  | Create | Single source of truth                                                                         |
+| `vite.config.js`                    | Patch  | Add `kavach()` plugin via AST                                                                  |
+| `src/hooks.server.js`               | Patch  | Import from `$kavach/auth`, add to `sequence()`                                                |
+| `src/routes/+layout.server.js`      | Patch  | Add `locals.session` to load return                                                            |
+| `src/routes/+layout.svelte`         | Patch  | Add kavach context + onAuthChange                                                              |
+| `<auth-route>/+page.svelte`         | Create | Auth page with selected providers. `AuthPage` if cached logins, `AuthProvider` list otherwise. |
+| `<data-route>/[...slug]/+server.js` | Create | Data CRUD endpoint (GET/POST/PUT/DELETE)                                                       |
+| `.env`                              | Append | Adapter env vars (never overwrite existing)                                                    |
+| `package.json`                      | Patch  | Install deps via detected package manager                                                      |
 
 ### `add auth-page`
 
@@ -156,11 +157,11 @@ Generates/regenerates the data CRUD endpoint and route protection setup from `ka
 
 ## Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `@clack/prompts` | Interactive CLI prompts |
-| `magicast` | AST-based JS/TS file transforms |
-| `picocolors` | Terminal colors |
+| Package          | Purpose                         |
+| ---------------- | ------------------------------- |
+| `@clack/prompts` | Interactive CLI prompts         |
+| `magicast`       | AST-based JS/TS file transforms |
+| `picocolors`     | Terminal colors                 |
 
 ## Verification plan
 
@@ -170,6 +171,7 @@ Generates/regenerates the data CRUD endpoint and route protection setup from `ka
 ## Scope
 
 ### Phase 1 (this story)
+
 - `init` command with Supabase adapter
 - Vite plugin with virtual modules
 - Surgical file patching
@@ -178,6 +180,7 @@ Generates/regenerates the data CRUD endpoint and route protection setup from `ka
 - Verification on new + existing project
 
 ### Future
+
 - Additional adapters (Firebase, Auth0, Amplify, Convex)
 - `add` subcommands for granular updates
 - TypeScript support in generated files

@@ -3,7 +3,10 @@ import { BaseAdapter } from 'kavach'
 import type { AuthAdapter, AuthCallback, AuthResult } from 'kavach'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function transformResult(result: any, credentials: Record<string, unknown> = {}): AuthResult {
+export function transformResult(
+	result: any,
+	credentials: Record<string, unknown> = {}
+): AuthResult {
 	const creds = omit(['password'], credentials ?? {})
 
 	// Error case: return error shape without attaching credentials to the error object
@@ -36,7 +39,7 @@ export function getAuthMode(credentials: Record<string, unknown>): 'magic' | 'pa
 
 export function parseUrlError(url: string | { search?: string } | undefined) {
 	try {
-		const search = typeof url === 'string' ? url : url?.search ?? ''
+		const search = typeof url === 'string' ? url : (url?.search ?? '')
 		const params = new URLSearchParams(search)
 		const errorCode = params.get('error')
 		const errorMessage = params.get('error_description')

@@ -171,10 +171,7 @@ export function serialize(name, val, options) {
 	}
 
 	if (opt.sameSite) {
-		const sameSite =
-			typeof opt.sameSite === 'string'
-				? opt.sameSite.toLowerCase()
-				: opt.sameSite
+		const sameSite = typeof opt.sameSite === 'string' ? opt.sameSite.toLowerCase() : opt.sameSite
 
 		switch (sameSite) {
 			case true:

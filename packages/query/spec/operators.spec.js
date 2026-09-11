@@ -11,7 +11,18 @@ describe('operators', () => {
 	})
 
 	it('should export all operators as flat array', () => {
-		expect(ALL_OPERATORS).toEqual(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'like', 'ilike', 'in', 'is'])
+		expect(ALL_OPERATORS).toEqual([
+			'eq',
+			'neq',
+			'gt',
+			'gte',
+			'lt',
+			'lte',
+			'like',
+			'ilike',
+			'in',
+			'is'
+		])
 	})
 
 	it('should validate known operators', () => {

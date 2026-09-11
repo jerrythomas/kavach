@@ -30,6 +30,7 @@ trace (5) ← most verbose
 ```
 
 When a logger is created at level `info`:
+
 - `error()`, `warn()`, `info()` → real log functions
 - `debug()`, `trace()` → `pass` (async no-op)
 
@@ -80,6 +81,7 @@ Writers implement a single method:
 ```
 
 LogData shape:
+
 ```
 {
   level: string,
@@ -110,12 +112,12 @@ All kavach packages default to `zeroLogger` when no logger is provided — loggi
 
 ## Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| No built-in writers | Keeps the package tiny; consumers pick their output target |
-| Level filtering at creation, not call time | Zero-cost no-ops for filtered levels; no conditionals on hot paths |
-| Context inheritance via new instances | Immutable loggers; safe to pass between modules without mutation risk |
-| Async write interface | Non-blocking; writing to databases or HTTP doesn't stall the request |
-| Auto environment detection | `running_on` field lets log consumers distinguish client vs server entries |
-| Default to error level | Conservative default; only critical issues logged unless explicitly widened |
-| zeroLogger as default | Packages work without logging configured; no null checks needed anywhere |
+| Decision                                   | Rationale                                                                   |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
+| No built-in writers                        | Keeps the package tiny; consumers pick their output target                  |
+| Level filtering at creation, not call time | Zero-cost no-ops for filtered levels; no conditionals on hot paths          |
+| Context inheritance via new instances      | Immutable loggers; safe to pass between modules without mutation risk       |
+| Async write interface                      | Non-blocking; writing to databases or HTTP doesn't stall the request        |
+| Auto environment detection                 | `running_on` field lets log consumers distinguish client vs server entries  |
+| Default to error level                     | Conservative default; only critical issues logged unless explicitly widened |
+| zeroLogger as default                      | Packages work without logging configured; no null checks needed anywhere    |

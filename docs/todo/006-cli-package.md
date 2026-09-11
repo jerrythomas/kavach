@@ -5,7 +5,7 @@ Add/update kavach to an existing project
 - data routes
 - hooks for auth
 - server endpoints
-- login pages 
+- login pages
 
 Asks for user input
 

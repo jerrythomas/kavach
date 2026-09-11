@@ -11,9 +11,7 @@ describe('AuthHandler.svelte', () => {
 		success: vi.fn()
 	}
 	const kavach = {
-		signIn: vi
-			.fn()
-			.mockImplementation(() => Promise.resolve({ data: { token: 'token' } }))
+		signIn: vi.fn().mockImplementation(() => Promise.resolve({ data: { token: 'token' } }))
 	}
 
 	beforeEach(() => {
