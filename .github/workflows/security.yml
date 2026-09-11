@@ -1,0 +1,89 @@
+name: Security
+
+# NOTE: no untrusted event data (issue/PR titles, bodies, branch names, commit
+# messages) is interpolated anywhere in this file. The only expression used is
+# `github.event_name` in an `if:`, which is a fixed enum, never attacker text.
+# Keep it that way: if a step ever needs event data, pass it through `env:` and
+# quote it in the shell rather than inlining ${{ }} into a `run:` block.
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+  schedule:
+    # Weekly, so an advisory published against an unchanged dependency still
+    # surfaces. A push-only trigger goes quiet exactly when a repo is idle.
+    - cron: '17 6 * * 1'
+
+# Read-only by default. Jobs that need more ask for it explicitly.
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Always print the full report, then gate. Gating at `high` is deliberate:
+      # the known moderates are transitive through firebase-tools, a devDep of
+      # the private demo site that never ships, and through @sveltejs/kit and
+      # aws-amplify, which pin them upstream. Failing on those would mean a
+      # permanently red pipeline that everyone learns to ignore — the state in
+      # which a genuine critical goes unnoticed. Dependabot still opens a PR for
+      # each one as soon as a fix exists.
+      - name: Audit dependencies
+        run: |
+          bun audit || true
+          echo "::group::Gate: fail on high or critical"
+          bun audit --audit-level=high
+          echo "::endgroup::"
+
+  dependency-review:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    # Only meaningful on a PR — it diffs the base against the head.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Blocks a PR that introduces a newly vulnerable dependency, which is the
+      # gap `bun audit` leaves: audit reports the whole tree, so a new moderate
+      # is invisible against the existing moderate noise.
+      - uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+
+  zizmor:
+    name: Workflow hardening
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Audits the workflows themselves — unpinned actions, injectable
+      # ${{ }} interpolation in run blocks, over-broad token permissions.
+      # The publish workflow handles an npm token, so this is the file set
+      # where a mistake is most expensive.
+      # advanced-security defaults to true and uploads SARIF to the Security
+      # tab, which is free on a public repo — hence security-events: write
+      # scoped to this job alone.
+      - uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4

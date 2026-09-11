@@ -1,0 +1,57 @@
+version: 2
+
+updates:
+  # Keep the SHA-pinned actions in .github/workflows current. Pinning by SHA is
+  # what makes a workflow tamper-resistant, but it also freezes the action at
+  # that commit — without this, a pinned action never picks up its own security
+  # fixes.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: 'chore(actions)'
+    # Wait before adopting a freshly published version. A compromised release is
+    # usually caught and yanked within days, and without this the automation
+    # would open a PR for it within hours of publication.
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']
+
+  # Workspace dependencies. Dependabot alerts + security updates are enabled on
+  # the repo, so vulnerable transitives get their own PRs as soon as a fixed
+  # version exists upstream; this covers routine currency on top of that.
+  #
+  # Grouped by risk rather than one PR per package: a flood of individual PRs
+  # is how dependency updates get ignored.
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /packages/*
+      - /adapters/*
+      - /sites/*
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+    # Security updates bypass this, so a real advisory still lands immediately.
+    cooldown:
+      default-days: 7
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        patterns: ['*']
+        update-types: [minor, patch]
+      production-minor-patch:
+        dependency-type: production
+        patterns: ['*']
+        update-types: [minor, patch]
+    ignore:
+      # Held at 6.x deliberately: typescript-eslint refuses to load against
+      # TS 7 and takes `bun run lint` down with it. See
+      # typescript-eslint/typescript-eslint#10940 — remove this when that lands.
+      - dependency-name: typescript
+        versions: ['7.x']
