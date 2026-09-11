@@ -90,4 +90,4 @@ Template strings for generated files (auth pages, data routes, etc).
 
 ## License
 
-MIT © [Jerry Thomas](https://jerrythomas.name)
+MIT © [Jerry Thomas](https://github.com/jerrythomas)

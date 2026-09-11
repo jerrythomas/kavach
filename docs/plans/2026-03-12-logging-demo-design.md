@@ -8,7 +8,7 @@
 ## Goal
 
 1. Add `getLogWriter()` to Firebase and Convex adapters so they support structured logging via `@kavach/logger`, consistent with the Supabase pattern.
-2. Extract the demo into a standalone `sites/demo` SvelteKit app, driven by `KAVACH_ADAPTER` env var, deployable as three separate Vercel projects (supabase, firebase, convex) each with their own subdomain.
+2. Extract the demo into a standalone `sites/demo` SvelteKit app, driven by `KAVACH_ADAPTER` env var, deployable as three separate Cloudflare Workers projects (supabase, firebase, convex) each with their own subdomain.
 3. Update the Vite plugin to support firebase and convex adapter templates.
 4. Update `sites/learn` to link out to the live demo deployments and mark firebase/convex as live.
 
@@ -159,23 +159,24 @@ export default {
 
 ### `sites/learn/src/lib/demo/platforms.ts`
 
-- `firebase` and `convex` entries: `live: true`, `url: 'https://firebase.demo.kavach.dev'` / `'https://convex.demo.kavach.dev'`
+- `firebase` and `convex` entries: `live: true`, `url: 'https://firebase.kavach.sensei-hq.com'` / `'https://convex.kavach.sensei-hq.com'`
 
 ### Demo cards (`/demo/[platform]`)
 
 - Cards for live platforms show "Launch demo →" button linking to the demo URL
 - Cards for non-live platforms keep existing "Coming soon" state
 
-### Vercel Deployment
+### Deployment
 
-Three separate Vercel projects from same repo:
+Three separate Cloudflare Workers projects from same repo (see
+`docs/design/11-demo-deploy.md` for the current deploy procedure):
 
 - Root directory: `sites/demo`
-- `KAVACH_ADAPTER=supabase` → `supabase.demo.kavach.dev`
-- `KAVACH_ADAPTER=firebase` → `firebase.demo.kavach.dev`
-- `KAVACH_ADAPTER=convex` → `convex.demo.kavach.dev`
+- `KAVACH_ADAPTER=supabase` → `supabase.kavach.sensei-hq.com`
+- `KAVACH_ADAPTER=firebase` → `firebase.kavach.sensei-hq.com`
+- `KAVACH_ADAPTER=convex` → `convex.kavach.sensei-hq.com`
 
-Each project has adapter-specific env vars set in Vercel dashboard.
+Each project has adapter-specific env vars set as Worker secrets/vars.
 
 ---
 
@@ -184,4 +185,4 @@ Each project has adapter-specific env vars set in Vercel dashboard.
 - Multi-tenancy or user-created accounts in demo
 - Persistence between demo sessions
 - Admin role assignment UI (seeded via backend directly)
-- Actual Vercel project creation (manual step, documented in README)
+- Actual Cloudflare Workers project creation (manual step, documented in README)

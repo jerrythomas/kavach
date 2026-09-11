@@ -17,6 +17,7 @@
     "url": "https://github.com/jerrythomas/kavach",
     "directory": "packages/logger"
   },
+  "homepage": "https://kavach.sensei-hq.com",
   "prettier": "@jerrythomas/prettier-config",
   "publishConfig": {
     "access": "public"

@@ -828,7 +828,7 @@ Expected: `node_modules` created, no errors
 
 - [ ] **Step 11: Verify site builds with supabase adapter**
 
-Note: `KAVACH_ADAPTER` (Node env) drives `kavach.config.js` at build time. `PUBLIC_KAVACH_ADAPTER` (SvelteKit public env) is needed at runtime to show the adapter name in the UI. Both must be set together in `.env.local` and in Vercel — one is not sufficient. The build test below uses env vars inline:
+Note: `KAVACH_ADAPTER` (Node env) drives `kavach.config.js` at build time. `PUBLIC_KAVACH_ADAPTER` (SvelteKit public env) is needed at runtime to show the adapter name in the UI. Both must be set together in `.env.local` and on the Cloudflare Worker — one is not sufficient. The build test below uses env vars inline:
 
 ```bash
 cd sites/demo && KAVACH_ADAPTER=supabase PUBLIC_KAVACH_ADAPTER=supabase bun run build
@@ -1678,7 +1678,7 @@ In the `PLATFORMS` array, update firebase and convex entries:
   icon: 'i-auth-firebase',
   iconFallback: 'bg-orange-500',
   live: true,
-  url: 'https://firebase.demo.kavach.dev',
+  url: 'https://firebase.kavach.sensei-hq.com',
   modes: ['password', 'magic', 'social'],
   capabilities: ['Email + password', 'Magic link (OTP)', 'Google OAuth', 'Firestore security rules', 'Structured logging'],
   adapterPackage: '@kavach/adapter-firebase'
@@ -1693,7 +1693,7 @@ In the `PLATFORMS` array, update firebase and convex entries:
   icon: 'i-app-shield',
   iconFallback: 'bg-purple-600',
   live: true,
-  url: 'https://convex.demo.kavach.dev',
+  url: 'https://convex.kavach.sensei-hq.com',
   // Note: modes changed from ['password'] to ['social'] — Convex demo uses Google OAuth only
   // (password auth requires Convex Auth backend which is not configured in the demo)
   modes: ['social'],
@@ -1747,16 +1747,16 @@ git commit -m "feat(learn): mark firebase + convex demos live, add launch links"
 
 ## Notes for deployers
 
-**Vercel setup (manual step — not automated):**
+**Cloudflare Workers setup (manual step — not automated; see `docs/design/11-demo-deploy.md`):**
 
-1. Create three Vercel projects from the same repo, each pointing at `sites/demo` as root directory
+1. Create three Cloudflare Workers projects from the same repo, each pointing at `sites/demo` as root directory
 2. Set per-project env vars:
 
-| Project              | `KAVACH_ADAPTER` | `PUBLIC_KAVACH_ADAPTER` | Domain                     |
-| -------------------- | ---------------- | ----------------------- | -------------------------- |
-| kavach-demo-supabase | `supabase`       | `supabase`              | `supabase.demo.kavach.dev` |
-| kavach-demo-firebase | `firebase`       | `firebase`              | `firebase.demo.kavach.dev` |
-| kavach-demo-convex   | `convex`         | `convex`                | `convex.demo.kavach.dev`   |
+| Project              | `KAVACH_ADAPTER` | `PUBLIC_KAVACH_ADAPTER` | Domain                          |
+| -------------------- | ---------------- | ----------------------- | ------------------------------- |
+| kavach-demo-supabase | `supabase`       | `supabase`              | `supabase.kavach.sensei-hq.com` |
+| kavach-demo-firebase | `firebase`       | `firebase`              | `firebase.kavach.sensei-hq.com` |
+| kavach-demo-convex   | `convex`         | `convex`                | `convex.kavach.sensei-hq.com`   |
 
 3. Add adapter-specific env vars per project (Supabase URL/anon key, Firebase config, Convex URL)
 4. Update `platforms.ts` URLs once domains are confirmed

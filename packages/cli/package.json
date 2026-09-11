@@ -26,6 +26,7 @@
     "url": "https://github.com/jerrythomas/kavach",
     "directory": "packages/cli"
   },
+  "homepage": "https://kavach.sensei-hq.com",
   "publishConfig": {
     "access": "public"
   },

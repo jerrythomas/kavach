@@ -35,7 +35,7 @@ PUBLIC_DEMO_CONVEX_URL=http://localhost:4175
 ```bash
 # Demo site URLs
 # Local: run each demo site's preview server on the matching port
-# Production: set to deployed demo site URLs in Vercel dashboard
+# Production: set to deployed demo site URLs (supabase.kavach.sensei-hq.com, etc.)
 PUBLIC_DEMO_SUPABASE_URL=http://localhost:4173
 PUBLIC_DEMO_FIREBASE_URL=http://localhost:4174
 PUBLIC_DEMO_CONVEX_URL=http://localhost:4175

@@ -10,17 +10,17 @@ Wire up the learn site so that its three demo platform links (Supabase, Firebase
 
 Three new public env vars, added to `.env` files:
 
-| Variable                   | Local value             | Production value                   |
-| -------------------------- | ----------------------- | ---------------------------------- |
-| `PUBLIC_DEMO_SUPABASE_URL` | `http://localhost:4173` | `https://supabase.demo.kavach.dev` |
-| `PUBLIC_DEMO_FIREBASE_URL` | `http://localhost:4174` | `https://firebase.demo.kavach.dev` |
-| `PUBLIC_DEMO_CONVEX_URL`   | `http://localhost:4175` | `https://convex.demo.kavach.dev`   |
+| Variable                   | Local value             | Production value                        |
+| -------------------------- | ----------------------- | --------------------------------------- |
+| `PUBLIC_DEMO_SUPABASE_URL` | `http://localhost:4173` | `https://supabase.kavach.sensei-hq.com` |
+| `PUBLIC_DEMO_FIREBASE_URL` | `http://localhost:4174` | `https://firebase.kavach.sensei-hq.com` |
+| `PUBLIC_DEMO_CONVEX_URL`   | `http://localhost:4175` | `https://convex.kavach.sensei-hq.com`   |
 
 Files to update:
 
 - `sites/learn/.env` — local values (already gitignored or example-only)
 - `sites/learn/.env.example` — document all required vars
-- Production env vars set in Vercel dashboard (not in repo)
+- Production env vars set on the Cloudflare Workers project (not in repo)
 
 ### `platforms.ts` Changes
 

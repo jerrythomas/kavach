@@ -110,7 +110,7 @@ export default {
 
 ## License
 
-MIT © [Jerry Thomas](https://jerrythomas.name)
+MIT © [Jerry Thomas](https://github.com/jerrythomas)
 
 [workflow_status_url]: https://img.shields.io/github/workflow/status/jerrythomas/kavach/publish.yml/badge.svg?branch=next
 [maintainability_badge]: https://api.codeclimate.com/v1/badges/fa032a4f7e29a8c89c7d/maintainability
