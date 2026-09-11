@@ -27,11 +27,27 @@ Shipped in this release:
   kept in sync by `scripts/sync-library-manifest.mjs` via the bumpp hook —
   its first real run produced `documents: 1.2.0` / `ref: v1.2.0` correctly.
 
+Post-release hardening (on `develop`, ahead of `main`):
+
+- Repo security was entirely off. Secret scanning, push protection, Dependabot
+  alerts and Dependabot security updates now **enabled**. Two toggles
+  (`non_provider_patterns`, `validity_checks`) accept the API call but stay
+  disabled — they need a paid Secret Protection licence.
+- `.github/dependabot.yml` (npm + github-actions, grouped, 7-day cooldown) and
+  `.github/workflows/security.yml` (audit gated at high, dependency-review on
+  PRs, zizmor). First run green; zizmor uploaded SARIF with **0 alerts**.
+- `bun audit`: 7 vulns, 0 high/critical. Five are transitive via
+  `firebase-tools`, a devDep of the private demo site — never shipped. The two
+  reaching published packages (`cookie` via kit, `uuid` via aws-amplify) are
+  pinned upstream; Dependabot will PR when fixes land.
+- Filed jerrythomas/booksmith#1: its `spec/epub.spec.js` writes to a
+  cwd-relative path, which is how `Test Book.epub` escaped into kavach. That
+  repo also has 72 advisories (1 critical, `adm-zip` high on its own zip
+  attack surface), two lockfiles, and unpinned EOL actions.
+
 ## Remaining
 
-`952c2c1` (untrack `spec/fixtures`) is committed but **not pushed**. Issues #31
-and #32 still need closing by hand — #32's `Closes` did not fire because the
-release commit, not the feature commit, was the one that reached `main`.
+Issues #31 and #32 are closed. Nothing outstanding on the release.
 
 Untouched tech debt: #26 cli (38) · #27 auth (17) · #28 vite (9) · #29 (9) —
 clearing all four promotes `complexity`/`max-lines-per-function` to `error`.
@@ -39,7 +55,7 @@ clearing all four promotes `complexity`/`max-lines-per-function` to `error`.
 
 ## Next command
 
-`git push origin develop`
+`bun run test:ci` — new work starts on `develop`.
 
 ## Open questions
 
