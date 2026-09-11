@@ -28,7 +28,7 @@
   "dependencies": {
     "@kavach/ui": "workspace:*",
     "@rokkit/app": "1.3.7",
-    "@rokkit/icons": "1.3.7",
+    "@rokkit/icons": "1.4.1",
     "kavach": "workspace:*",
     "svelte": "^5.53.10"
   },
