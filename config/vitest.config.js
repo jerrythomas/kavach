@@ -30,14 +30,19 @@ export default defineConfig({
 			exclude: [
 				'**/spec/**',
 				'**/node_modules/**',
-				'**templates/**',
+				'**/templates/**',
 				'**/dist/**',
 				'**/sites/**',
-				'**/fixtures/**'
+				'**/fixtures/**',
+				'**/.worktrees/**'
 			]
 		},
 		projects: [
 			{
+				// No `extends` — vitest 5 would otherwise merge the root `test.include`
+				// (`**/spec/**`) into this project on top of its own, making it collect
+				// and re-run every spec in the repo under a bare node environment.
+				extends: false,
 				test: {
 					name: 'packaging',
 					root: repoRoot,
