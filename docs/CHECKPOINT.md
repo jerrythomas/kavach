@@ -1,47 +1,52 @@
 # Checkpoint
 
-**Slice:** Release work complete — v1.1.3 shipped, broken 1.x line deprecated
+**Slice:** Site-URL canonicalization, dependency upgrade, sensei manifest (#31, #32)
 
 ## Done
 
-- **v1.1.3 published and verified installable.** Checked against the registry,
-  not the working tree: `npm install kavach@1.1.3` succeeds, every package
-  imports under plain Node ESM, internal deps resolve to 1.1.3.
-- **Broken 1.x deprecated**, scope derived per package by inspecting each
-  published version's manifest and source:
-  - `kavach`, adapters ×5, `ui`, `sentry`, `cli` → 1.0.0–1.1.2
-  - `@kavach/logger` → 1.0.0–1.1.1 (1.1.2 is clean)
-  - **Excluded as never-defective:** `cookie`, `hashing`, `query`, `vite`
-  - Verified live: 0 mismatches vs intended scope; deprecated versions warn,
-    1.1.3 installs warning-free and still imports.
-- **Publish workflow now gates three things**: declared types present,
-  native-ESM import, and dependency sanity (no git/url dep, no unrewritten
-  `workspace:`, siblings match the release version).
-- `main == develop == origin` at `10bb281`, linear. CI green.
+Four commits on `develop`, each independently green (verified by checking out
+and running the suite at each, not just at HEAD):
+
+- `a17e551` **deps upgraded.** TypeScript pinned to **^6.0.3, not 7.x** —
+  typescript-eslint refuses to load against TS 7 (upstream issue #10940) and
+  takes `bun run lint` down. TS 6 forced explicit `rootDir` in 4 build configs.
+  vitest 5 changed project inheritance: `packaging` was collecting 78 files
+  instead of 1 until `extends: false`. Two long-broken coverage globs fixed —
+  reported coverage 50.46% → 79.1%.
+- `a76f876` **prettier applied repo-wide** (~100 files). Pre-existing drift,
+  confirmed against prettier 3.8.1 — not upgrade fallout. `.prettierignore`
+  patterns were resolving relative to `config/`, so most matched nothing.
+- `a8fa732` **all site URLs → kavach.sensei-hq.com.** Removed `kavach.vercel.app`
+  (an unrelated third-party app), `*.demo.kavach.dev`, `jerrythomas.name`.
+  Added the `homepage` field, absent from all 14 published packages.
+- `ed347a9` **sensei.library.json** gained `documents`, `ref` (tag, not branch),
+  `packages`, `ecosystem`, per sensei-hq/sensei `docs/spec/library-manifest.md`.
+
+GitHub repo `homepage` metadata also set to `https://kavach.sensei-hq.com`
+(was `kavach.vercel.app`, no scheme) — that is #31's actual ask.
 
 ## Remaining
 
-Nothing on the release. Open tickets, untouched:
-#26 cli (38) · #27 auth (17) · #28 vite (9) · #29 convex/query/sentry (9) —
-clearing all four unblocks promoting `complexity` and `max-lines-per-function`
-from `warn` to `error`. #22 (ambient .d.ts) overlaps #28; sequence together.
+**Not pushed.** `develop` is 4 ahead of `origin/develop`. #32 closes on merge to
+`main`; #31 needs closing by hand (its fix is repo metadata, not a commit).
+
+Untouched tech debt: #26 cli (38) · #27 auth (17) · #28 vite (9) · #29 (9) —
+clearing all four promotes `complexity`/`max-lines-per-function` to `error`.
+#22 overlaps #28; sequence together.
 
 ## Next command
 
-`bun run test:ci` — new work starts on `develop`.
+`git push origin develop`
 
 ## Open questions
 
-None.
+Whether to revisit TypeScript 7 — blocked on typescript-eslint, not on us.
 
 ## Known-broken
 
-Nothing in the repo. 866 tests with dist built, 860 on a clean checkout;
-eslint 0 errors / 73 warnings (baseline); actionlint and semgrep clean.
+Nothing. 872 tests, lint 0 errors / 73 warnings (baseline), prettier clean,
+14 packages build. Sensei daemon was down this session, so no `update_phase` /
+`log_event` was recorded — this file is the only record.
 
-Process note: verify the packed artifact BEFORE tagging — both 1.1.2 defects
-were catchable by `npm install`ing a local `bun pm pack` output.
-
-Pre-existing, untriaged: 51 semgrep path-traversal / child-process findings in
-`packages/cli` and `packages/vite`. `spec/fixtures/Test Book.epub` is untracked
-and unrelated — left alone.
+Pre-existing, untriaged: 51 semgrep findings in `packages/cli` and
+`packages/vite`. `spec/fixtures/` is untracked and unrelated — left alone.
