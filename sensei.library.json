@@ -1,9 +1,27 @@
 {
   "library": "kavach",
   "version": ">=1.0",
+  "documents": "1.1.3",
+  "ecosystem": "npm",
   "repo": "https://github.com/jerrythomas/kavach",
-  "branch": "main",
+  "ref": "v1.1.3",
   "site": "https://kavach.sensei-hq.com",
+  "packages": [
+    "kavach",
+    "@kavach/adapter-amplify",
+    "@kavach/adapter-auth0",
+    "@kavach/adapter-convex",
+    "@kavach/adapter-firebase",
+    "@kavach/adapter-supabase",
+    "@kavach/cli",
+    "@kavach/cookie",
+    "@kavach/hashing",
+    "@kavach/logger",
+    "@kavach/query",
+    "@kavach/sentry",
+    "@kavach/ui",
+    "@kavach/vite"
+  ],
   "skills": [
     {
       "name": "kavach-setup",

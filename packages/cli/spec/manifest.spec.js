@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { listSkills, parseFrontmatter } from '../src/skills.js'
 import { listAgents } from '../src/agents.js'
@@ -9,16 +9,73 @@ import { listAgents } from '../src/agents.js'
 // cwd rather than the module URL.
 const REPO_ROOT = process.cwd()
 const manifest = JSON.parse(readFileSync(join(REPO_ROOT, 'sensei.library.json'), 'utf-8'))
+const rootPkg = JSON.parse(readFileSync(join(REPO_ROOT, 'package.json'), 'utf-8'))
 
 const rootPath = (p) => join(REPO_ROOT, p)
 
+/** Every publishable workspace package name, read from the manifests on disk. */
+function publishedPackages() {
+	return ['packages', 'adapters']
+		.flatMap((group) =>
+			readdirSync(rootPath(group)).map((dir) => join(rootPath(group), dir, 'package.json'))
+		)
+		.filter((file) => existsSync(file))
+		.map((file) => JSON.parse(readFileSync(file, 'utf-8')))
+		.filter((pkg) => !pkg.private)
+		.map((pkg) => pkg.name)
+		.sort()
+}
+
 describe('sensei.library.json — top level', () => {
-	it('declares library, version range, repo, branch and site', () => {
+	it('declares library, version range, repo, ref and site', () => {
 		expect(manifest.library).toBe('kavach')
 		expect(manifest.version).toMatch(/^[<>=~^]/)
 		expect(manifest.repo).toMatch(/^https:\/\/github\.com\//)
-		expect(manifest.branch).toBeTruthy()
+		expect(manifest.ref).toBeTruthy()
 		expect(manifest.site).toMatch(/^https:\/\//)
+	})
+
+	it('keys its identity on an ecosystem, since a library is (ecosystem, name)', () => {
+		expect(manifest.ecosystem).toBe('npm')
+	})
+
+	// `version` is a RANGE (which releases the capabilities apply to). `documents`
+	// is the CONCRETE release the published skills/agents/llms corpus describes.
+	// Without the second, a consumer cannot answer "are these docs for the version
+	// I depend on?" and has to serve possibly-wrong docs or none at all.
+	it('names the concrete release its published artifacts describe', () => {
+		expect(manifest.documents).toMatch(/^\d+\.\d+\.\d+/)
+		expect(manifest.documents).not.toMatch(/^[<>=~^]/)
+	})
+
+	// A stale `documents` is worse than an absent one: it answers the version
+	// question confidently and wrongly. Pinning it to the repo's own version means
+	// a release that forgets to sync the manifest fails here instead of shipping.
+	it('documents the version this repo is actually at', () => {
+		expect(manifest.documents).toBe(rootPkg.version)
+	})
+
+	// A branch is a moving target: docs fetched from `main` are not reproducible
+	// and cannot be matched to a release. A tag can.
+	it('pins source fetches to a tag rather than a moving branch', () => {
+		expect(manifest.ref).toBe(`v${manifest.documents}`)
+		expect(manifest.branch).toBeUndefined()
+	})
+})
+
+describe('sensei.library.json — packages', () => {
+	// Grouping must be declared, never inferred: a dependency on `@kavach/vite`
+	// cannot reach kavach's skills and docs unless the library says it owns that
+	// name. A prefix rule is not a substitute — `@types/node` belongs to no
+	// "types" library.
+	it('declares exactly the publishable workspace packages', () => {
+		expect([...manifest.packages].sort()).toEqual(publishedPackages())
+	})
+
+	it('includes the root package and the scoped ones', () => {
+		expect(manifest.packages).toContain('kavach')
+		expect(manifest.packages).toContain('@kavach/vite')
+		expect(manifest.packages).toContain('@kavach/adapter-supabase')
 	})
 
 	it('documents the install commands', () => {

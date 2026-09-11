@@ -7,8 +7,10 @@ export default {
 	],
 	recursive: true,
 
-	// Regenerate the lockfile AFTER the version bump, and include it in the
-	// release commit.
+	// Post-bump, pre-commit work, in scripts/release-prep.sh: sync
+	// sensei.library.json (`documents`/`ref` name the release the published docs
+	// describe, so they go stale every bump) and regenerate the lockfile. Both
+	// land in the release commit.
 	//
 	// `bun pm pack` rewrites each `workspace:*` dependency using the version
 	// recorded for that workspace in bun.lock — not the version in the package's
@@ -26,6 +28,6 @@ export default {
 	// `rm -f bun.lock '&&' bun install` — `rm -f` ignores the bogus names and
 	// exits 0, so v1.1.3 committed the lockfile as deleted rather than
 	// regenerated. The script asserts the result instead of trusting it.
-	execute: 'bash scripts/refresh-lockfile.sh',
+	execute: 'bash scripts/release-prep.sh',
 	all: true
 }

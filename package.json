@@ -17,6 +17,7 @@
     "format": "prettier --config config/.prettierrc --ignore-path config/.prettierignore --write .",
     "lint": "eslint --config config/eslint.config.mjs --fix",
     "lockfile": "bun install",
+    "sync:manifest": "node scripts/sync-library-manifest.mjs",
     "build:all": "bash scripts/build-all.sh",
     "upgrade:all": "bun update --latest",
     "bump": "bumpp --configFilePath config/bump.config.js",
