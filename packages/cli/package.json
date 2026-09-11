@@ -16,7 +16,7 @@
   "dependencies": {
     "@clack/prompts": "^0.9.1",
     "@kavach/vite": "workspace:*",
-    "magicast": "^0.3.5",
+    "magicast": "^0.5.4",
     "picocolors": "^1.1.1"
   },
   "author": "Jerry Thomas <me@jerrythomas.name>",
