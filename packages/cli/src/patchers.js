@@ -106,8 +106,13 @@ ${KAVACH_SETUP}
 export function patchLayoutSvelte(content) {
 	if (content.includes("setContext('kavach'")) return content
 
-	// No <script> block — generate a complete minimal layout
-	const scriptMatch = content.match(/<script(\s[^>]*)?>/)
+	// No <script> block — generate a complete minimal layout.
+	//
+	// Case-insensitive deliberately: a tag this fails to see is not a missed
+	// injection, it falls through to returning KAVACH_MINIMAL_LAYOUT and
+	// silently discards whatever the developer had written. The closing tag
+	// below matches the same way, so a file is never half-patched.
+	const scriptMatch = content.match(/<script(\s[^>]*)?>/i)
 	if (!content.trim() || !scriptMatch) {
 		return KAVACH_MINIMAL_LAYOUT
 	}
@@ -135,7 +140,7 @@ export function patchLayoutSvelte(content) {
 	}
 
 	// Inject kavach setup before closing </script>
-	result = result.replace('</script>', `${KAVACH_SETUP}\n</script>`)
+	result = result.replace(/<\/script>/i, `${KAVACH_SETUP}\n</script>`)
 
 	return result
 }

@@ -110,6 +110,17 @@ describe('patchLayoutSvelte', () => {
 		expect(output).toContain("import 'uno.css'")
 	})
 
+	// The script-tag match decides between "inject into the user's layout" and
+	// "replace the whole file with the minimal template". A tag the regex fails
+	// to see is therefore not a missed injection — it is silent destruction of
+	// whatever the developer had written.
+	it('preserves existing content when the script tag is not lowercase', () => {
+		const input = `<SCRIPT>\n\timport 'uno.css'\n</SCRIPT>\n\n{@render children()}`
+		const output = patchLayoutSvelte(input)
+		expect(output).toContain("import 'uno.css'")
+		expect(output).toContain("setContext('kavach'")
+	})
+
 	it('injects kavach setup into an existing <script lang="ts"> block', () => {
 		const input = `<script lang="ts">\n\timport 'uno.css'\n</script>\n\n{@render children()}`
 		const output = patchLayoutSvelte(input)

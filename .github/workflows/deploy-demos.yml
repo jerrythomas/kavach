@@ -24,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # Version comes from package.json `packageManager`, never `latest`.
       # Cloudflare Workers Builds honours that field, so a drift between it and
@@ -37,11 +39,31 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      # Each secret is named explicitly rather than indexed dynamically. A
+      # dynamic lookup — secrets[format('DEMO_ENV_{0}', inputs.adapter)] —
+      # cannot be resolved at parse time, so the runner receives the ENTIRE
+      # secrets context, including every secret this job has no business
+      # seeing (the npm publish token among them). Naming the three keeps the
+      # blast radius to the demo credentials.
+      #
+      # ADAPTER reaches the shell only through env and is always quoted; the
+      # case statement also rejects anything outside the three choices.
       - name: Write adapter env
         env:
           ADAPTER: ${{ github.event.inputs.adapter }}
-          DEMO_ENV: ${{ secrets[format('DEMO_ENV_{0}', github.event.inputs.adapter)] }}
+          DEMO_ENV_SUPABASE: ${{ secrets.DEMO_ENV_SUPABASE }}
+          DEMO_ENV_FIREBASE: ${{ secrets.DEMO_ENV_FIREBASE }}
+          DEMO_ENV_CONVEX: ${{ secrets.DEMO_ENV_CONVEX }}
         run: |
+          case "$ADAPTER" in
+            supabase) DEMO_ENV="$DEMO_ENV_SUPABASE" ;;
+            firebase) DEMO_ENV="$DEMO_ENV_FIREBASE" ;;
+            convex)   DEMO_ENV="$DEMO_ENV_CONVEX" ;;
+            *)
+              echo "Unknown adapter '$ADAPTER' — expected supabase, firebase or convex." >&2
+              exit 1
+              ;;
+          esac
           if [ -z "$DEMO_ENV" ]; then
             echo "Missing secret DEMO_ENV_${ADAPTER} — create it with the adapter's PUBLIC_* values (see sites/demo/.env.example)." >&2
             exit 1

@@ -41,7 +41,7 @@ jobs:
         run: bun run coverage
       # The action lives in the repo's `coverage/` subdirectory — `qltysh/qlty-action@<sha>`
       # alone has no action.yml at the root and fails to resolve at job setup.
-      - uses: qltysh/qlty-action/coverage@08a0a862c159eae9b9003081da6663d96efef637 # coverage@v2.3.0
+      - uses: qltysh/qlty-action/coverage@08a0a862c159eae9b9003081da6663d96efef637 # v2.3.0
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/lcov.info
