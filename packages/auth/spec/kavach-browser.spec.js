@@ -293,6 +293,36 @@ describe('kavach', () => {
 			expect(adapter.onAuthChange).toHaveBeenCalled()
 		})
 
+		// #54: Supabase fires two events on a magic-link or OAuth landing
+		// (INITIAL_SESSION and SIGNED_IN) with the same session. Each used to POST,
+		// so whatever the app does on a session sync ran twice, concurrently.
+		it('syncs once per session change, serialised, and retries after a failure', async () => {
+			let emit
+			adapter.onAuthChange = vi.fn((cb) => {
+				emit = cb
+			})
+			const invalidate = vi.fn()
+			const kavach = createKavach(adapter, { invalidateAll: invalidate })
+			kavach.onAuthChange()
+			const session = { access_token: 'a1', user: { id: 'u1' } }
+
+			await Promise.all([emit('INITIAL_SESSION', session), emit('SIGNED_IN', session)])
+			expect(global.fetch).toHaveBeenCalledTimes(1)
+			expect(invalidate).toHaveBeenCalledTimes(1)
+
+			await emit('TOKEN_REFRESHED', { ...session, access_token: 'a2' })
+			expect(global.fetch).toHaveBeenCalledTimes(2)
+
+			await emit('SIGNED_OUT', null)
+			await emit('SIGNED_OUT', null)
+			expect(global.fetch).toHaveBeenCalledTimes(3)
+
+			global.fetch = vi.fn().mockImplementation(() => ({ status: 500 }))
+			await emit('SIGNED_IN', session)
+			await emit('SIGNED_IN', session)
+			expect(global.fetch).toHaveBeenCalledTimes(2)
+		})
+
 		it('should handle auth change to SIGNED_OUT', () => {
 			adapter.onAuthChange = vi.fn().mockImplementation(async (cb) => {
 				const result = await cb('SIGNED_OUT', null)
