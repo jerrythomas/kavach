@@ -80,7 +80,8 @@ describe('kavach', () => {
 		})
 
 		await kavach.handle({ event, resolve })
-		expect(resolve).toHaveBeenCalledWith(event)
+		// The landing guard (#55) rides along on every resolved page.
+		expect(resolve).toHaveBeenCalledWith(event, { transformPageChunk: expect.any(Function) })
 		expect(Response).not.toHaveBeenCalled()
 
 		event = createMockEvent({
@@ -89,6 +90,7 @@ describe('kavach', () => {
 
 		await kavach.handle({ event, resolve })
 
+		expect(resolve).not.toHaveBeenCalledWith(event, expect.anything())
 		expect(resolve).not.toHaveBeenCalledWith(event)
 		expect(Response).toHaveBeenCalledWith('', {
 			headers: { location: 'http://localhost/auth' },
@@ -321,6 +323,20 @@ describe('kavach', () => {
 			await emit('SIGNED_IN', session)
 			await emit('SIGNED_IN', session)
 			expect(global.fetch).toHaveBeenCalledTimes(2)
+		})
+
+		// #55: a landing's page is revealed by kavach once its sync and reload ran.
+		it('reveals a pending landing after the sync and the reload', async () => {
+			let emit
+			adapter.onAuthChange = vi.fn((cb) => {
+				emit = cb
+			})
+			document.documentElement.setAttribute('data-kavach-pending', '')
+			const kavach = createKavach(adapter, { invalidateAll: vi.fn(async () => {}) })
+			kavach.onAuthChange()
+			expect(document.documentElement.hasAttribute('data-kavach-pending')).toBe(true)
+			await emit('SIGNED_IN', { access_token: 'b1' })
+			expect(document.documentElement.hasAttribute('data-kavach-pending')).toBe(false)
 		})
 
 		it('should handle auth change to SIGNED_OUT', () => {

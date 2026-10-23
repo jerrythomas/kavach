@@ -315,6 +315,34 @@ describe('kavach.handle — logout route', () => {
 		expect(result).toBe('RESOLVED')
 	})
 
+	// #55: every resolved page carries the landing guard in its <head>.
+	it('injects the landing guard into a resolved page, unless turned off', async () => {
+		const { createKavach } = await import('../src/kavach.js')
+		const { PENDING_ATTR } = await import('../src/landing.js')
+		const event = () => ({
+			url: new URL('http://localhost/'),
+			cookies: { get: vi.fn(() => 'undefined') },
+			locals: {},
+			request: { method: 'GET' }
+		})
+		const options = {
+			app: { login: '/signin', session: '/auth/session' },
+			rules: [{ path: '/', public: true }]
+		}
+
+		const resolve = vi.fn(() => 'RESOLVED')
+		await createKavach(makeAdapter(), options).handle({ event: event(), resolve })
+		const transform = resolve.mock.calls[0][1]?.transformPageChunk
+		expect(transform({ html: '<head></head><body></body>', done: true })).toContain(PENDING_ATTR)
+
+		const plain = vi.fn(() => 'RESOLVED')
+		await createKavach(makeAdapter(), { ...options, pendingLanding: false }).handle({
+			event: event(),
+			resolve: plain
+		})
+		expect(plain.mock.calls[0][1]).toBeUndefined()
+	})
+
 	it('resolves a permitted route exactly once', async () => {
 		// A second resolve() is not merely wasteful — SvelteKit reads the request
 		// body during resolve, and a body stream can only be read once. The second

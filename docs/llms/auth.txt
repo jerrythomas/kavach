@@ -112,11 +112,25 @@ In root layout onMount (browser only):
 Creates a browser-side kavach instance.
 
     const instance = createKavach(adapter, {
-      logger?,       // from $kavach/auth
-      invalidateAll? // from $app/navigation
+      logger?,         // from $kavach/auth
+      invalidateAll?,  // from $app/navigation
+      pendingLanding?  // default true; false turns the landing guard off
     })
 
 Returns: { signIn, signOut, onAuthChange, handle, getCachedLogins, ... }
+
+Session sync: `onAuthChange` posts the session to the server once per session
+change (a new access token, or signing out), serialised, then calls
+`invalidateAll()`. An auth event carrying the session already synced is
+skipped, so the server's sync never runs twice for one landing.
+
+Landing guard: a magic-link or OAuth landing carries the new session in the URL
+fragment, which the server never sees, so its first render would use the
+previous session's cookie. `handle` adds a tiny script to every page's <head>
+that hides the page (`<html data-kavach-pending>`, "Signing you in…") when the
+fragment carries `access_token`. The browser instance reveals it once the sync
+and the reload as the new session finish, or after 10 seconds if no sync
+completes. Pass `pendingLanding: false` to both instances to turn it off.
 
 ### kavach.signIn(credentials)
 
