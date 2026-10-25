@@ -45,7 +45,7 @@
     "@kavach/hashing": "workspace:*",
     "@kavach/logger": "workspace:*",
     "@kavach/query": "workspace:*",
-    "@sveltejs/kit": "^2.53.4",
+    "@sveltejs/kit": "^3.1.0",
     "ramda": "^0.32.0"
   },
   "main": "dist/index.js"
