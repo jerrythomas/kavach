@@ -46,7 +46,7 @@ export default defineConfig({
 				test: {
 					name: 'packaging',
 					root: repoRoot,
-					include: ['spec/packaging.spec.js'],
+					include: ['spec/packaging.spec.js', 'spec/audit-shipped.spec.js'],
 					environment: 'node'
 				}
 			},
