@@ -13,6 +13,8 @@
 //
 // The full `bun audit` report is still printed by CI beside this gate.
 
+/* global Bun */
+
 const PUBLISHED = /^(packages|adapters)\//
 const GATED = new Set(['high', 'critical'])
 
@@ -27,18 +29,24 @@ function versionOf(entry) {
 	return spec.slice(spec.lastIndexOf('@') + 1)
 }
 
+/** A `packages` key as the package names it nests: `@a/b/c` → `['@a/b', 'c']`. */
+function nesting(key) {
+	const names = []
+	const parts = key.split('/')
+	for (let i = 0; i < parts.length; i++) {
+		names.push(parts[i].startsWith('@') ? `${parts[i]}/${parts[++i]}` : parts[i])
+	}
+	return names
+}
+
 /** The `packages` key a dependency of `parentKey` resolves to: the nearest
  *  nested install (`parent/dep`, then each enclosing parent), else the hoisted
  *  top-level one. */
 function resolveKey(packages, parentKey, name) {
-	let scope = parentKey
-	while (scope) {
-		const nested = `${scope}/${name}`
+	const scope = parentKey ? nesting(parentKey) : []
+	for (let depth = scope.length; depth > 0; depth--) {
+		const nested = `${scope.slice(0, depth).join('/')}/${name}`
 		if (nested in packages) return nested
-		const cut = scope.lastIndexOf('/')
-		// A scoped name (`@a/b`) is one segment, not a path.
-		scope = cut > 0 && !scope.slice(0, cut).endsWith('@') ? scope.slice(0, cut) : ''
-		if (scope.startsWith('@') && !scope.includes('/')) scope = ''
 	}
 	return name in packages ? name : undefined
 }
@@ -97,21 +105,24 @@ export function shippedVulnerabilities(audit, shipped, satisfies) {
 	return found
 }
 
-if (import.meta.main) {
+/** Gate this repository: exit 0 clean, 1 on a shipped advisory, 2 on no report. */
+async function main() {
 	const lock = parseLock(await Bun.file('bun.lock').text())
 	const run = Bun.spawnSync(['bun', 'audit', '--json'], { stdout: 'pipe', stderr: 'pipe' })
 	const raw = run.stdout.toString().trim()
 	if (!raw.startsWith('{')) {
 		console.error(`bun audit --json produced no report:\n${run.stderr.toString()}`)
-		process.exit(2)
+		return 2
 	}
 	const shipped = shippedClosure(lock)
 	const found = shippedVulnerabilities(JSON.parse(raw), shipped, (v, r) => Bun.semver.satisfies(v, r))
 	console.log(`Shipped closure: ${shipped.size} packages from the published workspaces.`)
 	if (found.length === 0) {
 		console.log('No high or critical advisory in what kavach ships.')
-	} else {
-		for (const f of found) console.log(`${f.severity}: ${f.name}@${f.version} — ${f.title} (${f.url})`)
-		process.exit(1)
+		return 0
 	}
+	for (const f of found) console.log(`${f.severity}: ${f.name}@${f.version} — ${f.title} (${f.url})`)
+	return 1
 }
+
+if (import.meta.main) process.exitCode = await main()

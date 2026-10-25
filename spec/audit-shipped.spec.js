@@ -62,6 +62,25 @@ describe('the shipped dependency closure', () => {
 	})
 })
 
+describe('nested installs under a scoped parent', () => {
+	it('resolve to the nearest nested copy, walking up whole package names', () => {
+		const scoped = {
+			workspaces: { 'packages/x': { name: '@kavach/x', dependencies: { '@a/b': '^1.0.0' } } },
+			packages: {
+				'@a/b': ['@a/b@1.0.0', '', { dependencies: { '@c/d': '^2.0.0', e: '^1.0.0' } }],
+				'@a/b/@c/d': ['@c/d@2.1.0', '', { dependencies: { e: '^3.0.0' } }],
+				'@a/b/@c/d/e': ['e@3.0.0', '', {}],
+				'@a/b/e': ['e@1.5.0', '', {}],
+				'@c/d': ['@c/d@9.9.9', '', {}],
+				e: ['e@0.1.0', '', {}]
+			}
+		}
+		const shipped = shippedClosure(scoped)
+		expect([...shipped.get('@c/d')]).toEqual(['2.1.0'])
+		expect([...shipped.get('e')].sort()).toEqual(['1.5.0', '3.0.0'])
+	})
+})
+
 describe('the release gate', () => {
 	// A stand-in for Bun.semver.satisfies over the exact versions used here.
 	const satisfies = (version, range) =>
