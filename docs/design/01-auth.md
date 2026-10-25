@@ -77,7 +77,7 @@ Session shape in cookies (httpOnly, secure, sameSite=strict):
 }
 ```
 
-**Synchronization:** On the client, `adapter.onAuthChange(callback)` fires when the provider detects a state change (e.g., OAuth redirect return). The callback POSTs to the session endpoint, which calls `adapter.synchronize()` to refresh tokens and update cookies. After the POST completes, `invalidateAll()` refreshes SvelteKit loaders.
+**Synchronization:** On the client, `adapter.onAuthChange(callback)` fires when the provider detects a state change (e.g., OAuth redirect return). The callback POSTs to the session endpoint, which calls `adapter.synchronize()` to refresh tokens and update cookies. After the POST completes, `invalidateAll()` refreshes SvelteKit loaders. The POST is made once per session change: a landing fires two provider events with one session, and the second is skipped, serialised behind the first (#54). Until that sync and reload finish, a landing's page is hidden, because its first render used the previous session's cookie: `handle` puts the landing guard (`src/landing.js`) in every page's `<head>`, and the browser instance reveals the page after the reload (#55; `pendingLanding: false` turns it off).
 
 ### Login Cache
 

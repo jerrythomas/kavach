@@ -166,6 +166,8 @@ export interface KavachAgents {
 	sentry: Sentry
 	logger: unknown
 	invalidateAll: () => void
+	/** The landing guard (#55): hide a fragment landing's page until its session is the server's. */
+	pendingLanding: boolean
 }
 
 export interface Credentials {

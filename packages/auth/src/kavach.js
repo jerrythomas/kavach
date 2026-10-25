@@ -10,6 +10,7 @@ import { setHeaderCookies } from './internal.js'
 import * as loginCache from './loginCache.js'
 import { getUserInfo } from './provider.js'
 import { getRequestData } from './request.js'
+import { injectLandingGuard, revealAfterSync } from './landing.js'
 
 const pass = async () => {
 	/* Used as a placeholder */
@@ -153,7 +154,9 @@ async function handleUnauthorizedAccess(agents, { event, resolve }) {
 			})
 		}
 	}
-	return resolve(event)
+	return agents.pendingLanding
+		? resolve(event, { transformPageChunk: injectLandingGuard })
+		: resolve(event)
 }
 
 /**
@@ -350,21 +353,54 @@ function handleRouteProtection(adapter, agents, { event, resolve }) {
  * @param {import('./types').KavachAgents}     agents
  */
 function handleAuthChange(adapter, agents) {
-	const { invalidateAll } = agents
 	const logger = agents.logger.getContextLogger({ method: 'handleAuthChange' })
 	if (RUNNING_ON !== 'browser') return
+	// A landing's page stays hidden until the reload as its new session (#55).
+	const invalidateAll =
+		agents.pendingLanding && typeof document !== 'undefined'
+			? revealAfterSync(document.documentElement, agents.invalidateAll)
+			: agents.invalidateAll
 
-	adapter.onAuthChange(async (event, session) => {
-		logger.debug({
-			message: 'authentication state changed',
-			data: { event }
+	// One sync per session CHANGE (#54). A magic-link or OAuth landing fires two
+	// events with the same session; each used to POST, so the server's sync ran
+	// twice, concurrently. Syncs are chained so they never overlap, and an event
+	// carrying the session last synced successfully is skipped. A failed sync is
+	// not remembered, so the next event retries it.
+	let synced = { key: undefined, result: undefined }
+	let chain = Promise.resolve()
+
+	adapter.onAuthChange((event, session) => {
+		const run = chain.then(async () => {
+			logger.debug({
+				message: 'authentication state changed',
+				data: { event }
+			})
+			const key = sessionKey(session)
+			if (synced.key !== undefined && synced.key === key) return synced.result
+
+			const result = await syncSessionWithServer(agents, event, session)
+			if (result.status === 200) {
+				synced = { key, result }
+				invalidateAll()
+			}
+			return result
 		})
-
-		const result = await syncSessionWithServer(agents, event, session)
-		if (result.status === 200) invalidateAll()
-
-		return result
+		chain = run.catch(() => {})
+		return run
 	})
+}
+
+/**
+ * What identifies a session for the sync: its access token (a refresh or another
+ * account changes it), `null` when signed out.
+ *
+ * @param {unknown} session
+ * @returns {string | null}
+ */
+function sessionKey(session) {
+	if (session === null || session === undefined) return null
+	if (typeof session === 'object' && 'access_token' in session) return String(session.access_token)
+	return JSON.stringify(session)
 }
 
 /**
@@ -666,6 +702,8 @@ function getAgents(options) {
 		}),
 		sentry: createSentry(sentryOptions),
 		invalidateAll: options.invalidateAll ?? pass,
+		// The landing guard (#55) is on unless an app opts out.
+		pendingLanding: options.pendingLanding !== false,
 		onSessionSync: options.onSessionSync,
 		dataFn: options.data
 	}

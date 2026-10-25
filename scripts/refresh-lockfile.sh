@@ -17,8 +17,12 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# With the bun `packageManager` pins, not whichever bun runs this: 1.4 writes
+# lockfileVersion 2, which the pinned CI bun and Cloudflare's build image cannot
+# parse — v1.3.0's release commit failed both ("Unknown lockfile version").
+pinned=$(node -p "require('./package.json').packageManager.replace(/^bun@/, '')")
 rm -f bun.lock
-bun install --silent
+npx -y "bun@${pinned}" install --silent
 
 if [ ! -f bun.lock ]; then
 	echo "error: bun install did not produce a bun.lock" >&2
